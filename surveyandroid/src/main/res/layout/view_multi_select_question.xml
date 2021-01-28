@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/header_text"
+        tools:text="Header 1"
+        style="@style/Widget.SurveyAndroid.HeaderText" />
+
+    <LinearLayout style="@style/Widget.SurveyAndroid.QuestionCard">
+
+        <TextView
+            android:id="@+id/question_text"
+            tools:text="What is your favorite ice cream flavor?"
+            style="@style/Widget.SurveyAndroid.QuestionText" />
+
+        <LinearLayout
+            android:id="@+id/answer_checkbox_container"
+            style="@style/Widget.SurveyAndroid.CheckboxContainer" />
+
+        <Button
+            android:id="@+id/next_button"
+            style="@style/Widget.SurveyAndroid.NextButton"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>

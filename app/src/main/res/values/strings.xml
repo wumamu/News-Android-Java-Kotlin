@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">test</string>
+    <string name="to_diary">回顧問卷</string>
+    <string name="news_test">範例新聞</string>
+</resources>

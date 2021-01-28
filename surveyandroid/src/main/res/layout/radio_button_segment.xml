@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RadioButton
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:text="10"
+    tools:background="@drawable/first_segment_background"
+    style="@style/Widget.SurveyAndroid.SegmentedRadioButton" />

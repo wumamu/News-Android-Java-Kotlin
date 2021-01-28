@@ -1,0 +1,252 @@
+{
+  "questions": [
+    {
+      "id": "read_news_or_not",
+      "header": "Question 1",
+      "question": "最近30分鐘有閱讀新聞嗎？",
+      "question_type": "single_select",
+      "options": [
+        "有",
+        "沒有"
+      ]
+    },
+    {
+      "id": "confirm_checker",
+      "header": "Question 2",
+      "question": "請回答關於「系統隨機挑選新聞」的問題",
+      "question_type": "single_select",
+      "options": [
+        "了解"
+      ]
+    },
+    {
+      "id": "check_first_time",
+      "header": "Question 3",
+      "question": "您過去是否有閱讀過與此則新聞相同內容，但由不同媒體報導的新聞？",
+      "question_type": "single_select",
+      "options": [
+        "有",
+        "沒有",
+        "不知道"
+      ]
+    },
+    {
+      "id": "involvement",
+      "header": "Question 4",
+      "question": "這次新聞閱讀，你的投入程度。",
+      "question_type": "segment_select",
+      "low_tag": "非常不投入",
+      "high_tag": "非常投入",
+      "values": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "id": "comprehension",
+      "header": "Question 5",
+      "question": "關於這篇新聞，你的理解程度。",
+      "question_type": "segment_select",
+      "low_tag": "非常不理解",
+      "high_tag": "非常理解",
+      "values": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "id": "difficulty",
+      "header": "Question 6",
+      "question": "關於這篇新聞，在閱讀上感到的困難程度。",
+      "question_type": "segment_select",
+      "low_tag": "非常不困難",
+      "high_tag": "非常困難",
+      "values": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "id": "relative",
+      "header": "Question 7",
+      "question": "關於這篇新聞，與您自身相關程度。",
+      "question_type": "segment_select",
+      "low_tag": "非常不相關",
+      "high_tag": "非常相關",
+      "values": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "id": "interest",
+      "header": "Question 8",
+      "question": "關於這篇新聞，您感興趣程度。",
+      "question_type": "segment_select",
+      "low_tag": "非常不感興趣",
+      "high_tag": "非常感興趣",
+      "values": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "id": "authentic",
+      "header": "Question 9",
+      "question": "對您來說，這篇新聞是真實的。",
+      "question_type": "segment_select",
+      "low_tag": "非常不符合",
+      "high_tag": "非常符合",
+      "values": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "id": "correctness",
+      "header": "Question 10",
+      "question": "對您來說，這篇新聞是正確的。",
+      "question_type": "segment_select",
+      "low_tag": "非常不符合",
+      "high_tag": "非常符合",
+      "values": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "id": "trustworthy",
+      "header": "Question 11",
+      "question": "對您來說，這則新聞是可信任的。",
+      "question_type": "segment_select",
+      "low_tag": "非常不符合",
+      "high_tag": "非常符合",
+      "values": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "id": "share_intension",
+      "header": "Question 12",
+      "question": "關於這篇新聞，您分享意願為何？",
+      "question_type": "segment_select",
+      "low_tag": "非常沒有意願",
+      "high_tag": "非常有意願",
+      "values": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "id": "reading_type",
+      "header": "Question 13",
+      "question": "關於這次的新聞閱讀時機，對您來說屬於何種性質的閱讀。",
+      "question_type": "single_select",
+      "options": [
+        "預期中的閱讀活動(ex:我平時就計畫在這個時刻閱讀)",
+        "非預期的閱讀活動(ex:我未規劃此時為閱讀時刻)",
+        {
+          "title": "其他",
+          "type": "freeform"
+        }
+      ]
+    },
+    {
+      "id": "activity_vor_reading",
+      "header": "Question 14",
+      "question": "開始閱讀前，您是否正在從事以下活動？",
+      "question_type": "single_select",
+      "options": [
+        "處理家務",
+        "移動中(e.g 通勤)",
+        "工作或學習",
+        "用餐",
+        "從事娛樂或休閒運動",
+        "與朋友聊天",
+        {
+          "title": "其他",
+          "type": "freeform"
+        }
+      ]
+    },
+    {
+      "id": "activity_vor_reading_progress",
+      "header": "Question 15",
+      "question": "承上題，該項活動的執行進度為何",
+      "question_type": "single_select",
+      "options": [
+        "剛開始",
+        "進行中",
+        "執行剛結束"
+      ]
+    },
+    {
+      "id": "activity_complexcity",
+      "header": "Question 16",
+      "question": "承上題，該項活動您主觀複雜程度？",
+      "question_type": "segment_select",
+      "low_tag": "非常不複雜",
+      "high_tag": "非常複雜",
+      "values": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ]
+    }
+  ],
+  "submit": {
+    "button_title": "Submit Answers",
+    "url": "https://www.example.com"
+  },
+  "auto_focus_text": true
+}

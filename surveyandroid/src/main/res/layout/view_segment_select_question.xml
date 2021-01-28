@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/header_text"
+        style="@style/Widget.SurveyAndroid.HeaderText"
+        tools:text="Header 1"
+        />
+
+    <LinearLayout style="@style/Widget.SurveyAndroid.QuestionCard">
+
+        <TextView
+            android:id="@+id/question_text"
+            style="@style/Widget.SurveyAndroid.QuestionText"
+            tools:text="What is your favorite ice cream flavor?"
+            />
+
+        <RadioGroup
+            android:id="@+id/segment_selector"
+            style="@style/Widget.SurveyAndroid.SegmentRadioGroup" />
+
+        <LinearLayout
+            android:id="@+id/tag_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.SurveyAndroid.SegmentTagsContainer"
+            >
+
+            <TextView
+                android:id="@+id/low_tag"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|start"
+                style="@style/Widget.SurveyAndroid.SegmentTag"
+                tools:text="Low"
+                />
+
+            <TextView
+                android:id="@+id/high_tag"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|end"
+                style="@style/Widget.SurveyAndroid.SegmentTag"
+                tools:text="High"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
