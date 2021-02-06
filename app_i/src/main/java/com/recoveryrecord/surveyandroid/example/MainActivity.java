@@ -3,6 +3,7 @@ package com.recoveryrecord.surveyandroid.example;
 import android.Manifest;
 import android.accessibilityservice.AccessibilityService;
 import android.app.ActivityManager;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -24,7 +25,10 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -38,6 +42,7 @@ import java.util.Set;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 
 import static android.media.AudioManager.STREAM_ALARM;
 import static android.media.AudioManager.STREAM_MUSIC;
@@ -52,14 +57,14 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String NOTIFICATION_CHANNEL_ID = "10001" ;
     private final static String default_notification_channel_id = "default" ;
-    private Button btn_show;
+//    private Button btn_show;
     private Context mContext;
     private BlueToothReceiver mBluetoothReceiver;
     private NetworkChangeReceiver mNetworkReceiver;
     private AudioManager myAudioManager;
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
     NotificationManager manager;
-    Notification myNotication;
+//    Notification myNotication;
     @Override
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,8 +72,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Button btn_to_news = (Button) findViewById(R.id.btn_to_news);
         Button btn_to_diary = (Button) findViewById(R.id.btn_to_diary);
-        Button btn_to_noti_esm = (Button) findViewById(R.id.btn_to_noti_news);
-        Button btn_to_noti_news = (Button) findViewById(R.id.btn_to_noti_esm);
+//        Button btn_to_noti_esm = (Button) findViewById(R.id.btn_to_noti_news);
+//        Button btn_to_noti_news = (Button) findViewById(R.id.btn_to_noti_esm);
         Button btn_to_test = (Button) findViewById(R.id.btn_to_test);
         //audio ####################################################################################
         myAudioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
@@ -106,12 +111,12 @@ public class MainActivity extends AppCompatActivity {
 //
 //            }
 //        });
-        btn_to_noti_esm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
+//        btn_to_noti_esm.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//            }
+//        });
         btn_to_test.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.P)
             @Override
@@ -321,8 +326,84 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void notificationButtonOnClick(View view) {
-        Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-        startActivity(intent);
+//    public void notificationButtonOnClick(View view) {
+//        Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+//        startActivity(intent);
+//    }
+@Override
+public boolean onCreateOptionsMenu (Menu menu) {
+    // Inflate the menu; this adds items to the action bar if it is present.
+    getMenuInflater().inflate(R.menu.noti_menu, menu);
+    //getMenuInflater().inflate(R.menu.menu, menu);
+    return true;
+}
+    @Override
+    public boolean onOptionsItemSelected (MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_5 :
+                scheduleNotification(getNotification("news (5 second delay)" ), 5000 );
+                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
+                return true;
+            case R.id.action_10 :
+                scheduleNotification(getNotification("news (10 second delay)" ), 10000 );
+                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
+                return true;
+            case R.id.action_30 :
+                scheduleNotification(getNotification("news (30 second delay)" ), 30000 );
+                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
+                return true;
+            default :
+                return super.onOptionsItemSelected(item);
+        }
     }
+    private void scheduleNotification (Notification notification, int delay) {
+        int nid = (int) System.currentTimeMillis();
+        Log.d("log: notification", "news id" + nid);
+        Intent notificationIntent = new Intent(this, MyNotificationPublisher.class);
+        notificationIntent.putExtra(MyNotificationPublisher.NOTIFICATION_ID, 1 ) ;
+        notificationIntent.putExtra(MyNotificationPublisher.NOTIFICATION, notification) ;
+        PendingIntent pendingIntent = PendingIntent.getBroadcast( this, nid, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        assert alarmManager != null;
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+    }
+    private Notification getNotification (String content) {
+        int nid = (int) System.currentTimeMillis();
+        Log.d("log: notification", "news id" + nid);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, new Intent(this, SampleNewsActivity.class), 0);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);
+        builder.setContentTitle("Scheduled NEWS");
+        builder.setContentText(content);
+        builder.setSmallIcon(R.drawable.ic_launcher_foreground);
+        builder.setContentIntent(pendingIntent);
+        builder.setAutoCancel(true);
+        builder.setChannelId(NOTIFICATION_CHANNEL_ID);
+        return builder.build() ;
+    }
+    private void scheduleNotification_esm (Notification notification, int delay) {
+        int nid = (int) System.currentTimeMillis();
+        Log.d("log: notification", "news id" + nid);
+        Intent notificationIntent = new Intent(this, MyNotificationPublisher.class);
+        notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION_ID, 1 ) ;
+        notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION, notification) ;
+        PendingIntent pendingIntent = PendingIntent.getBroadcast( this, nid, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        assert alarmManager != null;
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+    }
+    private Notification getNotification_esm (String content) {
+        int nid = (int) System.currentTimeMillis();
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, new Intent(this, ExampleSurveyActivity.class), 0);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);
+        builder.setContentTitle("Scheduled ESM");
+        builder.setContentText(content);
+        builder.setSmallIcon(R.drawable.ic_launcher_foreground);
+        builder.setContentIntent(pendingIntent);
+        builder.setAutoCancel(true);
+        builder.setChannelId(NOTIFICATION_CHANNEL_ID);
+        return builder.build() ;
+    }
+
 }
