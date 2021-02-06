@@ -27,8 +27,8 @@ public final class DeviceUtil {
 
     private static volatile DeviceUtil sDeviceUtil;
 
-    private String           mAndroidId;
-    private TelephonyManager mTelephonyManager;
+    private static String           mAndroidId;
+    private static TelephonyManager mTelephonyManager;
 
     private DeviceUtil(Context context) {
         mTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -50,7 +50,7 @@ public final class DeviceUtil {
     /**
      * 打印设备信息(调试专用)
      */
-    public void printInfo() {
+    public static void printInfo() {
         //noinspection StringBufferMayBeStringBuilder,StringBufferReplaceableByString
         StringBuffer sb = new StringBuffer("设备信息：\n");
         sb.append("getID:").append(getID()).append("\n");
@@ -73,7 +73,7 @@ public final class DeviceUtil {
      * 在设备恢复出厂设置后，该值可能会改变, ANDROID_ID也可视为作为唯一设备标识号的一个好选择。
      * </pre>
      */
-    public String getAndroidId() {
+    public static String getAndroidId() {
         return TextUtils.isEmpty(mAndroidId) ? "" : mAndroidId;
     }
 
@@ -81,7 +81,7 @@ public final class DeviceUtil {
      * 获取UUID
      * UUID是指在一台机器上生成的数字，它保证对在同一时空中的所有机器都是唯一的。
      */
-    public String getUUID() {
+    public static String getUUID() {
         return UUID.randomUUID().toString();
     }
 
@@ -89,7 +89,7 @@ public final class DeviceUtil {
      * 获取设备绝对的唯一标识
      * 先获取DeviceId,如果为空,获取ANDROID_ID,如果还是空,生成一个UUID
      */
-    public String getID() {
+    public static String getID() {
         String result = getDeviceId();
         if (TextUtils.isEmpty(result)) {
             result = getAndroidId();
@@ -108,25 +108,25 @@ public final class DeviceUtil {
      * 权限： 获取DEVICE_ID需要READ_PHONE_STATE权限
      * </pre>
      */
-    public String getDeviceId() {
+    public static String getDeviceId() {
         final String deviceId = mTelephonyManager.getDeviceId();
-        return TextUtils.isEmpty(deviceId) ? "" : deviceId;
+        return TextUtils.isEmpty(deviceId) ? "null" : deviceId;
     }
 
     /**
      * 返回手机号码 (可能为空)
      */
-    public String getNumber() {
+    public static String getNumber() {
         final String number = mTelephonyManager.getLine1Number();
-        return TextUtils.isEmpty(number) ? "" : number;
+        return TextUtils.isEmpty(number) ? "null" : number;
     }
 
     /**
      * 返回用户唯一标识，比如GSM网络的IMSI编号
      */
-    public String getSubscriberId() {
+    public static String getSubscriberId() {
         final String subscriberId = mTelephonyManager.getSubscriberId();
-        return TextUtils.isEmpty(subscriberId) ? "" : subscriberId;
+        return TextUtils.isEmpty(subscriberId) ? "null" : subscriberId;
     }
 
     /**
@@ -184,17 +184,17 @@ public final class DeviceUtil {
      * 返回SIM卡的序列号(IMEI)
      * 注意：对于CDMA设备，返回的是一个空值！
      */
-    public String getSimSerialNumber() {
+    public static String getSimSerialNumber() {
         final String simSerialNumber = mTelephonyManager.getSimSerialNumber();
-        return TextUtils.isEmpty(simSerialNumber) ? "" : simSerialNumber;
+        return TextUtils.isEmpty(simSerialNumber) ? "null" : simSerialNumber;
     }
 
     /**
      * 返回序列号 (Android 2.3以上可以使用此方法)
      */
-    public String getSerialNumber() {
+    public static String getSerialNumber() {
         String serialNumber = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? Build.getSerial() : Build.SERIAL;
-        return TextUtils.isEmpty(serialNumber) ? "" : serialNumber;
+        return TextUtils.isEmpty(serialNumber) ? "null" : serialNumber;
     }
 
     /**
@@ -205,7 +205,7 @@ public final class DeviceUtil {
      * 2：PHONE_TYPE_CDMA 手机制式为CDMA，电信
      * </pre>
      */
-    public int getPhoneType() {
+    public static int getPhoneType() {
         return mTelephonyManager.getPhoneType();
     }
 
@@ -229,7 +229,7 @@ public final class DeviceUtil {
      * 电信的3G为EVDO
      * </pre>
      */
-    public int getNetworkType() {
+    public static int getNetworkType() {
         return mTelephonyManager.getNetworkType();
     }
 

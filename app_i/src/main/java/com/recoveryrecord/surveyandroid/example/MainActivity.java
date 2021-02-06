@@ -4,9 +4,13 @@ import android.Manifest;
 import android.accessibilityservice.AccessibilityService;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -54,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
     private NetworkChangeReceiver mNetworkReceiver;
     private AudioManager myAudioManager;
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
+    NotificationManager manager;
+    Notification myNotication;
     @Override
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Button btn_to_news = (Button) findViewById(R.id.btn_to_news);
         Button btn_to_diary = (Button) findViewById(R.id.btn_to_diary);
+        Button btn_to_noti_esm = (Button) findViewById(R.id.btn_to_noti_news);
+        Button btn_to_noti_news = (Button) findViewById(R.id.btn_to_noti_esm);
         Button btn_to_test = (Button) findViewById(R.id.btn_to_test);
         //audio ####################################################################################
         myAudioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
@@ -86,6 +94,22 @@ public class MainActivity extends AppCompatActivity {
                 intent.setClass(MainActivity.this, ExampleSurveyActivity.class);
                 startActivity(intent);
                 //MainActivity.this.finish();
+            }
+        });
+        manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+//        btn_to_noti_news.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+//                startActivity(intent);
+//
+//            }
+//        });
+        btn_to_noti_esm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
         btn_to_test.setOnClickListener(new View.OnClickListener() {
@@ -157,9 +181,32 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         // device info
+        String  details =  "VERSION.RELEASE : "+Build.VERSION.RELEASE
+                +"\nVERSION.INCREMENTAL : "+Build.VERSION.INCREMENTAL
+                +"\nVERSION.SDK.NUMBER : "+Build.VERSION.SDK_INT
+                +"\nBOARD : "+Build.BOARD
+                +"\nBOOTLOADER : "+Build.BOOTLOADER
+                +"\nBRAND : "+Build.BRAND
+                +"\nCPU_ABI : "+Build.CPU_ABI
+                +"\nCPU_ABI2 : "+Build.CPU_ABI2
+                +"\nDISPLAY : "+Build.DISPLAY
+                +"\nFINGERPRINT : "+Build.FINGERPRINT
+                +"\nHARDWARE : "+Build.HARDWARE
+                +"\nHOST : "+Build.HOST
+                +"\nID : "+Build.ID
+                +"\nMANUFACTURER : "+Build.MANUFACTURER
+                +"\nMODEL : "+Build.MODEL
+                +"\nPRODUCT : "+Build.PRODUCT
+                +"\nSERIAL : "+Build.SERIAL
+                +"\nTAGS : "+Build.TAGS
+                +"\nTIME : "+Build.TIME
+                +"\nTYPE : "+Build.TYPE
+                +"\nUNKNOWN : "+Build.UNKNOWN
+                +"\nUSER : "+Build.USER;
+
+        Log.d("log: Device Details\n",details);
 //        DeviceUtil.printInfo();
         // app backgroung info #####################################################################
-        String list ;
         AppInfoUtil.getProcessName(mContext, "123");
         // device orientation #######################################################################
         int orientation = getResources().getConfiguration().orientation;
@@ -272,5 +319,10 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
         }
+    }
+
+    public void notificationButtonOnClick(View view) {
+        Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+        startActivity(intent);
     }
 }

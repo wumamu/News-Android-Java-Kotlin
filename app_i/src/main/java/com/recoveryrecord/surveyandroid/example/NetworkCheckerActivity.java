@@ -25,11 +25,11 @@ public class NetworkCheckerActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        tv_check_connection=(TextView) findViewById(R.id.tv_check_connection);
-        mNetworkReceiver = new NetworkChangeReceiver();
-//        registerNetworkBroadcastForNougat();
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.activity_main);
+//        tv_check_connection=(TextView) findViewById(R.id.tv_check_connection);
+//        mNetworkReceiver = new NetworkChangeReceiver();
+////        registerNetworkBroadcastForNougat();
 
     }
 
