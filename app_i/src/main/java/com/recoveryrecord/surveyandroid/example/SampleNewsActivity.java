@@ -75,6 +75,7 @@ public class SampleNewsActivity extends AppCompatActivity implements SimpleGestu
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sample_news);
+
         detector = new SimpleGestureFilter(this,this);
 
         mUrl = "https://news.tvbs.com.tw/focus/1460200";

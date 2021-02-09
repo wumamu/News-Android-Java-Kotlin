@@ -1,6 +1,7 @@
 package com.recoveryrecord.surveyandroid;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -58,7 +59,7 @@ public class DefaultSubmitSurveyHandler implements SubmitSurveyHandler {
             e.printStackTrace();
             return;
         }
-
+        Log.d("log: ESM", jsonQuestionAnswerData);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, requestBody, mResponseListener, mErrorListener);
         queue.add(jsonObjectRequest);
     }

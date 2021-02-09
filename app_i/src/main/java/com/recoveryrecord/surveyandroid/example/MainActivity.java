@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        ESMDbHelper esmDbHelper = new ESMDbHelper(this);
         setTitle("Homepage");
         setContentView(R.layout.activity_main);
         Button btn_to_news = (Button) findViewById(R.id.btn_to_news);
