@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.recoveryrecord.surveyandroid.example">
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -23,11 +24,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!-- MainActivity is the parent for ResultActivity -->
-        <activity
-            android:name=".ResultActivity"
-            android:parentActivityName=".MainActivity">
-        </activity>
         <receiver android:name = ".MyNotificationPublisher" />
 
         <activity android:name=".ExampleSurveyActivity" />
@@ -37,13 +33,24 @@
         <receiver android:name=".ScreenStateReceiver"></receiver>
         <receiver android:name=".ApplicationSelectorReceiver"></receiver>
         <receiver android:name=".BlueToothReceiver"></receiver>
-        <receiver android:name=".AppInfoUtil"></receiver>
-        <receiver android:name=".DeviceUtil"></receiver>
+        <receiver android:name=".AppInfoUtil"
+            tools:ignore="Instantiatable"></receiver>
+        <receiver android:name=".DeviceUtil"
+            tools:ignore="Instantiatable"></receiver>
         <receiver android:name="NetworkChangeReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
+        <activity android:name=".NotificationListActivity" />
+        <service android:name=".NLService"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+
     </application>
 
 </manifest>

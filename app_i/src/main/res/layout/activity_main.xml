@@ -30,16 +30,16 @@
         android:paddingBottom="20dp"
         android:text="@string/to_diary"
         android:textSize="18sp" />
-<!--    <Button-->
-<!--        android:id="@+id/btn_to_noti_news"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:paddingLeft="15dp"-->
-<!--        android:paddingTop="20dp"-->
-<!--        android:paddingRight="15dp"-->
-<!--        android:paddingBottom="20dp"-->
-<!--        android:text="@string/to_noti_news"-->
-<!--        android:textSize="18sp" />-->
+    <Button
+        android:id="@+id/btn_to_noti_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="15dp"
+        android:paddingTop="20dp"
+        android:paddingRight="15dp"
+        android:paddingBottom="20dp"
+        android:text="@string/btn_to_noti_list"
+        android:textSize="18sp" />
 <!--    <Button-->
 <!--        android:id="@+id/btn_to_noti_esm"-->
 <!--        android:layout_width="wrap_content"-->

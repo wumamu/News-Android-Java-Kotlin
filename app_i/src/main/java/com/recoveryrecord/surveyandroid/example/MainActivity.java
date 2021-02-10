@@ -73,8 +73,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Button btn_to_news = (Button) findViewById(R.id.btn_to_news);
         Button btn_to_diary = (Button) findViewById(R.id.btn_to_diary);
-//        Button btn_to_noti_esm = (Button) findViewById(R.id.btn_to_noti_news);
-//        Button btn_to_noti_news = (Button) findViewById(R.id.btn_to_noti_esm);
+        Button btn_to_noti_list = (Button) findViewById(R.id.btn_to_noti_list);
         Button btn_to_test = (Button) findViewById(R.id.btn_to_test);
         //audio ####################################################################################
         myAudioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
@@ -85,39 +84,32 @@ public class MainActivity extends AppCompatActivity {
         btn_to_news.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-//                intent.setClass(MainActivity.this, ExampleSurveyActivity.class);
-                intent.setClass(MainActivity.this, SampleNewsActivity.class);
-                startActivity(intent);
-                //MainActivity.this.finish();
+            Intent intent = new Intent();
+            intent.setClass(MainActivity.this, SampleNewsActivity.class);
+            startActivity(intent);
+            //MainActivity.this.finish();
             }
         });
         btn_to_diary.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-//                intent.setClass(MainActivity.this, DiaryAcitivity.class);
-                intent.setClass(MainActivity.this, ExampleSurveyActivity.class);
-                startActivity(intent);
-                //MainActivity.this.finish();
+            Intent intent = new Intent();
+            intent.setClass(MainActivity.this, ExampleSurveyActivity.class);
+            startActivity(intent);
+            //MainActivity.this.finish();
             }
         });
         manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
-//        btn_to_noti_news.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-//                startActivity(intent);
-//
-//            }
-//        });
-//        btn_to_noti_esm.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//            }
-//        });
+        btn_to_noti_list.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this, NotificationListActivity.class);
+                startActivity(intent);
+                //MainActivity.this.finish();
+            }
+        });
         btn_to_test.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.P)
             @Override
