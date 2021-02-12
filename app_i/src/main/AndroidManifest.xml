@@ -37,6 +37,8 @@
             tools:ignore="Instantiatable"></receiver>
         <receiver android:name=".DeviceUtil"
             tools:ignore="Instantiatable"></receiver>
+        <activity android:name=".TmpMainActivity"></activity>
+        <activity android:name=".NotificationDetailsActivity"></activity>
         <receiver android:name="NetworkChangeReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
