@@ -11,7 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class TmpMainActivity extends AppCompatActivity {
-    EditText packagename, time, tickertext;
+    EditText packagename, time, tickertext, title, text;
     Button saveBtn, listBtn, deleteBtn;
     Intent intent;
 
@@ -23,6 +23,8 @@ public class TmpMainActivity extends AppCompatActivity {
         packagename = (EditText)findViewById(R.id.txtPackageName);
         time = (EditText)findViewById(R.id.txtTime);
         tickertext = (EditText)findViewById(R.id.txtTickerText);
+        title = (EditText)findViewById(R.id.txtTitle);
+        text = (EditText)findViewById(R.id.txtText);
         saveBtn = (Button)findViewById(R.id.btnSave);
         listBtn = (Button)findViewById(R.id.btnList);
 //        deleteBtn = (Button)findViewById(R.id.btnDelete);
@@ -33,27 +35,35 @@ public class TmpMainActivity extends AppCompatActivity {
                 String pn = packagename.getText().toString();
                 String t = time.getText().toString();
                 String tt = tickertext.getText().toString();
+                String ti = title.getText().toString();
+                String te = text.getText().toString();
 
                 if (pn.isEmpty()) {
                     packagename.setError("Please enter packagename!");
                     packagename.requestFocus();
-                }
-               else if (t.isEmpty())                {
+                } else if (t.isEmpty()) {
                     time.setError("Please enter time!");
                     time.requestFocus();
-                }
-               else if (tt.isEmpty()) {
+                } else if (tt.isEmpty()) {
                     tickertext.setError("Please enter tickertext!");
                     tickertext.requestFocus();
-                }
-                else {
+                } else if (ti.isEmpty()){
+                    title.setError("Please enter title!");
+                    title.requestFocus();
+                } else if (te.isEmpty()){
+                    text.setError("Please enter text!");
+                    text.requestFocus();
+                } else {
                     NotificationDbHandler dbHandler = new NotificationDbHandler(TmpMainActivity.this);
-                    dbHandler.insertUserDetails(pn, t, tt);
+                    dbHandler.insertUserDetails(pn, t, tt, ti, te);
 //                    intent = new Intent(MainActivity.this, DetailsActivity.class);
 //                    startActivity(intent);
                     packagename.getText().clear();
                     time.getText().clear();
                     tickertext.getText().clear();
+                    title.getText().clear();
+                    text.getText().clear();
+
                     Toast.makeText(getApplicationContext(), "Details Inserted Successfully", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -69,7 +79,7 @@ public class TmpMainActivity extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
-        intent = new Intent(TmpMainActivity.this, MainActivity.class);
+        intent = new Intent(TmpMainActivity.this, NotificationListActivity.class);
         startActivity(intent);
     }
 }

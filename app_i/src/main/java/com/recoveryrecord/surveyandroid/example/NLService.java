@@ -11,6 +11,7 @@ import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -89,51 +90,56 @@ public class NLService extends NotificationListenerService {
                 NLService.this.cancelAllNotifications();
             }
             else if(intent.getStringExtra("command").equals("list")){
+//                Log.e("log: NLService", "NLService");
                 List<String> noti_list = new ArrayList<String>();
-                String tmp = "=====================\n";
-                noti_list.add(tmp);
-                int i=1;
+//                String tmp = "=====================\n";
+                String tmp = "";
+//                noti_list.add(tmp);
+                int count=1;
                 for (StatusBarNotification sbn : NLService.this.getActiveNotifications()) {
-                    tmp = i + "\n";
+                    tmp = "";
+                    tmp = count + "\n";
                     SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 //                    Date date = new Date(System.currentTimeMillis());
                     Date date = new Date(sbn.getPostTime());
-//                    System.out.println(formatter.format(date));
-//                    tmp = tmp + java.text.DateFormat.getDateTimeInstance().format(new Date()) + " " + sbn.getPackageName() + " " + sbn.getNotification().tickerText + "\n";
-//                    tmp = tmp + " " + formatter.format(date) + "\n";
-                    //now java.text.DateFormat.getDateTimeInstance().format(new Date())
-                    tmp = tmp + formatter.format(date) + " " + sbn.getPackageName() + " " + sbn.getNotification().tickerText + "\n";
+//                    java.text.DateFormat.getDateTimeInstance().format(new Date())
+                    tmp = tmp + formatter.format(date) + "\n";
+                    tmp = tmp + sbn.getPackageName() + "\n";
+                    tmp = tmp + "tickertext: " + sbn.getNotification().tickerText + "\n";
                     Bundle extras = sbn.getNotification().extras;
                     if (extras.containsKey("android.title")) {
-                        tmp = tmp + "title " + extras.getString("android.title") + "\n";
+                        tmp = tmp + "title: " + extras.getString("android.title") + "\n";
 //                        Log.i(TAG, "------------------------- in onNotificationPosted(), Bundle android.title = " + extras.getString("android.title"));
                         StringBuilder builder = new StringBuilder("Extras:\n");
                         for (String key : extras.keySet()) { //extras is the Bundle containing info
                             Object value = extras.get(key); //get the current object
                             builder.append(key).append(": ").append(value).append("\n"); //add the key-value pair to the
                         }
-                        Log.i("Extras",builder.toString()); //log the data or use it as needed.
+//                        Log.i("Extras",builder.toString()); //log the data or use it as needed.
+                    } else {
+                        tmp = tmp + "title: null\n";
                     }
                     if (extras.containsKey("android.text")) {
                         if (extras.getCharSequence("android.text") != null) {
                             String text = extras.getCharSequence("android.text").toString();
 //                            Log.i(TAG, "------------------------- in onNotificationPosted(), Bundle.text != NULL, so here it is = " + text);
-                            tmp = tmp + "text " + text + "\n";
+                            tmp = tmp + "text: " + text + "\n";
+                        } else {
+                            tmp = tmp + "text: null\n";
                         }
+                    } else {
+                        tmp = tmp + "text: null\n";
                     }
-
-//                    tmp = tmp + "\n";
-                    i++;
+                    count++;
                     noti_list.add(tmp);
                 }
                 for (int index = noti_list.size()-1; index >=0; index--) {
-//                    System.out.println(crunchifyList.get(i));
                     Intent i1 = new Intent("com.recoveryrecord.surveyandroid.example.NOTIFICATION_LISTENER_EXAMPLE");
-                    i1.putExtra("notification_event",noti_list.get(index));
+                    i1.putExtra("notification_list",noti_list.get(index));
                     System.out.println(noti_list.get(index));
                     sendBroadcast(i1);
                 }
-
+                Toast.makeText(getApplicationContext(), "Details Catch Successfully", Toast.LENGTH_SHORT).show();
 //                Intent i1 = new Intent("com.recoveryrecord.surveyandroid.example.NOTIFICATION_LISTENER_EXAMPLE");
 //                i1.putExtra("notification_event","=====================" + "\n");
 //                sendBroadcast(i1);

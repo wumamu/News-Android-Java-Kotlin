@@ -17,8 +17,8 @@ public class NotificationDbHandler extends SQLiteOpenHelper {
     private static final String KEY_PACKAGE_NAME = "packagename";
     private static final String KEY_TICKER_TEXT = "tickertext";
     private static final String KEY_TIME = "time";
-//    private static final String KEY_TEXT = "text";
-//    private static final String KEY_TITLE = "title";
+    private static final String KEY_TEXT = "notitext";
+    private static final String KEY_TITLE = "notititle";
     public NotificationDbHandler(Context context){
         super(context,DB_NAME, null, DB_VERSION);
     }
@@ -27,7 +27,9 @@ public class NotificationDbHandler extends SQLiteOpenHelper {
         String CREATE_TABLE = "CREATE TABLE " + TABLE_Notifications + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_PACKAGE_NAME + " TEXT,"
                 + KEY_TICKER_TEXT + " TEXT,"
-                + KEY_TIME + " TEXT"+ ")";
+                + KEY_TIME + " TEXT,"
+                + KEY_TITLE + " TEXT,"
+                + KEY_TEXT + " TEXT"+ ")";
         db.execSQL(CREATE_TABLE);
     }
 
@@ -42,7 +44,7 @@ public class NotificationDbHandler extends SQLiteOpenHelper {
     // **** CRUD (Create, Read, Update, Delete) Operations ***** //
 
     // Adding new User Details
-    void insertUserDetails(String packagename, String tickertext, String time){
+    void insertUserDetails(String packagename, String tickertext, String time, String notititle, String notitext){
         //Get the Data Repository in write mode
         SQLiteDatabase db = this.getWritableDatabase();
         //Create a new map of values, where column names are the keys
@@ -50,6 +52,8 @@ public class NotificationDbHandler extends SQLiteOpenHelper {
         cValues.put(KEY_PACKAGE_NAME, packagename);
         cValues.put(KEY_TICKER_TEXT, tickertext);
         cValues.put(KEY_TIME, time);
+        cValues.put(KEY_TITLE, notititle);
+        cValues.put(KEY_TEXT, notitext);
         // Insert the new row, returning the primary key value of the new row
         long newRowId = db.insert(TABLE_Notifications,null, cValues);
         db.close();
@@ -62,34 +66,38 @@ public class NotificationDbHandler extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<HashMap<String, String>> notificationList = new ArrayList<>();
-        String query = "SELECT packagename, tickertext, time FROM "+ TABLE_Notifications;
+        String query = "SELECT packagename, tickertext, time, notititle, notitext FROM "+ TABLE_Notifications;
         Cursor cursor = db.rawQuery(query,null);
         while (cursor.moveToNext()){
             HashMap<String, String> notification = new HashMap<>();
             notification.put("packagename",cursor.getString(cursor.getColumnIndex(KEY_PACKAGE_NAME)));
             notification.put("time",cursor.getString(cursor.getColumnIndex(KEY_TIME)));
             notification.put("tickertext",cursor.getString(cursor.getColumnIndex(KEY_TICKER_TEXT)));
+            notification.put("notititle",cursor.getString(cursor.getColumnIndex(KEY_TITLE)));
+            notification.put("notitext",cursor.getString(cursor.getColumnIndex(KEY_TEXT)));
             notificationList.add(notification);
         }
         return  notificationList;
     }
 
 
-    // Get User Details based on userid
-    public ArrayList<HashMap<String, String>> GetUserByUserId(int notificationid){
-        SQLiteDatabase db = this.getWritableDatabase();
-        ArrayList<HashMap<String, String>> notificationList = new ArrayList<>();
-        String query = "SELECT packagename, tickertext, time FROM "+ TABLE_Notifications;
-        Cursor cursor = db.query(TABLE_Notifications, new String[]{KEY_PACKAGE_NAME, KEY_TICKER_TEXT, KEY_TIME}, KEY_ID+ "=?",new String[]{String.valueOf(notificationid)},null, null, null, null);
-        if (cursor.moveToNext()){
-            HashMap<String, String> notification = new HashMap<>();
-            notification.put("packagename",cursor.getString(cursor.getColumnIndex(KEY_PACKAGE_NAME)));
-            notification.put("time",cursor.getString(cursor.getColumnIndex(KEY_TIME)));
-            notification.put("tickertext",cursor.getString(cursor.getColumnIndex(KEY_TICKER_TEXT)));
-            notificationList.add(notification);
-        }
-        return  notificationList;
-    }
+//    // Get User Details based on userid
+//    public ArrayList<HashMap<String, String>> GetUserByUserId(int notificationid){
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        ArrayList<HashMap<String, String>> notificationList = new ArrayList<>();
+//        String query = "SELECT packagename, tickertext, time, title, text FROM "+ TABLE_Notifications;
+//        Cursor cursor = db.query(TABLE_Notifications, new String[]{KEY_PACKAGE_NAME, KEY_TICKER_TEXT, KEY_TIME, KEY_TITLE, KEY_TEXT}, KEY_ID+ "=?",new String[]{String.valueOf(notificationid)},null, null, null, null);
+//        if (cursor.moveToNext()){
+//            HashMap<String, String> notification = new HashMap<>();
+//            notification.put("packagename",cursor.getString(cursor.getColumnIndex(KEY_PACKAGE_NAME)));
+//            notification.put("time",cursor.getString(cursor.getColumnIndex(KEY_TIME)));
+//            notification.put("tickertext",cursor.getString(cursor.getColumnIndex(KEY_TICKER_TEXT)));
+//            notification.put("title",cursor.getString(cursor.getColumnIndex(KEY_TITLE)));
+//            notification.put("text",cursor.getString(cursor.getColumnIndex(KEY_TEXT)));
+//            notificationList.add(notification);
+//        }
+//        return  notificationList;
+//    }
 //    // Delete User Details
 //    public void DeleteUser(int userid){
 //        SQLiteDatabase db = this.getWritableDatabase();

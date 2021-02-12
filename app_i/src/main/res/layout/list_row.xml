@@ -10,7 +10,7 @@
         android:id="@+id/packagename"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Name"
+        android:text="packagename"
         android:textSize="17dp"
         android:textStyle="bold" />
 
@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/packagename"
         android:layout_marginTop="7dp"
-        android:text="Designation"
+        android:text="time"
         android:textColor="#343434"
         android:textSize="14dp" />
 
@@ -28,10 +28,28 @@
         android:id="@+id/tickertext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/time"
-        android:layout_alignBottom="@+id/time"
-        android:layout_alignParentRight="true"
-        android:text="Location"
+        android:layout_below="@id/time"
+        android:layout_marginTop="7dp"
+        android:text="tickertext"
+        android:textColor="#343434"
+        android:textSize="14dp" />
+
+    <TextView
+        android:id="@+id/notititle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tickertext"
+        android:layout_marginTop="7dp"
+        android:text="notititle"
+        android:textColor="#343434"
+        android:textSize="14dp" />
+    <TextView
+        android:id="@+id/notitext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/notititle"
+        android:layout_marginTop="7dp"
+        android:text="notitext"
         android:textColor="#343434"
         android:textSize="14dp" />
 </RelativeLayout>
