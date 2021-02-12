@@ -44,15 +44,44 @@ public class NLService extends NotificationListenerService {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
-
         Log.i(TAG,"**********  onNotificationPosted");
-//        Log.i(TAG, java.text.DateFormat.getDateTimeInstance().format(new Date()) + " ID :" + sbn.getId() + "\t" + sbn.getNotification().tickerText + "\t" + sbn.getPackageName());
-        Log.i(TAG, java.text.DateFormat.getDateTimeInstance().format(new Date()) + "\t" + sbn.getNotification().tickerText + "\t" + sbn.getPackageName());
-//        Intent i = new  Intent("com.recoveryrecord.surveyandroid.example.NOTIFICATION_LISTENER_EXAMPLE");
-////        i.putExtra("notification_event","onNotificationPosted :" + sbn.getPackageName() + "\n");
-//        String to_post = "Posted: " + java.text.DateFormat.getDateTimeInstance().format(new Date()) + " " + sbn.getPackageName() + ": " + sbn.getNotification().tickerText + "\n";
-//        i.putExtra("notification_event",to_post);
-//        sendBroadcast(i);
+//        Log.i(TAG, java.text.DateFormat.getDateTimeInstance().format(new Date()) + "\t" + sbn.getNotification().tickerText + "\t" + sbn.getPackageName());
+        String on_noti_post = "";
+        on_noti_post = "hello" + "\n";
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+        Date date = new Date(sbn.getPostTime());
+        on_noti_post = on_noti_post + formatter.format(date) + "\n";
+        on_noti_post = on_noti_post + sbn.getPackageName() + "\n";
+        on_noti_post = on_noti_post + "tickertext: " + sbn.getNotification().tickerText + "\n";
+        Bundle extras = sbn.getNotification().extras;
+        if (extras.containsKey("android.title")) {
+            on_noti_post = on_noti_post + "title: " + extras.getString("android.title") + "\n";
+//                        Log.i(TAG, "------------------------- in onNotificationPosted(), Bundle android.title = " + extras.getString("android.title"));
+//            StringBuilder builder = new StringBuilder("Extras:\n");
+//            for (String key : extras.keySet()) { //extras is the Bundle containing info
+//                Object value = extras.get(key); //get the current object
+//                builder.append(key).append(": ").append(value).append("\n"); //add the key-value pair to the
+//            }
+//                        Log.i("Extras",builder.toString()); //log the data or use it as needed.
+        } else {
+            on_noti_post = on_noti_post + "title: null\n";
+        }
+        if (extras.containsKey("android.text")) {
+            if (extras.getCharSequence("android.text") != null) {
+                String text = extras.getCharSequence("android.text").toString();
+//                            Log.i(TAG, "------------------------- in onNotificationPosted(), Bundle.text != NULL, so here it is = " + text);
+                on_noti_post = on_noti_post + "text: " + text + "\n";
+            } else {
+                on_noti_post = on_noti_post + "text: null\n";
+            }
+        } else {
+            on_noti_post = on_noti_post + "text: null\n";
+        }
+        Intent i_post = new Intent("com.recoveryrecord.surveyandroid.example.NOTIFICATION_LISTENER_EXAMPLE");
+        i_post.putExtra("notification_list", on_noti_post);
+//        Log.i(TAG,on_noti_post);
+        sendBroadcast(i_post);
+        Toast.makeText(getApplicationContext(), "Post Inserted Successfully", Toast.LENGTH_SHORT).show();
 //
 //        Bundle extras = sbn.getNotification().extras;
 //
@@ -110,11 +139,11 @@ public class NLService extends NotificationListenerService {
                     if (extras.containsKey("android.title")) {
                         tmp = tmp + "title: " + extras.getString("android.title") + "\n";
 //                        Log.i(TAG, "------------------------- in onNotificationPosted(), Bundle android.title = " + extras.getString("android.title"));
-                        StringBuilder builder = new StringBuilder("Extras:\n");
-                        for (String key : extras.keySet()) { //extras is the Bundle containing info
-                            Object value = extras.get(key); //get the current object
-                            builder.append(key).append(": ").append(value).append("\n"); //add the key-value pair to the
-                        }
+//                        StringBuilder builder = new StringBuilder("Extras:\n");
+//                        for (String key : extras.keySet()) { //extras is the Bundle containing info
+//                            Object value = extras.get(key); //get the current object
+//                            builder.append(key).append(": ").append(value).append("\n"); //add the key-value pair to the
+//                        }
 //                        Log.i("Extras",builder.toString()); //log the data or use it as needed.
                     } else {
                         tmp = tmp + "title: null\n";
