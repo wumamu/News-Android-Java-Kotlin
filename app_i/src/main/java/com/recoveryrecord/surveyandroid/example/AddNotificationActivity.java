@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class TmpMainActivity extends AppCompatActivity {
+public class AddNotificationActivity extends AppCompatActivity {
     EditText packagename, time, tickertext, title, text;
     Button saveBtn, listBtn, deleteBtn;
     Intent intent;
@@ -54,7 +54,7 @@ public class TmpMainActivity extends AppCompatActivity {
                     text.setError("Please enter text!");
                     text.requestFocus();
                 } else {
-                    NotificationDbHandler dbHandler = new NotificationDbHandler(TmpMainActivity.this);
+                    NotificationDbHelper dbHandler = new NotificationDbHelper(AddNotificationActivity.this);
                     dbHandler.insertUserDetails(pn, t, tt, ti, te);
 //                    intent = new Intent(MainActivity.this, DetailsActivity.class);
 //                    startActivity(intent);
@@ -71,7 +71,7 @@ public class TmpMainActivity extends AppCompatActivity {
         listBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                intent = new Intent(TmpMainActivity.this, NotificationDetailsActivity.class);
+                intent = new Intent(AddNotificationActivity.this, NotificationDbViewActivity.class);
                 startActivity(intent);
             }
         });
@@ -79,7 +79,7 @@ public class TmpMainActivity extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
-        intent = new Intent(TmpMainActivity.this, NotificationListActivity.class);
+        intent = new Intent(AddNotificationActivity.this, NotificationSettingActivity.class);
         startActivity(intent);
     }
 }

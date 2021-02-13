@@ -6,10 +6,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.SyncStateContract;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -17,12 +15,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import androidx.annotation.RequiresApi;
 
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-public class NLService extends NotificationListenerService {
+public class MyNotificationListenerService extends NotificationListenerService {
 
     private String TAG = this.getClass().getSimpleName();
     private NLServiceReceiver nlservicereciver;
@@ -116,7 +113,7 @@ public class NLService extends NotificationListenerService {
         @Override
         public void onReceive(Context context, Intent intent) {
             if(intent.getStringExtra("command").equals("clearall")){
-                NLService.this.cancelAllNotifications();
+                MyNotificationListenerService.this.cancelAllNotifications();
             }
             else if(intent.getStringExtra("command").equals("list")){
 //                Log.e("log: NLService", "NLService");
@@ -125,7 +122,7 @@ public class NLService extends NotificationListenerService {
                 String tmp = "";
 //                noti_list.add(tmp);
                 int count=1;
-                for (StatusBarNotification sbn : NLService.this.getActiveNotifications()) {
+                for (StatusBarNotification sbn : MyNotificationListenerService.this.getActiveNotifications()) {
                     tmp = "";
                     tmp = count + "\n";
                     SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");

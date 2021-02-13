@@ -1,13 +1,8 @@
 package com.recoveryrecord.surveyandroid.example;
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -15,22 +10,17 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
 
-import static com.recoveryrecord.surveyandroid.example.MainActivity.NOTIFICATION_CHANNEL_ID;
-
-public class NotificationListActivity extends Activity {
+public class NotificationSettingActivity extends Activity {
 //    private TextView txtView;
     private NotificationReceiver nReceiver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification_list);
-        if(ActivityCompat.checkSelfPermission(NotificationListActivity.this, Manifest.permission.BIND_NOTIFICATION_LISTENER_SERVICE)!= PackageManager.PERMISSION_GRANTED){
+        if(ActivityCompat.checkSelfPermission(NotificationSettingActivity.this, Manifest.permission.BIND_NOTIFICATION_LISTENER_SERVICE)!= PackageManager.PERMISSION_GRANTED){
             Intent intent=new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
             startActivity(intent);
         }
@@ -46,7 +36,7 @@ public class NotificationListActivity extends Activity {
         btnCreateNotify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(NotificationListActivity.this, TmpMainActivity.class);
+                Intent intent = new Intent(NotificationSettingActivity.this, AddNotificationActivity.class);
                 startActivity(intent);
 //                NotificationManager nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 //                NotificationCompat.Builder ncomp = new NotificationCompat.Builder(this);
@@ -79,7 +69,7 @@ public class NotificationListActivity extends Activity {
         btnListNotify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(NotificationListActivity.this, NotificationDetailsActivity.class);
+                Intent intent = new Intent(NotificationSettingActivity.this, NotificationDbViewActivity.class);
                 startActivity(intent);
             }
         });
@@ -112,7 +102,7 @@ public class NotificationListActivity extends Activity {
                     tickertext = tickertext + split[3];
                     title = title + split[4];
                     text = text + split[5];
-                    NotificationDbHandler dbHandler = new NotificationDbHandler(NotificationListActivity.this);
+                    NotificationDbHelper dbHandler = new NotificationDbHelper(NotificationSettingActivity.this);
                     dbHandler.insertUserDetails(packagename, tickertext, time, title, text);
 //                Toast.makeText(getApplicationContext(), "Details Inserted Successfully", Toast.LENGTH_SHORT).show();
                 }
@@ -140,7 +130,7 @@ public class NotificationListActivity extends Activity {
     }
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(NotificationListActivity.this, MainActivity.class);
+        Intent intent = new Intent(NotificationSettingActivity.this, MainActivity.class);
         startActivity(intent);
     }
 

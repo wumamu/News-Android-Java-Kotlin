@@ -59,7 +59,7 @@ public class DefaultSubmitSurveyHandler implements SubmitSurveyHandler {
             e.printStackTrace();
             return;
         }
-        Log.d("log: ESM", jsonQuestionAnswerData);
+        Log.i("log: ESM", jsonQuestionAnswerData);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, requestBody, mResponseListener, mErrorListener);
         queue.add(jsonObjectRequest);
     }

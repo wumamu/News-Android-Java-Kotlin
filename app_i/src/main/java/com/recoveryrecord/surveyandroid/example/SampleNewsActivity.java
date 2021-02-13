@@ -18,27 +18,21 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.DragEvent;
-import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 //import android.widget.Toolbar;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -51,12 +45,9 @@ import java.util.concurrent.Future;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GestureDetectorCompat;
-import androidx.core.view.MotionEventCompat;
 //import android.support.v7.widget.Toolbar;
 
-public class SampleNewsActivity extends AppCompatActivity implements SimpleGestureFilter.SimpleGestureListener {
+public class SampleNewsActivity extends AppCompatActivity implements MySimpleGestureListener.SimpleGestureListener {
     //    String TagCycle = "my activity cycle";
     volatile boolean activityStopped = false;
     volatile boolean activityEnd = false;
@@ -68,7 +59,7 @@ public class SampleNewsActivity extends AppCompatActivity implements SimpleGestu
 
     private static final String DEBUG_TAG = "Gestures";
 //    private GestureDetectorCompat mDetector;
-    private SimpleGestureFilter detector;
+    private MySimpleGestureListener detector;
 
     @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -76,7 +67,7 @@ public class SampleNewsActivity extends AppCompatActivity implements SimpleGestu
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sample_news);
 
-        detector = new SimpleGestureFilter(this,this);
+        detector = new MySimpleGestureListener(this,this);
 
         mUrl = "https://news.tvbs.com.tw/focus/1460200";
         URL img_url = null;
@@ -584,13 +575,13 @@ public class SampleNewsActivity extends AppCompatActivity implements SimpleGestu
     public void onSwipe(int direction) {
         String str = "";
         switch (direction) {
-            case SimpleGestureFilter.SWIPE_RIGHT : str = "Swipe Right";
+            case MySimpleGestureListener.SWIPE_RIGHT : str = "Swipe Right";
                 break;
-            case SimpleGestureFilter.SWIPE_LEFT : str = "Swipe Left";
+            case MySimpleGestureListener.SWIPE_LEFT : str = "Swipe Left";
                 break;
-            case SimpleGestureFilter.SWIPE_DOWN : str = "Swipe Down";
+            case MySimpleGestureListener.SWIPE_DOWN : str = "Swipe Down";
                 break;
-            case SimpleGestureFilter.SWIPE_UP : str = "Swipe Up";
+            case MySimpleGestureListener.SWIPE_UP : str = "Swipe Up";
                 break;
         }
 //        Toast.makeText(this, str, Toast.LENGTH_SHORT).show();

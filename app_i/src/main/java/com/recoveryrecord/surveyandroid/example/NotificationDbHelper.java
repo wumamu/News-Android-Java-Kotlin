@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class NotificationDbHandler extends SQLiteOpenHelper {
+public class NotificationDbHelper extends SQLiteOpenHelper {
     private static final int DB_VERSION = 1;
     private static final String DB_NAME = "notifications.db";
     private static final String TABLE_Notifications = "notifications";
@@ -19,7 +19,7 @@ public class NotificationDbHandler extends SQLiteOpenHelper {
     private static final String KEY_TIME = "time";
     private static final String KEY_TEXT = "notitext";
     private static final String KEY_TITLE = "notititle";
-    public NotificationDbHandler(Context context){
+    public NotificationDbHelper(Context context){
         super(context,DB_NAME, null, DB_VERSION);
     }
     @Override
