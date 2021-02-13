@@ -39,6 +39,7 @@
             tools:ignore="Instantiatable"></receiver>
         <activity android:name=".AddNotificationActivity"></activity>
         <activity android:name=".NotificationDbViewActivity"></activity>
+        <activity android:name=".ESMDbViewActivity"></activity>
         <activity android:name=".ESMJsonViewActivity"></activity>
         <receiver android:name="NetworkChangeReceiver">
             <intent-filter>

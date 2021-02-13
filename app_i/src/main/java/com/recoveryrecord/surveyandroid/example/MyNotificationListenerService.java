@@ -114,9 +114,8 @@ public class MyNotificationListenerService extends NotificationListenerService {
         public void onReceive(Context context, Intent intent) {
             if(intent.getStringExtra("command").equals("clearall")){
                 MyNotificationListenerService.this.cancelAllNotifications();
-            }
-            else if(intent.getStringExtra("command").equals("list")){
-//                Log.e("log: NLService", "NLService");
+            } else if(intent.getStringExtra("command").equals("list")){
+                Log.i("log: NLService", "NLService");
                 List<String> noti_list = new ArrayList<String>();
 //                String tmp = "=====================\n";
                 String tmp = "";

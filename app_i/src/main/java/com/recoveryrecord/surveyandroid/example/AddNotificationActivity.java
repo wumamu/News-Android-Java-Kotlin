@@ -55,7 +55,7 @@ public class AddNotificationActivity extends AppCompatActivity {
                     text.requestFocus();
                 } else {
                     NotificationDbHelper dbHandler = new NotificationDbHelper(AddNotificationActivity.this);
-                    dbHandler.insertUserDetails(pn, t, tt, ti, te);
+                    dbHandler.insertNotificationDetails(pn, t, tt, ti, te);
 //                    intent = new Intent(MainActivity.this, DetailsActivity.class);
 //                    startActivity(intent);
                     packagename.getText().clear();

@@ -103,7 +103,7 @@ public class NotificationSettingActivity extends Activity {
                     title = title + split[4];
                     text = text + split[5];
                     NotificationDbHelper dbHandler = new NotificationDbHelper(NotificationSettingActivity.this);
-                    dbHandler.insertUserDetails(packagename, tickertext, time, title, text);
+                    dbHandler.insertNotificationDetails(packagename, tickertext, time, title, text);
 //                Toast.makeText(getApplicationContext(), "Details Inserted Successfully", Toast.LENGTH_SHORT).show();
                 }
             }

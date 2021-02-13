@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class NotificationDbHelper extends SQLiteOpenHelper {
-    private static final int DB_VERSION = 1;
-    private static final String DB_NAME = "notifications.db";
-    private static final String TABLE_Notifications = "notifications";
+    private static final int DATABASE_VERSION = 1;
+    private static final String DATABASE_NAME = "notifications.db";
+    private static final String TABLE_NAME_NOTIFICATION = "notifications";
     private static final String KEY_ID = "id";
     private static final String KEY_PACKAGE_NAME = "packagename";
     private static final String KEY_TICKER_TEXT = "tickertext";
@@ -20,11 +20,11 @@ public class NotificationDbHelper extends SQLiteOpenHelper {
     private static final String KEY_TEXT = "notitext";
     private static final String KEY_TITLE = "notititle";
     public NotificationDbHelper(Context context){
-        super(context,DB_NAME, null, DB_VERSION);
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
     @Override
     public void onCreate(SQLiteDatabase db){
-        String CREATE_TABLE = "CREATE TABLE " + TABLE_Notifications + "("
+        String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME_NOTIFICATION + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_PACKAGE_NAME + " TEXT,"
                 + KEY_TICKER_TEXT + " TEXT,"
                 + KEY_TIME + " TEXT,"
@@ -37,14 +37,14 @@ public class NotificationDbHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
         // Drop older table if exist
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_Notifications);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_NOTIFICATION);
         // Create tables again
         onCreate(db);
     }
     // **** CRUD (Create, Read, Update, Delete) Operations ***** //
 
     // Adding new User Details
-    void insertUserDetails(String packagename, String tickertext, String time, String notititle, String notitext){
+    void insertNotificationDetails(String packagename, String tickertext, String time, String notititle, String notitext){
         //Get the Data Repository in write mode
         SQLiteDatabase db = this.getWritableDatabase();
         //Create a new map of values, where column names are the keys
@@ -55,7 +55,7 @@ public class NotificationDbHelper extends SQLiteOpenHelper {
         cValues.put(KEY_TITLE, notititle);
         cValues.put(KEY_TEXT, notitext);
         // Insert the new row, returning the primary key value of the new row
-        long newRowId = db.insert(TABLE_Notifications,null, cValues);
+        long newRowId = db.insert(TABLE_NAME_NOTIFICATION,null, cValues);
         db.close();
     }
 
@@ -66,7 +66,8 @@ public class NotificationDbHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<HashMap<String, String>> notificationList = new ArrayList<>();
-        String query = "SELECT packagename, tickertext, time, notititle, notitext FROM "+ TABLE_Notifications;
+//        String query = "SELECT packagename, tickertext, time, notititle, notitext FROM "+ TABLE_NAME_NOTIFICATION;
+        String query = "SELECT * FROM "+ TABLE_NAME_NOTIFICATION;
         Cursor cursor = db.rawQuery(query,null);
         while (cursor.moveToNext()){
             HashMap<String, String> notification = new HashMap<>();

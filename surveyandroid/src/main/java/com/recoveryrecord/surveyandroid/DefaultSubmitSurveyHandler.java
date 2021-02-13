@@ -1,6 +1,7 @@
 package com.recoveryrecord.surveyandroid;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -51,16 +52,25 @@ public class DefaultSubmitSurveyHandler implements SubmitSurveyHandler {
     @Override
     public void submit(String url, String jsonQuestionAnswerData) {
         RequestQueue queue = Volley.newRequestQueue(getContext());
-
-        JSONObject requestBody = null;
-        try {
-            requestBody = new JSONObject(jsonQuestionAnswerData);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return;
-        }
         Log.i("log: ESM", jsonQuestionAnswerData);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, requestBody, mResponseListener, mErrorListener);
-        queue.add(jsonObjectRequest);
+//        NotificationDbHelper dbHandler = new NotificationDbHelper(AddNotificationActivity.this);
+//        dbHandler.insertUserDetails(pn, t, tt, ti, te);
+//        Intent i = new Intent("com.recoveryrecord.surveyandroid.example.NOTIFICATION_LISTENER_SERVICE_EXAMPLE");
+//        i.putExtra("command","ESM");
+//        mContext.sendBroadcast(i);
+        Toast.makeText(mContext.getApplicationContext(), "ESM Inserted Successfully", Toast.LENGTH_SHORT).show();
+//        JSONObject requestBody = null;
+//        try {
+//            requestBody = new JSONObject(jsonQuestionAnswerData);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//            return;
+//        }
+//        Intent intent = new Intent();
+////            intent.setClass(MainActivity.this, ExampleSurveyActivity.class);
+//        intent.setClass(DefaultSubmitSurveyHandler.this, com.recoveryrecord.surveyandroid.example.MainActivity.class);
+//        startActivity(intent);
+//        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, requestBody, mResponseListener, mErrorListener);
+//        queue.add(jsonObjectRequest);
     }
 }

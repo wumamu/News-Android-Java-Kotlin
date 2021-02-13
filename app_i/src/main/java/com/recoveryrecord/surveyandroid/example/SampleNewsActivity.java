@@ -140,7 +140,7 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
         content_list.add("拜登也宣布將簽署行政命令，增加美國收容難民數量，從川普時期的1萬5千人增加到12.5萬人。過去四年，川普常以推特宣達外交政策，國務院幾乎失去功能；拜登也在演說中向外交官員保證，他們現在可以各司其職，政府將是他們最大的後盾。\n");
         List<String> divList = new ArrayList<>();
 //        int cut_size = 20;
-        int cut_size = (int) (dpWidth / 16);
+        int cut_size = (int) (dpWidth / 15);
 //        dynamically adjust
         for (int i = 0; i < paragraph_number; i++) {
             String str = content_list.get(i);
@@ -214,7 +214,7 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
             }
         }
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(100, 10, 100, 10);
+        params.setMargins(40, 10, 40, 10);
         int textview_num = divList.size();
 //        final ScrollView mScrollView = findViewById(R.id.scroll_content);
 //        int text_size = (int) (dpWidth /30);

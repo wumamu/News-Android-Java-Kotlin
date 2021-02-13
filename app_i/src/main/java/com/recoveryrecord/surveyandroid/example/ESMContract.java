@@ -4,7 +4,7 @@ public final class ESMContract {
     private ESMContract() {
     }
     public static class ESMTable implements BaseColumns {
-        public static final String TABLE_NAME = "ESM_questions";
+        public static final String TABLE_NAME_ESM = "esm";
         public static final String COLUMN_BASE1 = "base 1";
         public static final String COLUMN_BASE2 = "base 2";
         public static final String COLUMN_NOT_READ1 = "not read 1";

@@ -20,7 +20,7 @@ public class NotificationDbViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_notification_db_view);
         NotificationDbHelper db = new NotificationDbHelper(this);
         ArrayList<HashMap<String, String>> notificationList = db.GetNotifications();
-        ListView lv = (ListView) findViewById(R.id.notification_list);
+        ListView lv = (ListView) findViewById(R.id.esm_list);
         ListAdapter adapter = new SimpleAdapter(NotificationDbViewActivity.this, notificationList, R.layout.list_row,new String[]{"packagename","time","tickertext", "notititle", "notitext"}, new int[]{R.id.packagename, R.id.time, R.id.tickertext, R.id.notititle, R.id.notitext});
         lv.setAdapter(adapter);
 //        Button back = (Button)findViewById(R.id.btnBack);

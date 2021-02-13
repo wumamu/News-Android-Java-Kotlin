@@ -27,10 +27,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -52,10 +56,12 @@ public class ESMJsonViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_esm_json_view);
 
         TextView output = (TextView) findViewById(R.id.ESMTextView);
-
+        Button btn_to_esm_db = (Button) findViewById(R.id.btn_to_esm_db);
+        Button btn_insert_esm_db = (Button) findViewById(R.id.btn_insert_esm_db);
 //        String strJson="{ \"Employee\" :[{\"id\":\"101\",\"name\":\"Sonoo Jaiswal\",\"salary\":\"50000\"},{\"id\":\"102\",\"name\":\"Vimal Jaiswal\",\"salary\":\"60000\"}] }";
-        String strJsons="{\"answers\":{\"share_1\":[\"私人訊息給單一好友\",\"私人訊息給多人群組\",\"實體聊天時口述\"],\"share_2\":\"此則新聞含有錯誤資訊，需澄清\",\"base_2\":\"有\",\"base_1\":\"有\",\"read_6\":\"3\",\"read_15\":\"執行中\",\"read_5\":\"3\",\"read_14\":\"工作或學習\",\"read_8\":\"3\",\"read_17\":\"有\",\"read_7\":\"3\",\"read_16\":\"3\",\"read_2\":\"有\",\"read_11\":\"非預期的閱讀活動(ex:我未規劃此時為閱讀時刻)\",\"read_1\":\"了解\",\"read_10\":\"3\",\"read_4\":\"3\",\"read_13\":\"內容吸引力程度\",\"read_3\":\"3\",\"read_12\":\"掃視閱讀(scanning)\",\"read_9\":\"3\"}}";
-
+//        String strJsons="{\"answers\":{\"share_1\":[\"私人訊息給單一好友\",\"私人訊息給多人群組\",\"實體聊天時口述\"],\"share_2\":\"此則新聞含有錯誤資訊，需澄清\",\"base_2\":\"有\",\"base_1\":\"有\",\"read_6\":\"3\",\"read_15\":\"執行中\",\"read_5\":\"3\",\"read_14\":\"工作或學習\",\"read_8\":\"3\",\"read_17\":\"有\",\"read_7\":\"3\",\"read_16\":\"3\",\"read_2\":\"有\",\"read_11\":\"非預期的閱讀活動(ex:我未規劃此時為閱讀時刻)\",\"read_1\":\"了解\",\"read_10\":\"3\",\"read_4\":\"3\",\"read_13\":\"內容吸引力程度\",\"read_3\":\"3\",\"read_12\":\"掃視閱讀(scanning)\",\"read_9\":\"3\"}}";
+        String strJsons="{\"answers\":{\"not_read_5\":\"3\",\"base_2\":\"沒有\",\"base_1\":\"有\",\"read_6\":\"3\",\"read_15\":\"執行中\",\"read_5\":\"3\",\"read_14\":\"工作或學習\",\"read_8\":\"3\",\"read_17\":\"有\",\"read_7\":\"3\",\"read_16\":\"3\",\"read_2\":\"有\",\"read_11\":\"非預期的閱讀活動(ex:我未規劃此時為閱讀時刻)\",\"not_read_1\":\"閱讀標題\",\"read_1\":\"了解\",\"read_10\":\"3\",\"not_read_2\":[\"沒精神閱讀\",\"正在做其他事情\"],\"read_4\":\"3\",\"read_13\":\"內容吸引力程度\",\"not_read_3\":\"沒精神閱讀\",\"read_3\":\"3\",\"read_12\":\"掃視閱讀(scanning)\",\"not_read_4\":\"執行中\",\"read_9\":\"3\",\"share_1\":[\"私人訊息給單一好友\",\"私人訊息給多人群組\",\"實體聊天時口述\"],\"share_2\":\"此則新聞含有錯誤資訊，需澄清\"}}";
+        final ESM ESM_answer = new ESM();
         String data = "";
         try {
             // Create the root JSONObject from the JSON string.
@@ -91,10 +97,35 @@ public class ESMJsonViewActivity extends AppCompatActivity {
             String not_share_1 = jsonAnswerObject.optString("not_share_1");
             String share_1 = jsonAnswerObject.optString("share_1");//multi_select
             String share_2 = jsonAnswerObject.optString("share_2");
+            ESM_answer.setKEY_BASE_1(base_1);
+            ESM_answer.setKEY_BASE_2(base_2);
+            ESM_answer.setKEY_NOT_READ_1(not_read_1);
+            ESM_answer.setKEY_NOT_READ_2(not_read_2);
+            ESM_answer.setKEY_NOT_READ_3(not_read_3);
+            ESM_answer.setKEY_NOT_READ_4(not_read_4);
+            ESM_answer.setKEY_NOT_READ_5(not_read_5);
+            ESM_answer.setKEY_READ_1(read_1);
+            ESM_answer.setKEY_READ_2(read_2);
+            ESM_answer.setKEY_READ_3(read_3);
+            ESM_answer.setKEY_READ_4(read_4);
+            ESM_answer.setKEY_READ_5(read_5);
+            ESM_answer.setKEY_READ_6(read_6);
+            ESM_answer.setKEY_READ_7(read_7);
+            ESM_answer.setKEY_READ_8(read_8);
+            ESM_answer.setKEY_READ_9(read_9);
+            ESM_answer.setKEY_READ_10(read_10);
+            ESM_answer.setKEY_READ_11(read_11);
+            ESM_answer.setKEY_READ_12(read_12);
+            ESM_answer.setKEY_READ_13(read_13);
+            ESM_answer.setKEY_READ_14(read_14);
+            ESM_answer.setKEY_READ_15(read_15);
+            ESM_answer.setKEY_READ_16(read_16);
+            ESM_answer.setKEY_READ_17(read_17);
+            ESM_answer.setKEY_NOT_SHARE_1(not_share_1);
+            ESM_answer.setKEY_SHARE_1(share_1);
+            ESM_answer.setKEY_SHARE_2(share_2);
 
             JSONArray jsonAnswerShareOneArray = jsonAnswerObject.optJSONArray("share_1");
-
-
             JSONArray jsonAnswerNotReadSecondArray = jsonAnswerObject.optJSONArray("not_read_2");
 
 //            if(base_1==""){
@@ -107,7 +138,7 @@ public class ESMJsonViewActivity extends AppCompatActivity {
 //            } else {
 //                data += "base_2: " + base_2+"\n";
 //            }
-            data += "base_1: " + base_1+"\n";
+            data += "base_1: " + ESM_answer.getKEY_BASE_1()+"\n";
             data += "base_2: " + base_2+"\n";
             data += "not_read_1: " + not_read_1+"\n";
 //            data += "not_read_2: " + not_read_2+"\n";
@@ -157,6 +188,34 @@ public class ESMJsonViewActivity extends AppCompatActivity {
 
             output.setText(data);
         } catch (JSONException e) {e.printStackTrace();}
+
+        btn_to_esm_db.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setClass(ESMJsonViewActivity.this, ESMDbViewActivity.class);
+                startActivity(intent);
+            }
+        });
+        btn_insert_esm_db.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Intent intent = new Intent();
+//                intent.setClass(ESMJsonViewActivity.this, ESMDbViewActivity.class);
+//                startActivity(intent);
+                Date date = new Date(System.currentTimeMillis());
+                SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+                String time_now = formatter.format(date);
+                ESMDbHelper dbHandler = new ESMDbHelper(ESMJsonViewActivity.this);
+                dbHandler.insertESMDetails(ESM_answer, time_now);
+                Toast.makeText(getApplicationContext(), "Details Inserted Successfully", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(ESMJsonViewActivity.this, MainActivity.class);
+        startActivity(intent);
     }
 
 }
