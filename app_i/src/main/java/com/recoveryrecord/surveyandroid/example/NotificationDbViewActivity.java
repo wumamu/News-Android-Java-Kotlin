@@ -17,7 +17,7 @@ public class NotificationDbViewActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_noti_details);
+        setContentView(R.layout.activity_notification_db_view);
         NotificationDbHelper db = new NotificationDbHelper(this);
         ArrayList<HashMap<String, String>> notificationList = db.GetNotifications();
         ListView lv = (ListView) findViewById(R.id.notification_list);

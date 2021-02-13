@@ -80,7 +80,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
             Intent intent = new Intent();
-            intent.setClass(MainActivity.this, ExampleSurveyActivity.class);
+//            intent.setClass(MainActivity.this, ExampleSurveyActivity.class);
+            intent.setClass(MainActivity.this, ESMJsonViewActivity.class);
             startActivity(intent);
             //MainActivity.this.finish();
             }
@@ -306,17 +307,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    public void notificationButtonOnClick(View view) {
-//        Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-//        startActivity(intent);
-//    }
-@Override
-public boolean onCreateOptionsMenu (Menu menu) {
-    // Inflate the menu; this adds items to the action bar if it is present.
-    getMenuInflater().inflate(R.menu.noti_menu, menu);
-    //getMenuInflater().inflate(R.menu.menu, menu);
-    return true;
-}
+    //    public void notificationButtonOnClick(View view) {
+    //        Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+    //        startActivity(intent);
+    //    }
+    @Override
+    public boolean onCreateOptionsMenu (Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.noti_menu, menu);
+        //getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
     @Override
     public boolean onOptionsItemSelected (MenuItem item) {
         switch (item.getItemId()) {

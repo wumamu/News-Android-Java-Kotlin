@@ -1,8 +1,8 @@
 {
   "questions": [
     {
-      "id": "base 1",
-      "header": "Question base 1",
+      "id": "base_1",
+      "header": "Question base_1",
       "question": "最近30分鐘有看到Time_Me推播的新聞通知嗎？",
       "question_type": "single_select",
       "options": [
@@ -12,8 +12,8 @@
       ]
     },
     {
-      "id": "base 2",
-      "header": "Question base 2",
+      "id": "base_2",
+      "header": "Question base_2",
       "question": "最近30分鐘有點入Time_Me頁面閱讀新聞嗎？",
       "question_type": "single_select",
       "options": [
@@ -21,14 +21,14 @@
         "沒有"
       ],
       "show_if": {
-        "id": "base 1",
+        "id": "base_1",
         "operation": "equals",
         "value": "有"
       }
     },
     {
-      "id": "not read 1",
-      "header": "Question not read 1",
+      "id": "not_read_1",
+      "header": "Question not_read_1",
       "question": "請問您如何與新聞通知互動？",
       "question_type": "single_select",
       "options": [
@@ -39,12 +39,12 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "base 1",
+            "id": "base_1",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "base 2",
+            "id": "base_2",
             "operation": "equals",
             "value": "沒有"
           }
@@ -52,8 +52,8 @@
       }
     },
     {
-      "id": "not read 2",
-      "header": "Question not read 2",
+      "id": "not_read_2",
+      "header": "Question not_read_2",
       "question": "請問這段時間(30分鐘內)您未進行新聞閱讀的原因為何？",
       "question_type": "multi_select",
       "options": [
@@ -67,17 +67,17 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "base 1",
+            "id": "base_1",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "base 2",
+            "id": "base_2",
             "operation": "equals",
             "value": "沒有"
           },
           {
-            "id": "not read 1",
+            "id": "not_read_1",
             "operation": "not equals",
             "value": "***"
           }
@@ -85,8 +85,8 @@
       }
     },
     {
-      "id": "not read 3",
-      "header": "Question not read 3",
+      "id": "not_read_3",
+      "header": "Question not_read_3",
       "question": "請問您這段時間您正在從事以下活動？",
       "question_type": "single_select",
       "options": [
@@ -102,22 +102,22 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "base 1",
+            "id": "base_1",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "base 2",
+            "id": "base_2",
             "operation": "equals",
             "value": "沒有"
           },
           {
-            "id": "not read 1",
+            "id": "not_read_1",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "not read 2",
+            "id": "not_read_2",
             "operation": "not equals",
             "value": "***"
           }
@@ -125,8 +125,8 @@
       }
     },
     {
-      "id": "not read 4",
-      "header": "Question not read 4",
+      "id": "not_read_4",
+      "header": "Question not_read_4",
       "question": "承上題，該項活動的執行進度為何？",
       "question_type": "single_select",
       "options": [
@@ -138,27 +138,27 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "base 1",
+            "id": "base_1",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "base 2",
+            "id": "base_2",
             "operation": "equals",
             "value": "沒有"
           },
           {
-            "id": "not read 1",
+            "id": "not_read_1",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "not read 2",
+            "id": "not_read_2",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "not read 3",
+            "id": "not_read_3",
             "operation": "not equals",
             "value": "***"
           }
@@ -166,8 +166,8 @@
       }
     },
     {
-      "id": "not read 5",
-      "header": "Question not read 5",
+      "id": "not_read_5",
+      "header": "Question not_read_5",
       "question": "承上題，該項活動您主觀複雜程度？",
       "question_type": "segment_select",
       "low_tag": "非常不複雜",
@@ -185,32 +185,32 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "base 1",
+            "id": "base_1",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "base 2",
+            "id": "base_2",
             "operation": "equals",
             "value": "沒有"
           },
           {
-            "id": "not read 1",
+            "id": "not_read_1",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "not read 2",
+            "id": "not_read_2",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "not read 3",
+            "id": "not_read_3",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "not read 4",
+            "id": "not_read_4",
             "operation": "not equals",
             "value": "***"
           }
@@ -218,8 +218,8 @@
       }
     },
     {
-      "id": "read 1",
-      "header": "Question read 1",
+      "id": "read_1",
+      "header": "Question read_1",
       "question": "請回答關於「系統隨機挑選新聞」的問題",
       "question_type": "single_select",
       "options": [
@@ -229,12 +229,12 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "base 1",
+            "id": "base_1",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "base 2",
+            "id": "base_2",
             "operation": "equals",
             "value": "有"
           }
@@ -242,8 +242,8 @@
       }
     },
     {
-      "id": "read 2",
-      "header": "Question read 2",
+      "id": "read_2",
+      "header": "Question read_2",
       "question": "您過去是否有閱讀過與此則新聞相同內容，但由不同媒體報導的新聞？",
       "question_type": "single_select",
       "options": [
@@ -255,17 +255,17 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "base 1",
+            "id": "base_1",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "base 2",
+            "id": "base_2",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "read 1",
+            "id": "read_1",
             "operation": "equals",
             "value": "了解"
           }
@@ -273,8 +273,8 @@
       }
     },
     {
-      "id": "read 3",
-      "header": "Question read 3",
+      "id": "read_3",
+      "header": "Question read_3",
       "question": "這次新聞閱讀，您多投入閱讀？",
       "question_type": "segment_select",
       "low_tag": "非常不投入",
@@ -292,22 +292,22 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "base 1",
+            "id": "base_1",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "base 2",
+            "id": "base_2",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "read 1",
+            "id": "read_1",
             "operation": "equals",
             "value": "了解"
           },
           {
-            "id": "read 2",
+            "id": "read_2",
             "operation": "not equals",
             "value": "***"
           }
@@ -315,8 +315,8 @@
       }
     },
     {
-      "id": "read 4",
-      "header": "Question read 4",
+      "id": "read_4",
+      "header": "Question read_4",
       "question": "關於這篇新聞，你理解程度為何？",
       "question_type": "segment_select",
       "low_tag": "非常不理解",
@@ -334,27 +334,27 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "base 1",
+            "id": "base_1",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "base 2",
+            "id": "base_2",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "read 1",
+            "id": "read_1",
             "operation": "equals",
             "value": "了解"
           },
           {
-            "id": "read 2",
+            "id": "read_2",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 3",
+            "id": "read_3",
             "operation": "not equals",
             "value": "***"
           }
@@ -362,8 +362,8 @@
       }
     },
     {
-      "id": "read 5",
-      "header": "Question read 5",
+      "id": "read_5",
+      "header": "Question read_5",
       "question": "關於這篇新聞，在理解上感到困難程度。",
       "question_type": "segment_select",
       "low_tag": "非常不困難",
@@ -381,32 +381,32 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "base 1",
+            "id": "base_1",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "base 2",
+            "id": "base_2",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "read 1",
+            "id": "read_1",
             "operation": "equals",
             "value": "了解"
           },
           {
-            "id": "read 2",
+            "id": "read_2",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 3",
+            "id": "read_3",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 4",
+            "id": "read_4",
             "operation": "not equals",
             "value": "***"
           }
@@ -414,8 +414,8 @@
       }
     },
     {
-      "id": "read 6",
-      "header": "Question read 6",
+      "id": "read_6",
+      "header": "Question read_6",
       "question": "關於這篇新聞，與您自身相關程度。",
       "question_type": "segment_select",
       "low_tag": "非常不相關",
@@ -433,37 +433,37 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "base 1",
+            "id": "base_1",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "base 2",
+            "id": "base_2",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "read 1",
+            "id": "read_1",
             "operation": "equals",
             "value": "了解"
           },
           {
-            "id": "read 2",
+            "id": "read_2",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 3",
+            "id": "read_3",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 4",
+            "id": "read_4",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 5",
+            "id": "read_5",
             "operation": "not equals",
             "value": "***"
           }
@@ -471,8 +471,8 @@
       }
     },
     {
-      "id": "read 7",
-      "header": "Question read 7",
+      "id": "read_7",
+      "header": "Question read_7",
       "question": "關於這篇新聞，您感興趣程度。",
       "question_type": "segment_select",
       "low_tag": "非常不感興趣",
@@ -490,42 +490,42 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "base 1",
+            "id": "base_1",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "base 2",
+            "id": "base_2",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "read 1",
+            "id": "read_1",
             "operation": "equals",
             "value": "了解"
           },
           {
-            "id": "read 2",
+            "id": "read_2",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 3",
+            "id": "read_3",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 4",
+            "id": "read_4",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 5",
+            "id": "read_5",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 6",
+            "id": "read_6",
             "operation": "not equals",
             "value": "***"
           }
@@ -533,8 +533,8 @@
       }
     },
     {
-      "id": "read 8",
-      "header": "Question read 8",
+      "id": "read_8",
+      "header": "Question read_8",
       "question": "對您來說，這篇新聞是真實的。",
       "question_type": "segment_select",
       "low_tag": "非常不符合",
@@ -552,47 +552,47 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "base 1",
+            "id": "base_1",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "base 2",
+            "id": "base_2",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "read 1",
+            "id": "read_1",
             "operation": "equals",
             "value": "了解"
           },
           {
-            "id": "read 2",
+            "id": "read_2",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 3",
+            "id": "read_3",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 4",
+            "id": "read_4",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 5",
+            "id": "read_5",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 6",
+            "id": "read_6",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 7",
+            "id": "read_7",
             "operation": "not equals",
             "value": "***"
           }
@@ -600,8 +600,8 @@
       }
     },
     {
-      "id": "read 9",
-      "header": "Question read 9",
+      "id": "read_9",
+      "header": "Question read_9",
       "question": "對您來說，這篇新聞是正確的。",
       "question_type": "segment_select",
       "low_tag": "非常不符合",
@@ -619,52 +619,52 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "base 1",
+            "id": "base_1",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "base 2",
+            "id": "base_2",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "read 1",
+            "id": "read_1",
             "operation": "equals",
             "value": "了解"
           },
           {
-            "id": "read 2",
+            "id": "read_2",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 3",
+            "id": "read_3",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 4",
+            "id": "read_4",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 5",
+            "id": "read_5",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 6",
+            "id": "read_6",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 7",
+            "id": "read_7",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 8",
+            "id": "read_8",
             "operation": "not equals",
             "value": "***"
           }
@@ -672,8 +672,8 @@
       }
     },
     {
-      "id": "read 10",
-      "header": "Question read 10",
+      "id": "read_10",
+      "header": "Question read_10",
       "question": "對您來說，這則新聞是可信任的。",
       "question_type": "segment_select",
       "low_tag": "非常不符合",
@@ -691,57 +691,57 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "base 1",
+            "id": "base_1",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "base 2",
+            "id": "base_2",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "read 1",
+            "id": "read_1",
             "operation": "equals",
             "value": "了解"
           },
           {
-            "id": "read 2",
+            "id": "read_2",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 3",
+            "id": "read_3",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 4",
+            "id": "read_4",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 5",
+            "id": "read_5",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 6",
+            "id": "read_6",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 7",
+            "id": "read_7",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 8",
+            "id": "read_8",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 9",
+            "id": "read_9",
             "operation": "not equals",
             "value": "***"
           }
@@ -749,8 +749,8 @@
       }
     },
     {
-      "id": "read 11",
-      "header": "Question read 11",
+      "id": "read_11",
+      "header": "Question read_11",
       "question": "關於這次的新聞閱讀時機，對您來說屬於何種性質的閱讀。",
       "question_type": "single_select",
       "options": [
@@ -765,62 +765,62 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "base 1",
+            "id": "base_1",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "base 2",
+            "id": "base_2",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "read 1",
+            "id": "read_1",
             "operation": "equals",
             "value": "了解"
           },
           {
-            "id": "read 2",
+            "id": "read_2",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 3",
+            "id": "read_3",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 4",
+            "id": "read_4",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 5",
+            "id": "read_5",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 6",
+            "id": "read_6",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 7",
+            "id": "read_7",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 8",
+            "id": "read_8",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 9",
+            "id": "read_9",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 10",
+            "id": "read_10",
             "operation": "not equals",
             "value": "***"
           }
@@ -828,8 +828,8 @@
       }
     },
     {
-      "id": "read 12",
-      "header": "Question read 12",
+      "id": "read_12",
+      "header": "Question read_12",
       "question": "這次新聞閱讀，您的閱讀方式(策略)最接近以下何種？",
       "question_type": "single_select",
       "options": [
@@ -846,67 +846,67 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "base 1",
+            "id": "base_1",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "base 2",
+            "id": "base_2",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "read 1",
+            "id": "read_1",
             "operation": "equals",
             "value": "了解"
           },
           {
-            "id": "read 2",
+            "id": "read_2",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 3",
+            "id": "read_3",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 4",
+            "id": "read_4",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 5",
+            "id": "read_5",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 6",
+            "id": "read_6",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 7",
+            "id": "read_7",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 8",
+            "id": "read_8",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 9",
+            "id": "read_9",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 10",
+            "id": "read_10",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 11",
+            "id": "read_11",
             "operation": "not equals",
             "value": "***"
           }
@@ -914,8 +914,8 @@
       }
     },
     {
-      "id": "read 13",
-      "header": "Question read 13",
+      "id": "read_13",
+      "header": "Question read_13",
       "question": "承上題，您採取此閱讀方式(策略)的原因？",
       "question_type": "single_select",
       "options": [
@@ -931,72 +931,72 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "base 1",
+            "id": "base_1",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "base 2",
+            "id": "base_2",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "read 1",
+            "id": "read_1",
             "operation": "equals",
             "value": "了解"
           },
           {
-            "id": "read 2",
+            "id": "read_2",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 3",
+            "id": "read_3",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 4",
+            "id": "read_4",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 5",
+            "id": "read_5",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 6",
+            "id": "read_6",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 7",
+            "id": "read_7",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 8",
+            "id": "read_8",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 9",
+            "id": "read_9",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 10",
+            "id": "read_10",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 11",
+            "id": "read_11",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 12",
+            "id": "read_12",
             "operation": "not equals",
             "value": "***"
           }
@@ -1004,8 +1004,8 @@
       }
     },
     {
-      "id": "read 14",
-      "header": "Question read 14",
+      "id": "read_14",
+      "header": "Question read_14",
       "question": "開始閱讀前，您是否正在從事以下活動？",
       "question_type": "single_select",
       "options": [
@@ -1020,77 +1020,77 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "base 1",
+            "id": "base_1",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "base 2",
+            "id": "base_2",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "read 1",
+            "id": "read_1",
             "operation": "equals",
             "value": "了解"
           },
           {
-            "id": "read 2",
+            "id": "read_2",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 3",
+            "id": "read_3",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 4",
+            "id": "read_4",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 5",
+            "id": "read_5",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 6",
+            "id": "read_6",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 7",
+            "id": "read_7",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 8",
+            "id": "read_8",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 9",
+            "id": "read_9",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 10",
+            "id": "read_10",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 11",
+            "id": "read_11",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 12",
+            "id": "read_12",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 13",
+            "id": "read_13",
             "operation": "not equals",
             "value": "***"
           }
@@ -1098,8 +1098,8 @@
       }
     },
     {
-      "id": "read 15",
-      "header": "Question read 15",
+      "id": "read_15",
+      "header": "Question read_15",
       "question": "承上題，該項活動的執行進度為何",
       "question_type": "single_select",
       "options": [
@@ -1111,82 +1111,82 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "base 1",
+            "id": "base_1",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "base 2",
+            "id": "base_2",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "read 1",
+            "id": "read_1",
             "operation": "equals",
             "value": "了解"
           },
           {
-            "id": "read 2",
+            "id": "read_2",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 3",
+            "id": "read_3",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 4",
+            "id": "read_4",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 5",
+            "id": "read_5",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 6",
+            "id": "read_6",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 7",
+            "id": "read_7",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 8",
+            "id": "read_8",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 9",
+            "id": "read_9",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 10",
+            "id": "read_10",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 11",
+            "id": "read_11",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 12",
+            "id": "read_12",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 13",
+            "id": "read_13",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 14",
+            "id": "read_14",
             "operation": "not equals",
             "value": "***"
           }
@@ -1194,8 +1194,8 @@
       }
     },
     {
-      "id": "read 16",
-      "header": "Question read 16",
+      "id": "read_16",
+      "header": "Question read_16",
       "question": "承上題，該項活動您主觀複雜程度？",
       "question_type": "segment_select",
       "low_tag": "非常不複雜",
@@ -1213,87 +1213,87 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "base 1",
+            "id": "base_1",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "base 2",
+            "id": "base_2",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "read 1",
+            "id": "read_1",
             "operation": "equals",
             "value": "了解"
           },
           {
-            "id": "read 2",
+            "id": "read_2",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 3",
+            "id": "read_3",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 4",
+            "id": "read_4",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 5",
+            "id": "read_5",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 6",
+            "id": "read_6",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 7",
+            "id": "read_7",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 8",
+            "id": "read_8",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 9",
+            "id": "read_9",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 10",
+            "id": "read_10",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 11",
+            "id": "read_11",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 12",
+            "id": "read_12",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 13",
+            "id": "read_13",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 14",
+            "id": "read_14",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 15",
+            "id": "read_15",
             "operation": "not equals",
             "value": "***"
           }
@@ -1301,8 +1301,8 @@
       }
     },
     {
-      "id": "read 17",
-      "header": "Question read 17",
+      "id": "read_17",
+      "header": "Question read_17",
       "question": "關於這篇新聞，您是否有分享給其他人？",
       "question_type": "single_select",
       "options": [
@@ -1313,92 +1313,92 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "base 1",
+            "id": "base_1",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "base 2",
+            "id": "base_2",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "read 1",
+            "id": "read_1",
             "operation": "equals",
             "value": "了解"
           },
           {
-            "id": "read 2",
+            "id": "read_2",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 3",
+            "id": "read_3",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 4",
+            "id": "read_4",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 5",
+            "id": "read_5",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 6",
+            "id": "read_6",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 7",
+            "id": "read_7",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 8",
+            "id": "read_8",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 9",
+            "id": "read_9",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 10",
+            "id": "read_10",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 11",
+            "id": "read_11",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 12",
+            "id": "read_12",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 13",
+            "id": "read_13",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 14",
+            "id": "read_14",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 15",
+            "id": "read_15",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 16",
+            "id": "read_16",
             "operation": "not equals",
             "value": "***"
           }
@@ -1406,8 +1406,8 @@
       }
     },
     {
-      "id": "not share 1",
-      "header": "Question not share 1",
+      "id": "not_share_1",
+      "header": "Question not_share_1",
       "question": "關於這篇新聞，您內心分享意願為何？",
       "question_type": "segment_select",
       "low_tag": "非常沒有意願",
@@ -1425,97 +1425,97 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "base 1",
+            "id": "base_1",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "base 2",
+            "id": "base_2",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "read 1",
+            "id": "read_1",
             "operation": "equals",
             "value": "了解"
           },
           {
-            "id": "read 2",
+            "id": "read_2",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 3",
+            "id": "read_3",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 4",
+            "id": "read_4",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 5",
+            "id": "read_5",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 6",
+            "id": "read_6",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 7",
+            "id": "read_7",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 8",
+            "id": "read_8",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 9",
+            "id": "read_9",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 10",
+            "id": "read_10",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 11",
+            "id": "read_11",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 12",
+            "id": "read_12",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 13",
+            "id": "read_13",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 14",
+            "id": "read_14",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 15",
+            "id": "read_15",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 16",
+            "id": "read_16",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 17",
+            "id": "read_17",
             "operation": "equals",
             "value": "沒有"
           }
@@ -1523,8 +1523,8 @@
       }
     },
     {
-      "id": "share 1",
-      "header": "Question share 1",
+      "id": "share_1",
+      "header": "Question share_1",
       "question": "所使用的分享管道為何？",
       "question_type": "multi_select",
       "options": [
@@ -1542,97 +1542,97 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "base 1",
+            "id": "base_1",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "base 2",
+            "id": "base_2",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "read 1",
+            "id": "read_1",
             "operation": "equals",
             "value": "了解"
           },
           {
-            "id": "read 2",
+            "id": "read_2",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 3",
+            "id": "read_3",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 4",
+            "id": "read_4",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 5",
+            "id": "read_5",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 6",
+            "id": "read_6",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 7",
+            "id": "read_7",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 8",
+            "id": "read_8",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 9",
+            "id": "read_9",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 10",
+            "id": "read_10",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 11",
+            "id": "read_11",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 12",
+            "id": "read_12",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 13",
+            "id": "read_13",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 14",
+            "id": "read_14",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 15",
+            "id": "read_15",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 16",
+            "id": "read_16",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 17",
+            "id": "read_17",
             "operation": "equals",
             "value": "有"
           }
@@ -1640,8 +1640,8 @@
       }
     },
     {
-      "id": "share 2",
-      "header": "Question share 2",
+      "id": "share_2",
+      "header": "Question share_2",
       "question": "分享此則新聞原因為何？",
       "question_type": "single_select",
       "options": [
@@ -1659,102 +1659,102 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "base 1",
+            "id": "base_1",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "base 2",
+            "id": "base_2",
             "operation": "equals",
             "value": "有"
           },
           {
-            "id": "read 1",
+            "id": "read_1",
             "operation": "equals",
             "value": "了解"
           },
           {
-            "id": "read 2",
+            "id": "read_2",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 3",
+            "id": "read_3",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 4",
+            "id": "read_4",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 5",
+            "id": "read_5",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 6",
+            "id": "read_6",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 7",
+            "id": "read_7",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 8",
+            "id": "read_8",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 9",
+            "id": "read_9",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 10",
+            "id": "read_10",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 11",
+            "id": "read_11",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 12",
+            "id": "read_12",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 13",
+            "id": "read_13",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 14",
+            "id": "read_14",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 15",
+            "id": "read_15",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 16",
+            "id": "read_16",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "share 1",
+            "id": "share_1",
             "operation": "not equals",
             "value": "***"
           },
           {
-            "id": "read 17",
+            "id": "read_17",
             "operation": "equals",
             "value": "有"
           }
