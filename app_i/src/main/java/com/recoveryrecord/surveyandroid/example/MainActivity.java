@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
             Intent intent = new Intent();
             intent.setClass(MainActivity.this, SampleNewsActivity.class);
+            intent.putExtra("trigger_from", "MainActivity");
             startActivity(intent);
             //MainActivity.this.finish();
             }
@@ -340,9 +341,9 @@ public class MainActivity extends AppCompatActivity {
     private void scheduleNotification (Notification notification, int delay) {
         int nid = (int) System.currentTimeMillis();
         Log.d("log: notification", "news id" + nid);
-        Intent notificationIntent = new Intent(this, MyNotificationPublisher.class);
-        notificationIntent.putExtra(MyNotificationPublisher.NOTIFICATION_ID, 1 ) ;
-        notificationIntent.putExtra(MyNotificationPublisher.NOTIFICATION, notification) ;
+        Intent notificationIntent = new Intent(this, MyNotificationPublisherNews.class);
+        notificationIntent.putExtra(MyNotificationPublisherNews.NOTIFICATION_ID, 1 ) ;
+        notificationIntent.putExtra(MyNotificationPublisherNews.NOTIFICATION, notification) ;
         PendingIntent pendingIntent = PendingIntent.getBroadcast( this, nid, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         long futureInMillis = SystemClock.elapsedRealtime() + delay;
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
@@ -352,7 +353,10 @@ public class MainActivity extends AppCompatActivity {
     private Notification getNotification (String content) {
         int nid = (int) System.currentTimeMillis();
         Log.d("log: notification", "news id" + nid);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, new Intent(this, SampleNewsActivity.class), 0);
+        Intent intent_news = new Intent();
+        intent_news.setClass(MainActivity.this, SampleNewsActivity.class);
+        intent_news.putExtra("trigger_from", "Notification");
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_news, 0);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);
         builder.setContentTitle("Scheduled NEWS");
         builder.setContentText(content);
@@ -365,7 +369,7 @@ public class MainActivity extends AppCompatActivity {
     private void scheduleNotification_esm (Notification notification, int delay) {
         int nid = (int) System.currentTimeMillis();
         Log.d("log: notification", "news id" + nid);
-        Intent notificationIntent = new Intent(this, MyNotificationPublisher.class);
+        Intent notificationIntent = new Intent(this, MyNotificationPublisherNews.class);
         notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION_ID, 1 ) ;
         notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION, notification) ;
         PendingIntent pendingIntent = PendingIntent.getBroadcast( this, nid, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -376,7 +380,10 @@ public class MainActivity extends AppCompatActivity {
     }
     private Notification getNotification_esm (String content) {
         int nid = (int) System.currentTimeMillis();
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, new Intent(this, ExampleSurveyActivity.class), 0);
+        Intent intent_esm = new Intent();
+        intent_esm.setClass(MainActivity.this, SampleNewsActivity.class);
+        intent_esm.putExtra("trigger_from", "Notification");
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_esm, 0);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);
         builder.setContentTitle("Scheduled ESM");
         builder.setContentText(content);

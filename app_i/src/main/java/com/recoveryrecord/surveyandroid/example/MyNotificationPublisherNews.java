@@ -12,7 +12,7 @@ import java.util.Date;
 
 import static com.recoveryrecord.surveyandroid.example.MainActivity.NOTIFICATION_CHANNEL_ID;
 
-public class MyNotificationPublisher extends BroadcastReceiver {
+public class MyNotificationPublisherNews extends BroadcastReceiver {
     public static String NOTIFICATION_ID = "notification-id" ;
     public static String NOTIFICATION = "notification" ;
 //    public static String NOTIFICATION_ID_s = "notification-id_s" ;

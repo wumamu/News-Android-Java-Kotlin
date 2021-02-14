@@ -2,6 +2,7 @@ package com.recoveryrecord.surveyandroid.example;
 
 import android.annotation.SuppressLint;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
@@ -26,6 +27,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 //import android.widget.Toolbar;
@@ -33,8 +35,10 @@ import android.widget.Toast;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -48,6 +52,7 @@ import androidx.appcompat.app.AppCompatActivity;
 //import android.support.v7.widget.Toolbar;
 
 public class SampleNewsActivity extends AppCompatActivity implements MySimpleGestureListener.SimpleGestureListener {
+//public class SampleNewsActivity extends AppCompatActivity {
     //    String TagCycle = "my activity cycle";
     volatile boolean activityStopped = false;
     volatile boolean activityEnd = false;
@@ -60,12 +65,35 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
     private static final String DEBUG_TAG = "Gestures";
 //    private GestureDetectorCompat mDetector;
     private MySimpleGestureListener detector;
+//  check trigger from
+//    String TriggerFrom = "";
+
+    ReadingBehavior myReadingBehavior = new ReadingBehavior();
+
 
     @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(api = Build.VERSION_CODES.N)
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("log: activity cycle", "On create");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sample_news);
+        myReadingBehavior.setKEY_PAUSE_ON_PAGE(0);
+        if (getIntent().getExtras() != null) {
+            Bundle b = getIntent().getExtras();
+//            TriggerFrom = b.getString("trigger_from");
+            myReadingBehavior.setKEY_TRIGGER_BY(b.getString("trigger_from"));
+//            Toast.makeText(getApplicationContext(), TriggerFrom, Toast.LENGTH_SHORT).show();
+        }
+        Log.d("log: trigger_by", myReadingBehavior.getKEY_TRIGGER_BY());
+//        Log.d("log: trigger_by", TriggerFrom);
+
+
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+        String time_now = formatter.format(date);
+        myReadingBehavior.setKEY_TIME_IN(formatter.format(date));
+        Log.d("log: time_in", myReadingBehavior.getKEY_TIME_IN());
+//        Log.d("log: time_in", time_now);
 
         detector = new MySimpleGestureListener(this,this);
 
@@ -82,6 +110,7 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
         mSource = "TVBS";
         mAuthor = "孟心怡";
 
+        myReadingBehavior.setKEY_NEWS_ID("test");
         Log.d("log: activity cycle", "On create");
 
         //check screen on or off ###################################################################
@@ -92,19 +121,23 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
         registerReceiver(mReceiver, intentFilter);
         //screen size ##############################################################################
         Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int width = size.x;
-        int height = size.y;
-        Log.d("log: display-size", "display-width:" + width);
-        Log.d("log: display-size", "display-height:" + height);
         DisplayMetrics outMetrics = new DisplayMetrics();
         display.getMetrics(outMetrics);
         float density = getResources().getDisplayMetrics().density;
         float dpHeight = outMetrics.heightPixels / density;
         float dpWidth = outMetrics.widthPixels / density;
-        Log.d("log: display-size", "display-width in dp:" + dpWidth);
-        Log.d("log: display-size", "display-height in dp:" + dpHeight);
+        myReadingBehavior.setKEY_DISPLAY_HEIGHT(String.valueOf(dpHeight));
+        myReadingBehavior.setKEY_DISPLAY_WIDTH(String.valueOf(dpWidth));
+        Log.d("log: display_width_dp", myReadingBehavior.getKEY_DISPLAY_WIDTH());
+        Log.d("log: display_height_dp", myReadingBehavior.getKEY_DISPLAY_HEIGHT());
+//        Point size = new Point();
+//        display.getSize(size);
+//        int width = size.x;
+//        int height = size.y;
+//        height = Math.round(height / (outMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+//        width = Math.round(width / (outMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+//        Log.d("log: display_width_dpc", String.valueOf(width));
+//        Log.d("log: display_height_dpc", String.valueOf(height));
         //whether is chinese #######################################################################
         Set<UCharacter.UnicodeBlock> chineseUnicodeBlocks = new HashSet<UCharacter.UnicodeBlock>() {{
             add(UCharacter.UnicodeBlock.CJK_COMPATIBILITY);
@@ -119,6 +152,9 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
             add(UCharacter.UnicodeBlock.KANGXI_RADICALS);
             add(UCharacter.UnicodeBlock.IDEOGRAPHIC_DESCRIPTION_CHARACTERS);
         }};
+        //Scrollview has lost the acceleration######################################################
+//        ScrollView mScrollView = findViewById(R.id.scroll_view);
+//        mScrollView.setNestedScrollingEnabled(false);
         // textview generate #######################################################################
         List<String> content_list = new ArrayList<>();
         final int paragraph_number = 16; // total number of paragraph
@@ -216,7 +252,11 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         params.setMargins(40, 10, 40, 10);
         int textview_num = divList.size();
-//        final ScrollView mScrollView = findViewById(R.id.scroll_content);
+        myReadingBehavior.setKEY_VIEW_PORT_NUM(textview_num);
+        Log.d("log: view_port_num", String.valueOf(myReadingBehavior.getKEY_VIEW_PORT_NUM()));
+
+
+
 //        int text_size = (int) (dpWidth /30);
         int text_size = 12;
 
@@ -308,10 +348,15 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
                         while (!activityEnd) {
                             if (activityStopped && !activityEnd) {
                                 Log.d("log: MyScrollView", "Stop");
+                                String tmp_record = "";
                                 for (int i = 0; i < N; i++) {
-                                    Log.d("log: MyScrollView", i + " count: " + count[i] / 10);
+//                                    Log.d("log: MyScrollView", i + " count: " + count[i] / 10);
+                                    tmp_record+=i+1 + ": " + count[i] / 10 + "\n";
                                 }
-                                Log.d("log: MyScrollView", "time_on_page: " + count_running / 10);
+                                myReadingBehavior.setKEY_VIEW_PORT_RECORD(tmp_record);
+                                Log.d("log: view_port_record", myReadingBehavior.getKEY_VIEW_PORT_RECORD());
+                                myReadingBehavior.setKEY_TIME_ON_PAGE(String.valueOf(count_running / 10));
+                                Log.d("log: time_on_page", myReadingBehavior.getKEY_TIME_ON_PAGE());
                                 while (activityStopped) {
                                     Thread.sleep(100);
                                 }
@@ -348,10 +393,16 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
 
                         }
                         Log.d("log: MyScrollView", "Finish");
+                        String finish_record = "";
                         for (int i = 0; i < N; i++) {
-                            Log.d("log: MyScrollView", i + " count: " + count[i] / 10);
+//                            Log.d("log: MyScrollView", i + " count: " + count[i] / 10);
+                            finish_record+=i+1 + ": " + count[i] / 10 + "\n";
                         }
-                        Log.d("log: MyScrollView", "time_on_page: " + count_running / 10);
+                        myReadingBehavior.setKEY_VIEW_PORT_RECORD(finish_record);
+                        Log.d("log: view_port_record", myReadingBehavior.getKEY_VIEW_PORT_RECORD());
+                        myReadingBehavior.setKEY_TIME_ON_PAGE(String.valueOf(count_running / 10));
+                        Log.d("log: time_on_page", myReadingBehavior.getKEY_TIME_ON_PAGE());
+//                        Log.d("log: MyScrollView", "time_on_page: " + count_running / 10);
                         return 1;
                     }
                 });
@@ -370,14 +421,16 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
                     content_view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     int viewWidth = content_view.getWidth();
                     int viewHeight = content_view.getHeight();
-                    String s_final = String.valueOf(viewHeight);
-                    Log.d("log: content-length", s_final);
+                    int dp_unit = pxToDp(viewHeight, content_view.getContext());
+//                    Log.d("log: content_length_px", String.valueOf(viewHeight));
+                    myReadingBehavior.setKEY_CONTENT_LENGTH(String.valueOf(dp_unit));
+                    Log.d("log: content_length_dp", myReadingBehavior.getKEY_CONTENT_LENGTH());
                 }
             });
         }
         //drag position ############################################################################
 
-////        final LinearLayout outside_view = findViewById(R.id.layout_outside);
+//        final LinearLayout outside_view = findViewById(R.id.layout_outside);
 //        imageView.setOnDragListener(new View.OnDragListener() {
 //            @Override
 //            public boolean onDrag(View v, DragEvent event) {
@@ -430,17 +483,6 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
 //        });
 //        super.onCreate(savedInstanceState);
     }
-    private boolean isChineseChar(char c) {
-        Character.UnicodeBlock ub = Character.UnicodeBlock.of(c);
-        if (ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS
-                || ub == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
-                || ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A
-                || ub == Character.UnicodeBlock.GENERAL_PUNCTUATION
-                || ub == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION ) {
-            return true;
-        }
-        return false;
-    }
     @Override
     protected void onStart() {
         super.onStart();
@@ -462,6 +504,8 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
         super.onPause();
         Log.d("log: activity cycle", "On pause");
         activityStopped = true;
+        myReadingBehavior.setKEY_PAUSE_ON_PAGE(myReadingBehavior.getKEY_PAUSE_ON_PAGE()+1);
+//        Log.d("log: pause count", String.valueOf(myReadingBehavior.getKEY_PAUSE_ON_PAGE()));
     }
 
     @Override
@@ -482,17 +526,43 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
     protected void onDestroy() {
         super.onDestroy();
         Log.d("log: activity cycle", "On destroy");
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+        String time_now = formatter.format(date);
+        myReadingBehavior.setKEY_TIME_OUT(formatter.format(date));
+        Log.d("log: time_out", myReadingBehavior.getKEY_TIME_OUT());
+        myReadingBehavior.setKEY_PAUSE_ON_PAGE(myReadingBehavior.getKEY_PAUSE_ON_PAGE()-1);
+        Log.d("log: final pause count", String.valueOf(myReadingBehavior.getKEY_PAUSE_ON_PAGE()));
 //        activityStopped = true;
         activityEnd = true;
         if (mReceiver != null) {
             unregisterReceiver(mReceiver);
         }
+
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         supportFinishAfterTransition();
+    }
+
+    public int pxToDp(int px, Context tmp) {
+        DisplayMetrics displayMetrics = tmp.getResources().getDisplayMetrics();
+        int dp = Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+        return dp;
+    }
+
+    private boolean isChineseChar(char c) {
+        Character.UnicodeBlock ub = Character.UnicodeBlock.of(c);
+        if (ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS
+                || ub == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
+                || ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A
+                || ub == Character.UnicodeBlock.GENERAL_PUNCTUATION
+                || ub == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION ) {
+            return true;
+        }
+        return false;
     }
 
     //image download ###############################################################################
@@ -526,6 +596,7 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
         getMenuInflater().inflate(R.menu.menu_sample_news, menu);
         return true;
     }
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

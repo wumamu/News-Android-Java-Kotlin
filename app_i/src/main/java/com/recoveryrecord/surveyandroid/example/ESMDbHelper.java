@@ -12,36 +12,37 @@ import java.util.HashMap;
 public class ESMDbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "ESM.db";
     private static final int DATABASE_VERSION = 1;
-    private static final String TABLE_NAME_ESM = "esm";
-    private static final String KEY_ID = "id";
-    private static final String KEY_TIME = "time";
-    private static final String KEY_BASE_1 = "base_1";
-    private static final String KEY_BASE_2 = "base_2";
-    private static final String KEY_NOT_READ_1 = "not_read_1";
-    private static final String KEY_NOT_READ_2 = "not_read_2";
-    private static final String KEY_NOT_READ_3 = "not_read_3";
-    private static final String KEY_NOT_READ_4 = "not_read_4";
-    private static final String KEY_NOT_READ_5 = "not_read_5";
-    private static final String KEY_READ_1 = "read_1";
-    private static final String KEY_READ_2 = "read_2";
-    private static final String KEY_READ_3 = "read_3";
-    private static final String KEY_READ_4 = "read_4";
-    private static final String KEY_READ_5 = "read_5";
-    private static final String KEY_READ_6 = "read_6";
-    private static final String KEY_READ_7 = "read_7";
-    private static final String KEY_READ_8 = "read_8";
-    private static final String KEY_READ_9 = "read_9";
-    private static final String KEY_READ_10 = "read_10";
-    private static final String KEY_READ_11 = "read_11";
-    private static final String KEY_READ_12 = "read_12";
-    private static final String KEY_READ_13 = "read_13";
-    private static final String KEY_READ_14 = "read_14";
-    private static final String KEY_READ_15 = "read_15";
-    private static final String KEY_READ_16 = "read_16";
-    private static final String KEY_READ_17 = "read_17";
-    private static final String KEY_NOT_SHARE_1 = "not_share_1";
-    private static final String KEY_SHARE_1 = "share_1";
-    private static final String KEY_SHARE_2 = "share_2";
+    private SQLiteDatabase db;
+//    private static final String TABLE_NAME_ESM = "esm";
+//    private static final String KEY_ID = "id";
+//    private static final String KEY_TIME = "time";
+//    private static final String KEY_BASE_1 = "base_1";
+//    private static final String KEY_BASE_2 = "base_2";
+//    private static final String KEY_NOT_READ_1 = "not_read_1";
+//    private static final String KEY_NOT_READ_2 = "not_read_2";
+//    private static final String KEY_NOT_READ_3 = "not_read_3";
+//    private static final String KEY_NOT_READ_4 = "not_read_4";
+//    private static final String KEY_NOT_READ_5 = "not_read_5";
+//    private static final String KEY_READ_1 = "read_1";
+//    private static final String KEY_READ_2 = "read_2";
+//    private static final String KEY_READ_3 = "read_3";
+//    private static final String KEY_READ_4 = "read_4";
+//    private static final String KEY_READ_5 = "read_5";
+//    private static final String KEY_READ_6 = "read_6";
+//    private static final String KEY_READ_7 = "read_7";
+//    private static final String KEY_READ_8 = "read_8";
+//    private static final String KEY_READ_9 = "read_9";
+//    private static final String KEY_READ_10 = "read_10";
+//    private static final String KEY_READ_11 = "read_11";
+//    private static final String KEY_READ_12 = "read_12";
+//    private static final String KEY_READ_13 = "read_13";
+//    private static final String KEY_READ_14 = "read_14";
+//    private static final String KEY_READ_15 = "read_15";
+//    private static final String KEY_READ_16 = "read_16";
+//    private static final String KEY_READ_17 = "read_17";
+//    private static final String KEY_NOT_SHARE_1 = "not_share_1";
+//    private static final String KEY_SHARE_1 = "share_1";
+//    private static final String KEY_SHARE_2 = "share_2";
 
 
     public ESMDbHelper(Context context) {
@@ -49,43 +50,44 @@ public class ESMDbHelper extends SQLiteOpenHelper {
     }
     @Override
     public void onCreate(SQLiteDatabase db){
-        String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME_ESM + "("
-                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + KEY_TIME + " TEXT,"
-                + KEY_BASE_1 + " TEXT,"
-                + KEY_BASE_2 + " TEXT,"
-                + KEY_NOT_READ_1 + " TEXT,"
-                + KEY_NOT_READ_2 + " TEXT,"
-                + KEY_NOT_READ_3 + " TEXT,"
-                + KEY_NOT_READ_4 + " TEXT,"
-                + KEY_NOT_READ_5 + " TEXT,"
-                + KEY_READ_1 + " TEXT,"
-                + KEY_READ_2 + " TEXT,"
-                + KEY_READ_3 + " TEXT,"
-                + KEY_READ_4 + " TEXT,"
-                + KEY_READ_5 + " TEXT,"
-                + KEY_READ_6 + " TEXT,"
-                + KEY_READ_7 + " TEXT,"
-                + KEY_READ_8 + " TEXT,"
-                + KEY_READ_9 + " TEXT,"
-                + KEY_READ_10 + " TEXT,"
-                + KEY_READ_11 + " TEXT,"
-                + KEY_READ_12 + " TEXT,"
-                + KEY_READ_13 + " TEXT,"
-                + KEY_READ_14 + " TEXT,"
-                + KEY_READ_15 + " TEXT,"
-                + KEY_READ_16 + " TEXT,"
-                + KEY_READ_17 + " TEXT,"
-                + KEY_NOT_SHARE_1 + " TEXT,"
-                + KEY_SHARE_1 + " TEXT,"
-                + KEY_SHARE_2 + " TEXT"+ ")";
+        this.db = db;
+        final String CREATE_TABLE = "CREATE TABLE " + ESMContract.ESMTable.TABLE_NAME_ESM + "("
+                + ESMContract.ESMTable.KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + ESMContract.ESMTable.KEY_TIME + " TEXT,"
+                + ESMContract.ESMTable.KEY_BASE_1 + " TEXT,"
+                + ESMContract.ESMTable.KEY_BASE_2 + " TEXT,"
+                + ESMContract.ESMTable.KEY_NOT_READ_1 + " TEXT,"
+                + ESMContract.ESMTable.KEY_NOT_READ_2 + " TEXT,"
+                + ESMContract.ESMTable.KEY_NOT_READ_3 + " TEXT,"
+                + ESMContract.ESMTable.KEY_NOT_READ_4 + " TEXT,"
+                + ESMContract.ESMTable.KEY_NOT_READ_5 + " TEXT,"
+                + ESMContract.ESMTable.KEY_READ_1 + " TEXT,"
+                + ESMContract.ESMTable.KEY_READ_2 + " TEXT,"
+                + ESMContract.ESMTable.KEY_READ_3 + " TEXT,"
+                + ESMContract.ESMTable.KEY_READ_4 + " TEXT,"
+                + ESMContract.ESMTable.KEY_READ_5 + " TEXT,"
+                + ESMContract.ESMTable.KEY_READ_6 + " TEXT,"
+                + ESMContract.ESMTable.KEY_READ_7 + " TEXT,"
+                + ESMContract.ESMTable.KEY_READ_8 + " TEXT,"
+                + ESMContract.ESMTable.KEY_READ_9 + " TEXT,"
+                + ESMContract.ESMTable.KEY_READ_10 + " TEXT,"
+                + ESMContract.ESMTable.KEY_READ_11 + " TEXT,"
+                + ESMContract.ESMTable.KEY_READ_12 + " TEXT,"
+                + ESMContract.ESMTable.KEY_READ_13 + " TEXT,"
+                + ESMContract.ESMTable.KEY_READ_14 + " TEXT,"
+                + ESMContract.ESMTable.KEY_READ_15 + " TEXT,"
+                + ESMContract.ESMTable.KEY_READ_16 + " TEXT,"
+                + ESMContract.ESMTable.KEY_READ_17 + " TEXT,"
+                + ESMContract.ESMTable.KEY_NOT_SHARE_1 + " TEXT,"
+                + ESMContract.ESMTable.KEY_SHARE_1 + " TEXT,"
+                + ESMContract.ESMTable.KEY_SHARE_2 + " TEXT"+ ")";
         db.execSQL(CREATE_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if exist
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_ESM);
+        db.execSQL("DROP TABLE IF EXISTS " + ESMContract.ESMTable.TABLE_NAME_ESM);
         // Create tables again
         onCreate(db);
     }
@@ -97,38 +99,38 @@ public class ESMDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         //Create a new map of values, where column names are the keys
         ContentValues cValues = new ContentValues();
-        cValues.put(KEY_TIME, time);
-        cValues.put(KEY_BASE_1, ESM_answer.getKEY_BASE_1());
-        cValues.put(KEY_BASE_2, ESM_answer.getKEY_BASE_2());
-        cValues.put(KEY_NOT_READ_1, ESM_answer.getKEY_NOT_READ_1());
-        cValues.put(KEY_NOT_READ_2, ESM_answer.getKEY_NOT_READ_2());
-        cValues.put(KEY_NOT_READ_3, ESM_answer.getKEY_NOT_READ_3());
-        cValues.put(KEY_NOT_READ_4, ESM_answer.getKEY_NOT_READ_4());
-        cValues.put(KEY_NOT_READ_5, ESM_answer.getKEY_NOT_READ_5());
-        cValues.put(KEY_READ_1, ESM_answer.getKEY_READ_1());
-        cValues.put(KEY_READ_2, ESM_answer.getKEY_READ_2());
-        cValues.put(KEY_READ_3, ESM_answer.getKEY_READ_3());
-        cValues.put(KEY_READ_4, ESM_answer.getKEY_READ_4());
-        cValues.put(KEY_READ_5, ESM_answer.getKEY_READ_5());
-        cValues.put(KEY_READ_6, ESM_answer.getKEY_READ_6());
-        cValues.put(KEY_READ_7, ESM_answer.getKEY_READ_7());
-        cValues.put(KEY_READ_8, ESM_answer.getKEY_READ_8());
-        cValues.put(KEY_READ_9, ESM_answer.getKEY_READ_9());
-        cValues.put(KEY_READ_10, ESM_answer.getKEY_READ_10());
-        cValues.put(KEY_READ_11, ESM_answer.getKEY_READ_11());
-        cValues.put(KEY_READ_12, ESM_answer.getKEY_READ_12());
-        cValues.put(KEY_READ_13, ESM_answer.getKEY_READ_13());
-        cValues.put(KEY_READ_14, ESM_answer.getKEY_READ_14());
-        cValues.put(KEY_READ_15, ESM_answer.getKEY_READ_15());
-        cValues.put(KEY_READ_16, ESM_answer.getKEY_READ_16());
-        cValues.put(KEY_READ_17, ESM_answer.getKEY_READ_17());
-        cValues.put(KEY_NOT_SHARE_1, ESM_answer.getKEY_NOT_SHARE_1());
-        cValues.put(KEY_SHARE_1, ESM_answer.getKEY_SHARE_1());
-        cValues.put(KEY_SHARE_2, ESM_answer.getKEY_SHARE_2());
+        cValues.put(ESMContract.ESMTable.KEY_TIME, time);
+        cValues.put(ESMContract.ESMTable.KEY_BASE_1, ESM_answer.getKEY_BASE_1());
+        cValues.put(ESMContract.ESMTable.KEY_BASE_2, ESM_answer.getKEY_BASE_2());
+        cValues.put(ESMContract.ESMTable.KEY_NOT_READ_1, ESM_answer.getKEY_NOT_READ_1());
+        cValues.put(ESMContract.ESMTable.KEY_NOT_READ_2, ESM_answer.getKEY_NOT_READ_2());
+        cValues.put(ESMContract.ESMTable.KEY_NOT_READ_3, ESM_answer.getKEY_NOT_READ_3());
+        cValues.put(ESMContract.ESMTable.KEY_NOT_READ_4, ESM_answer.getKEY_NOT_READ_4());
+        cValues.put(ESMContract.ESMTable.KEY_NOT_READ_5, ESM_answer.getKEY_NOT_READ_5());
+        cValues.put(ESMContract.ESMTable.KEY_READ_1, ESM_answer.getKEY_READ_1());
+        cValues.put(ESMContract.ESMTable.KEY_READ_2, ESM_answer.getKEY_READ_2());
+        cValues.put(ESMContract.ESMTable.KEY_READ_3, ESM_answer.getKEY_READ_3());
+        cValues.put(ESMContract.ESMTable.KEY_READ_4, ESM_answer.getKEY_READ_4());
+        cValues.put(ESMContract.ESMTable.KEY_READ_5, ESM_answer.getKEY_READ_5());
+        cValues.put(ESMContract.ESMTable.KEY_READ_6, ESM_answer.getKEY_READ_6());
+        cValues.put(ESMContract.ESMTable.KEY_READ_7, ESM_answer.getKEY_READ_7());
+        cValues.put(ESMContract.ESMTable.KEY_READ_8, ESM_answer.getKEY_READ_8());
+        cValues.put(ESMContract.ESMTable.KEY_READ_9, ESM_answer.getKEY_READ_9());
+        cValues.put(ESMContract.ESMTable.KEY_READ_10, ESM_answer.getKEY_READ_10());
+        cValues.put(ESMContract.ESMTable.KEY_READ_11, ESM_answer.getKEY_READ_11());
+        cValues.put(ESMContract.ESMTable.KEY_READ_12, ESM_answer.getKEY_READ_12());
+        cValues.put(ESMContract.ESMTable.KEY_READ_13, ESM_answer.getKEY_READ_13());
+        cValues.put(ESMContract.ESMTable.KEY_READ_14, ESM_answer.getKEY_READ_14());
+        cValues.put(ESMContract.ESMTable.KEY_READ_15, ESM_answer.getKEY_READ_15());
+        cValues.put(ESMContract.ESMTable.KEY_READ_16, ESM_answer.getKEY_READ_16());
+        cValues.put(ESMContract.ESMTable.KEY_READ_17, ESM_answer.getKEY_READ_17());
+        cValues.put(ESMContract.ESMTable.KEY_NOT_SHARE_1, ESM_answer.getKEY_NOT_SHARE_1());
+        cValues.put(ESMContract.ESMTable.KEY_SHARE_1, ESM_answer.getKEY_SHARE_1());
+        cValues.put(ESMContract.ESMTable.KEY_SHARE_2, ESM_answer.getKEY_SHARE_2());
 
 
         // Insert the new row, returning the primary key value of the new row
-        long newRowId = db.insert(TABLE_NAME_ESM,null, cValues);
+        long newRowId = db.insert(ESMContract.ESMTable.TABLE_NAME_ESM,null, cValues);
         db.close();
     }
 
@@ -139,39 +141,39 @@ public class ESMDbHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<HashMap<String, String>> ESMList = new ArrayList<>();
-        String query = "SELECT * FROM "+ TABLE_NAME_ESM;
+        String query = "SELECT * FROM "+ ESMContract.ESMTable.TABLE_NAME_ESM;
         Cursor cursor = db.rawQuery(query,null);
         while (cursor.moveToNext()){
             HashMap<String, String> notification = new HashMap<>();
-            notification.put("id",cursor.getString(cursor.getColumnIndex(KEY_ID)));
-            notification.put("time",cursor.getString(cursor.getColumnIndex(KEY_TIME)));
-            notification.put("base_1",cursor.getString(cursor.getColumnIndex(KEY_BASE_1)));
-            notification.put("base_2",cursor.getString(cursor.getColumnIndex(KEY_BASE_1)));
-            notification.put("not_read_1",cursor.getString(cursor.getColumnIndex(KEY_NOT_READ_1)));
-            notification.put("not_read_2",cursor.getString(cursor.getColumnIndex(KEY_NOT_READ_2)));
-            notification.put("not_read_3",cursor.getString(cursor.getColumnIndex(KEY_NOT_READ_3)));
-            notification.put("not_read_4",cursor.getString(cursor.getColumnIndex(KEY_NOT_READ_4)));
-            notification.put("not_read_5",cursor.getString(cursor.getColumnIndex(KEY_NOT_READ_5)));
-            notification.put("read_1",cursor.getString(cursor.getColumnIndex(KEY_READ_1)));
-            notification.put("read_2",cursor.getString(cursor.getColumnIndex(KEY_READ_2)));
-            notification.put("read_3",cursor.getString(cursor.getColumnIndex(KEY_READ_3)));
-            notification.put("read_4",cursor.getString(cursor.getColumnIndex(KEY_READ_4)));
-            notification.put("read_5",cursor.getString(cursor.getColumnIndex(KEY_READ_5)));
-            notification.put("read_6",cursor.getString(cursor.getColumnIndex(KEY_READ_6)));
-            notification.put("read_7",cursor.getString(cursor.getColumnIndex(KEY_READ_7)));
-            notification.put("read_8",cursor.getString(cursor.getColumnIndex(KEY_READ_8)));
-            notification.put("read_9",cursor.getString(cursor.getColumnIndex(KEY_READ_9)));
-            notification.put("read_10",cursor.getString(cursor.getColumnIndex(KEY_READ_10)));
-            notification.put("read_11",cursor.getString(cursor.getColumnIndex(KEY_READ_11)));
-            notification.put("read_12",cursor.getString(cursor.getColumnIndex(KEY_READ_12)));
-            notification.put("read_13",cursor.getString(cursor.getColumnIndex(KEY_READ_13)));
-            notification.put("read_14",cursor.getString(cursor.getColumnIndex(KEY_READ_14)));
-            notification.put("read_15",cursor.getString(cursor.getColumnIndex(KEY_READ_15)));
-            notification.put("read_16",cursor.getString(cursor.getColumnIndex(KEY_READ_16)));
-            notification.put("read_17",cursor.getString(cursor.getColumnIndex(KEY_READ_17)));
-            notification.put("not_share_1",cursor.getString(cursor.getColumnIndex(KEY_NOT_SHARE_1)));
-            notification.put("share_1",cursor.getString(cursor.getColumnIndex(KEY_SHARE_1)));
-            notification.put("share_2",cursor.getString(cursor.getColumnIndex(KEY_SHARE_2)));
+            notification.put("id",cursor.getString(cursor.getColumnIndex(ESMContract.ESMTable.KEY_ID)));
+            notification.put("time",cursor.getString(cursor.getColumnIndex(ESMContract.ESMTable.KEY_TIME)));
+            notification.put("base_1",cursor.getString(cursor.getColumnIndex(ESMContract.ESMTable.KEY_BASE_1)));
+            notification.put("base_2",cursor.getString(cursor.getColumnIndex(ESMContract.ESMTable.KEY_BASE_1)));
+            notification.put("not_read_1",cursor.getString(cursor.getColumnIndex(ESMContract.ESMTable.KEY_NOT_READ_1)));
+            notification.put("not_read_2",cursor.getString(cursor.getColumnIndex(ESMContract.ESMTable.KEY_NOT_READ_2)));
+            notification.put("not_read_3",cursor.getString(cursor.getColumnIndex(ESMContract.ESMTable.KEY_NOT_READ_3)));
+            notification.put("not_read_4",cursor.getString(cursor.getColumnIndex(ESMContract.ESMTable.KEY_NOT_READ_4)));
+            notification.put("not_read_5",cursor.getString(cursor.getColumnIndex(ESMContract.ESMTable.KEY_NOT_READ_5)));
+            notification.put("read_1",cursor.getString(cursor.getColumnIndex(ESMContract.ESMTable.KEY_READ_1)));
+            notification.put("read_2",cursor.getString(cursor.getColumnIndex(ESMContract.ESMTable.KEY_READ_2)));
+            notification.put("read_3",cursor.getString(cursor.getColumnIndex(ESMContract.ESMTable.KEY_READ_3)));
+            notification.put("read_4",cursor.getString(cursor.getColumnIndex(ESMContract.ESMTable.KEY_READ_4)));
+            notification.put("read_5",cursor.getString(cursor.getColumnIndex(ESMContract.ESMTable.KEY_READ_5)));
+            notification.put("read_6",cursor.getString(cursor.getColumnIndex(ESMContract.ESMTable.KEY_READ_6)));
+            notification.put("read_7",cursor.getString(cursor.getColumnIndex(ESMContract.ESMTable.KEY_READ_7)));
+            notification.put("read_8",cursor.getString(cursor.getColumnIndex(ESMContract.ESMTable.KEY_READ_8)));
+            notification.put("read_9",cursor.getString(cursor.getColumnIndex(ESMContract.ESMTable.KEY_READ_9)));
+            notification.put("read_10",cursor.getString(cursor.getColumnIndex(ESMContract.ESMTable.KEY_READ_10)));
+            notification.put("read_11",cursor.getString(cursor.getColumnIndex(ESMContract.ESMTable.KEY_READ_11)));
+            notification.put("read_12",cursor.getString(cursor.getColumnIndex(ESMContract.ESMTable.KEY_READ_12)));
+            notification.put("read_13",cursor.getString(cursor.getColumnIndex(ESMContract.ESMTable.KEY_READ_13)));
+            notification.put("read_14",cursor.getString(cursor.getColumnIndex(ESMContract.ESMTable.KEY_READ_14)));
+            notification.put("read_15",cursor.getString(cursor.getColumnIndex(ESMContract.ESMTable.KEY_READ_15)));
+            notification.put("read_16",cursor.getString(cursor.getColumnIndex(ESMContract.ESMTable.KEY_READ_16)));
+            notification.put("read_17",cursor.getString(cursor.getColumnIndex(ESMContract.ESMTable.KEY_READ_17)));
+            notification.put("not_share_1",cursor.getString(cursor.getColumnIndex(ESMContract.ESMTable.KEY_NOT_SHARE_1)));
+            notification.put("share_1",cursor.getString(cursor.getColumnIndex(ESMContract.ESMTable.KEY_SHARE_1)));
+            notification.put("share_2",cursor.getString(cursor.getColumnIndex(ESMContract.ESMTable.KEY_SHARE_2)));
             ESMList.add(notification);
         }
         return  ESMList;

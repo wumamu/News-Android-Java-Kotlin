@@ -19,11 +19,11 @@ public class MySimpleGestureListener extends GestureDetector.SimpleOnGestureList
     public final static int MODE_DYNAMIC     = 2;
 
     private final static int ACTION_FAKE = -13; //just an unlikely number
-    private int swipe_Min_Distance = 100;
-    private int swipe_Max_Distance = 1000;//350
+    private int swipe_Min_Distance = 100;//100
+    private int swipe_Max_Distance = 500;//350
     private int swipe_Min_Velocity = 0;//100
 
-    private int mode      = MODE_DYNAMIC;
+    private int mode      = MODE_TRANSPARENT;
     private boolean running = true;
     private boolean tapIndicator = false;
 
@@ -109,11 +109,14 @@ public class MySimpleGestureListener extends GestureDetector.SimpleOnGestureList
         Log.d("log: GestureListener","fling second: (" + e2.getX() + "," + e2.getY() + ")");
         if(xDistance > this.swipe_Max_Distance || yDistance > this.swipe_Max_Distance)
             return false;
-
+        //太長
         velocityX = Math.abs(velocityX);
         velocityY = Math.abs(velocityY);
         boolean result = false;
-
+        Log.d("log: velocityX", String.valueOf(velocityX));
+        Log.d("log: velocityY", String.valueOf(velocityY));
+        Log.d("log: xDistance", String.valueOf(xDistance));
+        Log.d("log: yDistance", String.valueOf(yDistance));
         if(velocityX > this.swipe_Min_Velocity && xDistance > this.swipe_Min_Distance){
             if(e1.getX() > e2.getX()) // right to left
                 this.listener.onSwipe(SWIPE_LEFT);

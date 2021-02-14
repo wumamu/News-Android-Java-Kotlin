@@ -24,7 +24,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name = ".MyNotificationPublisher" />
+        <receiver android:name = ".MyNotificationPublisherNews" />
 
         <activity android:name=".ExampleSurveyActivity" />
         <activity android:name=".SampleNewsActivity" />
