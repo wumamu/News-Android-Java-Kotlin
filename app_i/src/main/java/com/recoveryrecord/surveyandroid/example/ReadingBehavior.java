@@ -17,8 +17,25 @@ public class ReadingBehavior {
     private String KEY_FLING_RECORD;//
     private int KEY_DRAG_NUM;//
     private String KEY_DRAG_RECORD;//
+    private int KEY_SHARE;//
 
     public ReadingBehavior() {
+        this.KEY_NEWS_ID = "";
+        this.KEY_TRIGGER_BY = "";
+        this.KEY_TIME_IN = "";
+        this.KEY_TIME_OUT = "";
+        this.KEY_CONTENT_LENGTH = "";
+        this.KEY_DISPLAY_WIDTH = "";
+        this.KEY_DISPLAY_HEIGHT = "";
+        this.KEY_TIME_ON_PAGE = "";
+        this.KEY_PAUSE_ON_PAGE = 0;
+        this.KEY_VIEW_PORT_NUM = 0;
+        this.KEY_VIEW_PORT_RECORD = "";
+        this.KEY_FLING_NUM = 0;
+        this.KEY_FLING_RECORD = "";
+        this.KEY_DRAG_NUM = 0;
+        this.KEY_DRAG_RECORD = "";
+        this.KEY_SHARE = 0;
     }
 
     public ReadingBehavior(String KEY_NEWS_ID,
@@ -35,7 +52,8 @@ public class ReadingBehavior {
                            int KEY_FLING_NUM,
                            String KEY_FLING_RECORD,
                            int KEY_DRAG_NUM,
-                           String KEY_DRAG_RECORD) {
+                           String KEY_DRAG_RECORD,
+                           int KEY_SHARE) {
         this.KEY_NEWS_ID = KEY_NEWS_ID;
         this.KEY_TRIGGER_BY = KEY_TRIGGER_BY;
         this.KEY_TIME_IN = KEY_TIME_IN;
@@ -51,6 +69,7 @@ public class ReadingBehavior {
         this.KEY_FLING_RECORD = KEY_FLING_RECORD;
         this.KEY_DRAG_NUM = KEY_DRAG_NUM;
         this.KEY_DRAG_RECORD = KEY_DRAG_RECORD;
+        this.KEY_SHARE = KEY_SHARE;
     }
 
 
@@ -172,5 +191,13 @@ public class ReadingBehavior {
 
     public void setKEY_DRAG_RECORD(String KEY_DRAG_RECORD) {
         this.KEY_DRAG_RECORD = KEY_DRAG_RECORD;
+    }
+
+    public int getKEY_SHARE() {
+        return KEY_SHARE;
+    }
+
+    public void setKEY_SHARE(int KEY_SHARE) {
+        this.KEY_SHARE = KEY_SHARE;
     }
 }

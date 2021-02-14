@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
+import java.util.Date;
+
 public class MySimpleGestureListener extends GestureDetector.SimpleOnGestureListener{
 
     public final static int SWIPE_UP    = 1;
@@ -20,7 +22,7 @@ public class MySimpleGestureListener extends GestureDetector.SimpleOnGestureList
 
     private final static int ACTION_FAKE = -13; //just an unlikely number
     private int swipe_Min_Distance = 100;//100
-    private int swipe_Max_Distance = 500;//350
+    private int swipe_Max_Distance = 350;//350
     private int swipe_Min_Velocity = 0;//100
 
     private int mode      = MODE_TRANSPARENT;
@@ -102,34 +104,46 @@ public class MySimpleGestureListener extends GestureDetector.SimpleOnGestureList
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        FlingObj tmpFlingObj = new FlingObj();
 
         final float xDistance = Math.abs(e1.getX() - e2.getX());
         final float yDistance = Math.abs(e1.getY() - e2.getY());
-        Log.d("log: GestureListener","fling first: (" + e1.getX() + "," + e1.getY() + ")");
-        Log.d("log: GestureListener","fling second: (" + e2.getX() + "," + e2.getY() + ")");
-        if(xDistance > this.swipe_Max_Distance || yDistance > this.swipe_Max_Distance)
-            return false;
-        //太長
+//        Log.d("log: GestureListener","fling first: (" + e1.getX() + "," + e1.getY() + ")");
+//        Log.d("log: GestureListener","fling second: (" + e2.getX() + "," + e2.getY() + ")");
+
+//        not long enough to be consider as fling
+//        if(xDistance > this.swipe_Max_Distance || yDistance > this.swipe_Max_Distance)
+//            return false;
+
         velocityX = Math.abs(velocityX);
         velocityY = Math.abs(velocityY);
         boolean result = false;
-        Log.d("log: velocityX", String.valueOf(velocityX));
-        Log.d("log: velocityY", String.valueOf(velocityY));
-        Log.d("log: xDistance", String.valueOf(xDistance));
-        Log.d("log: yDistance", String.valueOf(yDistance));
+//        Log.d("log: velocityX", String.valueOf(velocityX));
+//        Log.d("log: velocityY", String.valueOf(velocityY));
+//        Log.d("log: xDistance", String.valueOf(xDistance));
+//        Log.d("log: yDistance", String.valueOf(yDistance));
+        tmpFlingObj.setPOINT_ONE_X(e1.getX());
+        tmpFlingObj.setPOINT_ONE_Y(e1.getY());
+        tmpFlingObj.setPOINT_TWO_X(e2.getX());
+        tmpFlingObj.setPOINT_TWO_Y(e2.getY());
+        tmpFlingObj.setDISTANCE_X(xDistance);
+        tmpFlingObj.setDISTANCE_Y(yDistance);
+        tmpFlingObj.setVELOCITY_X(velocityX);
+        tmpFlingObj.setVELOCITY_Y(velocityY);
+
         if(velocityX > this.swipe_Min_Velocity && xDistance > this.swipe_Min_Distance){
             if(e1.getX() > e2.getX()) // right to left
-                this.listener.onSwipe(SWIPE_LEFT);
+                this.listener.onSwipe(SWIPE_LEFT, tmpFlingObj);
             else
-                this.listener.onSwipe(SWIPE_RIGHT);
+                this.listener.onSwipe(SWIPE_RIGHT, tmpFlingObj);
 
             result = true;
         }
         else if(velocityY > this.swipe_Min_Velocity && yDistance > this.swipe_Min_Distance){
             if(e1.getY() > e2.getY()) // bottom to up
-                this.listener.onSwipe(SWIPE_UP);
+                this.listener.onSwipe(SWIPE_UP, tmpFlingObj);
             else
-                this.listener.onSwipe(SWIPE_DOWN);
+                this.listener.onSwipe(SWIPE_DOWN, tmpFlingObj);
 
             result = true;
         }
@@ -166,17 +180,24 @@ public class MySimpleGestureListener extends GestureDetector.SimpleOnGestureList
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY){
+        DragObj dragObj = new DragObj();
         boolean result = super.onScroll(e1, e2, distanceX, distanceY);
         if(!result){
-//            Log.d("log: GestureListener", "onScroll: " + distanceX + " " +  distanceY);
-//            Log.d("log: GestureListener", "onScroll: " + e1.toString() + e2.toString());
-            Log.d("log: GestureListener","drag first: (" + e1.getX() + "," + e1.getY() + ")");
-            Log.d("log: GestureListener","drag second: (" + e2.getX() + "," + e2.getY() + ")");
+            Log.d("log: GestureListener", System.currentTimeMillis()+ "drag first: (" + e1.getX() + "," + e1.getY() + ")");
+            Log.d("log: GestureListener", System.currentTimeMillis()+ "drag first: (" + e2.getX() + "," + e2.getY() + ")");
+            dragObj.setTIME_ONE(System.currentTimeMillis());
+            dragObj.setPOINT_ONE_X(e1.getX());
+            dragObj.setPOINT_ONE_Y(e1.getY());
+            dragObj.setPOINT_TWO_X(e2.getX());
+            dragObj.setPOINT_TWO_Y(e2.getY());
+            this.listener.onOnePoint(dragObj);
+//            Log.d("log: GestureListener","drag second: (" + e2.getX() + "," + e2.getY() + ")");
         }
         return result;
     }
     static interface SimpleGestureListener{
-        void onSwipe(int direction);
+        void onSwipe(int direction, FlingObj flingObj);
+        void onOnePoint(DragObj dragObj);
 //        void onDoubleTap();
     }
 

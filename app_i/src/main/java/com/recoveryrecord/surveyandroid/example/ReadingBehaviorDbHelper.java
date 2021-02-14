@@ -29,6 +29,7 @@ public class ReadingBehaviorDbHelper extends SQLiteOpenHelper {
     private static final String KEY_FLING_RECORD = "fling_record";
     private static final String KEY_DRAG_NUM = "drag_num";
     private static final String KEY_DRAG_RECORD = "drag_counter";
+    private static final String KEY_SHARE = "share";
     public ReadingBehaviorDbHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -50,7 +51,8 @@ public class ReadingBehaviorDbHelper extends SQLiteOpenHelper {
                 + KEY_FLING_NUM + " INT,"
                 + KEY_FLING_RECORD + " TEXT,"
                 + KEY_DRAG_NUM + " INT,"
-                + KEY_DRAG_RECORD + " TEXT"+ ")";
+                + KEY_DRAG_RECORD + " INT,"
+                + KEY_SHARE + " INT"+ ")";
         db.execSQL(CREATE_TABLE);
     }
 
@@ -65,20 +67,31 @@ public class ReadingBehaviorDbHelper extends SQLiteOpenHelper {
     // **** CRUD (Create, Read, Update, Delete) Operations ***** //
 
     // Adding new User Details
-//    void insertNotificationDetails(String packagename, String tickertext, String time, String notititle, String notitext){
-//        //Get the Data Repository in write mode
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        //Create a new map of values, where column names are the keys
-//        ContentValues cValues = new ContentValues();
-//        cValues.put(KEY_NEWS_ID, packagename);
-//        cValues.put(KEY_TRIGGER_BY, tickertext);
-//        cValues.put(KEY_TIME_IN, time);
-//        cValues.put(KEY_DISPLAY_WIDTH, notititle);
-//        cValues.put(KEY_TIME_OUT, notitext);
-//        // Insert the new row, returning the primary key value of the new row
-//        long newRowId = db.insert(TABLE_NAME_READING_BEHAVIOR,null, cValues);
-//        db.close();
-//    }
+    void insertReadingBehaviorDetails(ReadingBehavior readingBehavior){
+        //Get the Data Repository in write mode
+        SQLiteDatabase db = this.getWritableDatabase();
+        //Create a new map of values, where column names are the keys
+        ContentValues cValues = new ContentValues();
+        cValues.put(KEY_NEWS_ID, readingBehavior.getKEY_NEWS_ID());
+        cValues.put(KEY_TRIGGER_BY, readingBehavior.getKEY_TRIGGER_BY());
+        cValues.put(KEY_TIME_IN, readingBehavior.getKEY_TIME_IN());
+        cValues.put(KEY_TIME_OUT, readingBehavior.getKEY_TIME_OUT());
+        cValues.put(KEY_CONTENT_LENGTH, readingBehavior.getKEY_CONTENT_LENGTH());
+        cValues.put(KEY_DISPLAY_WIDTH, readingBehavior.getKEY_DISPLAY_WIDTH());
+        cValues.put(KEY_DISPLAY_HEIGHT, readingBehavior.getKEY_DISPLAY_HEIGHT());
+        cValues.put(KEY_TIME_ON_PAGE, readingBehavior.getKEY_TIME_ON_PAGE());
+        cValues.put(KEY_PAUSE_ON_PAGE, readingBehavior.getKEY_PAUSE_ON_PAGE());
+        cValues.put(KEY_VIEW_PORT_NUM, readingBehavior.getKEY_VIEW_PORT_NUM());
+        cValues.put(KEY_VIEW_PORT_RECORD, readingBehavior.getKEY_VIEW_PORT_RECORD());
+        cValues.put(KEY_FLING_NUM, readingBehavior.getKEY_FLING_NUM());
+        cValues.put(KEY_FLING_RECORD, readingBehavior.getKEY_FLING_RECORD());
+        cValues.put(KEY_DRAG_NUM, readingBehavior.getKEY_DRAG_NUM());
+        cValues.put(KEY_DRAG_RECORD, readingBehavior.getKEY_DRAG_RECORD());
+        cValues.put(KEY_SHARE, readingBehavior.getKEY_SHARE());
+        // Insert the new row, returning the primary key value of the new row
+        long newRowId = db.insert(TABLE_NAME_READING_BEHAVIOR,null, cValues);
+        db.close();
+    }
 
 
 

@@ -65,19 +65,26 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
     private static final String DEBUG_TAG = "Gestures";
 //    private GestureDetectorCompat mDetector;
     private MySimpleGestureListener detector;
-//  check trigger from
-//    String TriggerFrom = "";
+
+    List<DragObj> dragObjArrayListArray = new ArrayList<>();
 
     ReadingBehavior myReadingBehavior = new ReadingBehavior();
-
-
+    ReadingBehaviorDbHelper dbHandler;
     @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(api = Build.VERSION_CODES.N)
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("log: activity cycle", "On create");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sample_news);
-        myReadingBehavior.setKEY_PAUSE_ON_PAGE(0);
+//        myReadingBehavior.setKEY_PAUSE_ON_PAGE(0);
+//        myReadingBehavior.setKEY_FLING_NUM(0);
+//        myReadingBehavior.setKEY_DRAG_NUM(0);
+//        myReadingBehavior.setKEY_SHARE(0);
+        //open database ############################################################################
+        dbHandler = new ReadingBehaviorDbHelper(SampleNewsActivity.this);
+
+        Toast.makeText(getApplicationContext(), "Details Inserted Successfully", Toast.LENGTH_SHORT).show();
+        //check trigger from #######################################################################
         if (getIntent().getExtras() != null) {
             Bundle b = getIntent().getExtras();
 //            TriggerFrom = b.getString("trigger_from");
@@ -422,7 +429,6 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
                     int viewWidth = content_view.getWidth();
                     int viewHeight = content_view.getHeight();
                     int dp_unit = pxToDp(viewHeight, content_view.getContext());
-//                    Log.d("log: content_length_px", String.valueOf(viewHeight));
                     myReadingBehavior.setKEY_CONTENT_LENGTH(String.valueOf(dp_unit));
                     Log.d("log: content_length_dp", myReadingBehavior.getKEY_CONTENT_LENGTH());
                 }
@@ -532,12 +538,96 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
         myReadingBehavior.setKEY_TIME_OUT(formatter.format(date));
         Log.d("log: time_out", myReadingBehavior.getKEY_TIME_OUT());
         myReadingBehavior.setKEY_PAUSE_ON_PAGE(myReadingBehavior.getKEY_PAUSE_ON_PAGE()-1);
+        Log.d("log: fling_count", String.valueOf(myReadingBehavior.getKEY_FLING_NUM()));
+        Log.d("log: fling_record", String.valueOf(myReadingBehavior.getKEY_FLING_RECORD()));
         Log.d("log: final pause count", String.valueOf(myReadingBehavior.getKEY_PAUSE_ON_PAGE()));
+        Log.d("log: share", String.valueOf(myReadingBehavior.getKEY_SHARE()));
 //        activityStopped = true;
         activityEnd = true;
         if (mReceiver != null) {
             unregisterReceiver(mReceiver);
         }
+        String drag_str = "";
+        int drag_count = 0;
+        float drag_x_1 = 0;
+        float drag_y_1 = 0;
+        float drag_x_2 = 0;
+        float drag_y_2 = 0;
+
+        for(int iter = 0; iter < dragObjArrayListArray.size(); iter++){
+            if (drag_x_1==0 && drag_y_1==0){
+                drag_x_1 = dragObjArrayListArray.get(iter).getPOINT_ONE_X();
+                drag_y_1 = dragObjArrayListArray.get(iter).getPOINT_ONE_Y();
+                drag_x_2 = dragObjArrayListArray.get(iter).getPOINT_TWO_X();
+                drag_y_2 = dragObjArrayListArray.get(iter).getPOINT_TWO_Y();
+            } else if (drag_x_1==dragObjArrayListArray.get(iter).getPOINT_ONE_X() && drag_y_1==dragObjArrayListArray.get(iter).getPOINT_ONE_Y()){
+                drag_x_2 = dragObjArrayListArray.get(iter).getPOINT_TWO_X();
+                drag_y_2 = dragObjArrayListArray.get(iter).getPOINT_TWO_Y();
+            } else {
+                //find end
+                drag_count+=1;
+                drag_str+="drag num:" + drag_count + "\n";
+                drag_str+="point1: (" + drag_x_1 + ", " + drag_y_1 + ")\n";
+                drag_str+="point2: (" + drag_x_2 + ", " + drag_y_2 + ")\n";
+                drag_x_1 = 0;
+                drag_y_1 = 0;
+                drag_x_2 = 0;
+                drag_y_2 = 0;
+            }
+        }
+        if ((drag_x_1+drag_y_1+drag_x_2+drag_y_2)==0){
+            //end at final else
+        } else {
+            drag_count+=1;
+            drag_str+="drag num:" + drag_count + "\n";
+            drag_str+="point1: (" + drag_x_1 + ", " + drag_y_1 + ")\n";
+            drag_str+="point2: (" + drag_x_2 + ", " + drag_y_2 + ")\n";
+        }
+        myReadingBehavior.setKEY_DRAG_NUM(drag_count);
+        myReadingBehavior.setKEY_DRAG_RECORD(drag_str);
+        Log.d("log: drag_count", String.valueOf(myReadingBehavior.getKEY_DRAG_NUM()));
+        Log.d("log: drag_record", String.valueOf(myReadingBehavior.getKEY_DRAG_RECORD()));
+        dbHandler.insertReadingBehaviorDetails(myReadingBehavior);
+//        Log.d("log: share", "---------------------------------------");
+//        if(dragObjArrayListArray.size()>=2){
+//            long diff = 0;
+//            int drag_count = 1;
+//            String drag_record = "";
+//            String drag_num = "drag num:" + drag_count + "\n";
+//            String point_1 = "point1: (" + dragObjArrayListArray.get(0).getPOINT_ONE_X() + ", " + dragObjArrayListArray.get(0).getPOINT_ONE_Y() + ")\n";
+//            String point_2 = "";
+//            for(int iter = 1; iter < dragObjArrayListArray.size(); iter++) {
+//                Log.d("log: drag_debug", String.valueOf(diff));
+//                Log.d("log: drag_debug", String.valueOf(dragObjArrayListArray.get(iter).getPOINT_ONE_X()));
+//                Log.d("log: drag_debug", String.valueOf(dragObjArrayListArray.get(iter).getPOINT_ONE_Y()));
+//                if (point_1!=""){
+//                    //exist first point
+//                    diff = dragObjArrayListArray.get(iter).getTIME_ONE()-dragObjArrayListArray.get(iter-1).getTIME_ONE();
+//                    if(diff<70){
+//                        //same darg
+//                    } else {
+//                        point_2 = "point2: (" + dragObjArrayListArray.get(iter-1).getPOINT_ONE_X() + ", " + dragObjArrayListArray.get(iter-1).getPOINT_ONE_Y() + ")\n";
+//                        drag_record+=drag_num+point_1+point_2;
+//
+//                        drag_count+=1;
+//                        drag_num = "drag num:" + drag_count + "\n";
+//                        point_1 = "";
+//                        point_2 = "";
+//                    }
+//                } else {
+//                    point_1 = "point1: (" + dragObjArrayListArray.get(iter).getPOINT_ONE_X() + ", " + dragObjArrayListArray.get(iter).getPOINT_ONE_Y() + ")\n";
+//                }
+//            }
+//            point_2 = "point2: (" + dragObjArrayListArray.get(dragObjArrayListArray.size()-1).getPOINT_ONE_X() + ", " + dragObjArrayListArray.get(dragObjArrayListArray.size()-1).getPOINT_ONE_Y() + ")\n";
+//            drag_record+=drag_num+point_1+point_2;
+//            myReadingBehavior.setKEY_DRAG_NUM(drag_count);
+//            myReadingBehavior.setKEY_DRAG_RECORD(drag_record);
+//        } else {
+//            myReadingBehavior.setKEY_DRAG_NUM(0);
+//            myReadingBehavior.setKEY_DRAG_RECORD("");
+//        }
+//        Log.d("log: drag_count", String.valueOf(myReadingBehavior.getKEY_DRAG_NUM()));
+//        Log.d("log: drag_record", String.valueOf(myReadingBehavior.getKEY_DRAG_RECORD()));
 
     }
 
@@ -605,6 +695,7 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
 
         if  (id == R.id.share){
             Toast.makeText(this, "share is being clicked", Toast.LENGTH_LONG).show();
+            myReadingBehavior.setKEY_SHARE(1);
             try{
 //                Intent i = new Intent(Intent.ACTION_SEND);
 //                i.setType("text/plan");
@@ -643,20 +734,38 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
     }
 
     @Override
-    public void onSwipe(int direction) {
-        String str = "";
+    public void onSwipe(int direction, FlingObj flingObj) {
+        myReadingBehavior.setKEY_FLING_NUM(myReadingBehavior.getKEY_FLING_NUM()+1);
+        flingObj.setFLING_ID(myReadingBehavior.getKEY_FLING_NUM());
+        String str_fling = myReadingBehavior.getKEY_FLING_RECORD();
+        str_fling+="fling num:" + flingObj.getFLING_ID() + "\n";
+        str_fling+="point1: (" + flingObj.getPOINT_ONE_X() + ", " + flingObj.getPOINT_ONE_Y() + ")\n";
+        str_fling+="point2: (" + flingObj.getPOINT_TWO_X() + ", " + flingObj.getPOINT_TWO_Y() + ")\n";
+        str_fling+="distance_x:" + flingObj.getDISTANCE_X() + "\n";
+        str_fling+="distance_y:" + flingObj.getDISTANCE_Y() + "\n";
+        str_fling+="velocity_x:" + flingObj.getVELOCITY_X() + "\n";
+        str_fling+="velocity_y:" + flingObj.getVELOCITY_Y() + "\n";
         switch (direction) {
-            case MySimpleGestureListener.SWIPE_RIGHT : str = "Swipe Right";
+            case MySimpleGestureListener.SWIPE_RIGHT : str_fling += "Swipe Right\n";
                 break;
-            case MySimpleGestureListener.SWIPE_LEFT : str = "Swipe Left";
+            case MySimpleGestureListener.SWIPE_LEFT : str_fling += "Swipe Left\n";
                 break;
-            case MySimpleGestureListener.SWIPE_DOWN : str = "Swipe Down";
+            case MySimpleGestureListener.SWIPE_DOWN : str_fling += "Swipe Down\n";
                 break;
-            case MySimpleGestureListener.SWIPE_UP : str = "Swipe Up";
+            case MySimpleGestureListener.SWIPE_UP : str_fling += "Swipe Up\n";
                 break;
         }
-//        Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
-        Log.d("log: GestureListener",str);
+        myReadingBehavior.setKEY_FLING_RECORD(str_fling);
+//        Toast.makeText(this, str_fling, Toast.LENGTH_SHORT).show();
+//        Log.d("log: per_fling_record", myReadingBehavior.getKEY_FLING_RECORD());
+    }
+
+    @Override
+    public void onOnePoint(DragObj dragObj) {
+
+        dragObjArrayListArray.add(dragObj);
+//        Log.d("log: drag_debug", "point1: (" + dragObj.getPOINT_ONE_X() + ", " + dragObj.getPOINT_ONE_Y() + ")\n");
+//        Log.d("log: drag_debug", "point2: (" + dragObj.getPOINT_TWO_X() + ", " + dragObj.getPOINT_TWO_Y() + ")\n");
     }
 
 //    @Override
