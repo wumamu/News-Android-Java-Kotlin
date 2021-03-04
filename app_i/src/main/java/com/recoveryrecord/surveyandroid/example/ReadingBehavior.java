@@ -18,6 +18,7 @@ public class ReadingBehavior {
     private int KEY_DRAG_NUM;//
     private String KEY_DRAG_RECORD;//
     private int KEY_SHARE;//
+    private String KEY_TIME_SERIES;
 
     public ReadingBehavior() {
         this.KEY_NEWS_ID = "";
@@ -36,6 +37,7 @@ public class ReadingBehavior {
         this.KEY_DRAG_NUM = 0;
         this.KEY_DRAG_RECORD = "";
         this.KEY_SHARE = 0;
+        this.KEY_TIME_SERIES = "";
     }
 
     public ReadingBehavior(String KEY_NEWS_ID,
@@ -53,7 +55,8 @@ public class ReadingBehavior {
                            String KEY_FLING_RECORD,
                            int KEY_DRAG_NUM,
                            String KEY_DRAG_RECORD,
-                           int KEY_SHARE) {
+                           int KEY_SHARE,
+                           String KEY_TIME_SERIES) {
         this.KEY_NEWS_ID = KEY_NEWS_ID;
         this.KEY_TRIGGER_BY = KEY_TRIGGER_BY;
         this.KEY_TIME_IN = KEY_TIME_IN;
@@ -70,6 +73,7 @@ public class ReadingBehavior {
         this.KEY_DRAG_NUM = KEY_DRAG_NUM;
         this.KEY_DRAG_RECORD = KEY_DRAG_RECORD;
         this.KEY_SHARE = KEY_SHARE;
+        this.KEY_TIME_SERIES = KEY_TIME_SERIES;
     }
 
 
@@ -199,5 +203,13 @@ public class ReadingBehavior {
 
     public void setKEY_SHARE(int KEY_SHARE) {
         this.KEY_SHARE = KEY_SHARE;
+    }
+
+    public String getKEY_TIME_SERIES() {
+        return KEY_TIME_SERIES;
+    }
+
+    public void setKEY_TIME_SERIES(String KEY_TIME_SERIES) {
+        this.KEY_TIME_SERIES = KEY_TIME_SERIES;
     }
 }
