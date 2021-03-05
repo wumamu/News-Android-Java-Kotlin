@@ -25,9 +25,6 @@ public class ApplicationSelectorReceiver extends BroadcastReceiver {
                 assert componentInfo != null;
                 String appName = (String) packageManager.getApplicationLabel(packageManager.getApplicationInfo(componentInfo.getPackageName(), PackageManager.GET_META_DATA));
                 Log.d("log: Selected App Name", appName);
-                Intent intent_app = new Intent("com.recoveryrecord.surveyandroid.example.NOTIFICATION_LISTENER_EXAMPLE");
-                intent_app.putExtra("share_app",appName);
-                context.sendBroadcast(intent_app);
             } catch (Exception e) {
                 e.printStackTrace();
             }

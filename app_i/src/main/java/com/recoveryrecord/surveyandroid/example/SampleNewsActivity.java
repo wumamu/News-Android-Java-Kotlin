@@ -2,12 +2,9 @@ package com.recoveryrecord.surveyandroid.example;
 
 import android.annotation.SuppressLint;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -44,7 +41,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -55,14 +51,12 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 //import android.support.v7.widget.Toolbar;
 
-
 public class SampleNewsActivity extends AppCompatActivity implements MySimpleGestureListener.SimpleGestureListener {
 //public class SampleNewsActivity extends AppCompatActivity {
     //    String TagCycle = "my activity cycle";
     volatile boolean activityStopped = false;
     volatile boolean activityEnd = false;
     private ScreenStateReceiver mReceiver;
-    String tt = "";
 
 //    private ImageView imageView;
     private String mUrl, mImg, mTitle, mDate, mSource, mAuthor;
@@ -75,7 +69,6 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
     List<DragObj> dragObjArrayListArray = new ArrayList<>();
 
     ReadingBehavior myReadingBehavior = new ReadingBehavior();
-
     ReadingBehaviorDbHelper dbHandler;
     @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -378,17 +371,11 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
                             }
                             Rect scrollBounds = new Rect();
 //                        mScrollView.getHitRect(scrollBounds);
-                            int first_view = -1, last_view = -1;
                             for (int i = 0; i < N; i++) {
                                 if (!myTextViews[i].getLocalVisibleRect(scrollBounds)) {
                                     new_flag[i] = false;
 //                                Log.d(TAG, i + " false");
                                 } else {
-                                    if(first_view==-1){
-                                        first_view = i;
-                                    } else {
-                                        last_view = i;
-                                    }
                                     new_flag[i] = true;
 //                                Log.d(TAG, i + " true");
                                 }
@@ -410,10 +397,6 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
                             }
                             Thread.sleep(100);
                             count_running++;
-                            float temp = count_running/10;
-                            String output_string = temp + " top: " + first_view + " bottom: " + last_view + "\n";
-                            tt+=output_string;
-//                            Log.d("log: time_series", output_string);
 
                         }
                         Log.d("log: MyScrollView", "Finish");
@@ -552,8 +535,6 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
         Date date = new Date(System.currentTimeMillis());
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         String time_now = formatter.format(date);
-        myReadingBehavior.setKEY_TIME_SERIES(tt);
-        Log.d("log: time_series", myReadingBehavior.getKEY_TIME_SERIES());
         myReadingBehavior.setKEY_TIME_OUT(formatter.format(date));
         Log.d("log: time_out", myReadingBehavior.getKEY_TIME_OUT());
         myReadingBehavior.setKEY_PAUSE_ON_PAGE(myReadingBehavior.getKEY_PAUSE_ON_PAGE()-1);
@@ -727,8 +708,7 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.setType("text/plain");
                 shareIntent.putExtra(Intent.EXTRA_TEXT,url); // your above url
-//                Intent receiver = new Intent(this, ApplicationSelectorReceiver.class);
-                Intent receiver = new Intent(this, ShareApplicationSelectorReceiver.class);
+                Intent receiver = new Intent(this, ApplicationSelectorReceiver.class);
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, receiver, PendingIntent.FLAG_UPDATE_CURRENT);
                 Intent chooser = Intent.createChooser(shareIntent, "Share via...", pendingIntent.getIntentSender());
 //                Log.d("log: share via", String.valueOf(pendingIntent.getIntentSender()));
@@ -799,27 +779,4 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
         return new Point(rItem.left + Math.round(event.getX()), rItem.top + Math.round(event.getY()));
     }
 
-}
-
-class ShareApplicationSelectorReceiver extends BroadcastReceiver {
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        String action = intent.getAction();
-        System.out.println(action);
-        for (String key : Objects.requireNonNull(intent.getExtras()).keySet()) {
-            try {
-                ComponentName componentInfo = (ComponentName) intent.getExtras().get(key);
-                PackageManager packageManager = context.getPackageManager();
-                assert componentInfo != null;
-                String appName = (String) packageManager.getApplicationLabel(packageManager.getApplicationInfo(componentInfo.getPackageName(), PackageManager.GET_META_DATA));
-                Log.d("log: Selected App Name", appName);
-//                Intent intent_app = new Intent("com.recoveryrecord.surveyandroid.example.NOTIFICATION_LISTENER_EXAMPLE");
-//                intent_app.putExtra("share_app",appName);
-//                context.sendBroadcast(intent_app);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
 }
