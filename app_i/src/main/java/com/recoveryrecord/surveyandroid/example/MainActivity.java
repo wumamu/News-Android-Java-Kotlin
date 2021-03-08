@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 //        ESMDbHelper esmDbHelper = new ESMDbHelper(this);
         setTitle("Homepage");
-        addAdaLovelace();
+//        addAdaLovelace();
         setContentView(R.layout.activity_main);
         Button btn_to_news = (Button) findViewById(R.id.btn_to_news);
         Button btn_to_diary = (Button) findViewById(R.id.btn_to_diary);
@@ -436,34 +436,34 @@ public class MainActivity extends AppCompatActivity {
         return builder.build() ;
     }
 
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
+//    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    public void addAdaLovelace() {
-        // [START add_ada_lovelace]
-        // Create a new user with a first and last name
-        Map<String, Object> user = new HashMap<>();
-        user.put("first", "Ada");
-        user.put("last", "Lovelac");
-        user.put("born", 1815);
-
-        // Add a new document with a generated ID
-        db.collection("users")
-                .add(user)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d("log: firebase", "DocumentSnapshot added with ID: " + documentReference.getId());
-                        //Log.d( tag: "firebase", "DocumentSnapshot added with ID: " + documentReference.getId());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("log: firebase", "Error adding document");
-                        //Log.w(tag: "firebase", "Error adding document", e);
-                    }
-                });
-        // [END add_ada_lovelace]
-    }
+//    public void addAdaLovelace() {
+//        // [START add_ada_lovelace]
+//        // Create a new user with a first and last name
+//        Map<String, Object> user = new HashMap<>();
+//        user.put("first", "Ada");
+//        user.put("last", "Lovelac");
+//        user.put("born", 1815);
+//
+//        // Add a new document with a generated ID
+//        db.collection("users")
+//                .add(user)
+//                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+//                    @Override
+//                    public void onSuccess(DocumentReference documentReference) {
+//                        Log.d("log: firebase", "DocumentSnapshot added with ID: " + documentReference.getId());
+//                        //Log.d( tag: "firebase", "DocumentSnapshot added with ID: " + documentReference.getId());
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.d("log: firebase", "Error adding document");
+//                        //Log.w(tag: "firebase", "Error adding document", e);
+//                    }
+//                });
+//        // [END add_ada_lovelace]
+//    }
 
 }
