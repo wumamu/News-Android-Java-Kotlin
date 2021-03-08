@@ -30,8 +30,6 @@ public class ReadingBehaviorDbHelper extends SQLiteOpenHelper {
     private static final String KEY_DRAG_NUM = "drag_num";
     private static final String KEY_DRAG_RECORD = "drag_counter";
     private static final String KEY_SHARE = "share";
-    private static final String KEY_TIME_SERIES = "time_series";
-
     public ReadingBehaviorDbHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -54,8 +52,7 @@ public class ReadingBehaviorDbHelper extends SQLiteOpenHelper {
                 + KEY_FLING_RECORD + " TEXT,"
                 + KEY_DRAG_NUM + " INT,"
                 + KEY_DRAG_RECORD + " INT,"
-                + KEY_SHARE + " INT,"
-                + KEY_TIME_SERIES + " TEXT"+ ")";
+                + KEY_SHARE + " INT"+ ")";
         db.execSQL(CREATE_TABLE);
     }
 
@@ -91,7 +88,6 @@ public class ReadingBehaviorDbHelper extends SQLiteOpenHelper {
         cValues.put(KEY_DRAG_NUM, readingBehavior.getKEY_DRAG_NUM());
         cValues.put(KEY_DRAG_RECORD, readingBehavior.getKEY_DRAG_RECORD());
         cValues.put(KEY_SHARE, readingBehavior.getKEY_SHARE());
-        cValues.put(KEY_TIME_SERIES, readingBehavior.getKEY_TIME_SERIES());
         // Insert the new row, returning the primary key value of the new row
         long newRowId = db.insert(TABLE_NAME_READING_BEHAVIOR,null, cValues);
         db.close();

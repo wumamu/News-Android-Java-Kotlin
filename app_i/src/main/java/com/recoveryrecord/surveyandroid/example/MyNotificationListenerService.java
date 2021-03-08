@@ -1,7 +1,5 @@
 package com.recoveryrecord.surveyandroid.example;
 
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -44,25 +42,6 @@ public class MyNotificationListenerService extends NotificationListenerService {
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
         Log.i(TAG,"**********  onNotificationPosted");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                cancelNotification(sbn.getKey());
-                Log.i(TAG, "++++++++++++++++++++");
-            }
-        }
-//        Notification notification = sbn.getNotification();
-//        PendingIntent contentIntent = notification.contentIntent;
-////        contentIntent.cancel();
-//        contentIntent.toString();
-//        Log.i(TAG, "toString" + contentIntent.toString());
-//        Log.i(TAG, "getCreatorPackage" + contentIntent.getCreatorPackage());
-////        contentIntent.describeContents();
-////        contentIntent.getCreatorPackage();
-//        Log.i(TAG, "describeContents" + contentIntent.describeContents());
-//        Log.i(TAG, "getCreatorPackage" + contentIntent.getCreatorPackage());
-//        Log.i(TAG, String.valueOf(contentIntent.getCreatorPackage()));
-//        Actions[] actions = notification.actions;
-        
 //        Log.i(TAG, java.text.DateFormat.getDateTimeInstance().format(new Date()) + "\t" + sbn.getNotification().tickerText + "\t" + sbn.getPackageName());
         String on_noti_post = "";
         on_noti_post = "hello" + "\n";
