@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 
@@ -104,7 +105,7 @@ public class NotificationSettingActivity extends Activity {
                     text = text + split[5];
                     NotificationDbHelper dbHandler = new NotificationDbHelper(NotificationSettingActivity.this);
                     dbHandler.insertNotificationDetails(packagename, tickertext, time, title, text);
-//                Toast.makeText(getApplicationContext(), "Details Inserted Successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Details Inserted Successfully", Toast.LENGTH_SHORT).show();
                 }
             }
 //            if (to_display_post!=null){

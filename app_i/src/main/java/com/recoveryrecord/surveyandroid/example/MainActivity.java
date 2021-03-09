@@ -1,11 +1,13 @@
 package com.recoveryrecord.surveyandroid.example;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.TimePickerDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -26,11 +28,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
+import androidx.fragment.app.DialogFragment;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -38,6 +42,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +50,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -91,7 +97,10 @@ public class MainActivity extends AppCompatActivity {
     private AudioManager myAudioManager;
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
     NotificationManager manager;
-//    Notification myNotication;
+//    private AlarmManager alarmMgr;
+//    private PendingIntent alarmIntent;
+
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,75 +150,104 @@ public class MainActivity extends AppCompatActivity {
                 //MainActivity.this.finish();
             }
         });
+
         btn_to_test.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.P)
             @Override
             public void onClick(View v) {
-                int mode_ring =myAudioManager.getRingerMode();//ringtone mode
-                if(mode_ring==AudioManager.RINGER_MODE_VIBRATE){
-                    Log.e("log: ring mode", "Vibrate");
-        //            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
-                } else if(mode_ring==AudioManager.RINGER_MODE_NORMAL){
-                    Log.e("log: ring mode", "Ringing");
-        //            Toast.makeText(MainActivity.this,"Now in Ringing Mode", Toast.LENGTH_LONG).show();
-                } else if (mode_ring==AudioManager.RINGER_MODE_SILENT){
-                    Log.e("log: ring mode", "Silent");
-        //            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
-                } else {
-                    Log.e("log: ring mode", "Unknown");
-                }
-                int mode_audio =myAudioManager.getMode();
-                if(mode_audio==AudioManager.MODE_NORMAL){
-                    Log.e("log: audio mode", "normal");
-                    //            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
-                } else if(mode_audio==AudioManager.MODE_RINGTONE){
-                    Log.e("log: audio mode", "is ringing");
-                    //            Toast.makeText(MainActivity.this,"Now in Ringing Mode", Toast.LENGTH_LONG).show();
-                } else if (mode_audio==AudioManager.MODE_IN_CALL){
-                    Log.e("log: audio mode", "in call");
-                    //            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
-                } else if (mode_audio==AudioManager.MODE_IN_COMMUNICATION){
-                    Log.e("log: audio mode", "in internet chat");
-                    //            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
-                } else {
-                    Log.e("log: audio mode", "Unknown");
-                }
-                int volume_ring = myAudioManager.getStreamVolume(STREAM_RING);
-                int volume_noti = myAudioManager.getStreamVolume(STREAM_NOTIFICATION);
-                int volume_alarm = myAudioManager.getStreamVolume(STREAM_ALARM);
-                int volume_music = myAudioManager.getStreamVolume(STREAM_MUSIC);
-                int volume_max = myAudioManager.getStreamMaxVolume(STREAM_MUSIC);
-                int volume_min = myAudioManager.getStreamMinVolume(STREAM_MUSIC);
-                Log.e("log: volume ring", String.valueOf(volume_ring));
-                Log.e("log: volume noti", String.valueOf(volume_noti));
-                Log.e("log: volume alarm", String.valueOf(volume_alarm));
-                Log.e("log: volume music", String.valueOf(volume_music));
-                Log.e("log: volume max", String.valueOf(volume_max));
-                Log.e("log: volume min", String.valueOf(volume_min));
-                boolean music = myAudioManager.isMusicActive();
-                Log.e("log: music", String.valueOf(music));
-                AudioDeviceInfo[] devices = myAudioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
-                for (AudioDeviceInfo device: devices) {
-                    if (device.getType() == AudioDeviceInfo.TYPE_WIRED_HEADPHONES){
-                        Log.e("log: AudioDevice type", "headphone");
-//                        Toast.makeText(MainActivity.this,"123", Toast.LENGTH_LONG).show();
-                    } else if (device.getType() == AudioDeviceInfo.TYPE_WIRED_HEADSET){
-                        Log.e("log: AudioDevice type", "headset");
-//                        Toast.makeText(MainActivity.this,"456", Toast.LENGTH_LONG).show();
-                    } else if (device.getType() == AudioDeviceInfo.TYPE_USB_HEADSET) {
-                        Log.e("log: AudioDevice type", "headset usb");
-//                        Toast.makeText(MainActivity.this,"789", Toast.LENGTH_LONG).show();
-                    } else if (device.getType() == AudioDeviceInfo.TYPE_BLUETOOTH_SCO){
-                        Log.e("log: AudioDevice type", "Bluetooth device typically used for telephony");
-                    } else if (device.getType() == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP){
-                        Log.e("log: AudioDevice type", "Bluetooth device supporting the A2DP profile.");
-                    } else {
-                        Log.e("log: AudioDevice type", "unknown device");
-                    }
-                }
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(System.currentTimeMillis());
+                calendar.set(Calendar.HOUR_OF_DAY, 2);
+                calendar.set(Calendar.MINUTE, 12);
+//                alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000 * 60 * 20, alarmIntent);
+                scheduleNotification_repeat(getNotification("news (5 second delay)"), calendar);
+//                Calendar calendar = Calendar.getInstance();
+//                calendar.setTimeInMillis(System.currentTimeMillis());
+//                calendar.set(Calendar.HOUR_OF_DAY, 8);
+//                calendar.set(Calendar.MINUTE, 30);
+//                alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000 * 60 * 20, alarmIntent);
+//                Calendar cldr = Calendar.getInstance();
+//                int hour = cldr.get(Calendar.HOUR_OF_DAY);
+//                int minutes = cldr.get(Calendar.MINUTE);
+//                // time picker dialog
+//                picker = new TimePickerDialog(MainActivity.this, new TimePickerDialog.OnTimeSetListener() {
+//                    @Override
+//                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+////                                eText.setText(sHour + ":" + sMinute);
+//                                Calendar c = Calendar.getInstance();
+//                                c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+//                                c.set(Calendar.MINUTE, minute);
+//                                c.set(Calendar.SECOND, 0);
+////                                updateTimeText(c);
+////                                startAlarm(c);
+//                            }
+//                        }, hour, minutes, true);
+//                picker.show();
             }
         });
-        // device info
+        //ring mode ################################################################################
+        int mode_ring =myAudioManager.getRingerMode();//ringtone mode
+        if(mode_ring==AudioManager.RINGER_MODE_VIBRATE){
+            Log.e("log: ring mode", "Vibrate");
+//            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
+        } else if(mode_ring==AudioManager.RINGER_MODE_NORMAL){
+            Log.e("log: ring mode", "Ringing");
+//            Toast.makeText(MainActivity.this,"Now in Ringing Mode", Toast.LENGTH_LONG).show();
+        } else if (mode_ring==AudioManager.RINGER_MODE_SILENT){
+            Log.e("log: ring mode", "Silent");
+//            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
+        } else {
+            Log.e("log: ring mode", "Unknown");
+        }
+        int mode_audio =myAudioManager.getMode();
+        if(mode_audio==AudioManager.MODE_NORMAL){
+            Log.e("log: audio mode", "normal");
+            //            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
+        } else if(mode_audio==AudioManager.MODE_RINGTONE){
+            Log.e("log: audio mode", "is ringing");
+            //            Toast.makeText(MainActivity.this,"Now in Ringing Mode", Toast.LENGTH_LONG).show();
+        } else if (mode_audio==AudioManager.MODE_IN_CALL){
+            Log.e("log: audio mode", "in call");
+            //            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
+        } else if (mode_audio==AudioManager.MODE_IN_COMMUNICATION){
+            Log.e("log: audio mode", "in internet chat");
+            //            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
+        } else {
+            Log.e("log: audio mode", "Unknown");
+        }
+        int volume_ring = myAudioManager.getStreamVolume(STREAM_RING);
+        int volume_noti = myAudioManager.getStreamVolume(STREAM_NOTIFICATION);
+        int volume_alarm = myAudioManager.getStreamVolume(STREAM_ALARM);
+        int volume_music = myAudioManager.getStreamVolume(STREAM_MUSIC);
+        int volume_max = myAudioManager.getStreamMaxVolume(STREAM_MUSIC);
+        int volume_min = myAudioManager.getStreamMinVolume(STREAM_MUSIC);
+        Log.e("log: volume ring", String.valueOf(volume_ring));
+        Log.e("log: volume noti", String.valueOf(volume_noti));
+        Log.e("log: volume alarm", String.valueOf(volume_alarm));
+        Log.e("log: volume music", String.valueOf(volume_music));
+        Log.e("log: volume max", String.valueOf(volume_max));
+        Log.e("log: volume min", String.valueOf(volume_min));
+        boolean music = myAudioManager.isMusicActive();
+        Log.e("log: music", String.valueOf(music));
+        AudioDeviceInfo[] devices = myAudioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
+        for (AudioDeviceInfo device: devices) {
+            if (device.getType() == AudioDeviceInfo.TYPE_WIRED_HEADPHONES){
+                Log.e("log: AudioDevice type", "headphone");
+//                        Toast.makeText(MainActivity.this,"123", Toast.LENGTH_LONG).show();
+            } else if (device.getType() == AudioDeviceInfo.TYPE_WIRED_HEADSET){
+                Log.e("log: AudioDevice type", "headset");
+//                        Toast.makeText(MainActivity.this,"456", Toast.LENGTH_LONG).show();
+            } else if (device.getType() == AudioDeviceInfo.TYPE_USB_HEADSET) {
+                Log.e("log: AudioDevice type", "headset usb");
+//                        Toast.makeText(MainActivity.this,"789", Toast.LENGTH_LONG).show();
+            } else if (device.getType() == AudioDeviceInfo.TYPE_BLUETOOTH_SCO){
+                Log.e("log: AudioDevice type", "Bluetooth device typically used for telephony");
+            } else if (device.getType() == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP){
+                Log.e("log: AudioDevice type", "Bluetooth device supporting the A2DP profile.");
+            } else {
+                Log.e("log: AudioDevice type", "unknown device");
+            }
+        }
+        // device info #############################################################################
         String  details =  "VERSION.RELEASE : "+Build.VERSION.RELEASE
                 +"\nVERSION.INCREMENTAL : "+Build.VERSION.INCREMENTAL
                 +"\nVERSION.SDK.NUMBER : "+Build.VERSION.SDK_INT
@@ -361,32 +399,35 @@ public class MainActivity extends AppCompatActivity {
         //getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public boolean onOptionsItemSelected (MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_5 :
                 scheduleNotification(getNotification("news (5 second delay)" ), 5000 );
-                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
+                scheduleNotification(getNotification_esm("Please fill out the questionnaire" ), 30000 );
                 return true;
             case R.id.action_10 :
                 scheduleNotification(getNotification("news (10 second delay)" ), 10000 );
-                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
+                scheduleNotification(getNotification_esm("Please fill out the questionnaire" ), 30000 );
                 return true;
             case R.id.action_30 :
                 scheduleNotification(getNotification("news (30 second delay)" ), 30000 );
-                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
+                scheduleNotification(getNotification_esm("Please fill out the questionnaire" ), 30000 );
                 return true;
             default :
                 return super.onOptionsItemSelected(item);
         }
     }
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void scheduleNotification (Notification notification, int delay) {
         int nid = (int) System.currentTimeMillis();
         Log.d("log: notification", "news id" + nid);
         Intent notificationIntent = new Intent(this, MyNotificationPublisherNews.class);
         notificationIntent.putExtra(MyNotificationPublisherNews.NOTIFICATION_ID, 1 ) ;
         notificationIntent.putExtra(MyNotificationPublisherNews.NOTIFICATION, notification) ;
-        PendingIntent pendingIntent = PendingIntent.getBroadcast( this, nid, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast( this, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         long futureInMillis = SystemClock.elapsedRealtime() + delay;
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         assert alarmManager != null;
@@ -408,17 +449,22 @@ public class MainActivity extends AppCompatActivity {
         builder.setChannelId(NOTIFICATION_CHANNEL_ID);
         return builder.build() ;
     }
-    private void scheduleNotification_esm (Notification notification, int delay) {
+    @SuppressLint("ShortAlarm")
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void scheduleNotification_repeat (Notification notification, Calendar cc) {
         int nid = (int) System.currentTimeMillis();
         Log.d("log: notification", "news id" + nid);
         Intent notificationIntent = new Intent(this, MyNotificationPublisherNews.class);
         notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION_ID, 1 ) ;
         notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION, notification) ;
-        PendingIntent pendingIntent = PendingIntent.getBroadcast( this, nid, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+        int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast( this, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        long futureInMillis = SystemClock.elapsedRealtime() + delay;
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         assert alarmManager != null;
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+//        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cc.getTimeInMillis(), 1000 * 20, pendingIntent);
+        alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 1000 * 20, 1000 * 20, pendingIntent);
     }
     private Notification getNotification_esm (String content) {
         int nid = (int) System.currentTimeMillis();
@@ -435,6 +481,22 @@ public class MainActivity extends AppCompatActivity {
         builder.setChannelId(NOTIFICATION_CHANNEL_ID);
         return builder.build() ;
     }
+//    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+//    private void startAlarm(Calendar c) {
+//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+////        Intent intent = new Intent(this, AlertReceiver.class);
+//        int nid = (int) System.currentTimeMillis();
+//        Intent notificationIntent = new Intent(this, MyNotificationPublisherNews.class);
+//        notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION_ID, 1 ) ;
+//        notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION, notification) ;
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast( this, nid, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, notificationIntent, 0);
+//        if (c.before(Calendar.getInstance())) {
+//            c.add(Calendar.DATE, 1);
+//        }
+//        alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+//    }
 
 //    FirebaseFirestore db = FirebaseFirestore.getInstance();
 

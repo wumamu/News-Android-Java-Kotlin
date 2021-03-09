@@ -52,12 +52,13 @@ public class MyNotificationListenerService extends NotificationListenerService {
 
 //        Log.i(TAG, java.text.DateFormat.getDateTimeInstance().format(new Date()) + "\t" + sbn.getNotification().tickerText + "\t" + sbn.getPackageName());
         String on_noti_post = "";
-//        on_noti_post = "hello" + "\n";
-//        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-//        Date date = new Date(sbn.getPostTime());
-//        on_noti_post = on_noti_post + formatter.format(date) + "\n";
-//        on_noti_post = on_noti_post + sbn.getPackageName() + "\n";
-//        on_noti_post = on_noti_post + "tickertext: " + sbn.getNotification().tickerText + "\n";
+        //keep length 6
+        on_noti_post = "hello" + "\n";
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+        Date date = new Date(sbn.getPostTime());
+        on_noti_post = on_noti_post + formatter.format(date) + "\n";
+        on_noti_post = on_noti_post + sbn.getPackageName() + "\n";
+        on_noti_post = on_noti_post + "tickertext: " + sbn.getNotification().tickerText + "\n";
         Bundle extras = sbn.getNotification().extras;
         if (extras.containsKey("android.title")) {
             on_noti_post = on_noti_post + "title: " + extras.getString("android.title") + "\n";
@@ -86,7 +87,7 @@ public class MyNotificationListenerService extends NotificationListenerService {
         i_post.putExtra("notification_list", on_noti_post);
 //        Log.i(TAG,on_noti_post);
         sendBroadcast(i_post);
-        Toast.makeText(getApplicationContext(), "Post Inserted Successfully", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getApplicationContext(), "Post Inserted Successfully", Toast.LENGTH_SHORT).show();
 //
 //        Bundle extras = sbn.getNotification().extras;
 //
