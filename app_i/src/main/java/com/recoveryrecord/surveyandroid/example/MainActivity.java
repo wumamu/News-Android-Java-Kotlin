@@ -156,10 +156,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(System.currentTimeMillis());
-                calendar.set(Calendar.HOUR_OF_DAY, 2);
-                calendar.set(Calendar.MINUTE, 12);
+                calendar.set(Calendar.HOUR_OF_DAY, 1);
+                calendar.set(Calendar.MINUTE, 48);
 //                alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000 * 60 * 20, alarmIntent);
-                scheduleNotification_repeat(getNotification("news (5 second delay)"), calendar);
+//                scheduleNotification_repeat(getNotification("my repeat alarm"), calendar);
 //                Calendar calendar = Calendar.getInstance();
 //                calendar.setTimeInMillis(System.currentTimeMillis());
 //                calendar.set(Calendar.HOUR_OF_DAY, 8);
@@ -405,15 +405,15 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_5 :
                 scheduleNotification(getNotification("news (5 second delay)" ), 5000 );
-                scheduleNotification(getNotification_esm("Please fill out the questionnaire" ), 30000 );
+                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
                 return true;
             case R.id.action_10 :
                 scheduleNotification(getNotification("news (10 second delay)" ), 10000 );
-                scheduleNotification(getNotification_esm("Please fill out the questionnaire" ), 30000 );
+                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
                 return true;
             case R.id.action_30 :
                 scheduleNotification(getNotification("news (30 second delay)" ), 30000 );
-                scheduleNotification(getNotification_esm("Please fill out the questionnaire" ), 30000 );
+                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
                 return true;
             default :
                 return super.onOptionsItemSelected(item);
@@ -463,13 +463,13 @@ public class MainActivity extends AppCompatActivity {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         assert alarmManager != null;
 //        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cc.getTimeInMillis(), 1000 * 20, pendingIntent);
-        alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 1000 * 20, 1000 * 20, pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cc.getTimeInMillis(), 1000 * 60, pendingIntent);
+//        alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 1000 * 20, 1000 * 20, pendingIntent);
     }
     private Notification getNotification_esm (String content) {
         int nid = (int) System.currentTimeMillis();
         Intent intent_esm = new Intent();
-        intent_esm.setClass(MainActivity.this, SampleNewsActivity.class);
+        intent_esm.setClass(MainActivity.this, ExampleSurveyActivity.class);
         intent_esm.putExtra("trigger_from", "Notification");
         PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_esm, 0);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);
@@ -481,6 +481,77 @@ public class MainActivity extends AppCompatActivity {
         builder.setChannelId(NOTIFICATION_CHANNEL_ID);
         return builder.build() ;
     }
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void scheduleNotification_esm (Notification notification, int delay) {
+        int nid = (int) System.currentTimeMillis();
+        Log.d("log: notification", "news id" + nid);
+        Intent notificationIntent = new Intent(this, MyNotificationPublisherNews.class);
+        notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION_ID, 1 ) ;
+        notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION, notification) ;
+        int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast( this, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        assert alarmManager != null;
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+    }
+
+//private void scheduleNotification (Notification notification, int delay) {
+//    int nid = (int) System.currentTimeMillis();
+//    Log.d("log: notification", "news id" + nid);
+//    Intent notificationIntent = new Intent(this, MyNotificationPublisherNews.class);
+//    notificationIntent.putExtra(MyNotificationPublisherNews.NOTIFICATION_ID, 1 ) ;
+//    notificationIntent.putExtra(MyNotificationPublisherNews.NOTIFICATION, notification) ;
+//    PendingIntent pendingIntent = PendingIntent.getBroadcast( this, nid, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//    long futureInMillis = SystemClock.elapsedRealtime() + delay;
+//    AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//    assert alarmManager != null;
+//    alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+//}
+//    private Notification getNotification (String content) {
+//        int nid = (int) System.currentTimeMillis();
+//        Log.d("log: notification", "news id" + nid);
+//        Intent intent_news = new Intent();
+//        intent_news.setClass(MainActivity.this, SampleNewsActivity.class);
+//        intent_news.putExtra("trigger_from", "Notification");
+//        PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_news, 0);
+//        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);
+//        builder.setContentTitle("Scheduled NEWS");
+//        builder.setContentText(content);
+//        builder.setSmallIcon(R.drawable.ic_launcher_foreground);
+//        builder.setContentIntent(pendingIntent);
+//        builder.setAutoCancel(true);
+//        builder.setChannelId(NOTIFICATION_CHANNEL_ID);
+//        return builder.build() ;
+//    }
+//    private void scheduleNotification_esm (Notification notification, int delay) {
+//        int nid = (int) System.currentTimeMillis();
+//        Log.d("log: notification", "news id" + nid);
+//        Intent notificationIntent = new Intent(this, MyNotificationPublisherNews.class);
+//        notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION_ID, 1 ) ;
+//        notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION, notification) ;
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast( this, nid, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//        assert alarmManager != null;
+//        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+//    }
+//    private Notification getNotification_esm (String content) {
+//        int nid = (int) System.currentTimeMillis();
+//        Intent intent_esm = new Intent();
+//        intent_esm.setClass(MainActivity.this, ExampleSurveyActivity.class);
+//        intent_esm.putExtra("trigger_from", "Notification");
+//        PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_esm, 0);
+//        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);
+//        builder.setContentTitle("Scheduled ESM");
+//        builder.setContentText(content);
+//        builder.setSmallIcon(R.drawable.ic_launcher_foreground);
+//        builder.setContentIntent(pendingIntent);
+//        builder.setAutoCancel(true);
+//        builder.setChannelId(NOTIFICATION_CHANNEL_ID);
+//        return builder.build() ;
+//    }
+
 //    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
 //    private void startAlarm(Calendar c) {
 //        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);

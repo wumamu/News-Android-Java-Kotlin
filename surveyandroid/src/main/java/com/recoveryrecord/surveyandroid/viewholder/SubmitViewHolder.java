@@ -30,5 +30,6 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
 
             }
         });
+
     }
 }

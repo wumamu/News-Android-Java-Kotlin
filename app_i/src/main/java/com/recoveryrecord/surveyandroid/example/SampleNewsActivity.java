@@ -38,7 +38,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -53,26 +55,31 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadLocalRandom;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 //import android.support.v7.widget.Toolbar;
 
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class SampleNewsActivity extends AppCompatActivity implements MySimpleGestureListener.SimpleGestureListener {
     //    String TagCycle = "my activity cycle";
     volatile boolean activityStopped = false;
     volatile boolean activityEnd = false;
-
+    boolean share_clicked = false;
+    boolean document_create = false;
+    long in_time = System.currentTimeMillis();
     private ScreenStateReceiver mReceiver;//screen on or off
 
     String tt = "";//time series
-
+    String tmp_record = "";//viewport
     private String mUrl, mImg, mTitle, mDate, mSource;
 
     private static final String DEBUG_TAG = "Gestures";
@@ -83,7 +90,7 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
     ReadingBehaviorDbHelper dbHandler;
 
     @SuppressLint("ClickableViewAccessibility")
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    @RequiresApi(api = Build.VERSION_CODES.O)
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("log: activity cycle", "On create");
         super.onCreate(savedInstanceState);
@@ -159,8 +166,12 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
 //        ScrollView mScrollView = findViewById(R.id.scroll_view);
 //        mScrollView.setNestedScrollingEnabled(false);
         //news generate from server ################################################################
-        DocumentReference docRef = db.collection("News").document("ettoday").collection("20210309").document("1");
+        Random rand = new Random();
+        int random_news = ThreadLocalRandom.current().nextInt(1, 3 + 1);
+        Log.d("log: firebase news", String.valueOf(random_news));
+        DocumentReference docRef = db.collection("News").document("ettoday").collection("20210309").document(String.valueOf(random_news));
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
@@ -181,7 +192,8 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
 //                            Log.d("log: firebase", "DocumentSnapshot content: " + c_list.get(i));
 //                        }
                         List<String> divList = new ArrayList<>();
-                        int cut_size = (int) (dpWidth / 15);
+                        int cut_size = (int) (dpWidth / 18);
+                        myReadingBehavior.setKEY_BYTE_PER_LINE(cut_size*2);
                         for (int i = 0; i < c_list.size(); i++) {
                             String str = c_list.get(i);
                             int remainder = (str.length()) % cut_size;
@@ -259,7 +271,7 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
                         Log.d("log: view_port_num", String.valueOf(myReadingBehavior.getKEY_VIEW_PORT_NUM()));
                         //put textview into layout #################################################
                         //int text_size = (int) (dpWidth /30);
-                        int text_size = 12;
+                        int text_size = 15;
                         final TextView myTextViewsTitle = new TextView(SampleNewsActivity.this);
                         final TextView myTextViewsDate = new TextView(SampleNewsActivity.this);
                         final TextView myTextViewsSrc = new TextView(SampleNewsActivity.this);
@@ -270,8 +282,8 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
                         myTextViewsDate.setTextColor(Color.parseColor("black"));
                         myTextViewsSrc.setTextColor(Color.parseColor("black"));
                         myTextViewsTitle.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-                        myTextViewsDate.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 10);
-                        myTextViewsSrc.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 10);
+                        myTextViewsDate.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+                        myTextViewsSrc.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
                         myTextViewsTitle.setGravity(Gravity.LEFT);
                         myTextViewsDate.setGravity(Gravity.LEFT);
                         myTextViewsSrc.setGravity(Gravity.LEFT);
@@ -293,14 +305,42 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
                             rowTextView.setText(tmp);
                             rowTextView.setTextColor(Color.parseColor("black"));
                             rowTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, text_size);
-                            rowTextView.setGravity(Gravity.LEFT);
+//                            rowTextView.setGravity(Gravity.LEFT);
                             rowTextView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
                             rowTextView.setSingleLine(true);
                             rowTextView.setLayoutParams(params);
                             //rowTextView.setBackgroundColor(0xFFFFFF99);
                             ((LinearLayout) findViewById(R.id.layout_inside)).addView(rowTextView);
                             myTextViews[i] = rowTextView;
+//                            Rect bounds = new Rect();
+//                            myTextViews[i].getPaint().getTextBounds(myTextViews[i].getText().toString(), 0, myTextViews[i].getText().length(), bounds);
+//                            myTextViews[i].measure(0, 0);
+//                            int h_dp_unit = pxToDp(myTextViews[i].getMeasuredHeight(), myTextViews[i].getContext());
+//                            int w_dp_unit = pxToDp(myTextViews[i].getMeasuredWidth(), myTextViews[i].getContext());
+//                            Log.d("log: textview h", String.valueOf(h_dp_unit));
+//                            Log.d("log: textview w", String.valueOf(w_dp_unit));
                         }
+                        myTextViews[0].measure(0, 0);
+                        int h_dp_unit = pxToDp(myTextViews[0].getMeasuredHeight(), myTextViews[0].getContext());
+                        myReadingBehavior.setKEY_ROW_SPACING(h_dp_unit);
+                        final LinearLayout content_view = findViewById(R.id.layout_inside);
+                        ViewTreeObserver viewTreeObserver = content_view.getViewTreeObserver();
+                        if (viewTreeObserver.isAlive()) {
+                            viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                                @Override
+                                public void onGlobalLayout() {
+                                    content_view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                                    int viewWidth = content_view.getWidth();
+                                    int viewHeight = content_view.getHeight();
+                                    int dp_unit = pxToDp(viewHeight, content_view.getContext());
+                                    myReadingBehavior.setKEY_CONTENT_LENGTH(String.valueOf(dp_unit));
+                                    Log.d("log: content_length_dp", myReadingBehavior.getKEY_CONTENT_LENGTH());
+                                }
+                            });
+                        }
+                        //create document
+                        addReadingBehavior();
                         final int N = textview_num;
                         class SquareCalculator {
                             private ExecutorService executor = Executors.newFixedThreadPool(1);
@@ -319,7 +359,7 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
 
                             public Future<Integer> no_cal(final int input, final int start_count) {
                                 return executor.submit(new Callable<Integer>() {
-                                    int count_running = 0;
+                                    float count_running = 0;
                                     int[] count = new int[N];
                                     boolean[] old_flag = new boolean[N];
                                     boolean[] new_flag = new boolean[N];
@@ -330,18 +370,20 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
                                         Arrays.fill(new_flag, Boolean.FALSE);
                                         Arrays.fill(count, 0);
                                         Log.d("log: MyScrollView", "Start");
+//                                        myReadingBehavior.setKEY_TIME_ON_PAGE(count_running / 10);
                                         while (!activityEnd) {
+//                                            Log.d("log: time_on_page", String.valueOf(myReadingBehavior.getKEY_TIME_ON_PAGE()));
                                             if (activityStopped && !activityEnd) {
                                                 Log.d("log: MyScrollView", "Stop");
-                                                String tmp_record = "";
+                                                tmp_record = "";
                                                 for (int i = 0; i < N; i++) {
 //                                    Log.d("log: MyScrollView", i + " count: " + count[i] / 10);
                                                     tmp_record+=i+1 + ": " + count[i] / 10 + "\n";
                                                 }
                                                 myReadingBehavior.setKEY_VIEW_PORT_RECORD(tmp_record);
                                                 Log.d("log: view_port_record", myReadingBehavior.getKEY_VIEW_PORT_RECORD());
-                                                myReadingBehavior.setKEY_TIME_ON_PAGE(String.valueOf(count_running / 10));
-                                                Log.d("log: time_on_page", myReadingBehavior.getKEY_TIME_ON_PAGE());
+//                                                myReadingBehavior.setKEY_TIME_ON_PAGE(count_running / 10);
+//                                                Log.d("log: time_on_page", String.valueOf(myReadingBehavior.getKEY_TIME_ON_PAGE()));
                                                 while (activityStopped) {
                                                     Thread.sleep(100);
                                                 }
@@ -382,8 +424,13 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
                                             Thread.sleep(100);
                                             count_running++;
                                             float temp = count_running/10;
-                                            String output_string = temp + " top: " + first_view + " bottom: " + last_view + "\n";
+                                            String output_string = temp + " top: " + (first_view+1) + " bottom: " + (last_view+1) + "\n";
                                             tt+=output_string;
+                                            tmp_record = "";
+                                            for (int i = 0; i < N; i++) {
+                                                tmp_record+=i+1 + ": " + count[i] / 10 + "\n";
+                                            }
+                                            myReadingBehavior.setKEY_VIEW_PORT_RECORD(tmp_record);
                                         }
                                         Log.d("log: MyScrollView", "Finish");
                                         String finish_record = "";
@@ -393,8 +440,8 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
                                         }
                                         myReadingBehavior.setKEY_VIEW_PORT_RECORD(finish_record);
                                         Log.d("log: view_port_record", myReadingBehavior.getKEY_VIEW_PORT_RECORD());
-                                        myReadingBehavior.setKEY_TIME_ON_PAGE(String.valueOf(count_running / 10));
-                                        Log.d("log: time_on_page", myReadingBehavior.getKEY_TIME_ON_PAGE());
+//                                        myReadingBehavior.setKEY_TIME_ON_PAGE(count_running / 10);
+//                                        Log.d("log: time_on_page", String.valueOf(myReadingBehavior.getKEY_TIME_ON_PAGE()));
 //                        Log.d("log: MyScrollView", "time_on_page: " + count_running / 10);
                                         return 1;
                                     }
@@ -403,22 +450,6 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
                         }
                         SquareCalculator squareCalculator = new SquareCalculator();
                         Future<Integer> future1 = squareCalculator.no_cal(1, 0);
-                        final LinearLayout content_view = findViewById(R.id.layout_inside);
-                        ViewTreeObserver viewTreeObserver = content_view.getViewTreeObserver();
-                        if (viewTreeObserver.isAlive()) {
-                            viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-                                @Override
-                                public void onGlobalLayout() {
-                                    content_view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                                    int viewWidth = content_view.getWidth();
-                                    int viewHeight = content_view.getHeight();
-                                    int dp_unit = pxToDp(viewHeight, content_view.getContext());
-                                    myReadingBehavior.setKEY_CONTENT_LENGTH(String.valueOf(dp_unit));
-                                    Log.d("log: content_length_dp", myReadingBehavior.getKEY_CONTENT_LENGTH());
-                                }
-                            });
-                        }
                     } else {
                         Log.d("log: firebase", "No such document");
                     }
@@ -774,7 +805,7 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
         Log.d("log: activity cycle", "On resume");
         activityStopped = false;
         //isScreenOn(R.layout.activity_news_detail);
-
+        in_time = System.currentTimeMillis();
     }
 
     @Override
@@ -783,14 +814,110 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
         Log.d("log: activity cycle", "On pause");
         activityStopped = true;
         myReadingBehavior.setKEY_PAUSE_ON_PAGE(myReadingBehavior.getKEY_PAUSE_ON_PAGE()+1);
+        long tmp = myReadingBehavior.getKEY_TIME_ON_PAGE() + (System.currentTimeMillis()-in_time)/1000;
+        myReadingBehavior.setKEY_TIME_ON_PAGE(tmp);
 //        Log.d("log: pause count", String.valueOf(myReadingBehavior.getKEY_PAUSE_ON_PAGE()));
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+        myReadingBehavior.setKEY_TIME_OUT(formatter.format(date));
+//        Log.d("log: time_out", myReadingBehavior.getKEY_TIME_OUT());
+
+        myReadingBehavior.setKEY_TIME_SERIES(tt);
+        Log.d("log: time_series", myReadingBehavior.getKEY_TIME_SERIES());
+
+//        myReadingBehavior.setKEY_PAUSE_ON_PAGE(myReadingBehavior.getKEY_PAUSE_ON_PAGE()-1);
+//        Log.d("log: fling_count", String.valueOf(myReadingBehavior.getKEY_FLING_NUM()));
+//        Log.d("log: fling_record", String.valueOf(myReadingBehavior.getKEY_FLING_RECORD()));
+//        Log.d("log: final pause count", String.valueOf(myReadingBehavior.getKEY_PAUSE_ON_PAGE()));
+//        Log.d("log: share", String.valueOf(myReadingBehavior.getKEY_SHARE()));
+//        activityStopped = true;
+//        activityEnd = true;
+//        if (mReceiver != null) {
+//            unregisterReceiver(mReceiver);
+//        }
+        String drag_str = "";
+        int drag_count = 0;
+        float drag_x_1 = 0;
+        float drag_y_1 = 0;
+        float drag_x_2 = 0;
+        float drag_y_2 = 0;
+        long time_one = 0, time_two = 0, duration = 0;
+
+        for(int iter = 0; iter < dragObjArrayListArray.size(); iter++){
+            if (drag_x_1==0 && drag_y_1==0){
+                time_one = dragObjArrayListArray.get(iter).getTIME_ONE();
+                drag_x_1 = dragObjArrayListArray.get(iter).getPOINT_ONE_X();
+                drag_y_1 = dragObjArrayListArray.get(iter).getPOINT_ONE_Y();
+                drag_x_2 = dragObjArrayListArray.get(iter).getPOINT_TWO_X();
+                drag_y_2 = dragObjArrayListArray.get(iter).getPOINT_TWO_Y();
+            } else if (drag_x_1==dragObjArrayListArray.get(iter).getPOINT_ONE_X() && drag_y_1==dragObjArrayListArray.get(iter).getPOINT_ONE_Y()){
+                time_two = dragObjArrayListArray.get(iter).getTIME_ONE();
+                drag_x_2 = dragObjArrayListArray.get(iter).getPOINT_TWO_X();
+                drag_y_2 = dragObjArrayListArray.get(iter).getPOINT_TWO_Y();
+            } else {
+                //find end
+//                duration = (time_two-time_one)/1000;
+                drag_count+=1;
+                if(time_one!=time_two){
+                    duration = (time_two-time_one)/1000;
+                } else {
+                    duration = 0;
+                }
+//                drag_str+="duration:" + time_two + " " + time_one + "\n";
+//                Log.d("log: drag_str", drag_str);
+//                Log.d("log: drag_str", String.valueOf(drag_count));
+//                Log.d("log: drag_str", drag_str);
+//                Log.d("log: drag_str", drag_str);
+                drag_str+="drag num:" + drag_count + "\n";
+                drag_str+="duration:" + duration + "\n";
+                drag_str+="point1: (" + drag_x_1 + ", " + drag_y_1 + ")\n";
+                drag_str+="point2: (" + drag_x_2 + ", " + drag_y_2 + ")\n#";
+                drag_x_1 = 0;
+                drag_y_1 = 0;
+                drag_x_2 = 0;
+                drag_y_2 = 0;
+                duration = 0;
+            }
+        }
+        //last drag
+        if ((drag_x_1+drag_y_1+drag_x_2+drag_y_2)==0){
+            //end at final else
+            Log.d("log: drag_str", "123");
+        } else {
+            drag_count+=1;
+            if(time_one!=time_two){
+                duration = (time_two-time_one)/1000;
+            } else {
+                duration = 0;
+            }
+//            drag_str+="duration:" + time_two + " " + time_one + "\n";
+//            Log.d("log: drag_str", drag_str);
+            drag_str+="drag num:" + drag_count + "\n";
+            drag_str+="duration:" + duration + "\n";
+            drag_str+="point1: (" + drag_x_1 + ", " + drag_y_1 + ")\n";
+            drag_str+="point2: (" + drag_x_2 + ", " + drag_y_2 + ")\n#";
+        }
+        myReadingBehavior.setKEY_DRAG_NUM(drag_count);
+        myReadingBehavior.setKEY_DRAG_RECORD(drag_str);
+//        Log.d("log: drag_count", String.valueOf(myReadingBehavior.getKEY_DRAG_NUM()));
+//        Log.d("log: drag_record", String.valueOf(myReadingBehavior.getKEY_DRAG_RECORD()));
+//        dbHandler.insertReadingBehaviorDetails(myReadingBehavior);
+//        addReadingBehavior();
+//        if(document_create==false){
+//            addReadingBehavior();
+//        } else {
+//            updateReadingBehavior();
+//        }
+        updateReadingBehavior();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onStop() {
         super.onStop();
         Log.d("log: activity cycle", "On stop");
         activityStopped = true;
+
     }
 
     @Override
@@ -798,6 +925,7 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
         super.onRestart();
         Log.d("log: activity cycle", "On restart");
         activityStopped = false;
+//        in_time = System.currentTimeMillis();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -805,65 +933,7 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
     protected void onDestroy() {
         super.onDestroy();
         Log.d("log: activity cycle", "On destroy");
-        Date date = new Date(System.currentTimeMillis());
-        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-        String time_now = formatter.format(date);
-        myReadingBehavior.setKEY_TIME_SERIES(tt);
-        Log.d("log: time_series", myReadingBehavior.getKEY_TIME_SERIES());
-        myReadingBehavior.setKEY_TIME_OUT(formatter.format(date));
-        Log.d("log: time_out", myReadingBehavior.getKEY_TIME_OUT());
-        myReadingBehavior.setKEY_PAUSE_ON_PAGE(myReadingBehavior.getKEY_PAUSE_ON_PAGE()-1);
-        Log.d("log: fling_count", String.valueOf(myReadingBehavior.getKEY_FLING_NUM()));
-        Log.d("log: fling_record", String.valueOf(myReadingBehavior.getKEY_FLING_RECORD()));
-        Log.d("log: final pause count", String.valueOf(myReadingBehavior.getKEY_PAUSE_ON_PAGE()));
-        Log.d("log: share", String.valueOf(myReadingBehavior.getKEY_SHARE()));
-//        activityStopped = true;
         activityEnd = true;
-        if (mReceiver != null) {
-            unregisterReceiver(mReceiver);
-        }
-        String drag_str = "";
-        int drag_count = 0;
-        float drag_x_1 = 0;
-        float drag_y_1 = 0;
-        float drag_x_2 = 0;
-        float drag_y_2 = 0;
-
-        for(int iter = 0; iter < dragObjArrayListArray.size(); iter++){
-            if (drag_x_1==0 && drag_y_1==0){
-                drag_x_1 = dragObjArrayListArray.get(iter).getPOINT_ONE_X();
-                drag_y_1 = dragObjArrayListArray.get(iter).getPOINT_ONE_Y();
-                drag_x_2 = dragObjArrayListArray.get(iter).getPOINT_TWO_X();
-                drag_y_2 = dragObjArrayListArray.get(iter).getPOINT_TWO_Y();
-            } else if (drag_x_1==dragObjArrayListArray.get(iter).getPOINT_ONE_X() && drag_y_1==dragObjArrayListArray.get(iter).getPOINT_ONE_Y()){
-                drag_x_2 = dragObjArrayListArray.get(iter).getPOINT_TWO_X();
-                drag_y_2 = dragObjArrayListArray.get(iter).getPOINT_TWO_Y();
-            } else {
-                //find end
-                drag_count+=1;
-                drag_str+="drag num:" + drag_count + "\n";
-                drag_str+="point1: (" + drag_x_1 + ", " + drag_y_1 + ")\n";
-                drag_str+="point2: (" + drag_x_2 + ", " + drag_y_2 + ")\n";
-                drag_x_1 = 0;
-                drag_y_1 = 0;
-                drag_x_2 = 0;
-                drag_y_2 = 0;
-            }
-        }
-        if ((drag_x_1+drag_y_1+drag_x_2+drag_y_2)==0){
-            //end at final else
-        } else {
-            drag_count+=1;
-            drag_str+="drag num:" + drag_count + "\n";
-            drag_str+="point1: (" + drag_x_1 + ", " + drag_y_1 + ")\n";
-            drag_str+="point2: (" + drag_x_2 + ", " + drag_y_2 + ")\n";
-        }
-        myReadingBehavior.setKEY_DRAG_NUM(drag_count);
-        myReadingBehavior.setKEY_DRAG_RECORD(drag_str);
-        Log.d("log: drag_count", String.valueOf(myReadingBehavior.getKEY_DRAG_NUM()));
-        Log.d("log: drag_record", String.valueOf(myReadingBehavior.getKEY_DRAG_RECORD()));
-        dbHandler.insertReadingBehaviorDetails(myReadingBehavior);
-        addReadingBehavior();
     }
 
     @Override
@@ -922,7 +992,7 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
         return true;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -930,7 +1000,98 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
 
         if  (id == R.id.share){
             Toast.makeText(this, "share is being clicked", Toast.LENGTH_LONG).show();
-            myReadingBehavior.setKEY_SHARE(1);
+            String share_field = "";
+            final DocumentReference rbRef = db.collection(Build.ID).document(String.valueOf(l_date)).collection("reading_behaviors").document(myReadingBehavior.getKEY_TIME_IN());
+            if(share_clicked){
+//                Date date = new Date(System.currentTimeMillis());
+//                SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+//                String time_now = formatter.format(date);
+//                share_field = time_now;
+//                rbRef.update("share", FieldValue.arrayUnion(share_field));
+                rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                Log.d("log: firebase", "Success");
+                                List<String> share_result = (List<String>) document.get("share");
+                                share_result.add("none");
+//                                share_result.set(0,"none");
+                                rbRef.update("share", share_result)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Log.d("log: firebase", "DocumentSnapshot successfully updated!");
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.w("log: firebase", "Error updating document", e);
+                                            }
+                                        });
+                            } else {
+                                Log.d("log: firebase", "No such document");
+                            }
+                        } else {
+                            Log.d("log: firebase", "get failed with ", task.getException());
+                        }
+                    }
+                });
+
+            } else {
+                //first time
+                share_clicked = true;
+
+                rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                   @Override
+                   public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                       if (task.isSuccessful()) {
+                           DocumentSnapshot document = task.getResult();
+                           if (document.exists()) {
+                               Log.d("log: firebase", "Success");
+                               List<String> share_result = (List<String>) document.get("share");
+                               share_result.set(0,"none");
+                               rbRef.update("share", share_result)
+                                       .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                           @Override
+                                           public void onSuccess(Void aVoid) {
+                                               Log.d("log: firebase", "DocumentSnapshot successfully updated!");
+                                           }
+                                       })
+                                       .addOnFailureListener(new OnFailureListener() {
+                                           @Override
+                                           public void onFailure(@NonNull Exception e) {
+                                               Log.w("log: firebase", "Error updating document", e);
+                                           }
+                                       });
+                           } else {
+                               Log.d("log: firebase", "No such document");
+                           }
+                       } else {
+                           Log.d("log: firebase", "get failed with ", task.getException());
+                       }
+                   }
+                });
+
+//                Date date = new Date(System.currentTimeMillis());
+//                SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+//                String time_now = formatter.format(date);
+//                share_field = time_now;
+//                Map<String, Object> data = new HashMap<>();
+//                rbRef.update("share", FieldValue.arrayRemove("NA"));
+//                rbRef.update("share", FieldValue.arrayUnion(share_field));
+//                db.collection(Build.ID)
+//                        .document(String.valueOf(l_date))
+//                        .collection("reading_behaviors")
+//                        .document(myReadingBehavior.getKEY_TIME_IN())
+//                        .set(data, SetOptions.merge());
+            }
+
+
+
+//            myReadingBehavior.setKEY_SHARE(1);
             try{
 //                Intent i = new Intent(Intent.ACTION_SEND);
 //                i.setType("text/plan");
@@ -939,11 +1100,17 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
 //                i.putExtra(Intent.EXTRA_TEXT, body);
 //                startActivity(Intent.createChooser(i, "Share with :"));
                 String url = mUrl;
-                Toast.makeText(this, "share is being clicked", Toast.LENGTH_LONG).show();
+//                Toast.makeText(this, "share is being clicked", Toast.LENGTH_LONG).show();
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.setType("text/plain");
                 shareIntent.putExtra(Intent.EXTRA_TEXT,url); // your above url
+
                 Intent receiver = new Intent(this, ApplicationSelectorReceiver.class);
+                receiver.putExtra("doc_time", myReadingBehavior.getKEY_TIME_IN());
+                receiver.putExtra("doc_date", String.valueOf(l_date));
+                receiver.putExtra("share_field", share_field);
+//                receiver.putExtra("sh", String.valueOf(l_date));
+//                receiver.putExtra("share_via", "none");
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, receiver, PendingIntent.FLAG_UPDATE_CURRENT);
                 Intent chooser = Intent.createChooser(shareIntent, "Share via...", pendingIntent.getIntentSender());
 //                Log.d("log: share via", String.valueOf(pendingIntent.getIntentSender()));
@@ -952,12 +1119,13 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
             }catch (Exception e){
                 Toast.makeText(this, "Hmm.. Sorry, \nCannot be share", Toast.LENGTH_SHORT).show();
             }
-        } else if (id == R.id.action_esm){
-            Intent intent = new Intent();
-//            intent.setClass(NewsDetailActivity.this, ExampleSurveyActivity.class);
-            intent.setClass(SampleNewsActivity.this, ExampleSurveyActivity.class);
-            startActivity(intent);
         }
+//        else if (id == R.id.action_esm){
+//            Intent intent = new Intent();
+////            intent.setClass(NewsDetailActivity.this, ExampleSurveyActivity.class);
+//            intent.setClass(SampleNewsActivity.this, ExampleSurveyActivity.class);
+//            startActivity(intent);
+//        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -981,13 +1149,13 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
         str_fling+="velocity_x:" + flingObj.getVELOCITY_X() + "\n";
         str_fling+="velocity_y:" + flingObj.getVELOCITY_Y() + "\n";
         switch (direction) {
-            case MySimpleGestureListener.SWIPE_RIGHT : str_fling += "Swipe Right\n";
+            case MySimpleGestureListener.SWIPE_RIGHT : str_fling += "Swipe Right\n#";
                 break;
-            case MySimpleGestureListener.SWIPE_LEFT : str_fling += "Swipe Left\n";
+            case MySimpleGestureListener.SWIPE_LEFT : str_fling += "Swipe Left\n#";
                 break;
-            case MySimpleGestureListener.SWIPE_DOWN : str_fling += "Swipe Down\n";
+            case MySimpleGestureListener.SWIPE_DOWN : str_fling += "Swipe Down\n#";
                 break;
-            case MySimpleGestureListener.SWIPE_UP : str_fling += "Swipe Up\n";
+            case MySimpleGestureListener.SWIPE_UP : str_fling += "Swipe Up\n#";
                 break;
         }
         myReadingBehavior.setKEY_FLING_RECORD(str_fling);
@@ -1015,6 +1183,7 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
     }
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    LocalDate l_date = LocalDate.now();
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void addReadingBehavior() {
         // [START add_ada_lovelace]
@@ -1023,49 +1192,89 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
         readingBehavior.put("news_id",  myReadingBehavior.getKEY_NEWS_ID());
         readingBehavior.put("trigger_by", myReadingBehavior.getKEY_TRIGGER_BY());
         readingBehavior.put("time_in", myReadingBehavior.getKEY_TIME_IN());
-        readingBehavior.put("time_out", myReadingBehavior.getKEY_TIME_OUT());
-        readingBehavior.put("content_length", myReadingBehavior.getKEY_CONTENT_LENGTH());
-        readingBehavior.put("display_width", myReadingBehavior.getKEY_DISPLAY_WIDTH());
-        readingBehavior.put("display_height", myReadingBehavior.getKEY_DISPLAY_HEIGHT());
-        readingBehavior.put("time_on_page", myReadingBehavior.getKEY_TIME_ON_PAGE());
+        readingBehavior.put("time_out", "NA");
+        readingBehavior.put("content_length(dp)", "NA");
+        readingBehavior.put("display_width(dp)", myReadingBehavior.getKEY_DISPLAY_WIDTH());
+        readingBehavior.put("display_height(dp)", myReadingBehavior.getKEY_DISPLAY_HEIGHT());
+        readingBehavior.put("time_on_page(s)", myReadingBehavior.getKEY_TIME_ON_PAGE());
         readingBehavior.put("pause_count", myReadingBehavior.getKEY_PAUSE_ON_PAGE());
         readingBehavior.put("viewport_num", myReadingBehavior.getKEY_VIEW_PORT_NUM());
-        readingBehavior.put("viewport_record", myReadingBehavior.getKEY_VIEW_PORT_RECORD());
+        readingBehavior.put("viewport_record", Arrays.asList("NA"));
         readingBehavior.put("fling_num", myReadingBehavior.getKEY_FLING_NUM());
-        readingBehavior.put("fling_record", myReadingBehavior.getKEY_FLING_RECORD());
+        readingBehavior.put("fling_record", Arrays.asList("NA"));
         readingBehavior.put("drag_num", myReadingBehavior.getKEY_DRAG_NUM());
-        readingBehavior.put("drag_record", myReadingBehavior.getKEY_DRAG_RECORD());
-        readingBehavior.put("share", myReadingBehavior.getKEY_SHARE());
-        readingBehavior.put("share_via", "none");
-        readingBehavior.put("time_series", myReadingBehavior.getKEY_TIME_SERIES());
+        readingBehavior.put("drag_record", Arrays.asList("NA"));
+        readingBehavior.put("share", Arrays.asList("NA"));
+//        readingBehavior.put("share_via", "none");
+        readingBehavior.put("time_series(s)", Arrays.asList("NA"));
+        readingBehavior.put("byte_per_line", myReadingBehavior.getKEY_BYTE_PER_LINE());
+        readingBehavior.put("row_spacing(dp)", myReadingBehavior.getKEY_ROW_SPACING());
 
-//        Date currentDate = new Date();
-//        SimpleDateFormat dateFormat= new SimpleDateFormat("dd/MMM/yyyy");
-//        String dateOnly = dateFormat.format(currentDate);
-//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-//            LocalDate l_date = LocalDate.now();
-//        }
-        LocalDate l_date = LocalDate.now();
-        // Add a new document with a generated ID
+//        LocalDate l_date = LocalDate.now();
+//        myReadingBehavior.setKEY_TIME_OUT(formatter.format(date));
+        // Add a new document with my id ///////////////////////a generated ID
         db.collection(Build.ID)
                 .document(String.valueOf(l_date))
                 .collection("reading_behaviors")
-                .add(readingBehavior)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                .document(myReadingBehavior.getKEY_TIME_IN())
+                .set(readingBehavior);
+        document_create = true;
+//                .add(readingBehavior)
+//                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+//                    @Override
+//                    public void onSuccess(DocumentReference documentReference) {
+//                        Log.d("log: firebase", "DocumentSnapshot added with ID: " + documentReference.getId());
+//                        //Log.d( tag: "firebase", "DocumentSnapshot added with ID: " + documentReference.getId());
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.d("log: firebase", "Error adding document");
+//                        //Log.w(tag: "firebase", "Error adding document", e);
+//                    }
+//                });
+    }
+    public void updateReadingBehavior(){
+        DocumentReference rbRef = db.collection(Build.ID).document(String.valueOf(l_date)).collection("reading_behaviors").document(myReadingBehavior.getKEY_TIME_IN());
+
+        List<String> time_series_list = new ArrayList<String>(Arrays.asList(myReadingBehavior.getKEY_TIME_SERIES().split("\n")));
+        List<String> viewport_record_list = new ArrayList<String>(Arrays.asList(myReadingBehavior.getKEY_VIEW_PORT_RECORD().split("\n")));
+        List<String> drag_record_list = new ArrayList<String>(Arrays.asList(myReadingBehavior.getKEY_DRAG_RECORD().split("\n#")));
+        List<String> fling_record_list = new ArrayList<String>(Arrays.asList(myReadingBehavior.getKEY_FLING_RECORD().split("\n#")));
+//        for (int i = 0; i < time_series_list.size(); i++) {
+////            System.out.println(time_series_list.get(i));
+//            Log.d("log: firebase", time_series_list.get(i));
+//        }
+//        for (int i = 0; i < drag_record_list.size(); i++) {
+////            System.out.println(time_series_list.get(i));
+//            Log.d("log: firebase", drag_record_list.get(i));
+//        }
+        // Set the "isCapital" field of the city 'DC'
+        rbRef.update("content_length(dp)", myReadingBehavior.getKEY_CONTENT_LENGTH(),
+                "drag_num", myReadingBehavior.getKEY_DRAG_NUM(),
+                "drag_record", drag_record_list,
+                "fling_num", myReadingBehavior.getKEY_FLING_NUM(),
+                "fling_record", fling_record_list,
+                "pause_count", myReadingBehavior.getKEY_PAUSE_ON_PAGE(),//auto
+//                "share", myReadingBehavior.getKEY_SHARE(),//none
+//                "share_via", "none",//nonr
+                "time_on_page(s)", myReadingBehavior.getKEY_TIME_ON_PAGE(),//auto
+                "time_out", myReadingBehavior.getKEY_TIME_OUT(),
+                "time_series(s)", time_series_list,//auto
+                "viewport_record", viewport_record_list)//auto
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d("log: firebase", "DocumentSnapshot added with ID: " + documentReference.getId());
-                        //Log.d( tag: "firebase", "DocumentSnapshot added with ID: " + documentReference.getId());
+                    public void onSuccess(Void aVoid) {
+                        Log.d("log: firebase", "DocumentSnapshot successfully updated!");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d("log: firebase", "Error adding document");
-                        //Log.w(tag: "firebase", "Error adding document", e);
+                        Log.w("log: firebase", "Error updating document", e);
                     }
                 });
-        // [END add_ada_lovelace]
     }
 
 }

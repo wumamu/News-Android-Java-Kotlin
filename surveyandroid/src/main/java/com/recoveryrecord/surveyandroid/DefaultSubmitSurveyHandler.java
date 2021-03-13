@@ -20,7 +20,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -82,6 +84,7 @@ public class DefaultSubmitSurveyHandler implements SubmitSurveyHandler {
 //        }
 //        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, requestBody, mResponseListener, mErrorListener);
 //        queue.add(jsonObjectRequest);
+
     }
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -91,6 +94,7 @@ public class DefaultSubmitSurveyHandler implements SubmitSurveyHandler {
         // Create a new user with a first and last name
         Map<String, Object> esm = new HashMap<>();
         esm.put("result",  jsonQuestionAnswerData);
+//        esm.put("time_")
 
 //        Date currentDate = new Date();
 //        SimpleDateFormat dateFormat= new SimpleDateFormat("dd/MMM/yyyy");
@@ -100,24 +104,29 @@ public class DefaultSubmitSurveyHandler implements SubmitSurveyHandler {
 //        }
         LocalDate l_date = LocalDate.now();
         // Add a new document with a generated ID
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+        String time_now = formatter.format(date);
         db.collection(Build.ID)
                 .document(String.valueOf(l_date))
                 .collection("esms")
-                .add(esm)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d("log: firebase", "DocumentSnapshot added with ID: " + documentReference.getId());
-                        //Log.d( tag: "firebase", "DocumentSnapshot added with ID: " + documentReference.getId());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("log: firebase", "Error adding document");
-                        //Log.w(tag: "firebase", "Error adding document", e);
-                    }
-                });
+                .document(time_now)
+                .set(esm);
+//                .add(esm)
+//                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+//                    @Override
+//                    public void onSuccess(DocumentReference documentReference) {
+//                        Log.d("log: firebase", "DocumentSnapshot added with ID: " + documentReference.getId());
+//                        //Log.d( tag: "firebase", "DocumentSnapshot added with ID: " + documentReference.getId());
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.d("log: firebase", "Error adding document");
+//                        //Log.w(tag: "firebase", "Error adding document", e);
+//                    }
+//                });
         // [END add_ada_lovelace]
     }
 }

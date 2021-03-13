@@ -9,7 +9,7 @@ public class ReadingBehavior {
     private String KEY_CONTENT_LENGTH;
     private String KEY_DISPLAY_WIDTH;
     private String KEY_DISPLAY_HEIGHT;
-    private String KEY_TIME_ON_PAGE;
+    private long KEY_TIME_ON_PAGE;
     private int KEY_PAUSE_ON_PAGE;//
     private int KEY_VIEW_PORT_NUM;
     private String KEY_VIEW_PORT_RECORD;
@@ -19,6 +19,8 @@ public class ReadingBehavior {
     private String KEY_DRAG_RECORD;//
     private int KEY_SHARE;//
     private String KEY_TIME_SERIES;
+    private int KEY_BYTE_PER_LINE;
+    private int KEY_ROW_SPACING;
 
     public ReadingBehavior() {
         this.KEY_NEWS_ID = "";
@@ -28,7 +30,7 @@ public class ReadingBehavior {
         this.KEY_CONTENT_LENGTH = "";
         this.KEY_DISPLAY_WIDTH = "";
         this.KEY_DISPLAY_HEIGHT = "";
-        this.KEY_TIME_ON_PAGE = "";
+        this.KEY_TIME_ON_PAGE = 0;
         this.KEY_PAUSE_ON_PAGE = 0;
         this.KEY_VIEW_PORT_NUM = 0;
         this.KEY_VIEW_PORT_RECORD = "";
@@ -38,7 +40,11 @@ public class ReadingBehavior {
         this.KEY_DRAG_RECORD = "";
         this.KEY_SHARE = 0;
         this.KEY_TIME_SERIES = "";
+        this.KEY_BYTE_PER_LINE = 0;
+        this.KEY_ROW_SPACING = 0;
     }
+
+
 
     public ReadingBehavior(String KEY_NEWS_ID,
                            String KEY_TRIGGER_BY,
@@ -47,7 +53,7 @@ public class ReadingBehavior {
                            String KEY_CONTENT_LENGTH,
                            String KEY_DISPLAY_WIDTH,
                            String KEY_DISPLAY_HEIGHT,
-                           String KEY_TIME_ON_PAGE,
+                           long KEY_TIME_ON_PAGE,
                            int KEY_PAUSE_ON_PAGE,
                            int KEY_VIEW_PORT_NUM,
                            String KEY_VIEW_PORT_RECORD,
@@ -56,7 +62,9 @@ public class ReadingBehavior {
                            int KEY_DRAG_NUM,
                            String KEY_DRAG_RECORD,
                            int KEY_SHARE,
-                           String KEY_TIME_SERIES) {
+                           String KEY_TIME_SERIES,
+                           int KEY_BYTE_PER_LINE,
+                           int KEY_ROW_SPACING) {
         this.KEY_NEWS_ID = KEY_NEWS_ID;
         this.KEY_TRIGGER_BY = KEY_TRIGGER_BY;
         this.KEY_TIME_IN = KEY_TIME_IN;
@@ -74,6 +82,8 @@ public class ReadingBehavior {
         this.KEY_DRAG_RECORD = KEY_DRAG_RECORD;
         this.KEY_SHARE = KEY_SHARE;
         this.KEY_TIME_SERIES = KEY_TIME_SERIES;
+        this.KEY_BYTE_PER_LINE = KEY_BYTE_PER_LINE;
+        this.KEY_ROW_SPACING = KEY_ROW_SPACING;
     }
 
 
@@ -133,11 +143,11 @@ public class ReadingBehavior {
         this.KEY_DISPLAY_HEIGHT = KEY_DISPLAY_HEIGHT;
     }
 
-    public String getKEY_TIME_ON_PAGE() {
+    public long getKEY_TIME_ON_PAGE() {
         return KEY_TIME_ON_PAGE;
     }
 
-    public void setKEY_TIME_ON_PAGE(String KEY_TIME_ON_PAGE) {
+    public void setKEY_TIME_ON_PAGE(long KEY_TIME_ON_PAGE) {
         this.KEY_TIME_ON_PAGE = KEY_TIME_ON_PAGE;
     }
 
@@ -211,5 +221,21 @@ public class ReadingBehavior {
 
     public void setKEY_TIME_SERIES(String KEY_TIME_SERIES) {
         this.KEY_TIME_SERIES = KEY_TIME_SERIES;
+    }
+
+    public int getKEY_BYTE_PER_LINE() {
+        return KEY_BYTE_PER_LINE;
+    }
+
+    public void setKEY_BYTE_PER_LINE(int KEY_BYTE_PER_LINE) {
+        this.KEY_BYTE_PER_LINE = KEY_BYTE_PER_LINE;
+    }
+
+    public int getKEY_ROW_SPACING() {
+        return KEY_ROW_SPACING;
+    }
+
+    public void setKEY_ROW_SPACING(int KEY_ROW_SPACING) {
+        this.KEY_ROW_SPACING = KEY_ROW_SPACING;
     }
 }

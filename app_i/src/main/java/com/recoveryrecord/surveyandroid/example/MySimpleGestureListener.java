@@ -108,8 +108,8 @@ public class MySimpleGestureListener extends GestureDetector.SimpleOnGestureList
 
         final float xDistance = Math.abs(e1.getX() - e2.getX());
         final float yDistance = Math.abs(e1.getY() - e2.getY());
-//        Log.d("log: GestureListener","fling first: (" + e1.getX() + "," + e1.getY() + ")");
-//        Log.d("log: GestureListener","fling second: (" + e2.getX() + "," + e2.getY() + ")");
+        Log.d("log: GestureListener","fling first: (" + e1.getX() + "," + e1.getY() + ")");
+        Log.d("log: GestureListener","fling second: (" + e2.getX() + "," + e2.getY() + ")");
 
 //        not long enough to be consider as fling
 //        if(xDistance > this.swipe_Max_Distance || yDistance > this.swipe_Max_Distance)
@@ -118,8 +118,8 @@ public class MySimpleGestureListener extends GestureDetector.SimpleOnGestureList
         velocityX = Math.abs(velocityX);
         velocityY = Math.abs(velocityY);
         boolean result = false;
-//        Log.d("log: velocityX", String.valueOf(velocityX));
-//        Log.d("log: velocityY", String.valueOf(velocityY));
+        Log.d("log: velocityX", String.valueOf(velocityX));
+        Log.d("log: velocityY", String.valueOf(velocityY));
 //        Log.d("log: xDistance", String.valueOf(xDistance));
 //        Log.d("log: yDistance", String.valueOf(yDistance));
         tmpFlingObj.setPOINT_ONE_X(e1.getX());
@@ -183,8 +183,8 @@ public class MySimpleGestureListener extends GestureDetector.SimpleOnGestureList
         DragObj dragObj = new DragObj();
         boolean result = super.onScroll(e1, e2, distanceX, distanceY);
         if(!result){
-            Log.d("log: GestureListener", System.currentTimeMillis()+ "drag first: (" + e1.getX() + "," + e1.getY() + ")");
-            Log.d("log: GestureListener", System.currentTimeMillis()+ "drag first: (" + e2.getX() + "," + e2.getY() + ")");
+            Log.d("log: GestureListener", System.currentTimeMillis()+ " drag first: (" + e1.getX() + "," + e1.getY() + ")");
+            Log.d("log: GestureListener", System.currentTimeMillis()+ " drag second: (" + e2.getX() + "," + e2.getY() + ")");
             dragObj.setTIME_ONE(System.currentTimeMillis());
             dragObj.setPOINT_ONE_X(e1.getX());
             dragObj.setPOINT_ONE_Y(e1.getY());
