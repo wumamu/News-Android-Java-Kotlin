@@ -2,24 +2,46 @@ package com.recoveryrecord.surveyandroid.example;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.recoveryrecord.surveyandroid.Answer;
 import com.recoveryrecord.surveyandroid.R;
 import com.recoveryrecord.surveyandroid.SurveyActivity;
 import com.recoveryrecord.surveyandroid.condition.CustomConditionHandler;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ExampleSurveyActivity extends SurveyActivity implements CustomConditionHandler {
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
-    protected void onCreate(Bundle savedInstanceState) { super.onCreate(savedInstanceState); }
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+        String time_now = formatter.format(date);
+        Map<String, Object> esm = new HashMap<>();
+        esm.put("open_time", time_now);
+        LocalDate l_date = LocalDate.now();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection(Build.ID)
+                .document(String.valueOf(l_date))
+                .collection("esms")
+                .document(time_now)
+                .set(esm);
+    }
 
     @Override
     protected String getSurveyTitle() {

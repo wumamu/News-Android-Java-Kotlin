@@ -192,7 +192,8 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
 //                            Log.d("log: firebase", "DocumentSnapshot content: " + c_list.get(i));
 //                        }
                         List<String> divList = new ArrayList<>();
-                        int cut_size = (int) (dpWidth / 18);
+//                        int cut_size = (int) (dpWidth / 26);
+                        int cut_size = (int) (dpWidth / 24);
                         myReadingBehavior.setKEY_BYTE_PER_LINE(cut_size*2);
                         for (int i = 0; i < c_list.size(); i++) {
                             String str = c_list.get(i);
@@ -271,7 +272,7 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
                         Log.d("log: view_port_num", String.valueOf(myReadingBehavior.getKEY_VIEW_PORT_NUM()));
                         //put textview into layout #################################################
                         //int text_size = (int) (dpWidth /30);
-                        int text_size = 15;
+                        int text_size = 20;
                         final TextView myTextViewsTitle = new TextView(SampleNewsActivity.this);
                         final TextView myTextViewsDate = new TextView(SampleNewsActivity.this);
                         final TextView myTextViewsSrc = new TextView(SampleNewsActivity.this);
@@ -281,9 +282,9 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
                         myTextViewsTitle.setTextColor(Color.parseColor("black"));
                         myTextViewsDate.setTextColor(Color.parseColor("black"));
                         myTextViewsSrc.setTextColor(Color.parseColor("black"));
-                        myTextViewsTitle.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-                        myTextViewsDate.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
-                        myTextViewsSrc.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+                        myTextViewsTitle.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 28);
+                        myTextViewsDate.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+                        myTextViewsSrc.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
                         myTextViewsTitle.setGravity(Gravity.LEFT);
                         myTextViewsDate.setGravity(Gravity.LEFT);
                         myTextViewsSrc.setGravity(Gravity.LEFT);
@@ -871,7 +872,11 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
                 drag_str+="drag num:" + drag_count + "\n";
                 drag_str+="duration:" + duration + "\n";
                 drag_str+="point1: (" + drag_x_1 + ", " + drag_y_1 + ")\n";
-                drag_str+="point2: (" + drag_x_2 + ", " + drag_y_2 + ")\n#";
+                drag_str+="point2: (" + drag_x_2 + ", " + drag_y_2 + ")\n";
+                String direction = "";
+                direction += drag_y_1 < drag_y_2 ? "N" : drag_y_1 > drag_y_2 ? "S" : "";
+                direction += drag_x_1 < drag_x_2 ? "E" : drag_x_1 > drag_x_2 ? "W" : "";
+                drag_str+="direction:" + direction + "\n#";
                 drag_x_1 = 0;
                 drag_y_1 = 0;
                 drag_x_2 = 0;
@@ -882,7 +887,7 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
         //last drag
         if ((drag_x_1+drag_y_1+drag_x_2+drag_y_2)==0){
             //end at final else
-            Log.d("log: drag_str", "123");
+//            Log.d("log: drag_str", "123");
         } else {
             drag_count+=1;
             if(time_one!=time_two){
@@ -895,7 +900,11 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
             drag_str+="drag num:" + drag_count + "\n";
             drag_str+="duration:" + duration + "\n";
             drag_str+="point1: (" + drag_x_1 + ", " + drag_y_1 + ")\n";
-            drag_str+="point2: (" + drag_x_2 + ", " + drag_y_2 + ")\n#";
+            drag_str+="point2: (" + drag_x_2 + ", " + drag_y_2 + ")\n";
+            String direction = "";
+            direction += drag_y_1 < drag_y_2 ? "N" : drag_y_1 > drag_y_2 ? "S" : "";
+            direction += drag_x_1 < drag_x_2 ? "E" : drag_x_1 > drag_x_2 ? "W" : "";
+            drag_str+="direction:" + direction + "\n#";
         }
         myReadingBehavior.setKEY_DRAG_NUM(drag_count);
         myReadingBehavior.setKEY_DRAG_RECORD(drag_str);
@@ -1172,6 +1181,11 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
     }
 
 //    @Override
+//    public void setIsLongpressEnabled(boolean isLongpressEnabled) {
+//        isLongpressEnabled = false;
+//    }
+
+//    @Override
 //    public void onDoubleTap() {
 ////        Toast.makeText(this, "Double Tap", Toast.LENGTH_SHORT).show();
 //    }
@@ -1276,5 +1290,6 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
                     }
                 });
     }
+
 
 }

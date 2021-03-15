@@ -1,13 +1,9 @@
 package com.recoveryrecord.surveyandroid.example;
 
 import android.app.Activity;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-
-import java.util.Date;
 
 public class MySimpleGestureListener extends GestureDetector.SimpleOnGestureListener{
 
@@ -42,7 +38,7 @@ public class MySimpleGestureListener extends GestureDetector.SimpleOnGestureList
     }
 
     public void onTouchEvent(MotionEvent event){
-
+        detector.setIsLongpressEnabled(false);
         if(!this.running)
             return;
 
@@ -62,7 +58,33 @@ public class MySimpleGestureListener extends GestureDetector.SimpleOnGestureList
             }
 
         }
-        //else just do nothing, it's Transparent
+//        detector.setIsLongpressEnabled(false);
+//        //else just do nothing, it's Transparent
+//        if (detector.onTouchEvent(event)== true) {
+//            //Fling or other gesture detected (not logpress because it is disabled)
+//        } else {
+//            //Manually handle the event.
+//            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+//                //Remember the time and press position
+////                Log.e("test","Action down");
+//                Log.d("log: GestureListener", "Action down");
+//            }
+//            if (event.getAction() == MotionEvent.ACTION_MOVE) {
+//                //Check if user is actually longpressing, not slow-moving
+//                // if current position differs much then press positon then discard whole thing
+//                // If position change is minimal then after 0.5s that is a longpress. You can now process your other gestures
+////                Log.e("test","Action move");
+//                Log.d("log: GestureListener", "Action move");
+//            }
+//            if (event.getAction() == MotionEvent.ACTION_UP) {
+//                //Get the time and position and check what that was :)
+////                Log.("test","Action down");
+//                Log.d("log: GestureListener", "Action up");
+//
+//            }
+//
+//        }
+//        return true;
     }
 
     public void setMode(int m){
@@ -108,8 +130,8 @@ public class MySimpleGestureListener extends GestureDetector.SimpleOnGestureList
 
         final float xDistance = Math.abs(e1.getX() - e2.getX());
         final float yDistance = Math.abs(e1.getY() - e2.getY());
-        Log.d("log: GestureListener","fling first: (" + e1.getX() + "," + e1.getY() + ")");
-        Log.d("log: GestureListener","fling second: (" + e2.getX() + "," + e2.getY() + ")");
+//        Log.d("log: GestureListener","fling first: (" + e1.getX() + "," + e1.getY() + ")");
+//        Log.d("log: GestureListener","fling second: (" + e2.getX() + "," + e2.getY() + ")");
 
 //        not long enough to be consider as fling
 //        if(xDistance > this.swipe_Max_Distance || yDistance > this.swipe_Max_Distance)
@@ -118,8 +140,8 @@ public class MySimpleGestureListener extends GestureDetector.SimpleOnGestureList
         velocityX = Math.abs(velocityX);
         velocityY = Math.abs(velocityY);
         boolean result = false;
-        Log.d("log: velocityX", String.valueOf(velocityX));
-        Log.d("log: velocityY", String.valueOf(velocityY));
+//        Log.d("log: velocityX", String.valueOf(velocityX));
+//        Log.d("log: velocityY", String.valueOf(velocityY));
 //        Log.d("log: xDistance", String.valueOf(xDistance));
 //        Log.d("log: yDistance", String.valueOf(yDistance));
         tmpFlingObj.setPOINT_ONE_X(e1.getX());
@@ -178,6 +200,19 @@ public class MySimpleGestureListener extends GestureDetector.SimpleOnGestureList
         return false;
     }
 
+//    public boolean isLongpressEnabled (){
+//        return false;
+//    }
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+//        Log.e("", "Longpress detected");
+        Log.d("log: GestureListener", "Longpress detected");
+    }
+
+//    public void setIsLongpressEnabled (boolean isLongpressEnabled){
+//    }
+
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY){
         DragObj dragObj = new DragObj();
@@ -198,6 +233,7 @@ public class MySimpleGestureListener extends GestureDetector.SimpleOnGestureList
     static interface SimpleGestureListener{
         void onSwipe(int direction, FlingObj flingObj);
         void onOnePoint(DragObj dragObj);
+//        void setIsLongpressEnabled(boolean isLongpressEnabled);
 //        void onDoubleTap();
     }
 

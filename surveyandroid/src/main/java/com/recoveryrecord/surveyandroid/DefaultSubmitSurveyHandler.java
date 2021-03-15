@@ -90,9 +90,13 @@ public class DefaultSubmitSurveyHandler implements SubmitSurveyHandler {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void addESM(String jsonQuestionAnswerData) {
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+        String time_now = formatter.format(date);
         // [START add_ada_lovelace]
         // Create a new user with a first and last name
         Map<String, Object> esm = new HashMap<>();
+        esm.put("submit_time", time_now);
         esm.put("result",  jsonQuestionAnswerData);
 //        esm.put("time_")
 
@@ -104,9 +108,9 @@ public class DefaultSubmitSurveyHandler implements SubmitSurveyHandler {
 //        }
         LocalDate l_date = LocalDate.now();
         // Add a new document with a generated ID
-        Date date = new Date(System.currentTimeMillis());
-        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-        String time_now = formatter.format(date);
+//        Date date = new Date(System.currentTimeMillis());
+//        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+//        String time_now = formatter.format(date);
         db.collection(Build.ID)
                 .document(String.valueOf(l_date))
                 .collection("esms")

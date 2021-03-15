@@ -34,10 +34,10 @@
         <receiver android:name=".ScreenStateReceiver"></receiver>
         <receiver android:name=".ApplicationSelectorReceiver"></receiver>
         <receiver android:name=".BlueToothReceiver"></receiver>
-        <receiver android:name=".AppInfoUtil"
-            tools:ignore="Instantiatable"></receiver>
-        <receiver android:name=".DeviceUtil"
-            tools:ignore="Instantiatable"></receiver>
+<!--        <receiver android:name=".AppInfoUtil"-->
+<!--            tools:ignore="Instantiatable"></receiver>-->
+<!--        <receiver android:name=".DeviceUtil"-->
+<!--            tools:ignore="Instantiatable"></receiver>-->
         <activity android:name=".AddNotificationActivity"></activity>
         <activity android:name=".NotificationDbViewActivity"></activity>
         <activity android:name=".ESMDbViewActivity"></activity>

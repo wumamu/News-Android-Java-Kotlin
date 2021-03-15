@@ -273,8 +273,8 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d("log: Device Details\n",details);
 //        DeviceUtil.printInfo();
-        // app backgroung info #####################################################################
-        AppInfoUtil.getProcessName(mContext, "123");
+//        // app backgroung info #####################################################################
+//        AppInfoUtil.getProcessName(mContext, "123");
         // device orientation #######################################################################
         int orientation = getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
