@@ -1,5 +1,7 @@
 package com.recoveryrecord.surveyandroid.example;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -49,15 +51,18 @@ public class MyNotificationListenerService extends NotificationListenerService {
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
         Log.i(TAG,"**********  onNotificationPosted");
-        //#######cancel
+        //cancel notification
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
 //            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //                cancelNotification(sbn.getKey());
 //                Log.i(TAG, "++++++++++++++++++++");
 //            }
 //        }
-
-//        Log.i(TAG, java.text.DateFormat.getDateTimeInstance().format(new Date()) + "\t" + sbn.getNotification().tickerText + "\t" + sbn.getPackageName());
+        //content intent
+        Notification notification = sbn.getNotification();
+        PendingIntent contentIntent = notification.contentIntent;
+//        Log.i(TAG, String.valueOf(contentIntent.describeContents()));
+//        Log.i(TAG, contentIntent.getTargetPackage());
         String on_noti_post = "";
         //keep length 6
         on_noti_post = "hello" + "\n";
@@ -69,13 +74,6 @@ public class MyNotificationListenerService extends NotificationListenerService {
         Bundle extras = sbn.getNotification().extras;
         if (extras.containsKey("android.title")) {
             on_noti_post = on_noti_post + "title: " + extras.getString("android.title") + "\n";
-//                        Log.i(TAG, "------------------------- in onNotificationPosted(), Bundle android.title = " + extras.getString("android.title"));
-//            StringBuilder builder = new StringBuilder("Extras:\n");
-//            for (String key : extras.keySet()) { //extras is the Bundle containing info
-//                Object value = extras.get(key); //get the current object
-//                builder.append(key).append(": ").append(value).append("\n"); //add the key-value pair to the
-//            }
-//                        Log.i("Extras",builder.toString()); //log the data or use it as needed.
         } else {
             on_noti_post = on_noti_post + "title: null\n";
         }
@@ -121,6 +119,19 @@ public class MyNotificationListenerService extends NotificationListenerService {
             receieve_notification.put("time", formatter.format(date));
             if (extras.containsKey("android.title")) {
                 receieve_notification.put("title",  extras.getString("android.title"));
+//                StringBuilder builder = new StringBuilder("Extras:\n");
+
+//                for (String key : extras.keySet()) { //extras is the Bundle containing info
+//                    Object value = extras.get(key); //get the current object
+////                    builder.append(key).append(": ").append(value).append("\n"); //add the key-value pair to the
+//                    receieve_notification.put(key, value);
+//                }
+//                Bundle extras = getIntent().getExtras();
+                for (String key : extras.keySet()) {
+                    Log.d(TAG, "Extra '" + key + "': '" + extras.getString(key) + "'");
+                    receieve_notification.put(key, extras.getString(key));
+                }
+//                receieve_notification.put("bundle", builder.toString());
             } else {
                 receieve_notification.put("title",  "null");
             }

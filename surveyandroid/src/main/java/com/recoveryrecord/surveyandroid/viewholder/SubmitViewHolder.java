@@ -1,5 +1,6 @@
 package com.recoveryrecord.surveyandroid.viewholder;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
@@ -27,7 +28,12 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 submitSurveyHandler.submit(submitData.url, answerProvider.allAnswersJson());
-
+                ((Activity)v.getContext()).finish();
+//                ((Activity)context).finish();
+//                v.getContext().
+//                Intent returnIntent = new Intent();
+//                returnIntent.setClass(v.getContext(), com.recoveryrecord.surveyandroid.example.MainActivity.class);
+//                v.getContext().startActivity(returnIntent);
             }
         });
 

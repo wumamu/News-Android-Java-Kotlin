@@ -151,7 +151,6 @@ public class MainActivity extends AppCompatActivity {
                 //MainActivity.this.finish();
             }
         });
-
         btn_to_test.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
