@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -31,8 +32,9 @@ public class ApplicationSelectorReceiver extends BroadcastReceiver {
         String action = intent.getAction();
         System.out.println(action);
         Log.d("log: hello", "action");
-        String doc_time = "", doc_date = "", share_field = "";
+        String doc_time = "", doc_date = "", share_field = "", device_id = "";
         if (intent.getExtras() != null) {
+            device_id = intent.getExtras().getString("device_id");
             doc_time = intent.getExtras().getString("doc_time");
             doc_date = intent.getExtras().getString("doc_date");
             share_field = intent.getExtras().getString("share_field");
@@ -50,7 +52,8 @@ public class ApplicationSelectorReceiver extends BroadcastReceiver {
                 Log.d("log: Selected App Name", appName);
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
 //                final DocumentReference rbRef = db.collection(Build.ID).document(doc_date).collection("reading_behaviors").document(doc_time);
-                final DocumentReference rbRef = db.collection("test_users").document(Build.ID).collection("reading_behaviors").document(doc_time);
+
+                final DocumentReference rbRef = db.collection("test_users").document(device_id).collection("reading_behaviors").document(doc_time);
 //                rbRef.update("share", FieldValue.arrayRemove(share_field));
 //                rbRef.update("share", FieldValue.arrayUnion(share_field + " " + appName));
                 rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

@@ -3,6 +3,7 @@ package com.recoveryrecord.surveyandroid;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -75,6 +76,10 @@ public class DefaultSubmitSurveyHandler implements SubmitSurveyHandler {
 //        i.putExtra("command","ESM");
 //        mContext.sendBroadcast(i);
         Toast.makeText(mContext.getApplicationContext(), "ESM Inserted Successfully", Toast.LENGTH_SHORT).show();
+//        Intent intent = new Intent();
+//        intent.setClass(mContext.getApplicationContext(), com.recoveryrecord.surveyandroid.example.MainActivity.class);
+//        intent.putExtra("trigger_from", "MainActivity");
+//        mContext.startActivity(intent);
 //        JSONObject requestBody = null;
 //        try {
 //            requestBody = new JSONObject(jsonQuestionAnswerData);
@@ -111,8 +116,9 @@ public class DefaultSubmitSurveyHandler implements SubmitSurveyHandler {
 //        Date date = new Date(System.currentTimeMillis());
 //        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 //        String time_now = formatter.format(date);
-        db.collection(Build.ID)
-                .document(String.valueOf(l_date))
+        String device_id = Settings.Secure.getString(mContext.getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        db.collection("test_users")
+                .document(device_id)
                 .collection("esms")
                 .document(time_now)
                 .set(esm);

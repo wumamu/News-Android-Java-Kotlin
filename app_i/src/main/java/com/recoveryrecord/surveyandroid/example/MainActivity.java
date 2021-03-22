@@ -145,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setClass(MainActivity.this, NotificationSettingActivity.class);
+//                intent.setClass(MainActivity.this, NewsMainActivity.class);
 //                intent.setClass(MainActivity.this, TmpMainActivity.class);
                 startActivity(intent);
                 //MainActivity.this.finish();
@@ -154,10 +155,16 @@ public class MainActivity extends AppCompatActivity {
         btn_to_test.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(System.currentTimeMillis());
-                calendar.set(Calendar.HOUR_OF_DAY, 1);
-                calendar.set(Calendar.MINUTE, 48);
+//                Calendar calendar = Calendar.getInstance();
+//                calendar.setTimeInMillis(System.currentTimeMillis());
+//                calendar.set(Calendar.HOUR_OF_DAY, 1);
+//                calendar.set(Calendar.MINUTE, 48);
+
+
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this, NewsMainActivity.class);
+//                intent.setClass(MainActivity.this, TmpMainActivity.class);
+                startActivity(intent);
 //                alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000 * 60 * 20, alarmIntent);
 //                scheduleNotification_repeat(getNotification("my repeat alarm"), calendar);
 //                Calendar calendar = Calendar.getInstance();

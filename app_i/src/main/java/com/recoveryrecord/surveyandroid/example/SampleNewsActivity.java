@@ -76,6 +76,8 @@ import static java.security.AccessController.getContext;
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class SampleNewsActivity extends AppCompatActivity implements MySimpleGestureListener.SimpleGestureListener {
     //    String TagCycle = "my activity cycle";
+//    String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+
     volatile boolean activityStopped = false;
     volatile boolean activityEnd = false;
     boolean share_clicked = false;
@@ -180,7 +182,7 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
         Random rand = new Random();
         int random_news = ThreadLocalRandom.current().nextInt(1, 3 + 1);
         Log.d("log: firebase news", String.valueOf(random_news));
-        DocumentReference docRef = db.collection("News").document("ettoday").collection("20210309").document(String.valueOf(random_news));
+        DocumentReference docRef = db.collection("medias").document("chinatimes").collection("news").document("003436a77eccd9d8f0cc9ffbced6844b");
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
@@ -352,7 +354,7 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
                             });
                         }
                         //create document
-                        addReadingBehavior();
+//                        addReadingBehavior();
                         final int N = textview_num;
                         class SquareCalculator {
                             private ExecutorService executor = Executors.newFixedThreadPool(1);
@@ -811,6 +813,7 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
     @Override
     protected void onStart() {
         super.onStart();
+        addReadingBehavior();
         Log.d("log: activity cycle", "On start");
         activityStopped = false;
     }
@@ -1119,24 +1122,7 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
                         }
                     }
                 });
-
-//                Date date = new Date(System.currentTimeMillis());
-//                SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-//                String time_now = formatter.format(date);
-//                share_field = time_now;
-//                Map<String, Object> data = new HashMap<>();
-//                rbRef.update("share", FieldValue.arrayRemove("NA"));
-//                rbRef.update("share", FieldValue.arrayUnion(share_field));
-//                db.collection(Build.ID)
-//                        .document(String.valueOf(l_date))
-//                        .collection("reading_behaviors")
-//                        .document(myReadingBehavior.getKEY_TIME_IN())
-//                        .set(data, SetOptions.merge());
             }
-
-
-
-//            myReadingBehavior.setKEY_SHARE(1);
             try{
 //                Intent i = new Intent(Intent.ACTION_SEND);
 //                i.setType("text/plan");
@@ -1151,6 +1137,8 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
                 shareIntent.putExtra(Intent.EXTRA_TEXT,url); // your above url
 
                 Intent receiver = new Intent(this, ApplicationSelectorReceiver.class);
+                String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+                receiver.putExtra("device_id", device_id);
                 receiver.putExtra("doc_time", myReadingBehavior.getKEY_TIME_IN());
                 receiver.putExtra("doc_date", String.valueOf(l_date));
                 receiver.putExtra("share_field", share_field);
@@ -1221,21 +1209,8 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
 
     @Override
     public void onOnePoint(DragObj dragObj) {
-
         dragObjArrayListArray.add(dragObj);
-//        Log.d("log: drag_debug", "point1: (" + dragObj.getPOINT_ONE_X() + ", " + dragObj.getPOINT_ONE_Y() + ")\n");
-//        Log.d("log: drag_debug", "point2: (" + dragObj.getPOINT_TWO_X() + ", " + dragObj.getPOINT_TWO_Y() + ")\n");
     }
-
-//    @Override
-//    public void setIsLongpressEnabled(boolean isLongpressEnabled) {
-//        isLongpressEnabled = false;
-//    }
-
-//    @Override
-//    public void onDoubleTap() {
-////        Toast.makeText(this, "Double Tap", Toast.LENGTH_SHORT).show();
-//    }
 
     public static Point getTouchPositionFromDragEvent(View item, DragEvent event) {
         Rect rItem = new Rect();
@@ -1245,11 +1220,6 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     LocalDate l_date = LocalDate.now();
-//    LocalDateTime now = LocalDateTime.now();
-//    int hour = now.getHour();
-//    int minute = now.getMinute();
-//    int second = now.getSecond();
-//    String time_string = hour + ":" + minute + ":" + second;
 
     @SuppressLint("MissingPermission")
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -1282,22 +1252,20 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
         readingBehavior.put("byte_per_line", myReadingBehavior.getKEY_BYTE_PER_LINE());
         readingBehavior.put("row_spacing(dp)", myReadingBehavior.getKEY_ROW_SPACING());
 
-//        LocalDate l_date = LocalDate.now();
-//        myReadingBehavior.setKEY_TIME_OUT(formatter.format(date));
         // Add a new document with my id ///////////////////////a generated ID
-        TelephonyManager telephonyManager;
-        telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+//        Log.d("log: device_id", device_id);
         db.collection("test_users")
-                .document(Build.ID)
+                .document(device_id)
                 .collection("reading_behaviors")
                 .document(myReadingBehavior.getKEY_TIME_IN())
                 .set(readingBehavior);
+        document_create = true;
 //        db.collection(Build.ID)
 //                .document(String.valueOf(l_date))
 //                .collection("reading_behaviors")
 //                .document(myReadingBehavior.getKEY_TIME_IN())
 //                .set(readingBehavior);
-        document_create = true;
 //                .add(readingBehavior)
 //                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
 //                    @Override
@@ -1319,7 +1287,8 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 //        DocumentReference rbRef = db.collection(Build.ID).document(String.valueOf(l_date)).collection("reading_behaviors").document(myReadingBehavior.getKEY_TIME_IN());
         @SuppressLint("MissingPermission")
-        DocumentReference rbRef = db.collection("test_users").document(Build.ID).collection("reading_behaviors").document(myReadingBehavior.getKEY_TIME_IN());
+        String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        DocumentReference rbRef = db.collection("test_users").document(device_id).collection("reading_behaviors").document(myReadingBehavior.getKEY_TIME_IN());
 
         List<String> time_series_list = new ArrayList<String>(Arrays.asList(myReadingBehavior.getKEY_TIME_SERIES().split("#")));
         List<String> viewport_record_list = new ArrayList<String>(Arrays.asList(myReadingBehavior.getKEY_VIEW_PORT_RECORD().split("#")));

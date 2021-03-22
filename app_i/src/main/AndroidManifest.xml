@@ -30,9 +30,11 @@
 
         <activity android:name=".ExampleSurveyActivity" />
         <activity android:name=".SampleNewsActivity" />
+        <activity android:name=".NewsMainActivity" />
         <activity android:name=".NetworkCheckerActivity" />
         <receiver android:name=".ApplicationSelectorReceiver"></receiver>
         <receiver android:name=".ScreenStateReceiver"></receiver>
+<!--        <receiver android:name=".NotificationReceiver"></receiver>-->
         <receiver android:name=".ApplicationSelectorReceiver"></receiver>
         <receiver android:name=".BlueToothReceiver"></receiver>
 <!--        <receiver android:name=".AppInfoUtil"-->

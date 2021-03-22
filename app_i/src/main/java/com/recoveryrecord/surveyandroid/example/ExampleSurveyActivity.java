@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 
@@ -36,8 +37,14 @@ public class ExampleSurveyActivity extends SurveyActivity implements CustomCondi
         esm.put("open_time", time_now);
         LocalDate l_date = LocalDate.now();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection(Build.ID)
-                .document(String.valueOf(l_date))
+//        db.collection(Build.ID)
+//                .document(String.valueOf(l_date))
+//                .collection("esms")
+//                .document(time_now)
+//                .set(esm);
+        String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        db.collection("test_users")
+                .document(device_id)
                 .collection("esms")
                 .document(time_now)
                 .set(esm);
@@ -98,4 +105,20 @@ public class ExampleSurveyActivity extends SurveyActivity implements CustomCondi
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+        String time_now = formatter.format(date);
+        Map<String, Object> esm = new HashMap<>();
+        esm.put("close_time", time_now);
+        String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        db.collection("test_users")
+                .document(device_id)
+                .collection("esms")
+                .document(time_now)
+                .set(esm);
+    }
 }
