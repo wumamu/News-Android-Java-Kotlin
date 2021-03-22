@@ -70,20 +70,6 @@ public class DefaultSubmitSurveyHandler implements SubmitSurveyHandler {
         RequestQueue queue = Volley.newRequestQueue(getContext());
         Log.i("log: ESM", jsonQuestionAnswerData);
         addESM(jsonQuestionAnswerData);
-//        ((Activity)context).finish();
-//        NotificationDbHelper dbHandler = new NotificationDbHelper(AddNotificationActivity.this);
-//        dbHandler.insertUserDetails(pn, t, tt, ti, te);
-//        Intent i = new Intent("com.recoveryrecord.surveyandroid.example.NOTIFICATION_LISTENER_SERVICE_EXAMPLE");
-//        i.putExtra("command","ESM");
-//        mContext.sendBroadcast(i);
-//        Toast.makeText(mContext.getApplicationContext(), "ESM Inserted Successfully", Toast.LENGTH_SHORT).show();
-//        Intent intent = new Intent();
-//        intent.setClass(mContext.getApplicationContext(), com.recoveryrecord.surveyandroid.example.MainActivity.class);
-//        intent.putExtra("trigger_from", "MainActivity");
-//        mContext.startActivity(intent);
-//        Intent returnIntent = new Intent();
-//        setResult(Activity.RESULT_CANCELED, returnIntent);
-//        finish();
 
 //        JSONObject requestBody = null;
 //        try {

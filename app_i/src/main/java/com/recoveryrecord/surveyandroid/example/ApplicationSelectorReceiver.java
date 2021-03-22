@@ -38,7 +38,7 @@ public class ApplicationSelectorReceiver extends BroadcastReceiver {
             doc_time = intent.getExtras().getString("doc_time");
             doc_date = intent.getExtras().getString("doc_date");
             share_field = intent.getExtras().getString("share_field");
-//            Log.d("log: doc_name", intent.getExtras().getString("doc_time"));
+            Log.d("log: device_id", intent.getExtras().getString("device_id"));
 //            Log.d("log: doc_name", intent.getExtras().getString("doc_date"));
 //            Log.d("log: index", intent.getExtras().getString("0"));
         }
@@ -52,7 +52,6 @@ public class ApplicationSelectorReceiver extends BroadcastReceiver {
                 Log.d("log: Selected App Name", appName);
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
 //                final DocumentReference rbRef = db.collection(Build.ID).document(doc_date).collection("reading_behaviors").document(doc_time);
-
                 final DocumentReference rbRef = db.collection("test_users").document(device_id).collection("reading_behaviors").document(doc_time);
 //                rbRef.update("share", FieldValue.arrayRemove(share_field));
 //                rbRef.update("share", FieldValue.arrayUnion(share_field + " " + appName));
@@ -71,20 +70,20 @@ public class ApplicationSelectorReceiver extends BroadcastReceiver {
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
-                                                Log.d("log: firebase", "DocumentSnapshot successfully updated!");
+                                                Log.d("log: firebase share", "DocumentSnapshot successfully updated!");
                                             }
                                         })
                                         .addOnFailureListener(new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
-                                                Log.w("log: firebase", "Error updating document", e);
+                                                Log.w("log: firebase share", "Error updating document", e);
                                             }
                                         });
                             } else {
-                                Log.d("log: firebase", "No such document");
+                                Log.d("log: firebase share", "No such document");
                             }
                         } else {
-                            Log.d("log: firebase", "get failed with ", task.getException());
+                            Log.d("log: firebase share", "get failed with ", task.getException());
                         }
                     }
                 });

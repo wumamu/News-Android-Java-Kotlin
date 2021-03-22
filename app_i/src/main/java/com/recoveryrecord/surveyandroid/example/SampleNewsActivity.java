@@ -38,10 +38,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
 import java.io.InputStream;
@@ -53,6 +56,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -84,6 +88,7 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
     boolean document_create = false;
     long in_time = System.currentTimeMillis();
     private ScreenStateReceiver mReceiver;//screen on or off
+    boolean first_in = true;
 
     String time_ss = "";//time series
     String tmp_record = "";//viewport
@@ -181,8 +186,30 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
         //news generate from server ################################################################
         Random rand = new Random();
         int random_news = ThreadLocalRandom.current().nextInt(1, 3 + 1);
-        Log.d("log: firebase news", String.valueOf(random_news));
-        DocumentReference docRef = db.collection("medias").document("chinatimes").collection("news").document("003436a77eccd9d8f0cc9ffbced6844b");
+        String doc_id = "";
+//        Log.d("log: firebase news", String.valueOf(random_news));
+        List<String> list = Arrays.asList("0000e3633ce3f3b0241d69749fc749f0", "0011f17045e0d4f40cc314f27ac91228", "001b575e65a5dd618051065f43b79974", "0030b7b0dada6069a76fb087f631bbb1", "003436a77eccd9d8f0cc9ffbced6844b");
+        doc_id = list.get(rand.nextInt(list.size()));
+        Log.d("log: firebase news", doc_id);
+//        CollectionReference folder = db.collection("medias").document("chinatimes").collection("news");
+//        folder.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    List<String> list = new ArrayList<>();
+//                    for (QueryDocumentSnapshot document : task.getResult()) {
+//                        list.add(document.getId());
+//                    }
+//                    Random rand = new Random();
+//                    doc_id[0] = list.get(rand.nextInt(list.size()));
+//                    Log.d("log: firebase news", String.valueOf(doc_id));
+//                    Log.d("log: firebase folder", list.toString());
+//                } else {
+//                    Log.d("log: firebase folder", String.valueOf(task.getException()));
+//                }
+//            }
+//        });
+        DocumentReference docRef = db.collection("medias").document("chinatimes").collection("news").document(doc_id);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
@@ -196,8 +223,8 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
                         mImg = "";
 //                        mImg = "https://cc.tvbs.com.tw/img/upload/2021/02/05/20210205183845-85cd46f0.jpg";
                         mTitle = document.getString("title");
-                        mDate = document.getString("time");
-                        mSource = document.getString("src");
+                        mDate = document.getString("pubdate");
+                        mSource = document.getString("media");
 //                        mAuthor = "孟心怡";
                         myReadingBehavior.setKEY_NEWS_ID(document.getString("id"));
                         ArrayList<String> c_list = (ArrayList<String>) document.get("content");
@@ -813,7 +840,10 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
     @Override
     protected void onStart() {
         super.onStart();
-        addReadingBehavior();
+        if (first_in){
+            addReadingBehavior();
+            first_in = false;
+        }
         Log.d("log: activity cycle", "On start");
         activityStopped = false;
     }
@@ -1049,7 +1079,8 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
             Toast.makeText(this, "share is being clicked", Toast.LENGTH_LONG).show();
             String share_field = "";
 //            final DocumentReference rbRef = db.collection(Build.ID).document(String.valueOf(l_date)).collection("reading_behaviors").document(myReadingBehavior.getKEY_TIME_IN());
-            final DocumentReference rbRef = db.collection("test_users").document(Build.ID).collection("reading_behaviors").document(myReadingBehavior.getKEY_TIME_IN());
+            String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+            final DocumentReference rbRef = db.collection("test_users").document(device_id).collection("reading_behaviors").document(myReadingBehavior.getKEY_TIME_IN());
             if(share_clicked){
 //                Date date = new Date(System.currentTimeMillis());
 //                SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
@@ -1137,7 +1168,7 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
                 shareIntent.putExtra(Intent.EXTRA_TEXT,url); // your above url
 
                 Intent receiver = new Intent(this, ApplicationSelectorReceiver.class);
-                String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+//                String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
                 receiver.putExtra("device_id", device_id);
                 receiver.putExtra("doc_time", myReadingBehavior.getKEY_TIME_IN());
                 receiver.putExtra("doc_date", String.valueOf(l_date));
@@ -1322,13 +1353,13 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Log.d("log: firebase", "DocumentSnapshot successfully updated!");
+                        Log.d("log: firebase update", "DocumentSnapshot successfully updated!");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.w("log: firebase", "Error updating document", e);
+                        Log.w("log: firebase update", "Error updating document", e);
                     }
                 });
     }
