@@ -3,14 +3,11 @@ package com.recoveryrecord.surveyandroid.example;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import java.util.Date;
-
-import static com.recoveryrecord.surveyandroid.example.MainActivity.NOTIFICATION_CHANNEL_ID;
+import static com.recoveryrecord.surveyandroid.example.TestActivity.NOTIFICATION_CHANNEL_ID;
 
 public class MyNotificationPublisherNews extends BroadcastReceiver {
     public static String NOTIFICATION_ID = "notification-id" ;

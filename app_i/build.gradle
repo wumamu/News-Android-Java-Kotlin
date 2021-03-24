@@ -27,6 +27,10 @@ dependencies {
     implementation project(":surveyandroid")
 //    implementation project(path: ':surveyandroid', onfiguration: 'default')
     implementation 'com.google.firebase:firebase-firestore:17.1.2'
+    apply plugin: 'com.google.gms.google-services' // Google Services Gradle plugin
+
+    // Apply the Crashlytics Gradle plugin
+    apply plugin: 'com.google.firebase.crashlytics'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation "androidx.cardview:cardview:1.0.0"
     implementation 'androidx.recyclerview:recyclerview:1.1.0'

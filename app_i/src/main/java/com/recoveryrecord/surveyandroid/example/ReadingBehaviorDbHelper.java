@@ -2,12 +2,10 @@ package com.recoveryrecord.surveyandroid.example;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import com.recoveryrecord.surveyandroid.example.sqlite.ReadingBehavior;
 
 public class ReadingBehaviorDbHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;

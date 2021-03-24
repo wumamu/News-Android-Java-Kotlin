@@ -1,4 +1,4 @@
-package com.recoveryrecord.surveyandroid.example;
+package com.recoveryrecord.surveyandroid.example.model;
 
 public class NewsModel {
     private String title, media, pubdate, id;

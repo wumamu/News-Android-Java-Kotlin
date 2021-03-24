@@ -7,7 +7,6 @@ import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.TimePickerDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -28,55 +27,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TimePicker;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
-import androidx.fragment.app.DialogFragment;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executor;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
-import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentChange.Type;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FieldPath;
-import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
-import com.google.firebase.firestore.ListenerRegistration;
-import com.google.firebase.firestore.MetadataChanges;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.Query.Direction;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.ServerTimestamp;
-import com.google.firebase.firestore.SetOptions;
-import com.google.firebase.firestore.Source;
-import com.google.firebase.firestore.Transaction;
-import com.google.firebase.firestore.WriteBatch;
+import com.recoveryrecord.surveyandroid.example.receiever.BlueToothReceiver;
+import com.recoveryrecord.surveyandroid.example.receiever.NetworkChangeReceiver;
 
 import static android.media.AudioManager.STREAM_ALARM;
 import static android.media.AudioManager.STREAM_MUSIC;
@@ -86,7 +46,7 @@ import static android.media.AudioManager.STREAM_RING;
 //import android.support.v7.app.AppCompatActivity ;
 
 
-public class MainActivity extends AppCompatActivity {
+public class TestActivity extends AppCompatActivity {
 
     public static final String NOTIFICATION_CHANNEL_ID = "10001" ;
     private final static String default_notification_channel_id = "default" ;
@@ -117,12 +77,12 @@ public class MainActivity extends AppCompatActivity {
         //network checker###########################################################################
         mNetworkReceiver = new NetworkChangeReceiver();
         registerNetworkBroadcastForNougat();//register
-        mContext = MainActivity.this;
+        mContext = TestActivity.this;
         btn_to_news.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
             Intent intent = new Intent();
-            intent.setClass(MainActivity.this, SampleNewsActivity.class);
+            intent.setClass(TestActivity.this, NewsModuleActivity.class);
             intent.putExtra("trigger_from", "MainActivity");
             startActivity(intent);
             //MainActivity.this.finish();
@@ -132,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
             Intent intent = new Intent();
-            intent.setClass(MainActivity.this, ExampleSurveyActivity.class);
+            intent.setClass(TestActivity.this, ExampleSurveyActivity.class);
 //            intent.setClass(MainActivity.this, ESMJsonViewActivity.class);
             startActivity(intent);
             //MainActivity.this.finish();
@@ -144,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                intent.setClass(MainActivity.this, NotificationSettingActivity.class);
+                intent.setClass(TestActivity.this, NotificationSettingActivity.class);
 //                intent.setClass(MainActivity.this, NewsMainActivity.class);
 //                intent.setClass(MainActivity.this, TmpMainActivity.class);
                 startActivity(intent);
@@ -161,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                 Intent intent = new Intent();
-                intent.setClass(MainActivity.this, NewsMainActivity.class);
+                intent.setClass(TestActivity.this, NewsMainActivity.class);
 //                intent.setClass(MainActivity.this, TmpMainActivity.class);
                 startActivity(intent);
 //                alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000 * 60 * 20, alarmIntent);
@@ -443,7 +403,7 @@ public class MainActivity extends AppCompatActivity {
         int nid = (int) System.currentTimeMillis();
         Log.d("log: notification", "news id" + nid);
         Intent intent_news = new Intent();
-        intent_news.setClass(MainActivity.this, SampleNewsActivity.class);
+        intent_news.setClass(TestActivity.this, NewsModuleActivity.class);
         intent_news.putExtra("trigger_from", "Notification");
         PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_news, 0);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);
@@ -475,7 +435,7 @@ public class MainActivity extends AppCompatActivity {
     private Notification getNotification_esm (String content) {
         int nid = (int) System.currentTimeMillis();
         Intent intent_esm = new Intent();
-        intent_esm.setClass(MainActivity.this, ExampleSurveyActivity.class);
+        intent_esm.setClass(TestActivity.this, ExampleSurveyActivity.class);
         intent_esm.putExtra("trigger_from", "Notification");
         PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_esm, 0);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);
@@ -501,108 +461,5 @@ public class MainActivity extends AppCompatActivity {
         assert alarmManager != null;
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
     }
-
-//private void scheduleNotification (Notification notification, int delay) {
-//    int nid = (int) System.currentTimeMillis();
-//    Log.d("log: notification", "news id" + nid);
-//    Intent notificationIntent = new Intent(this, MyNotificationPublisherNews.class);
-//    notificationIntent.putExtra(MyNotificationPublisherNews.NOTIFICATION_ID, 1 ) ;
-//    notificationIntent.putExtra(MyNotificationPublisherNews.NOTIFICATION, notification) ;
-//    PendingIntent pendingIntent = PendingIntent.getBroadcast( this, nid, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-//    long futureInMillis = SystemClock.elapsedRealtime() + delay;
-//    AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//    assert alarmManager != null;
-//    alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
-//}
-//    private Notification getNotification (String content) {
-//        int nid = (int) System.currentTimeMillis();
-//        Log.d("log: notification", "news id" + nid);
-//        Intent intent_news = new Intent();
-//        intent_news.setClass(MainActivity.this, SampleNewsActivity.class);
-//        intent_news.putExtra("trigger_from", "Notification");
-//        PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_news, 0);
-//        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);
-//        builder.setContentTitle("Scheduled NEWS");
-//        builder.setContentText(content);
-//        builder.setSmallIcon(R.drawable.ic_launcher_foreground);
-//        builder.setContentIntent(pendingIntent);
-//        builder.setAutoCancel(true);
-//        builder.setChannelId(NOTIFICATION_CHANNEL_ID);
-//        return builder.build() ;
-//    }
-//    private void scheduleNotification_esm (Notification notification, int delay) {
-//        int nid = (int) System.currentTimeMillis();
-//        Log.d("log: notification", "news id" + nid);
-//        Intent notificationIntent = new Intent(this, MyNotificationPublisherNews.class);
-//        notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION_ID, 1 ) ;
-//        notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION, notification) ;
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast( this, nid, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-//        long futureInMillis = SystemClock.elapsedRealtime() + delay;
-//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//        assert alarmManager != null;
-//        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
-//    }
-//    private Notification getNotification_esm (String content) {
-//        int nid = (int) System.currentTimeMillis();
-//        Intent intent_esm = new Intent();
-//        intent_esm.setClass(MainActivity.this, ExampleSurveyActivity.class);
-//        intent_esm.putExtra("trigger_from", "Notification");
-//        PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_esm, 0);
-//        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);
-//        builder.setContentTitle("Scheduled ESM");
-//        builder.setContentText(content);
-//        builder.setSmallIcon(R.drawable.ic_launcher_foreground);
-//        builder.setContentIntent(pendingIntent);
-//        builder.setAutoCancel(true);
-//        builder.setChannelId(NOTIFICATION_CHANNEL_ID);
-//        return builder.build() ;
-//    }
-
-//    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-//    private void startAlarm(Calendar c) {
-//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-////        Intent intent = new Intent(this, AlertReceiver.class);
-//        int nid = (int) System.currentTimeMillis();
-//        Intent notificationIntent = new Intent(this, MyNotificationPublisherNews.class);
-//        notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION_ID, 1 ) ;
-//        notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION, notification) ;
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast( this, nid, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-//
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, notificationIntent, 0);
-//        if (c.before(Calendar.getInstance())) {
-//            c.add(Calendar.DATE, 1);
-//        }
-//        alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
-//    }
-
-//    FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-//    public void addAdaLovelace() {
-//        // [START add_ada_lovelace]
-//        // Create a new user with a first and last name
-//        Map<String, Object> user = new HashMap<>();
-//        user.put("first", "Ada");
-//        user.put("last", "Lovelac");
-//        user.put("born", 1815);
-//
-//        // Add a new document with a generated ID
-//        db.collection("users")
-//                .add(user)
-//                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-//                    @Override
-//                    public void onSuccess(DocumentReference documentReference) {
-//                        Log.d("log: firebase", "DocumentSnapshot added with ID: " + documentReference.getId());
-//                        //Log.d( tag: "firebase", "DocumentSnapshot added with ID: " + documentReference.getId());
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Log.d("log: firebase", "Error adding document");
-//                        //Log.w(tag: "firebase", "Error adding document", e);
-//                    }
-//                });
-//        // [END add_ada_lovelace]
-//    }
 
 }

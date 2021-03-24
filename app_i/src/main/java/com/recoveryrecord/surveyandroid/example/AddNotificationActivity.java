@@ -8,6 +8,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.recoveryrecord.surveyandroid.example.activity.NotificationDbViewActivity;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 public class AddNotificationActivity extends AppCompatActivity {

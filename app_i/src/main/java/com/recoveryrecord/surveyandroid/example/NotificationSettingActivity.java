@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.recoveryrecord.surveyandroid.example.activity.NotificationDbViewActivity;
+
 import androidx.core.app.ActivityCompat;
 
 public class NotificationSettingActivity extends Activity {
@@ -131,7 +133,7 @@ public class NotificationSettingActivity extends Activity {
     }
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(NotificationSettingActivity.this, MainActivity.class);
+        Intent intent = new Intent(NotificationSettingActivity.this, TestActivity.class);
         startActivity(intent);
     }
 

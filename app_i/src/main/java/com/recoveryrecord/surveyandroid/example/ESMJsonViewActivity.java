@@ -1,33 +1,13 @@
 package com.recoveryrecord.surveyandroid.example;
 
-import android.Manifest;
-import android.app.AlarmManager;
-import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.content.res.Configuration;
-import android.media.AudioDeviceInfo;
-import android.media.AudioManager;
-import android.net.ConnectivityManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.recoveryrecord.surveyandroid.example.sqlite.ESM;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,14 +16,7 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
-
-import static android.media.AudioManager.STREAM_ALARM;
-import static android.media.AudioManager.STREAM_MUSIC;
-import static android.media.AudioManager.STREAM_NOTIFICATION;
-import static android.media.AudioManager.STREAM_RING;
 //import android.support.v4.app.NotificationCompat ;
 //import android.support.v7.app.AppCompatActivity ;
 
@@ -214,7 +187,7 @@ public class ESMJsonViewActivity extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(ESMJsonViewActivity.this, MainActivity.class);
+        Intent intent = new Intent(ESMJsonViewActivity.this, TestActivity.class);
         startActivity(intent);
     }
 

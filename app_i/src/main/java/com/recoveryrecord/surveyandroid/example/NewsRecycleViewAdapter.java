@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.recoveryrecord.surveyandroid.example.model.NewsModel;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -81,8 +83,8 @@ public class NewsRecycleViewAdapter extends RecyclerView.Adapter<NewsRecycleView
 //                    Toast.makeText(view.getContext(), "click " +getAdapterPosition(),Toast.LENGTH_SHORT).show();
                     NewsModel model = dataModelArrayList.get(getAdapterPosition());
                     Intent intent = new Intent();
-                    intent.setClass(context, SampleNewsActivity.class);
-                    intent.putExtra("trigger_from", "NewsMainActivity");
+                    intent.setClass(context, NewsModuleActivity.class);
+                    intent.putExtra("trigger_from", "self_trigger");
                     intent.putExtra("news_id", model.getId());
                     intent.putExtra("media_name", model.getMedia());
 

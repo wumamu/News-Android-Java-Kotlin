@@ -1,4 +1,4 @@
-package com.recoveryrecord.surveyandroid.example;
+package com.recoveryrecord.surveyandroid.example.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,6 +6,10 @@ import android.os.Bundle;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+
+import com.recoveryrecord.surveyandroid.example.NotificationDbHelper;
+import com.recoveryrecord.surveyandroid.example.NotificationSettingActivity;
+import com.recoveryrecord.surveyandroid.example.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;

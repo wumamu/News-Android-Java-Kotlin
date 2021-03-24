@@ -1,4 +1,4 @@
-package com.recoveryrecord.surveyandroid.example;
+package com.recoveryrecord.surveyandroid.example.sqlite;
 import android.provider.BaseColumns;
 public final class ESMContract {
     private ESMContract() {

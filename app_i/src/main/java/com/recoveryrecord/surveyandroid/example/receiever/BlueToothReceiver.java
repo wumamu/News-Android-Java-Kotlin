@@ -1,4 +1,4 @@
-package com.recoveryrecord.surveyandroid.example;
+package com.recoveryrecord.surveyandroid.example.receiever;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;

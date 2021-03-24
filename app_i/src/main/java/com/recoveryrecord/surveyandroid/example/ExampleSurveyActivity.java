@@ -5,12 +5,21 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.recoveryrecord.surveyandroid.Answer;
 import com.recoveryrecord.surveyandroid.R;
@@ -22,14 +31,20 @@ import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ExampleSurveyActivity extends SurveyActivity implements CustomConditionHandler {
-
+    String esm_id = "";
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        if (getIntent().getExtras() != null) {
+//            Bundle b = getIntent().getExtras();
+//            esm_id = b.getString("esm_id");
+//        }
         Date date = new Date(System.currentTimeMillis());
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         String time_now = formatter.format(date);
@@ -43,11 +58,20 @@ public class ExampleSurveyActivity extends SurveyActivity implements CustomCondi
 //                .document(time_now)
 //                .set(esm);
         String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-        db.collection("test_users")
-                .document(device_id)
-                .collection("esms")
-                .document(time_now)
-                .set(esm);
+        if (esm_id!=""){
+            db.collection("test_users")
+                    .document(device_id)
+                    .collection("esms")
+                    .document(esm_id)
+                    .set(esm);
+        } else {
+            db.collection("test_users")
+                    .document(device_id)
+                    .collection("esms")
+                    .document(time_now)
+                    .set(esm);
+        }
+
     }
 
     @Override
@@ -57,6 +81,10 @@ public class ExampleSurveyActivity extends SurveyActivity implements CustomCondi
 
     @Override
     protected String getJsonFilename() {
+//        if (getIntent().getExtras() != null) {
+//            Bundle b = getIntent().getExtras();
+//            return b.getString("json_file_name");
+//        }
         return "ExampleQuestions.json";
     }
 
@@ -111,14 +139,47 @@ public class ExampleSurveyActivity extends SurveyActivity implements CustomCondi
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Date date = new Date(System.currentTimeMillis());
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-        String time_now = formatter.format(date);
-        Map<String, Object> esm = new HashMap<>();
-        esm.put("close_time", time_now);
-        String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-        db.collection("test_users")
-                .document(device_id)
-                .collection("esms")
-                .document(time_now)
-                .set(esm);
+        final String time_now = formatter.format(date);
+        if (esm_id!="") {
+            String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+            final DocumentReference rbRef = db.collection("test_users").document(device_id).collection("esms").document(esm_id);
+            rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            rbRef.update("close_time", time_now)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.d("log: firebase share", "DocumentSnapshot successfully updated!");
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.w("log: firebase share", "Error updating document", e);
+                                        }
+                                    });
+                        } else {
+                            Log.d("log: firebase share", "No such document");
+                        }
+                    } else {
+                        Log.d("log: firebase share", "get failed with ", task.getException());
+                    }
+                }
+            });
+        } else {
+            Map<String, Object> esm = new HashMap<>();
+            esm.put("close_time", time_now);
+            String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+            db.collection("test_users")
+                    .document(device_id)
+                    .collection("esms")
+                    .document(time_now)
+                    .set(esm);
+        }
+
     }
 }

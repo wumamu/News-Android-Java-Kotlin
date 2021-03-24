@@ -5,6 +5,9 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
+import com.recoveryrecord.surveyandroid.example.sqlite.DragObj;
+import com.recoveryrecord.surveyandroid.example.sqlite.FlingObj;
+
 public class MySimpleGestureListener extends GestureDetector.SimpleOnGestureListener{
 
     public final static int SWIPE_UP    = 1;

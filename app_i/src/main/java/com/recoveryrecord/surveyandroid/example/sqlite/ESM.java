@@ -1,4 +1,4 @@
-package com.recoveryrecord.surveyandroid.example;
+package com.recoveryrecord.surveyandroid.example.sqlite;
 
 public class ESM {
     private String KEY_BASE_1;

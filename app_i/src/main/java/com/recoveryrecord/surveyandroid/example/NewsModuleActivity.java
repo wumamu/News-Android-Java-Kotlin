@@ -29,7 +29,6 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 //import android.widget.Toolbar;
@@ -38,25 +37,20 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.SetOptions;
+import com.recoveryrecord.surveyandroid.example.sqlite.DragObj;
+import com.recoveryrecord.surveyandroid.example.sqlite.FlingObj;
+import com.recoveryrecord.surveyandroid.example.sqlite.ReadingBehavior;
+import com.recoveryrecord.surveyandroid.example.receiever.ApplicationSelectorReceiver;
+import com.recoveryrecord.surveyandroid.example.receiever.ScreenStateReceiver;
 
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -73,12 +67,10 @@ import java.util.concurrent.ThreadLocalRandom;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-
-import static java.security.AccessController.getContext;
 //import android.support.v7.widget.Toolbar;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
-public class SampleNewsActivity extends AppCompatActivity implements MySimpleGestureListener.SimpleGestureListener {
+public class NewsModuleActivity extends AppCompatActivity implements MySimpleGestureListener.SimpleGestureListener {
     //    String TagCycle = "my activity cycle";
 //    String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -108,9 +100,10 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("log: activity cycle", "On create");
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
         setContentView(R.layout.activity_sample_news);
         //open database ############################################################################
-        dbHandler = new ReadingBehaviorDbHelper(SampleNewsActivity.this);
+        dbHandler = new ReadingBehaviorDbHelper(NewsModuleActivity.this);
         //check trigger from #######################################################################
         if (getIntent().getExtras() != null) {
             Bundle b = getIntent().getExtras();
@@ -230,6 +223,7 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
             docRef = db.collection("medias").document("chinatimes").collection("news").document(doc_id);
         } else {
             docRef = db.collection("medias").document(media_name).collection("news").document(news_id);
+            myReadingBehavior.setKEY_NEWS_ID(news_id);
         }
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @RequiresApi(api = Build.VERSION_CODES.O)
@@ -334,9 +328,9 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
                         //put textview into layout #################################################
                         //int text_size = (int) (dpWidth /30);
                         int text_size = 20;
-                        final TextView myTextViewsTitle = new TextView(SampleNewsActivity.this);
-                        final TextView myTextViewsDate = new TextView(SampleNewsActivity.this);
-                        final TextView myTextViewsSrc = new TextView(SampleNewsActivity.this);
+                        final TextView myTextViewsTitle = new TextView(NewsModuleActivity.this);
+                        final TextView myTextViewsDate = new TextView(NewsModuleActivity.this);
+                        final TextView myTextViewsSrc = new TextView(NewsModuleActivity.this);
                         myTextViewsTitle.setText(mTitle);
                         myTextViewsDate.setText(mDate);
                         myTextViewsSrc.setText(mSource);
@@ -356,13 +350,13 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
                         ((LinearLayout) findViewById(R.id.layout_inside)).addView(myTextViewsDate);
                         ((LinearLayout) findViewById(R.id.layout_inside)).addView(myTextViewsSrc);
                         if(mImg!=""){
-                            ImageView imageView = new ImageView(SampleNewsActivity.this);
+                            ImageView imageView = new ImageView(NewsModuleActivity.this);
                             new DownloadImageTask(imageView).execute(mImg);
                             ((LinearLayout) findViewById(R.id.layout_inside)).addView(imageView);
                         }
                         final TextView[] myTextViews = new TextView[textview_num]; // create an empty array;
                         for (int i = 0; i < divList.size(); i++) {
-                            final TextView rowTextView = new TextView(SampleNewsActivity.this);
+                            final TextView rowTextView = new TextView(NewsModuleActivity.this);
                             String tmp = divList.get(i);
                             rowTextView.setText(tmp);
                             rowTextView.setTextColor(Color.parseColor("black"));
@@ -874,7 +868,7 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
         // [START add_ada_lovelace]
         // Create a new user with a first and last name
         Map<String, Object> readingBehavior = new HashMap<>();
-        readingBehavior.put("news_id",  myReadingBehavior.getKEY_NEWS_ID());
+        readingBehavior.put("news_id",  "NA");
         readingBehavior.put("trigger_by", myReadingBehavior.getKEY_TRIGGER_BY());
 //        readingBehavior.put("time_in", myReadingBehavior.getKEY_TIME_IN());
         readingBehavior.put("in_date", in_tt.get(0));
@@ -886,7 +880,7 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
         readingBehavior.put("display_height(dp)", myReadingBehavior.getKEY_DISPLAY_HEIGHT());
         readingBehavior.put("time_on_page(s)", myReadingBehavior.getKEY_TIME_ON_PAGE());
         readingBehavior.put("pause_count", myReadingBehavior.getKEY_PAUSE_ON_PAGE());
-        readingBehavior.put("viewport_num", myReadingBehavior.getKEY_VIEW_PORT_NUM());
+        readingBehavior.put("viewport_num", "NA");
         readingBehavior.put("viewport_record", Arrays.asList("NA"));
         readingBehavior.put("fling_num", myReadingBehavior.getKEY_FLING_NUM());
         readingBehavior.put("fling_record", Arrays.asList("NA"));
@@ -895,8 +889,9 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
         readingBehavior.put("share", Arrays.asList("NA"));
 //        readingBehavior.put("share_via", "none");
         readingBehavior.put("time_series(s)", Arrays.asList("NA"));
-        readingBehavior.put("byte_per_line", myReadingBehavior.getKEY_BYTE_PER_LINE());
-        readingBehavior.put("row_spacing(dp)", myReadingBehavior.getKEY_ROW_SPACING());
+        readingBehavior.put("byte_per_line", "NA");
+        readingBehavior.put("row_spacing(dp)", "NA");
+//        Log.d("log: view_port_num!", String.valueOf(myReadingBehavior.getKEY_VIEW_PORT_NUM()));
 
         // Add a new document with my id ///////////////////////a generated ID
         String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -949,9 +944,12 @@ public class SampleNewsActivity extends AppCompatActivity implements MySimpleGes
 //            Log.d("log: firebase", drag_record_list.get(i));
 //        }
         List<String> out_tt = new ArrayList<String>(Arrays.asList(myReadingBehavior.getKEY_TIME_OUT().split(" ")));
-
         // Set the "isCapital" field of the city 'DC'
         rbRef.update("content_length(dp)", myReadingBehavior.getKEY_CONTENT_LENGTH(),
+                "byte_per_line", myReadingBehavior.getKEY_BYTE_PER_LINE(),
+                "news_id",  myReadingBehavior.getKEY_NEWS_ID(),
+                "row_spacing(dp)", myReadingBehavior.getKEY_ROW_SPACING(),
+                "viewport_num", myReadingBehavior.getKEY_VIEW_PORT_NUM(),
                 "drag_num", myReadingBehavior.getKEY_DRAG_NUM(),
                 "drag_record", drag_record_list,
                 "fling_num", myReadingBehavior.getKEY_FLING_NUM(),

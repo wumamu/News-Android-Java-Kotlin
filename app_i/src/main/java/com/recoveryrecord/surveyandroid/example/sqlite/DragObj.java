@@ -1,4 +1,4 @@
-package com.recoveryrecord.surveyandroid.example;
+package com.recoveryrecord.surveyandroid.example.sqlite;
 
 public class DragObj {
     private long TIME_ONE;

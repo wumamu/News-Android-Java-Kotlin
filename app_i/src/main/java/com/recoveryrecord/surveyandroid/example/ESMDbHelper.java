@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.recoveryrecord.surveyandroid.example.sqlite.ESM;
+import com.recoveryrecord.surveyandroid.example.sqlite.ESMContract;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 

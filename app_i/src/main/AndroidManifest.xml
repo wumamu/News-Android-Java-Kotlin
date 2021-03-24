@@ -20,7 +20,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Widget.SurveyAndroid">
-        <activity android:name=".MainActivity">
+        <activity android:name=".NewsMainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -29,23 +29,20 @@
         <receiver android:name = ".MyNotificationPublisherNews" />
 
         <activity android:name=".ExampleSurveyActivity" />
-        <activity android:name=".SampleNewsActivity" />
-        <activity android:name=".NewsMainActivity" />
+        <activity android:name=".NewsModuleActivity" />
+        <activity android:name=".TestActivity" />
         <activity android:name=".NetworkCheckerActivity" />
-        <receiver android:name=".ApplicationSelectorReceiver"></receiver>
-        <receiver android:name=".ScreenStateReceiver"></receiver>
+        <receiver android:name=".receiever.ApplicationSelectorReceiver"></receiver>
+        <receiver android:name=".receiever.ScreenStateReceiver"></receiver>
 <!--        <receiver android:name=".NotificationReceiver"></receiver>-->
-        <receiver android:name=".ApplicationSelectorReceiver"></receiver>
-        <receiver android:name=".BlueToothReceiver"></receiver>
-<!--        <receiver android:name=".AppInfoUtil"-->
-<!--            tools:ignore="Instantiatable"></receiver>-->
-<!--        <receiver android:name=".DeviceUtil"-->
-<!--            tools:ignore="Instantiatable"></receiver>-->
+        <receiver android:name=".receiever.ApplicationSelectorReceiver"></receiver>
+        <receiver android:name=".receiever.BlueToothReceiver"></receiver>
+
         <activity android:name=".AddNotificationActivity"></activity>
-        <activity android:name=".NotificationDbViewActivity"></activity>
+        <activity android:name=".activity.NotificationDbViewActivity"></activity>
         <activity android:name=".ESMDbViewActivity"></activity>
         <activity android:name=".ESMJsonViewActivity"></activity>
-        <receiver android:name="NetworkChangeReceiver">
+        <receiver android:name=".receiever.NetworkChangeReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
