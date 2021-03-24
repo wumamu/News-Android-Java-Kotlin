@@ -2,12 +2,12 @@ package com.recoveryrecord.surveyandroid.example;
 
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,7 +38,9 @@ public class NewsRecycleViewAdapter extends RecyclerView.Adapter<NewsRecycleView
     public void onBindViewHolder(@NonNull NewsRecycleViewAdapter.ViewHolder holder, int position) {
         // setting data to our views in Recycler view items.
         NewsModel model = dataModelArrayList.get(position);
-        holder.courseNameTV.setText(model.getTitle());
+        holder.newsTitle.setText(model.getTitle());
+        holder.newsPubTime.setText(model.getPubdate());
+        holder.newsMedia.setText(model.getMedia());
 
         // we are using Picasso to load images
         // from URL inside our image view.
@@ -62,14 +64,35 @@ public class NewsRecycleViewAdapter extends RecyclerView.Adapter<NewsRecycleView
     public class ViewHolder extends RecyclerView.ViewHolder {
         // creating variables for our
         // views of recycler items.
-        private TextView courseNameTV;
+        private TextView newsTitle, newsPubTime, newsMedia;
 //        private ImageView courseIV;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             // initializing the views of recycler views.
-            courseNameTV = itemView.findViewById(R.id.idTVtext);
+            newsTitle = itemView.findViewById(R.id.text_view_title);
+            newsPubTime = itemView.findViewById(R.id.text_view_pubtime);
+            newsMedia = itemView.findViewById(R.id.text_view_media);
 //            courseIV = itemView.findViewById(R.id.idIVimage);
+            // 點擊項目時
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+//                    Toast.makeText(view.getContext(), "click " +getAdapterPosition(),Toast.LENGTH_SHORT).show();
+                    NewsModel model = dataModelArrayList.get(getAdapterPosition());
+                    Intent intent = new Intent();
+                    intent.setClass(context, SampleNewsActivity.class);
+                    intent.putExtra("trigger_from", "NewsMainActivity");
+                    intent.putExtra("news_id", model.getId());
+                    intent.putExtra("media_name", model.getMedia());
+
+                    Log.d("log: onClick", model.getTitle());
+//                    Toast.makeText(view.getContext(), "click " +model.getTitle(),Toast.LENGTH_SHORT).show();
+                    context.startActivity(intent);
+                    //MainActivity.this.finish();
+                }
+            });
+
         }
     }
 }

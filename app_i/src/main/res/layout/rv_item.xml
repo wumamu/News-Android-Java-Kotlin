@@ -1,24 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:gravity="center"
-    android:orientation="vertical">
-
+    android:layout_marginEnd="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
+    app:cardBackgroundColor="#FFFFE8">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?android:attr/selectableItemBackground"
+        android:padding="8dp">
     <!--Text view for displaying our text -->
     <TextView
-        android:id="@+id/idTVtext"
+        android:id="@+id/text_view_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="2dp"
-        android:padding="3dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+
+        android:textSize="20dp"
         android:text="Category Text"
         android:textColor="#343434"
-        android:gravity="center_vertical" />
+        android:gravity="center_vertical"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
-</LinearLayout>
-
-
-    <!--        android:textAlignment="center"-->
+    <TextView
+        android:id="@+id/text_view_media"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/text_view_title"
+        android:text="Description"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:layout_alignParentLeft="true" />
+    <TextView
+        android:id="@+id/text_view_pubtime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:text="202/03/2418:06:02"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:layout_alignParentRight="true" />
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

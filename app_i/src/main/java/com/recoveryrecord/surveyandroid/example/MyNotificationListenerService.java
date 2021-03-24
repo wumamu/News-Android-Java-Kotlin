@@ -52,12 +52,15 @@ public class MyNotificationListenerService extends NotificationListenerService {
     public void onNotificationPosted(StatusBarNotification sbn) {
         Log.i(TAG,"**********  onNotificationPosted");
         //cancel notification
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                cancelNotification(sbn.getKey());
-//                Log.i(TAG, "++++++++++++++++++++");
+//        if (sbn.getPackageName()=="com.facebook.orca"){
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                    cancelNotification(sbn.getKey());
+//                    Log.i(TAG, "++++++++++++++++++++");
+//                }
 //            }
 //        }
+
         //content intent
         Notification notification = sbn.getNotification();
         PendingIntent contentIntent = notification.contentIntent;
