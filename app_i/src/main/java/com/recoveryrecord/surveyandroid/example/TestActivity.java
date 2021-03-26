@@ -67,7 +67,7 @@ public class TestActivity extends AppCompatActivity {
 //        ESMDbHelper esmDbHelper = new ESMDbHelper(this);
         setTitle("Homepage");
 //        addAdaLovelace();
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_test);
         Button btn_to_news = (Button) findViewById(R.id.btn_to_news);
         Button btn_to_diary = (Button) findViewById(R.id.btn_to_diary);
         Button btn_to_noti_list = (Button) findViewById(R.id.btn_to_noti_list);

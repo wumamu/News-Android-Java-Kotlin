@@ -1,66 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F3F3F3"
-    android:gravity="center"
-    android:orientation="vertical"
-    tools:context=".TestActivity">
+    tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/btn_to_news"
-        android:layout_width="wrap_content"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="15dp"
-        android:paddingTop="20dp"
-        android:paddingRight="15dp"
-        android:paddingBottom="20dp"
-        android:text="@string/news_test"
-        android:textSize="18sp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tabMaxWidth="0dp"
+        app:tabGravity="fill"
+        app:tabMode="auto" />
 
-    <Button
-        android:id="@+id/btn_to_diary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="15dp"
-        android:paddingTop="20dp"
-        android:paddingRight="15dp"
-        android:paddingBottom="20dp"
-        android:text="@string/to_diary"
-        android:textSize="18sp" />
-    <Button
-        android:id="@+id/btn_to_noti_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="15dp"
-        android:paddingTop="20dp"
-        android:paddingRight="15dp"
-        android:paddingBottom="20dp"
-        android:text="@string/btn_to_noti_list"
-        android:textSize="18sp" />
-<!--    <Button-->
-<!--        android:id="@+id/btn_to_noti_esm"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:paddingLeft="15dp"-->
-<!--        android:paddingTop="20dp"-->
-<!--        android:paddingRight="15dp"-->
-<!--        android:paddingBottom="20dp"-->
-<!--        android:text="@string/to_noti_esm"-->
-<!--        android:onClick="notificationButtonOnClick"-->
-<!--        android:textSize="18sp"-->
-<!--        tools:ignore="OnClick" />-->
-    <Button
-        android:id="@+id/btn_to_test"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="15dp"
-        android:paddingTop="20dp"
-        android:paddingRight="15dp"
-        android:paddingBottom="20dp"
-        android:text="@string/to_test"
-        android:textSize="18sp" />
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/mViewPager"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tab" />
 
-</LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

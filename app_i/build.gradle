@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         applicationId "com.recoveryrecord.surveyandroid"
         minSdkVersion 15
@@ -37,5 +37,5 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
     //viewpage indicator
-//    implementation project(':library')
+    implementation 'com.google.android.material:material:1.2.0-alpha05'
 }
