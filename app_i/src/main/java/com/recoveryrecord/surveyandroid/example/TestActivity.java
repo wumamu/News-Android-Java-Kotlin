@@ -118,12 +118,73 @@ public class TestActivity extends AppCompatActivity {
 //                calendar.setTimeInMillis(System.currentTimeMillis());
 //                calendar.set(Calendar.HOUR_OF_DAY, 1);
 //                calendar.set(Calendar.MINUTE, 48);
+                int mode_ring =myAudioManager.getRingerMode();//ringtone mode
+                if(mode_ring==AudioManager.RINGER_MODE_VIBRATE){
+                    Log.e("log: ring mode", "Vibrate");
+//            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
+                } else if(mode_ring==AudioManager.RINGER_MODE_NORMAL){
+                    Log.e("log: ring mode", "Ringing");
+//            Toast.makeText(MainActivity.this,"Now in Ringing Mode", Toast.LENGTH_LONG).show();
+                } else if (mode_ring==AudioManager.RINGER_MODE_SILENT){
+                    Log.e("log: ring mode", "Silent");
+//            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
+                } else {
+                    Log.e("log: ring mode", "Unknown");
+                }
+                int mode_audio =myAudioManager.getMode();
+                if(mode_audio==AudioManager.MODE_NORMAL){
+                    Log.e("log: audio mode", "normal");
+                    //            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
+                } else if(mode_audio==AudioManager.MODE_RINGTONE){
+                    Log.e("log: audio mode", "is ringing");
+                    //            Toast.makeText(MainActivity.this,"Now in Ringing Mode", Toast.LENGTH_LONG).show();
+                } else if (mode_audio==AudioManager.MODE_IN_CALL){
+                    Log.e("log: audio mode", "in call");
+                    //            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
+                } else if (mode_audio==AudioManager.MODE_IN_COMMUNICATION){
+                    Log.e("log: audio mode", "in internet chat");
+                    //            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
+                } else {
+                    Log.e("log: audio mode", "Unknown");
+                }
+                int volume_ring = myAudioManager.getStreamVolume(STREAM_RING);
+                int volume_noti = myAudioManager.getStreamVolume(STREAM_NOTIFICATION);
+                int volume_alarm = myAudioManager.getStreamVolume(STREAM_ALARM);
+                int volume_music = myAudioManager.getStreamVolume(STREAM_MUSIC);
+                int volume_max = myAudioManager.getStreamMaxVolume(STREAM_MUSIC);
+                int volume_min = myAudioManager.getStreamMinVolume(STREAM_MUSIC);
+                Log.e("log: volume ring", String.valueOf(volume_ring));
+                Log.e("log: volume noti", String.valueOf(volume_noti));
+                Log.e("log: volume alarm", String.valueOf(volume_alarm));
+                Log.e("log: volume music", String.valueOf(volume_music));
+                Log.e("log: volume max", String.valueOf(volume_max));
+                Log.e("log: volume min", String.valueOf(volume_min));
+                boolean music = myAudioManager.isMusicActive();
+                Log.e("log: music", String.valueOf(music));
+                AudioDeviceInfo[] devices = myAudioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
+                for (AudioDeviceInfo device: devices) {
+                    if (device.getType() == AudioDeviceInfo.TYPE_WIRED_HEADPHONES){
+                        Log.e("log: AudioDevice type", "headphone");
+//                        Toast.makeText(MainActivity.this,"123", Toast.LENGTH_LONG).show();
+                    } else if (device.getType() == AudioDeviceInfo.TYPE_WIRED_HEADSET){
+                        Log.e("log: AudioDevice type", "headset");
+//                        Toast.makeText(MainActivity.this,"456", Toast.LENGTH_LONG).show();
+                    } else if (device.getType() == AudioDeviceInfo.TYPE_USB_HEADSET) {
+                        Log.e("log: AudioDevice type", "headset usb");
+//                        Toast.makeText(MainActivity.this,"789", Toast.LENGTH_LONG).show();
+                    } else if (device.getType() == AudioDeviceInfo.TYPE_BLUETOOTH_SCO){
+                        Log.e("log: AudioDevice type", "Bluetooth device typically used for telephony");
+                    } else if (device.getType() == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP){
+                        Log.e("log: AudioDevice type", "Bluetooth device supporting the A2DP profile.");
+                    } else {
+                        Log.e("log: AudioDevice type", "unknown device");
+                    }
+                }
 
-
-                Intent intent = new Intent();
-                intent.setClass(TestActivity.this, NewsMainActivity.class);
-//                intent.setClass(MainActivity.this, TmpMainActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent();
+//                intent.setClass(TestActivity.this, NewsMainActivity.class);
+////                intent.setClass(MainActivity.this, TmpMainActivity.class);
+//                startActivity(intent);
 //                alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000 * 60 * 20, alarmIntent);
 //                scheduleNotification_repeat(getNotification("my repeat alarm"), calendar);
 //                Calendar calendar = Calendar.getInstance();
@@ -151,68 +212,68 @@ public class TestActivity extends AppCompatActivity {
             }
         });
         //ring mode ################################################################################
-        int mode_ring =myAudioManager.getRingerMode();//ringtone mode
-        if(mode_ring==AudioManager.RINGER_MODE_VIBRATE){
-            Log.e("log: ring mode", "Vibrate");
-//            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
-        } else if(mode_ring==AudioManager.RINGER_MODE_NORMAL){
-            Log.e("log: ring mode", "Ringing");
-//            Toast.makeText(MainActivity.this,"Now in Ringing Mode", Toast.LENGTH_LONG).show();
-        } else if (mode_ring==AudioManager.RINGER_MODE_SILENT){
-            Log.e("log: ring mode", "Silent");
-//            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
-        } else {
-            Log.e("log: ring mode", "Unknown");
-        }
-        int mode_audio =myAudioManager.getMode();
-        if(mode_audio==AudioManager.MODE_NORMAL){
-            Log.e("log: audio mode", "normal");
-            //            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
-        } else if(mode_audio==AudioManager.MODE_RINGTONE){
-            Log.e("log: audio mode", "is ringing");
-            //            Toast.makeText(MainActivity.this,"Now in Ringing Mode", Toast.LENGTH_LONG).show();
-        } else if (mode_audio==AudioManager.MODE_IN_CALL){
-            Log.e("log: audio mode", "in call");
-            //            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
-        } else if (mode_audio==AudioManager.MODE_IN_COMMUNICATION){
-            Log.e("log: audio mode", "in internet chat");
-            //            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
-        } else {
-            Log.e("log: audio mode", "Unknown");
-        }
-        int volume_ring = myAudioManager.getStreamVolume(STREAM_RING);
-        int volume_noti = myAudioManager.getStreamVolume(STREAM_NOTIFICATION);
-        int volume_alarm = myAudioManager.getStreamVolume(STREAM_ALARM);
-        int volume_music = myAudioManager.getStreamVolume(STREAM_MUSIC);
-        int volume_max = myAudioManager.getStreamMaxVolume(STREAM_MUSIC);
-        int volume_min = myAudioManager.getStreamMinVolume(STREAM_MUSIC);
-        Log.e("log: volume ring", String.valueOf(volume_ring));
-        Log.e("log: volume noti", String.valueOf(volume_noti));
-        Log.e("log: volume alarm", String.valueOf(volume_alarm));
-        Log.e("log: volume music", String.valueOf(volume_music));
-        Log.e("log: volume max", String.valueOf(volume_max));
-        Log.e("log: volume min", String.valueOf(volume_min));
-        boolean music = myAudioManager.isMusicActive();
-        Log.e("log: music", String.valueOf(music));
-        AudioDeviceInfo[] devices = myAudioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
-        for (AudioDeviceInfo device: devices) {
-            if (device.getType() == AudioDeviceInfo.TYPE_WIRED_HEADPHONES){
-                Log.e("log: AudioDevice type", "headphone");
-//                        Toast.makeText(MainActivity.this,"123", Toast.LENGTH_LONG).show();
-            } else if (device.getType() == AudioDeviceInfo.TYPE_WIRED_HEADSET){
-                Log.e("log: AudioDevice type", "headset");
-//                        Toast.makeText(MainActivity.this,"456", Toast.LENGTH_LONG).show();
-            } else if (device.getType() == AudioDeviceInfo.TYPE_USB_HEADSET) {
-                Log.e("log: AudioDevice type", "headset usb");
-//                        Toast.makeText(MainActivity.this,"789", Toast.LENGTH_LONG).show();
-            } else if (device.getType() == AudioDeviceInfo.TYPE_BLUETOOTH_SCO){
-                Log.e("log: AudioDevice type", "Bluetooth device typically used for telephony");
-            } else if (device.getType() == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP){
-                Log.e("log: AudioDevice type", "Bluetooth device supporting the A2DP profile.");
-            } else {
-                Log.e("log: AudioDevice type", "unknown device");
-            }
-        }
+//        int mode_ring =myAudioManager.getRingerMode();//ringtone mode
+//        if(mode_ring==AudioManager.RINGER_MODE_VIBRATE){
+//            Log.e("log: ring mode", "Vibrate");
+////            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
+//        } else if(mode_ring==AudioManager.RINGER_MODE_NORMAL){
+//            Log.e("log: ring mode", "Ringing");
+////            Toast.makeText(MainActivity.this,"Now in Ringing Mode", Toast.LENGTH_LONG).show();
+//        } else if (mode_ring==AudioManager.RINGER_MODE_SILENT){
+//            Log.e("log: ring mode", "Silent");
+////            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
+//        } else {
+//            Log.e("log: ring mode", "Unknown");
+//        }
+//        int mode_audio =myAudioManager.getMode();
+//        if(mode_audio==AudioManager.MODE_NORMAL){
+//            Log.e("log: audio mode", "normal");
+//            //            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
+//        } else if(mode_audio==AudioManager.MODE_RINGTONE){
+//            Log.e("log: audio mode", "is ringing");
+//            //            Toast.makeText(MainActivity.this,"Now in Ringing Mode", Toast.LENGTH_LONG).show();
+//        } else if (mode_audio==AudioManager.MODE_IN_CALL){
+//            Log.e("log: audio mode", "in call");
+//            //            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
+//        } else if (mode_audio==AudioManager.MODE_IN_COMMUNICATION){
+//            Log.e("log: audio mode", "in internet chat");
+//            //            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
+//        } else {
+//            Log.e("log: audio mode", "Unknown");
+//        }
+//        int volume_ring = myAudioManager.getStreamVolume(STREAM_RING);
+//        int volume_noti = myAudioManager.getStreamVolume(STREAM_NOTIFICATION);
+//        int volume_alarm = myAudioManager.getStreamVolume(STREAM_ALARM);
+//        int volume_music = myAudioManager.getStreamVolume(STREAM_MUSIC);
+//        int volume_max = myAudioManager.getStreamMaxVolume(STREAM_MUSIC);
+//        int volume_min = myAudioManager.getStreamMinVolume(STREAM_MUSIC);
+//        Log.e("log: volume ring", String.valueOf(volume_ring));
+//        Log.e("log: volume noti", String.valueOf(volume_noti));
+//        Log.e("log: volume alarm", String.valueOf(volume_alarm));
+//        Log.e("log: volume music", String.valueOf(volume_music));
+//        Log.e("log: volume max", String.valueOf(volume_max));
+//        Log.e("log: volume min", String.valueOf(volume_min));
+//        boolean music = myAudioManager.isMusicActive();
+//        Log.e("log: music", String.valueOf(music));
+//        AudioDeviceInfo[] devices = myAudioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
+//        for (AudioDeviceInfo device: devices) {
+//            if (device.getType() == AudioDeviceInfo.TYPE_WIRED_HEADPHONES){
+//                Log.e("log: AudioDevice type", "headphone");
+////                        Toast.makeText(MainActivity.this,"123", Toast.LENGTH_LONG).show();
+//            } else if (device.getType() == AudioDeviceInfo.TYPE_WIRED_HEADSET){
+//                Log.e("log: AudioDevice type", "headset");
+////                        Toast.makeText(MainActivity.this,"456", Toast.LENGTH_LONG).show();
+//            } else if (device.getType() == AudioDeviceInfo.TYPE_USB_HEADSET) {
+//                Log.e("log: AudioDevice type", "headset usb");
+////                        Toast.makeText(MainActivity.this,"789", Toast.LENGTH_LONG).show();
+//            } else if (device.getType() == AudioDeviceInfo.TYPE_BLUETOOTH_SCO){
+//                Log.e("log: AudioDevice type", "Bluetooth device typically used for telephony");
+//            } else if (device.getType() == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP){
+//                Log.e("log: AudioDevice type", "Bluetooth device supporting the A2DP profile.");
+//            } else {
+//                Log.e("log: AudioDevice type", "unknown device");
+//            }
+//        }
         // device info #############################################################################
         String  details =  "VERSION.RELEASE : "+Build.VERSION.RELEASE
                 +"\nVERSION.INCREMENTAL : "+Build.VERSION.INCREMENTAL

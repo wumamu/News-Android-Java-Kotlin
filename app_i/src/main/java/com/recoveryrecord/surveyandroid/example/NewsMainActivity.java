@@ -74,7 +74,7 @@ public class NewsMainActivity extends AppCompatActivity {
     private void loadrecyclerViewData() {
 //.orderBy("name").limit(3)//                db.collectionGroup("news")
         db.collection("medias")
-                .document("cna")
+                .document("ettoday")
                 .collection("news")
                 .orderBy("pubdate", Query.Direction.DESCENDING)
                 .limit(50)

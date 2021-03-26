@@ -100,7 +100,7 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("log: activity cycle", "On create");
         super.onCreate(savedInstanceState);
-        getSupportActionBar().hide();
+//        getSupportActionBar().hide();
         setContentView(R.layout.activity_sample_news);
         //open database ############################################################################
         dbHandler = new ReadingBehaviorDbHelper(NewsModuleActivity.this);
