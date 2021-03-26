@@ -187,7 +187,7 @@ public class ESMJsonViewActivity extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(ESMJsonViewActivity.this, TestActivity.class);
+        Intent intent = new Intent(ESMJsonViewActivity.this, BasicActivity.class);
         startActivity(intent);
     }
 

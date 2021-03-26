@@ -1,4 +1,4 @@
-package com.recoveryrecord.surveyandroid.example;
+package com.recoveryrecord.surveyandroid.example.model;
 
 import android.content.Context;
 import android.util.Log;
@@ -19,6 +19,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.recoveryrecord.surveyandroid.example.NewsRecycleViewAdapter;
+import com.recoveryrecord.surveyandroid.example.R;
 import com.recoveryrecord.surveyandroid.example.model.NewsModel;
 
 import java.util.ArrayList;
@@ -72,23 +74,6 @@ public class Pagers extends RelativeLayout {
 
     }
     private void loadrecyclerViewData(final String media_nn, final Context cc) {
-//        DocumentReference docRef = db.collection("medias").document("cna").collection("news").document("000708e5934fe3761a07114686ec5b8a");
-//        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    DocumentSnapshot document = task.getResult();
-//                    if (document.exists()) {
-//                        Log.d("log: pager", "DocumentSnapshot data: " + document.getData());
-//                    } else {
-//                        Log.d("log: pager", "No such document");
-//                    }
-//                } else {
-//                    Log.d("log: pager", "get failed with ", task.getException());
-//                }
-//            }
-//        });
-//.orderBy("name").limit(3)//                db.collectionGroup("news")
         Log.d("log: pager", media_nn);
         db.collection("medias")
                 .document(media_nn)

@@ -34,7 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ExampleSurveyActivity extends SurveyActivity implements CustomConditionHandler {
+public class ExampleSurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActivity implements CustomConditionHandler {
     String esm_id = "";
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -52,25 +52,26 @@ public class ExampleSurveyActivity extends SurveyActivity implements CustomCondi
         esm.put("open_time", time_now);
         LocalDate l_date = LocalDate.now();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-//        db.collection(Build.ID)
-//                .document(String.valueOf(l_date))
-//                .collection("esms")
-//                .document(time_now)
-//                .set(esm);
         String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-        if (esm_id!=""){
-            db.collection("test_users")
-                    .document(device_id)
-                    .collection("esms")
-                    .document(esm_id)
-                    .set(esm);
-        } else {
-            db.collection("test_users")
-                    .document(device_id)
-                    .collection("esms")
-                    .document(time_now)
-                    .set(esm);
-        }
+        db.collection(Build.ID)
+                .document(device_id)
+                .collection("esms")
+                .document(time_now)
+                .set(esm);
+
+//        if (esm_id!=""){
+//            db.collection("test_users")
+//                    .document(device_id)
+//                    .collection("esms")
+//                    .document(esm_id)
+//                    .set(esm);
+//        } else {
+//            db.collection("test_users")
+//                    .document(device_id)
+//                    .collection("esms")
+//                    .document(time_now)
+//                    .set(esm);
+//        }
 
     }
 

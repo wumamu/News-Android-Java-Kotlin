@@ -46,7 +46,7 @@ import static android.media.AudioManager.STREAM_RING;
 //import android.support.v7.app.AppCompatActivity ;
 
 
-public class TestActivity extends AppCompatActivity {
+public class BasicActivity extends AppCompatActivity {
 
     public static final String NOTIFICATION_CHANNEL_ID = "10001" ;
     private final static String default_notification_channel_id = "default" ;
@@ -67,7 +67,7 @@ public class TestActivity extends AppCompatActivity {
 //        ESMDbHelper esmDbHelper = new ESMDbHelper(this);
         setTitle("Homepage");
 //        addAdaLovelace();
-        setContentView(R.layout.activity_test);
+        setContentView(R.layout.activity_basic);
         Button btn_to_news = (Button) findViewById(R.id.btn_to_news);
         Button btn_to_diary = (Button) findViewById(R.id.btn_to_diary);
         Button btn_to_noti_list = (Button) findViewById(R.id.btn_to_noti_list);
@@ -77,12 +77,12 @@ public class TestActivity extends AppCompatActivity {
         //network checker###########################################################################
         mNetworkReceiver = new NetworkChangeReceiver();
         registerNetworkBroadcastForNougat();//register
-        mContext = TestActivity.this;
+        mContext = BasicActivity.this;
         btn_to_news.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
             Intent intent = new Intent();
-            intent.setClass(TestActivity.this, NewsModuleActivity.class);
+            intent.setClass(BasicActivity.this, NewsModuleActivity.class);
             intent.putExtra("trigger_from", "MainActivity");
             startActivity(intent);
             //MainActivity.this.finish();
@@ -92,7 +92,7 @@ public class TestActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
             Intent intent = new Intent();
-            intent.setClass(TestActivity.this, ExampleSurveyActivity.class);
+            intent.setClass(BasicActivity.this, ExampleSurveyActivity.class);
 //            intent.setClass(MainActivity.this, ESMJsonViewActivity.class);
             startActivity(intent);
             //MainActivity.this.finish();
@@ -104,7 +104,7 @@ public class TestActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                intent.setClass(TestActivity.this, NotificationSettingActivity.class);
+                intent.setClass(BasicActivity.this, NotificationSettingActivity.class);
 //                intent.setClass(MainActivity.this, NewsMainActivity.class);
 //                intent.setClass(MainActivity.this, TmpMainActivity.class);
                 startActivity(intent);
@@ -464,7 +464,7 @@ public class TestActivity extends AppCompatActivity {
         int nid = (int) System.currentTimeMillis();
         Log.d("log: notification", "news id" + nid);
         Intent intent_news = new Intent();
-        intent_news.setClass(TestActivity.this, NewsModuleActivity.class);
+        intent_news.setClass(BasicActivity.this, NewsModuleActivity.class);
         intent_news.putExtra("trigger_from", "Notification");
         PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_news, 0);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);
@@ -496,7 +496,7 @@ public class TestActivity extends AppCompatActivity {
     private Notification getNotification_esm (String content) {
         int nid = (int) System.currentTimeMillis();
         Intent intent_esm = new Intent();
-        intent_esm.setClass(TestActivity.this, ExampleSurveyActivity.class);
+        intent_esm.setClass(BasicActivity.this, ExampleSurveyActivity.class);
         intent_esm.putExtra("trigger_from", "Notification");
         PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_esm, 0);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);

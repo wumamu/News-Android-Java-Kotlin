@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 28
     defaultConfig {
         applicationId "com.recoveryrecord.surveyandroid"
         minSdkVersion 15
@@ -30,12 +30,14 @@ dependencies {
     apply plugin: 'com.google.gms.google-services' // Google Services Gradle plugin
 
     // Apply the Crashlytics Gradle plugin
-    apply plugin: 'com.google.firebase.crashlytics'
+//    apply plugin: 'com.google.firebase.crashlytics'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation "androidx.cardview:cardview:1.0.0"
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
+    // ESM survey 兩個會衝突!!!??
+    implementation 'com.google.android.material:material:1.0.0'
     //viewpage indicator
-    implementation 'com.google.android.material:material:1.2.0-alpha05'
+//    implementation 'com.google.android.material:material:1.2.0-alpha05'
 }
