@@ -68,7 +68,7 @@ public class NewsMainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu (Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.noti_menu, menu);
+        getMenuInflater().inflate(R.menu.menu_main_news, menu);
         //getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
@@ -81,12 +81,12 @@ public class NewsMainActivity extends AppCompatActivity {
                 scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
                 return true;
             case R.id.action_10 :
-                scheduleNotification(getNotification("news (10 second delay)" ), 10000 );
-                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
+                Intent intent_ems = new Intent(NewsMainActivity.this, ExampleSurveyActivity.class);
+                startActivity(intent_ems);
                 return true;
             case R.id.action_30 :
-                Intent intent = new Intent(NewsMainActivity.this, NotificationDbViewActivity.class);
-                startActivity(intent);
+                Intent intent_noti_db = new Intent(NewsMainActivity.this, NotificationDbViewActivity.class);
+                startActivity(intent_noti_db);
 //                scheduleNotification(getNotification("news (30 second delay)" ), 30000 );
 //                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
                 return true;

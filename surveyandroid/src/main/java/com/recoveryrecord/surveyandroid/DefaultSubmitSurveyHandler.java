@@ -86,48 +86,19 @@ public class DefaultSubmitSurveyHandler implements SubmitSurveyHandler {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void addESM(String jsonQuestionAnswerData) {
-        Date date = new Date(System.currentTimeMillis());
-        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-        String time_now = formatter.format(date);
-        // [START add_ada_lovelace]
-        // Create a new user with a first and last name
-        Map<String, Object> esm = new HashMap<>();
-        esm.put("submit_time", time_now);
-        esm.put("result",  jsonQuestionAnswerData);
-//        esm.put("time_")
-
-//        Date currentDate = new Date();
-//        SimpleDateFormat dateFormat= new SimpleDateFormat("dd/MMM/yyyy");
-//        String dateOnly = dateFormat.format(currentDate);
-//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-//            LocalDate l_date = LocalDate.now();
-//        }
-        LocalDate l_date = LocalDate.now();
-        // Add a new document with a generated ID
 //        Date date = new Date(System.currentTimeMillis());
 //        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 //        String time_now = formatter.format(date);
-        String device_id = Settings.Secure.getString(mContext.getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-        db.collection("test_users")
-                .document(device_id)
-                .collection("esms")
-                .document(time_now)
-                .set(esm);
-//                .add(esm)
-//                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-//                    @Override
-//                    public void onSuccess(DocumentReference documentReference) {
-//                        Log.d("log: firebase", "DocumentSnapshot added with ID: " + documentReference.getId());
-//                        //Log.d( tag: "firebase", "DocumentSnapshot added with ID: " + documentReference.getId());
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Log.d("log: firebase", "Error adding document");
-//                        //Log.w(tag: "firebase", "Error adding document", e);
-//                    }
-//                });
-        // [END add_ada_lovelace]
+//        Map<String, Object> esm = new HashMap<>();
+//        esm.put("submit_time", time_now);
+//        esm.put("result",  jsonQuestionAnswerData);
+//        LocalDate l_date = LocalDate.now();
+//        String device_id = Settings.Secure.getString(mContext.getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+//        db.collection("test_users")
+//                .document(device_id)
+//                .collection("esms")
+//                .document(time_now)
+//                .set(esm);
+
     }
 }
