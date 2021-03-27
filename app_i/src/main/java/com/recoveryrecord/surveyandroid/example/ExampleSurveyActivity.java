@@ -53,25 +53,25 @@ public class ExampleSurveyActivity extends com.recoveryrecord.surveyandroid.Surv
         LocalDate l_date = LocalDate.now();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-        db.collection(Build.ID)
-                .document(device_id)
-                .collection("esms")
-                .document(time_now)
-                .set(esm);
+//        db.collection(Build.ID)
+//                .document(device_id)
+//                .collection("esms")
+//                .document(time_now)
+//                .set(esm);
 
-//        if (esm_id!=""){
-//            db.collection("test_users")
-//                    .document(device_id)
-//                    .collection("esms")
-//                    .document(esm_id)
-//                    .set(esm);
-//        } else {
-//            db.collection("test_users")
-//                    .document(device_id)
-//                    .collection("esms")
-//                    .document(time_now)
-//                    .set(esm);
-//        }
+        if (esm_id!=""){
+            db.collection("test_users")
+                    .document(device_id)
+                    .collection("esms")
+                    .document(esm_id)
+                    .set(esm);
+        } else {
+            db.collection("test_users")
+                    .document(device_id)
+                    .collection("esms")
+                    .document(time_now)
+                    .set(esm);
+        }
 
     }
 

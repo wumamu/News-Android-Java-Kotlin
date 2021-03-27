@@ -221,8 +221,11 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
         DocumentReference docRef;
         if (news_id=="" || media_name ==""){
             docRef = db.collection("medias").document("chinatimes").collection("news").document(doc_id);
+            Toast.makeText(getApplicationContext(), "沒有資料qq", Toast.LENGTH_SHORT).show();
         } else {
             docRef = db.collection("medias").document(media_name).collection("news").document(news_id);
+//            Toast.makeText(getApplicationContext(), "Successfully " + media_name + " " + news_id, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "努力loading中!!", Toast.LENGTH_SHORT).show();
             myReadingBehavior.setKEY_NEWS_ID(news_id);
         }
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -233,7 +236,7 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         Log.d("log: firebase", "Success");
-//                        Log.d("log: firebase", "DocumentSnapshot data: " + document.getData());
+                        Log.d("log: firebase", "DocumentSnapshot data: " + document.getData());
                         mUrl = document.getString("url");
                         mImg = "";
 //                        mImg = "https://cc.tvbs.com.tw/img/upload/2021/02/05/20210205183845-85cd46f0.jpg";
@@ -242,10 +245,12 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
                         mSource = document.getString("media");
 //                        mAuthor = "孟心怡";
                         myReadingBehavior.setKEY_NEWS_ID(document.getString("id"));
+//                        ArrayList<String> c_list = null;
                         ArrayList<String> c_list = (ArrayList<String>) document.get("content");
-//                        for (int i = 0; i < c_list.size(); i++) {
-//                            Log.d("log: firebase", "DocumentSnapshot content: " + c_list.get(i));
-//                        }
+                        for (int i = 0; i < c_list.size(); i++) {
+                            Log.d("log: firebase", "DocumentSnapshot content: " + c_list.get(i));
+                        }
+                        Log.d("log: firebase", "DocumentSnapshot content: end");
                         List<String> divList = new ArrayList<>();
 //                        int cut_size = (int) (dpWidth / 26);
                         int cut_size = (int) (dpWidth / 24);

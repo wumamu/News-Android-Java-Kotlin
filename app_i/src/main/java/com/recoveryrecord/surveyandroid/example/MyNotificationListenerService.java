@@ -50,22 +50,48 @@ public class MyNotificationListenerService extends NotificationListenerService {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
-        Log.i(TAG,"**********  onNotificationPosted");
+        Log.i(TAG,"**********  onNotificationPosted ***********");
+//        Log.i(TAG,sbn.getPackageName());
+        boolean is_target = false;
+        switch (sbn.getPackageName()) {
+//            case "com.recoveryrecord.surveyandroid":
+//            case "com.facebook.orca":
+            case "cc.nexdoor.ct.activity":
+            case "m.cna.com.tw.App":
+            case "com.udn.news":
+            case "com.ltnnews.news":
+            case "net.ettoday.phone":
+            case "com.news.ctsapp":
+            case "com.ebc.news":
+            case "cc.nexdoor.stormmedia":
+                is_target = true;
+                break;
+            default:
+                is_target = false;
+                break;
+        }
         //cancel notification
-//        if (sbn.getPackageName()=="com.facebook.orca"){
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                    cancelNotification(sbn.getKey());
-//                    Log.i(TAG, "++++++++++++++++++++");
-//                }
-//            }
-//        }
+        //if (sbn.getPackageName().equals("com.recoveryrecord.surveyandroid")){
+        if (is_target){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    cancelNotification(sbn.getKey());
+                    Log.i(TAG, sbn.getPackageName() + "being canceled");
+                } else {
+                    Log.i(TAG, sbn.getPackageName() + "Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP");
+                }
+            } else {
+                Log.i(TAG, sbn.getPackageName() + "Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH");
+            }
+        } else {
+            Log.i(TAG, sbn.getPackageName() + " not target");
+        }
 
         //content intent
-        Notification notification = sbn.getNotification();
-        PendingIntent contentIntent = notification.contentIntent;
-//        Log.i(TAG, String.valueOf(contentIntent.describeContents()));
-//        Log.i(TAG, contentIntent.getTargetPackage());
+//        Notification notification = sbn.getNotification();
+//        PendingIntent contentIntent = notification.contentIntent;
+
+
         String on_noti_post = "";
         //keep length 6
         on_noti_post = "hello" + "\n";
@@ -91,10 +117,12 @@ public class MyNotificationListenerService extends NotificationListenerService {
         } else {
             on_noti_post = on_noti_post + "text: null\n";
         }
+
+        //add to sql
         Intent i_post = new Intent("com.recoveryrecord.surveyandroid.example.NOTIFICATION_LISTENER_EXAMPLE");
         i_post.putExtra("notification_list", on_noti_post);
         sendBroadcast(i_post);
-        Toast.makeText(getApplicationContext(), "Post Inserted Successfully", Toast.LENGTH_SHORT).show();
+
         boolean receieve_to_firestore = false;
         String document_name ="";
         switch (sbn.getPackageName()) {
@@ -109,19 +137,26 @@ public class MyNotificationListenerService extends NotificationListenerService {
             case "net.ettoday.phone":
             case "com.news.ctsapp":
             case "com.ebc.news":
+            case "cc.nexdoor.stormmedia":
                 receieve_to_firestore = true;
                 document_name = "receieve_notificaions";
                 break;
             default:
                 receieve_to_firestore = false;
         }
+        boolean check_title = false, check_text = false;
         if(receieve_to_firestore){
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             Map<String, Object> receieve_notification = new HashMap<>();
             receieve_notification.put("media", sbn.getPackageName());
             receieve_notification.put("time", formatter.format(date));
             if (extras.containsKey("android.title")) {
-                receieve_notification.put("title",  extras.getString("android.title"));
+                if(extras.getString("android.title")!=null){
+                    receieve_notification.put("title",  extras.getString("android.title"));
+                    check_title = true;
+                } else {
+                    receieve_notification.put("title",  "null");
+                }
 //                StringBuilder builder = new StringBuilder("Extras:\n");
 
 //                for (String key : extras.keySet()) { //extras is the Bundle containing info
@@ -130,38 +165,51 @@ public class MyNotificationListenerService extends NotificationListenerService {
 //                    receieve_notification.put(key, value);
 //                }
 //                Bundle extras = getIntent().getExtras();
-                for (String key : extras.keySet()) {
-                    Log.d(TAG, "Extra '" + key + "': '" + extras.getString(key) + "'");
-                    receieve_notification.put(key, extras.getString(key));
-                }
+//                for (String key : extras.keySet()) {
+//                    Log.d(TAG, "Extra '" + key + "': '" + extras.getString(key) + "'");
+//                    if(extras.getString(key)!=null){
+//                        receieve_notification.put(key, extras.getString(key));
+//                    }
+//                }
 //                receieve_notification.put("bundle", builder.toString());
             } else {
                 receieve_notification.put("title",  "null");
             }
             if (extras.containsKey("android.text")) {
-                receieve_notification.put("text",  extras.getCharSequence("android.text").toString());
+                if(extras.getCharSequence("android.text")!=null){
+                    receieve_notification.put("text",  extras.getCharSequence("android.text").toString());
+                    check_text = true;
+                } else {
+                    receieve_notification.put("text", "null");
+                }
             } else {
                 receieve_notification.put("text", "null");
             }
-            String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-            db.collection("test_users")
-                    .document(device_id)
-                    .collection(document_name)
-                    .document(formatter.format(date))
-                    .set(receieve_notification);
+            // if both is null then we don't need it
+            if (check_title || check_text){
+                String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+                db.collection("test_users")
+                        .document(device_id)
+                        .collection(document_name)
+                        .document(formatter.format(date))
+                        .set(receieve_notification);
+                Toast.makeText(getApplicationContext(), "Post Inserted Successfully", Toast.LENGTH_SHORT).show();
+            }
+
         }
     }
 
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
         Log.i(TAG,"********** onNOtificationRemoved");
-        Log.i(TAG, java.text.DateFormat.getDateTimeInstance().format(new Date()) + "\t" + sbn.getNotification().tickerText + "\t" + sbn.getPackageName());
+        Log.i(TAG, java.text.DateFormat.getDateTimeInstance().format(new Date()) + "\t" + "\t" + sbn.getPackageName());
     }
 
     class NLServiceReceiver extends BroadcastReceiver{
         @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.i(TAG,"**********  onNotificationonReceive");
             if(intent.getStringExtra("command").equals("clearall")){
                 MyNotificationListenerService.this.cancelAllNotifications();
             } else if(intent.getStringExtra("command").equals("list")){

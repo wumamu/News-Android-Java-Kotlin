@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,12 +31,18 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 
 public class Pagers extends RelativeLayout {
     private RecyclerView courseRV;
     private ArrayList<NewsModel> dataModalArrayList;
     private NewsRecycleViewAdapter dataRVAdapter;
+//    private SwipeRefreshLayout swipeRefreshLayout;
+//    private RelativeLayout errorLayout;
+//    private ImageView errorImage;
+//    private TextView errorTitle, errorMessage;
+//    private Button btnRetry;
     private FirebaseFirestore db;
     public Pagers(final Context context, int pageNumber, String pageTag, String media_name) {
         super(context);
@@ -44,9 +52,15 @@ public class Pagers extends RelativeLayout {
 //        TextView textView = view.findViewById(R.id.textView);
 //        textView.setText("第"+pageNumber+"頁");
 
+//        //error
+//        errorLayout = findViewById(R.id.errorLayout);
+////        errorImage = findViewById(R.id.errorImage);
+//        errorTitle = findViewById(R.id.errorTitle);
+//        errorMessage = findViewById(R.id.errorMessage);
 
         // initializing our variables.
         courseRV = view.findViewById(R.id.idRVItems);
+
 
         // initializing our variable for firebase
         // firestore and getting its instance.
@@ -74,6 +88,7 @@ public class Pagers extends RelativeLayout {
 
     }
     private void loadrecyclerViewData(final String media_nn, final Context cc) {
+//        errorLayout.setVisibility(View.GONE);
         Log.d("log: pager", media_nn);
         db.collection("medias")
                 .document(media_nn)
@@ -123,7 +138,29 @@ public class Pagers extends RelativeLayout {
                 // a toast message that we do not get any data
                 Log.d("log: pager", "Fail to get the data." + media_nn);
 //                Toast.makeText(cc, "Fail to get the data." + media_nn, Toast.LENGTH_SHORT).show();
+//                showErrorMessage("Oops..", "Network failure, Please Try Again\n", media_nn, cc);
             }
         });
     }
+
+//    private void showErrorMessage(int imageView, String title, String message, final String media_nn, final Context cc){
+//    private void showErrorMessage(String title, String message, final String media_nn, final Context cc){
+//
+//        if (errorLayout.getVisibility() == View.GONE) {
+//            errorLayout.setVisibility(View.VISIBLE);
+//        }
+//
+////        errorImage.setImageResource(imageView);
+//        errorTitle.setText(title);
+//        errorMessage.setText(message);
+//
+//        btnRetry.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                loadrecyclerViewData(media_nn, cc);
+//            }
+//        });
+//
+//    }
+
 }

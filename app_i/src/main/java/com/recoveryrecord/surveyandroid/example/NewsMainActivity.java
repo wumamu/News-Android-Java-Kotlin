@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.google.android.material.tabs.TabLayout;
+import com.recoveryrecord.surveyandroid.example.activity.NotificationDbViewActivity;
 import com.recoveryrecord.surveyandroid.example.model.Pagers;
 
 import java.util.ArrayList;
@@ -84,8 +85,10 @@ public class NewsMainActivity extends AppCompatActivity {
                 scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
                 return true;
             case R.id.action_30 :
-                scheduleNotification(getNotification("news (30 second delay)" ), 30000 );
-                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
+                Intent intent = new Intent(NewsMainActivity.this, NotificationDbViewActivity.class);
+                startActivity(intent);
+//                scheduleNotification(getNotification("news (30 second delay)" ), 30000 );
+//                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
                 return true;
             default :
                 return super.onOptionsItemSelected(item);
