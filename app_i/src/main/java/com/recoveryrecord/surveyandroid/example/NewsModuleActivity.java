@@ -256,6 +256,17 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
                         int cut_size = (int) (dpWidth / 24);
                         myReadingBehavior.setKEY_BYTE_PER_LINE(cut_size*2);
                         for (int i = 0; i < c_list.size(); i++) {
+                            if (c_list.get(i)==""){
+                                Log.d("log: firebase", "blank line");
+                                continue;
+                            } else if (c_list.get(i).contains("\n")){
+                                Log.d("log: firebase", "detect new line");
+                                continue;
+                            } else if (c_list.get(i).contains("\\u3000")){
+                                //全形空白
+                                Log.d("log: firebase", "detect \\u3000");
+//                                continue;
+                            }
                             String str = c_list.get(i);
                             int remainder = (str.length()) % cut_size;
                             int str_length_byte = str.length();
@@ -265,35 +276,33 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
                                     str_length_byte += 1;
                                 }
                             }
-                            // 一共要分割成幾段
-                            int front = 0, end = 0, iter_char = 0, line_count = 1;
+                            // //one paragraph split to line
+                            int front = 0, end = 0, iter_char = 0, line_count = 0;
+                            boolean last_line_in_p = false;
                             char[] c = str.toCharArray();
-                            while (true) {
-                                //System.out.println("line  "+line_count);
+                            while (iter_char < c.length) {
                                 line_count++;
-                                //one paragraph
-                                //end = front; // index for word
                                 int count_byte = 0;
-                                //System.out.print(c[i]);
-                                while (count_byte < cut_size * 2) {
-                                    //one sentence at most 40 bytes
+                                // for each line
+                                while (count_byte <= cut_size * 2) {
+                                    //one sentence at most cut_size * 2 bytes
                                     if (c[iter_char] == '\n') {
+//                                        Log.d("log: firebase", "4");
                                         break;
                                     }
-                                    //System.out.println(iter_char);
-                                    //System.out.println(c[iter_char]);
+                                    // if chinese two byte
                                     if (isChineseChar(c[iter_char])) {
-                                        //System.out.println(c[iter_char] + " is chinese");
                                         count_byte += 2;
                                     } else if ((c[iter_char] >= 'a' && c[iter_char] <= 'z') || (c[iter_char] >= 'A' && c[iter_char] <= 'Z')) {
-                                        //english letter
-                                        //check word
+                                        //english letter then check word
                                         int word_length = 0, word_index, tmp_count_byte = count_byte;
                                         for (word_index = iter_char; word_index + 1 <= str.length(); word_index++) {
                                             if ((c[word_index] >= 'a' && c[word_index] <= 'z') || (c[word_index] >= 'A' && c[word_index] <= 'Z' ) || c[word_index] == '-') {
                                                 word_length += 1;
                                                 tmp_count_byte += 1;
                                             } else {
+                                                // move to next line
+//                                                Log.d("log: firebase", "3");
                                                 break;
                                             }
                                         }
@@ -303,21 +312,33 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
                                             count_byte = tmp_count_byte;
                                         } else {
                                             iter_char -= 1;
+//                                            Log.d("log: firebase", "2");
                                             break;
                                         }
-//                        count_byte+=1;
                                     } else {
-//                        System.out.println(c[iter_char] + " is not chinese");
+                                        // may be some symbol
                                         count_byte += 1;
                                     }
+//                                    iter_char++;
                                     if (iter_char + 1 < str.length()) {
                                         iter_char += 1;//c[iter_char]
                                     } else {
+                                        //last line
+                                        last_line_in_p = true;
+//                                        Log.d("log: firebase", "1");
+//                                        iter_char += 1;
                                         break;
                                     }
                                 }
+                                if(last_line_in_p){
+                                    iter_char+=1;
+                                }
                                 String childStr = str.substring(front, iter_char);
+//                                Log.d("log: firebase", childStr);
                                 divList.add(childStr);
+                                if(last_line_in_p){
+                                    divList.add("\n");
+                                }
                                 front = iter_char;
                                 if (iter_char + 1 == str.length()) {
                                     break;

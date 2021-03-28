@@ -3,6 +3,7 @@ package com.recoveryrecord.surveyandroid.example;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -76,6 +77,7 @@ public class NewsRecycleViewAdapter extends RecyclerView.Adapter<NewsRecycleView
             newsPubTime = itemView.findViewById(R.id.text_view_pubtime);
             newsMedia = itemView.findViewById(R.id.text_view_media);
 //            courseIV = itemView.findViewById(R.id.idIVimage);
+//            itemView.setCardBackgroundColor(Color.parseColor("#e0efff"));
             // 點擊項目時
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

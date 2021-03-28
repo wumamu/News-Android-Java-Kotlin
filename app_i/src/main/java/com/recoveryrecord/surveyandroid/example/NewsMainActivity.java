@@ -1,5 +1,6 @@
 package com.recoveryrecord.surveyandroid.example;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -17,7 +18,10 @@ import com.google.android.material.tabs.TabLayout;
 import com.recoveryrecord.surveyandroid.example.activity.NotificationDbViewActivity;
 import com.recoveryrecord.surveyandroid.example.model.Pagers;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.ThreadLocalRandom;
 
 import androidx.annotation.RequiresApi;
@@ -78,7 +82,12 @@ public class NewsMainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_5 :
                 scheduleNotification(getNotification("news (5 second delay)" ), 5000 );
-                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
+//                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
+//                Date date = new Date(System.currentTimeMillis());
+//                SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+//                String time_noti = formatter.format(date);
+                scheduleNotification_repeat(getNotification_esm("time"));
+
                 return true;
             case R.id.action_10 :
                 Intent intent_ems = new Intent(NewsMainActivity.this, ExampleSurveyActivity.class);
@@ -114,6 +123,8 @@ public class NewsMainActivity extends AppCompatActivity {
         Intent intent_news = new Intent();
         intent_news.setClass(NewsMainActivity.this, NewsModuleActivity.class);
         intent_news.putExtra("trigger_from", "Notification");
+//        intent_news.putExtra("media", "Notification");
+//        intent_news.putExtra("news_id", "Notification");
         PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_news, 0);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);
         builder.setContentTitle("Scheduled NEWS");
@@ -124,24 +135,34 @@ public class NewsMainActivity extends AppCompatActivity {
         builder.setChannelId(NOTIFICATION_CHANNEL_ID);
         return builder.build() ;
     }
-    //    @SuppressLint("ShortAlarm")
-//    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-//    private void scheduleNotification_repeat (Notification notification, Calendar cc) {
-//        int nid = (int) System.currentTimeMillis();
-//        Log.d("log: notification", "news id" + nid);
-//        Intent notificationIntent = new Intent(this, MyNotificationPublisherNews.class);
-//        notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION_ID, 1 ) ;
-//        notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION, notification) ;
-//        int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast( this, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-////        long futureInMillis = SystemClock.elapsedRealtime() + delay;
-//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//        assert alarmManager != null;
-////        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
-//        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cc.getTimeInMillis(), 1000 * 60, pendingIntent);
-////        alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 1000 * 20, 1000 * 20, pendingIntent);
-//    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void scheduleNotification_repeat (Notification notification) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 16);
+        calendar.set(Calendar.MINUTE, 0);
+        int nid = (int) System.currentTimeMillis();
+        Log.d("log: notification", "news id" + nid);
+        Intent notificationIntent = new Intent(this, MyNotificationPublisherNews.class);
+        notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION_ID, 1 ) ;
+        notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION, notification) ;
+        int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast( this, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        assert alarmManager != null;
+//        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+//        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000 * 3600, pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000 * 60 * 10, pendingIntent);//60 min
+//        alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 1000 * 20, 1000 * 20, pendingIntent);
+    }
     private Notification getNotification_esm (String content) {
+        //replace content with time
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+        String time_noti = formatter.format(date);
+
         int nid = (int) System.currentTimeMillis();
         Log.d("log: notification", "esm id" + nid);
         Intent intent_esm = new Intent();
@@ -151,7 +172,7 @@ public class NewsMainActivity extends AppCompatActivity {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_esm, 0);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);
         builder.setContentTitle("Scheduled ESM");
-        builder.setContentText(content);
+        builder.setContentText(time_noti);
         builder.setSmallIcon(R.drawable.ic_launcher_foreground);
         builder.setContentIntent(pendingIntent);
         builder.setAutoCancel(true);

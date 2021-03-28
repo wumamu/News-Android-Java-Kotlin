@@ -22,6 +22,8 @@ import static com.recoveryrecord.surveyandroid.example.config.SharedVariables.DI
 import static com.recoveryrecord.surveyandroid.example.config.SharedVariables.ESM_ALARM;
 import static com.recoveryrecord.surveyandroid.example.config.SharedVariables.NEWS_ALARM;
 
+import static com.recoveryrecord.surveyandroid.example.config.Constants.SHAREPREFERENCE_TEST;
+
 public class AlarmReceiever extends BroadcastReceiver {
     private static String TAG = "AlarmReceiver";
     private SharedPreferences pref;
@@ -35,14 +37,17 @@ public class AlarmReceiever extends BroadcastReceiver {
     public static final String NEWS_CHANNEL_ID = "newsChannel";
     public static final String DIARY_CHANNEL_ID = "diaryChannel";
     public void onReceive(Context context, Intent intent) {
-        //Fabric.with(context, new Crashlytics());
-        //創建SharedPreferences，索引為"test"
-        pref = context.getSharedPreferences("test", MODE_PRIVATE);
         mNotificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
-        //pref.edit().putString("ESMtime", ESMtime).apply();
-        //int EsmNum = pref.getInt("Esm_Num", 0);
         createNotificationChannel(context);
         String action = intent.getAction();
+
+        //Fabric.with(context, new Crashlytics());
+
+        //創建SharedPreferences，索引為 SHAREPREFERENCE_TEST
+        pref = context.getSharedPreferences(SHAREPREFERENCE_TEST, MODE_PRIVATE);
+        // second para is default value if did not exist
+        int esmCount = pref.getInt("esm_count", 0);
+
 //        db = appDatabase.getDatabase(context);
 //        userRecord = db.userDataRecordDao().getLastRecord();
 
@@ -215,7 +220,7 @@ public class AlarmReceiever extends BroadcastReceiver {
                 //.setOngoing(true)                              //使用者滑不掉
                 .setAutoCancel(true)                           //點擊之後通知消失
                 .setVibrate(vibrate_effect)                    //震動模式
-                .setTimeoutAfter(900000)                    //幾毫秒之後自動消失
+                .setTimeoutAfter(900000)                    //幾毫秒之後自動消失 15min
                 .build();
         notification = builder.build();
         try {
