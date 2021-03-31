@@ -114,14 +114,14 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
             if (b.getString("news_id")!= null){
                 news_id = b.getString("news_id");
             }
-            if (b.getString("media_name")!= null){
-                media_name = b.getString("media_name");
+            if (b.getString("media")!= null){
+                media_name = b.getString("media");
             }
 
         }
         Log.d("log: trigger_by", myReadingBehavior.getKEY_TRIGGER_BY());
         Log.d("log: news_id", news_id);
-        Log.d("log: media_name", media_name);
+        Log.d("log: media", media_name);
         switch (media_name) {
             case "中央社":
                 media_name = "cna";
@@ -152,6 +152,7 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
                 break;
 
         }
+
         Log.d("log: media_name", media_name);
         //set time in ##############################################################################
         Date date = new Date(System.currentTimeMillis());
@@ -223,7 +224,9 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
 //        });
         DocumentReference docRef;
         if (news_id=="" || media_name ==""){
-            docRef = db.collection("medias").document("chinatimes").collection("news").document(doc_id);
+            media_name = "ettoday";
+            news_id = "0143b739b1c33d46cd18b6af12b2d5b2";
+            docRef = db.collection("medias").document(media_name).collection("news").document(news_id);
             Toast.makeText(getApplicationContext(), "沒有資料qq", Toast.LENGTH_SHORT).show();
         } else {
             docRef = db.collection("medias").document(media_name).collection("news").document(news_id);

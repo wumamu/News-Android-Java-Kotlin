@@ -13,8 +13,17 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.recoveryrecord.surveyandroid.example.activity.NotificationDbViewActivity;
 import com.recoveryrecord.surveyandroid.example.model.Pagers;
 
@@ -24,6 +33,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.ThreadLocalRandom;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
@@ -39,6 +49,9 @@ public class NewsMainActivity extends AppCompatActivity {
 //temp for notification
     public static final String NOTIFICATION_CHANNEL_ID = "10001" ;
     private final static String default_notification_channel_id = "default" ;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private DocumentReference noteRef = db.document("server_push_notifications/start");
+    private CollectionReference noteRefqq = db.collection("server_push_notifications");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +83,62 @@ public class NewsMainActivity extends AppCompatActivity {
         viewPager.setCurrentItem(0);//指定跳到某頁，一定得設置在setAdapter後面
     }
     @Override
+    protected void onStart() {
+        super.onStart();
+        noteRefqq.addSnapshotListener(this, new EventListener<QuerySnapshot>() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.d("onstart", "listen:error", e);
+                    return;
+                }
+                for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
+                    DocumentSnapshot documentSnapshot = dc.getDocument();
+//                    String id = documentSnapshot.getId();
+//                    int oldIndex = dc.getOldIndex();
+//                    int newIndex = dc.getNewIndex();
+                    switch (dc.getType()) {
+                        case ADDED:
+                            Log.d("onstart", "New city: " + dc.getDocument().getData());
+                            String news_id = dc.getDocument().getString("news_id");
+                            String media  = dc.getDocument().getString("media");
+                            String title = dc.getDocument().getString("title");
+                            scheduleNotification(getNotification(news_id, media, title), 1000 );
+                            scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
+                            break;
+                        case MODIFIED:
+                            Log.d("onstart", "Modified city: " + dc.getDocument().getData());
+                            break;
+                        case REMOVED:
+                            Log.d("onstart", "Removed city: " + dc.getDocument().getData());
+                            break;
+                    }
+                }
+            }
+        });
+//        noteRef.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+//            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+//            @Override
+//            public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+//                if (e != null) {
+//                    Toast.makeText(NewsMainActivity.this, "Error while loading!", Toast.LENGTH_SHORT).show();
+////                    Log.d(TAG, e.toString());
+//                    return;
+//                }
+//                if (documentSnapshot.exists()) {
+//                    scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
+//                    String news_id = documentSnapshot.getString("news_id");
+//                    scheduleNotification(getNotification(news_id, "wahaha" ), 5000 );
+//                    Toast.makeText(NewsMainActivity.this, news_id, Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
+    }
+
+
+
+    @Override
     public boolean onCreateOptionsMenu (Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main_news, menu);
@@ -81,13 +150,8 @@ public class NewsMainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected (MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_5 :
-                scheduleNotification(getNotification("news (5 second delay)" ), 5000 );
-//                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
-//                Date date = new Date(System.currentTimeMillis());
-//                SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-//                String time_noti = formatter.format(date);
+                scheduleNotification(getNotification("0143b739b1c33d46cd18b6af12b2d5b2", "ettoday", "wa_title" ), 5000 );
                 scheduleNotification_repeat(getNotification_esm("time"));
-
                 return true;
             case R.id.action_10 :
                 Intent intent_ems = new Intent(NewsMainActivity.this, ExampleSurveyActivity.class);
@@ -117,18 +181,19 @@ public class NewsMainActivity extends AppCompatActivity {
         assert alarmManager != null;
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
     }
-    private Notification getNotification (String content) {
+    private Notification getNotification (String news_id, String media, String title) {
         int nid = (int) System.currentTimeMillis();
         Log.d("log: notification", "news id" + nid);
         Intent intent_news = new Intent();
         intent_news.setClass(NewsMainActivity.this, NewsModuleActivity.class);
         intent_news.putExtra("trigger_from", "Notification");
+        intent_news.putExtra("news_id", news_id);
+        intent_news.putExtra("media", media);
 //        intent_news.putExtra("media", "Notification");
-//        intent_news.putExtra("news_id", "Notification");
         PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_news, 0);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);
-        builder.setContentTitle("Scheduled NEWS");
-        builder.setContentText(content);
+        builder.setContentTitle(title);
+        builder.setContentText(media);
         builder.setSmallIcon(R.drawable.ic_launcher_foreground);
         builder.setContentIntent(pendingIntent);
         builder.setAutoCancel(true);
@@ -171,7 +236,7 @@ public class NewsMainActivity extends AppCompatActivity {
         intent_esm.putExtra("esm_id", System.currentTimeMillis());
         PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_esm, 0);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);
-        builder.setContentTitle("Scheduled ESM");
+        builder.setContentTitle("Please fill out the questionnaire");
         builder.setContentText(time_noti);
         builder.setSmallIcon(R.drawable.ic_launcher_foreground);
         builder.setContentIntent(pendingIntent);
