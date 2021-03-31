@@ -20,6 +20,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -146,10 +147,12 @@ public class MyNotificationListenerService extends NotificationListenerService {
         }
         boolean check_title = false, check_text = false;
         if(receieve_to_firestore){
+            List<String> in_time_split = new ArrayList<String>(Arrays.asList(formatter.format(date).split(" ")));
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             Map<String, Object> receieve_notification = new HashMap<>();
             receieve_notification.put("media", sbn.getPackageName());
-            receieve_notification.put("time", formatter.format(date));
+            receieve_notification.put("noti_date", in_time_split.get(0));
+            receieve_notification.put("noti_time", in_time_split.get(2));
             if (extras.containsKey("android.title")) {
                 if(extras.getString("android.title")!=null){
                     receieve_notification.put("title",  extras.getString("android.title"));

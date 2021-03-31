@@ -21,6 +21,7 @@ public class ReadingBehavior {
     private String KEY_TIME_SERIES;
     private int KEY_BYTE_PER_LINE;
     private int KEY_ROW_SPACING;
+    private int KEY_CHAR_NUM_TOTAL;
 
     public ReadingBehavior() {
         this.KEY_NEWS_ID = "";
@@ -42,6 +43,7 @@ public class ReadingBehavior {
         this.KEY_TIME_SERIES = "";
         this.KEY_BYTE_PER_LINE = 0;
         this.KEY_ROW_SPACING = 0;
+        this.KEY_CHAR_NUM_TOTAL = 0;
     }
 
 
@@ -64,7 +66,8 @@ public class ReadingBehavior {
                            int KEY_SHARE,
                            String KEY_TIME_SERIES,
                            int KEY_BYTE_PER_LINE,
-                           int KEY_ROW_SPACING) {
+                           int KEY_ROW_SPACING,
+                           int KEY_CHAR_NUM_TOTAL) {
         this.KEY_NEWS_ID = KEY_NEWS_ID;
         this.KEY_TRIGGER_BY = KEY_TRIGGER_BY;
         this.KEY_TIME_IN = KEY_TIME_IN;
@@ -84,6 +87,7 @@ public class ReadingBehavior {
         this.KEY_TIME_SERIES = KEY_TIME_SERIES;
         this.KEY_BYTE_PER_LINE = KEY_BYTE_PER_LINE;
         this.KEY_ROW_SPACING = KEY_ROW_SPACING;
+        this.KEY_CHAR_NUM_TOTAL = KEY_CHAR_NUM_TOTAL;
     }
 
 
@@ -237,5 +241,13 @@ public class ReadingBehavior {
 
     public void setKEY_ROW_SPACING(int KEY_ROW_SPACING) {
         this.KEY_ROW_SPACING = KEY_ROW_SPACING;
+    }
+
+    public int getKEY_CHAR_NUM_TOTAL() {
+        return KEY_CHAR_NUM_TOTAL;
+    }
+
+    public void setKEY_CHAR_NUM_TOTAL(int KEY_CHAR_NUM_TOTAL) {
+        this.KEY_CHAR_NUM_TOTAL = KEY_CHAR_NUM_TOTAL;
     }
 }

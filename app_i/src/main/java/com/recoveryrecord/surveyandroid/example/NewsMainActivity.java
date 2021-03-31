@@ -140,7 +140,7 @@ public class NewsMainActivity extends AppCompatActivity {
     private void scheduleNotification_repeat (Notification notification) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 16);
+        calendar.set(Calendar.HOUR_OF_DAY, 2);
         calendar.set(Calendar.MINUTE, 0);
         int nid = (int) System.currentTimeMillis();
         Log.d("log: notification", "news id" + nid);

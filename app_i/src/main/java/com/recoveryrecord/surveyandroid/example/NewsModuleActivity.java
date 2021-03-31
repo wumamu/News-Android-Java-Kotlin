@@ -63,6 +63,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -81,6 +83,7 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
     long in_time = System.currentTimeMillis();
     private ScreenStateReceiver mReceiver;//screen on or off
     boolean first_in = true;
+    int char_num_total = 0;
 
     String time_ss = "";//time series
     String tmp_record = "";//viewport
@@ -255,96 +258,231 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
 //                        int cut_size = (int) (dpWidth / 26);
                         int cut_size = (int) (dpWidth / 24);
                         myReadingBehavior.setKEY_BYTE_PER_LINE(cut_size*2);
+                        //loop for each paragraph
                         for (int i = 0; i < c_list.size(); i++) {
                             if (c_list.get(i)==""){
                                 Log.d("log: firebase", "blank line");
                                 continue;
                             } else if (c_list.get(i).contains("\n")){
                                 Log.d("log: firebase", "detect new line");
-                                continue;
                             } else if (c_list.get(i).contains("\\u3000")){
-                                //全形空白
+                                //全形空白 it works
                                 Log.d("log: firebase", "detect \\u3000");
-//                                continue;
                             }
-                            String str = c_list.get(i);
-                            int remainder = (str.length()) % cut_size;
-                            int str_length_byte = str.length();
-                            for (char c : str.toCharArray()) {
-                                if (chineseUnicodeBlocks.contains(UCharacter.UnicodeBlock.of(c))) {
-                                    //System.out.println(c + " is chinese");
-                                    str_length_byte += 1;
-                                }
-                            }
-                            // //one paragraph split to line
-                            int front = 0, end = 0, iter_char = 0, line_count = 0;
+                            String str = c_list.get(i).trim().replaceAll("\n ", "");;
+                            int front = 0, iter_char_para = 0, para_count = 0;
                             boolean last_line_in_p = false;
-                            char[] c = str.toCharArray();
-                            while (iter_char < c.length) {
-                                line_count++;
-                                int count_byte = 0;
-                                // for each line
-                                while (count_byte <= cut_size * 2) {
-                                    //one sentence at most cut_size * 2 bytes
-                                    if (c[iter_char] == '\n') {
-//                                        Log.d("log: firebase", "4");
-                                        break;
+//                            str = "我午我我我午我我我午我我我午我我我午我我我午我我我午我我我午我我我午我我我午我我我午我我我午我我我午我我我午我我我午我我我午我我";
+//                            str = "\"This is a message that needs to be split over multiple lines because it is too long. The result must be a list of strings with a maximum length provided as input. Will this procedure work? I hope so!\"";
+                            char[] para = str.toCharArray();
+//                            char_num_total+=para.length;
+                            //one paragraph split to line
+                            while (!last_line_in_p){
+                                para_count++;
+//                                Log.d("log: firebase", "this is line " + para_count);
+                                boolean last_char_in_line = false;
+                                int iter_char_line = 0;
+                                while (!last_char_in_line){
+                                    //remove line with space first
+                                    if (iter_char_line==0 && para[iter_char_para]==' '){
+                                        iter_char_para+=1;
+                                        front+=1;
+                                        continue;
                                     }
-                                    // if chinese two byte
-                                    if (isChineseChar(c[iter_char])) {
-                                        count_byte += 2;
-                                    } else if ((c[iter_char] >= 'a' && c[iter_char] <= 'z') || (c[iter_char] >= 'A' && c[iter_char] <= 'Z')) {
-                                        //english letter then check word
-                                        int word_length = 0, word_index, tmp_count_byte = count_byte;
-                                        for (word_index = iter_char; word_index + 1 <= str.length(); word_index++) {
-                                            if ((c[word_index] >= 'a' && c[word_index] <= 'z') || (c[word_index] >= 'A' && c[word_index] <= 'Z' ) || c[word_index] == '-') {
-                                                word_length += 1;
-                                                tmp_count_byte += 1;
+                                    if (isChineseChar(para[iter_char_para]) || para[iter_char_para]=='（' || para[iter_char_para]=='）' || para[iter_char_para]=='，'){
+//                                        Log.d("log: firebase", "chinese " + para[iter_char_para]);
+                                        //is chinese
+                                        //first check line space
+                                        int tmp_iter_char_line = iter_char_line+2;//tmp cursor
+                                        int tmp_iter_char_para = iter_char_para+1;//tmp cursor
+                                        if (tmp_iter_char_line <= (cut_size*2)){
+                                            iter_char_line = tmp_iter_char_line;
+                                            //second check if last char in para
+                                            if (tmp_iter_char_para < para.length){
+                                                //not last one
+                                                iter_char_para = tmp_iter_char_para;
+                                                continue;
                                             } else {
-                                                // move to next line
-//                                                Log.d("log: firebase", "3");
+                                                //is last char in para
+                                                last_line_in_p = true;
+                                                last_char_in_line = true;
+                                                break;
+                                            }
+                                        } else {
+                                            //line space not enough
+//                                            Log.d("log: firebase", "new line");
+                                            last_char_in_line = true;
+                                            break;
+                                        }
+                                    } else if ((para[iter_char_para] >= '0' && para[iter_char_para] <= '9')){
+//                                        Log.d("log: firebase", "num " + para[iter_char_para]);
+                                        //is number word
+                                        //find word
+                                        int tmp_iter_char_line = iter_char_line+1;
+                                        int tmp_iter_char_para = iter_char_para+1;
+                                        for (; tmp_iter_char_para< para.length; tmp_iter_char_para++){
+                                            if ((para[tmp_iter_char_para] >= '0' && para[tmp_iter_char_para] <= '9')){
+                                                tmp_iter_char_line +=1;
+                                            } else {
+                                                tmp_iter_char_para--;
                                                 break;
                                             }
                                         }
-                                        word_index -= 1;
-                                        if (tmp_count_byte < cut_size * 2) {
-                                            iter_char = word_index;
-                                            count_byte = tmp_count_byte;
+                                        //check line space
+                                        if (tmp_iter_char_line <= (cut_size*2)){
+                                            iter_char_line = tmp_iter_char_line;
+                                            //second check if last char in para
+                                            if (tmp_iter_char_para < para.length){
+                                                iter_char_para = tmp_iter_char_para+1;
+                                                continue;
+                                            } else {
+                                                //is last char in para
+                                                iter_char_para = tmp_iter_char_para-1;
+                                                last_line_in_p = true;
+                                                last_char_in_line = true;
+                                                break;
+                                            }
                                         } else {
-                                            iter_char -= 1;
-//                                            Log.d("log: firebase", "2");
+                                            last_char_in_line = true;
+                                            break;
+                                        }
+                                    } else if ((para[iter_char_para] >= 'a' && para[iter_char_para] <= 'z') || (para[iter_char_para] >= 'A' && para[iter_char_para] <= 'Z')){
+//                                        Log.d("log: firebase", "english " + para[iter_char_para]);
+                                        //english word
+                                        //find word
+                                        int tmp_iter_char_line = iter_char_line+1;
+                                        int tmp_iter_char_para = iter_char_para+1;
+                                        for (; tmp_iter_char_para< para.length; tmp_iter_char_para++){
+//                                            Log.d("log: firebase", "english ***** " + para[tmp_iter_char_para]);
+                                            if ((para[tmp_iter_char_para] >= 'a' && para[tmp_iter_char_para] <= 'z') || (para[tmp_iter_char_para] >= 'A' && para[tmp_iter_char_para] <= 'Z')){
+                                                tmp_iter_char_line +=1;
+                                            } else {
+                                                tmp_iter_char_para--;
+                                                break;
+                                            }
+                                        }
+                                        //check line space
+                                        if (tmp_iter_char_line <= (cut_size*2)){
+                                            iter_char_line = tmp_iter_char_line;
+                                            //second check if last char in para
+                                            if (tmp_iter_char_para < para.length){
+                                                iter_char_para = tmp_iter_char_para+1;
+//                                                Log.d("log: firebase", "en2 " + para[iter_char_para]);
+                                                continue;
+                                            } else {
+                                                //is last char in para
+                                                iter_char_para = tmp_iter_char_para-1;
+                                                last_line_in_p = true;
+                                                last_char_in_line = true;
+//                                                Log.d("log: firebase", "en3 " + para[iter_char_para]);
+                                                break;
+                                            }
+                                        } else {
+                                            last_char_in_line = true;
+//                                            Log.d("log: firebase", "en4 " + para[iter_char_para]);
                                             break;
                                         }
                                     } else {
-                                        // may be some symbol
-                                        count_byte += 1;
-                                    }
-//                                    iter_char++;
-                                    if (iter_char + 1 < str.length()) {
-                                        iter_char += 1;//c[iter_char]
-                                    } else {
-                                        //last line
-                                        last_line_in_p = true;
-//                                        Log.d("log: firebase", "1");
-//                                        iter_char += 1;
-                                        break;
+                                        //other symbol
+//                                        Log.d("log: firebase", "symbol " + para[iter_char_para]);
+                                        int tmp_iter_char_line = iter_char_line+1;//tmp cursor
+                                        int tmp_iter_char_para = iter_char_para+1;//tmp cursor
+                                        if (tmp_iter_char_line <= (cut_size*2)){
+                                            iter_char_line = tmp_iter_char_line;
+                                            //second check if last char in para
+                                            if (tmp_iter_char_para < para.length){
+                                                iter_char_para = tmp_iter_char_para;
+                                                continue;
+                                            } else {
+                                                //is last char in para
+                                                last_line_in_p = true;
+                                                last_char_in_line = true;
+                                                break;
+                                            }
+                                        } else {
+                                            //line space not enough
+                                            last_char_in_line = true;
+                                            break;
+                                        }
                                     }
                                 }
+                                //end of line do some thing;
                                 if(last_line_in_p){
-                                    iter_char+=1;
-                                }
-                                String childStr = str.substring(front, iter_char);
-//                                Log.d("log: firebase", childStr);
-                                divList.add(childStr);
-                                if(last_line_in_p){
+                                    String childStr = str.substring(front, iter_char_para+1);
+                                    Log.d("log: firebase", childStr);
+                                    divList.add(childStr);
                                     divList.add("\n");
-                                }
-                                front = iter_char;
-                                if (iter_char + 1 == str.length()) {
                                     break;
+                                } else {
+                                    String childStr = str.substring(front, iter_char_para);
+                                    Log.d("log: firebase", childStr);
+                                    divList.add(childStr);
+                                    front = iter_char_para;
                                 }
                             }
+//                            while (iter_char_para < para.length) {
+
+
+//                                line_count++;
+//                                int iter_char_line = 0;
+//                                //one sentence at most cut_size * 2 bytes
+//                                while (iter_char_line < cut_size * 2) {
+//                                    // if chinese two byte
+//                                    if (isChineseChar(para[iter_char_para])) {
+//                                        iter_char_line += 2;
+//                                        if (iter_char_para + 1 == para.length) {
+//                                            //last char in para and last line
+//                                            last_line_in_p = true;
+//                                            break;
+//                                        } else {
+//                                            iter_char_para += 1;
+//                                        }
+//                                    } else if ((para[iter_char_para] >= 'a' && para[iter_char_para] <= 'z') || (para[iter_char_para] >= 'A' && para[iter_char_para] <= 'Z')) {
+//                                        //english letter then check word
+//                                        int word_length = 0, word_index, tmp_count_byte = iter_char_line;
+//                                        for (word_index = iter_char_para; word_index + 1 <= str.length(); word_index++) {
+//                                            if ((para[word_index] >= 'a' && para[word_index] <= 'z') || (para[word_index] >= 'A' && para[word_index] <= 'Z' ) || para[word_index] == '-') {
+//                                                word_length += 1;
+//                                                tmp_count_byte += 1;
+//                                            } else {
+//                                                // move to next line
+////                                                Log.d("log: firebase", "3");
+//                                                break;
+//                                            }
+//                                        }
+//                                        word_index -= 1;
+//                                        if (tmp_count_byte < cut_size * 2) {
+//                                            iter_char_para = word_index;
+//                                            iter_char_line = tmp_count_byte;
+//                                        } else {
+//                                            iter_char_para -= 1;
+////                                            Log.d("log: firebase", "2");
+//                                            break;
+//                                        }
+//                                    } else {
+//                                        // may be some symbol or number
+//                                        iter_char_line += 1;
+//                                        if (iter_char_para + 1 == para.length) {
+//                                            //last char in para and last line
+//                                            last_line_in_p = true;
+//                                            break;
+//                                        } else {
+//                                            iter_char_para += 1;
+//                                        }
+//                                    }
+//                                }
+//                                String childStr = str.substring(front, iter_char_para);
+////                                Log.d("log: firebase", childStr);
+//                                divList.add(childStr);
+//                                if(last_line_in_p){
+//                                    divList.add("\n");
+//                                    break;
+//                                } else {
+//                                    front = iter_char_para;
+//                                }
+//                            }
                         }
+                        myReadingBehavior.setKEY_CHAR_NUM_TOTAL(char_num_total);
                         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                         params.setMargins(40, 10, 40, 10);
                         //set viewport number ######################################################
@@ -916,6 +1054,7 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
 //        readingBehavior.put("share_via", "none");
         readingBehavior.put("time_series(s)", Arrays.asList("NA"));
         readingBehavior.put("byte_per_line", "NA");
+        readingBehavior.put("char_num_total", "NA");
         readingBehavior.put("row_spacing(dp)", "NA");
 //        Log.d("log: view_port_num!", String.valueOf(myReadingBehavior.getKEY_VIEW_PORT_NUM()));
 
@@ -973,6 +1112,7 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
         // Set the "isCapital" field of the city 'DC'
         rbRef.update("content_length(dp)", myReadingBehavior.getKEY_CONTENT_LENGTH(),
                 "byte_per_line", myReadingBehavior.getKEY_BYTE_PER_LINE(),
+                "char_num_total", myReadingBehavior.getKEY_CHAR_NUM_TOTAL(),
                 "news_id",  myReadingBehavior.getKEY_NEWS_ID(),
                 "row_spacing(dp)", myReadingBehavior.getKEY_ROW_SPACING(),
                 "viewport_num", myReadingBehavior.getKEY_VIEW_PORT_NUM(),
