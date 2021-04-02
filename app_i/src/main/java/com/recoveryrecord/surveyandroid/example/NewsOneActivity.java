@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.Menu;
@@ -25,27 +26,27 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.recoveryrecord.surveyandroid.example.model.NewsModel;
+import com.recoveryrecord.surveyandroid.example.model.NewsModelOne;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class BasicNewsMainActivity extends AppCompatActivity {
+public class NewsOneActivity extends AppCompatActivity {
     private RecyclerView courseRV;
-    private ArrayList<NewsModel> dataModalArrayList;
-    private NewsRecycleViewAdapter dataRVAdapter;
+    private ArrayList<NewsModelOne> dataModalArrayList;
+    private NewsRecycleViewAdapterOne dataRVAdapter;
     private FirebaseFirestore db;
 
     //temp for notification
     public static final String NOTIFICATION_CHANNEL_ID = "10001" ;
     private final static String default_notification_channel_id = "default" ;
-
+    boolean doubleBackToExitPressedOnce = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle("即時新聞");
-        setContentView(R.layout.activity_main_news_basic);
+        setContentView(R.layout.activity_one_news);
 
         // initializing our variables.
         courseRV = findViewById(R.id.idRVItems);
@@ -63,7 +64,7 @@ public class BasicNewsMainActivity extends AppCompatActivity {
         courseRV.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
         // adding our array list to our recycler view adapter class.
-        dataRVAdapter = new NewsRecycleViewAdapter(dataModalArrayList, this);
+        dataRVAdapter = new NewsRecycleViewAdapterOne(dataModalArrayList, this);
 
         // setting adapter to our recycler view.
         courseRV.setAdapter(dataRVAdapter);
@@ -72,9 +73,9 @@ public class BasicNewsMainActivity extends AppCompatActivity {
     }
 
     private void loadrecyclerViewData() {
-//.orderBy("name").limit(3)//                db.collectionGroup("news")
+//.orderBy("name").limit(3)//                db.collectionGroup("news") //
         db.collection("medias")
-                .document("ettoday")
+                .document("cts")
                 .collection("news")
                 .orderBy("pubdate", Query.Direction.DESCENDING)
                 .limit(50)
@@ -92,7 +93,7 @@ public class BasicNewsMainActivity extends AppCompatActivity {
                             for (DocumentSnapshot d : list) {
                                 // after getting this list we are passing that
                                 // list to our object class.
-                                NewsModel dataModal = d.toObject(NewsModel.class);
+                                NewsModelOne dataModal = d.toObject(NewsModelOne.class);
 
                                 // and we will pass this object class
                                 // inside our arraylist which we have
@@ -106,7 +107,7 @@ public class BasicNewsMainActivity extends AppCompatActivity {
                         } else {
                             // if the snapshot is empty we are
                             // displaying a toast message.
-                            Toast.makeText(BasicNewsMainActivity.this, "No data found in Database", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(NewsOneActivity.this, "No data found in Database", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -114,9 +115,27 @@ public class BasicNewsMainActivity extends AppCompatActivity {
             public void onFailure(@NonNull Exception e) {
                 // if we do not get any data or any error we are displaying
                 // a toast message that we do not get any data
-                Toast.makeText(BasicNewsMainActivity.this, "Fail to get the data.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(NewsOneActivity.this, "Fail to get the data.", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce=false;
+            }
+        }, 2000);
     }
     @Override
     public boolean onCreateOptionsMenu (Menu menu) {
@@ -163,7 +182,7 @@ public class BasicNewsMainActivity extends AppCompatActivity {
         int nid = (int) System.currentTimeMillis();
         Log.d("log: notification", "news id" + nid);
         Intent intent_news = new Intent();
-        intent_news.setClass(BasicNewsMainActivity.this, NewsModuleActivity.class);
+        intent_news.setClass(NewsOneActivity.this, NewsModuleActivity.class);
         intent_news.putExtra("trigger_from", "Notification");
         PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_news, 0);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);
@@ -175,28 +194,11 @@ public class BasicNewsMainActivity extends AppCompatActivity {
         builder.setChannelId(NOTIFICATION_CHANNEL_ID);
         return builder.build() ;
     }
-//    @SuppressLint("ShortAlarm")
-//    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-//    private void scheduleNotification_repeat (Notification notification, Calendar cc) {
-//        int nid = (int) System.currentTimeMillis();
-//        Log.d("log: notification", "news id" + nid);
-//        Intent notificationIntent = new Intent(this, MyNotificationPublisherNews.class);
-//        notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION_ID, 1 ) ;
-//        notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION, notification) ;
-//        int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast( this, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-////        long futureInMillis = SystemClock.elapsedRealtime() + delay;
-//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//        assert alarmManager != null;
-////        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
-//        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cc.getTimeInMillis(), 1000 * 60, pendingIntent);
-////        alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 1000 * 20, 1000 * 20, pendingIntent);
-//    }
     private Notification getNotification_esm (String content) {
         int nid = (int) System.currentTimeMillis();
         Log.d("log: notification", "esm id" + nid);
         Intent intent_esm = new Intent();
-        intent_esm.setClass(BasicNewsMainActivity.this, ExampleSurveyActivity.class);
+        intent_esm.setClass(NewsOneActivity.this, ExampleSurveyActivity.class);
         intent_esm.putExtra("trigger_from", "Notification");
         intent_esm.putExtra("esm_id", System.currentTimeMillis());
         PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_esm, 0);

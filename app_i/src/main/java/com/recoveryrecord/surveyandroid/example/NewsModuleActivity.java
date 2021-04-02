@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -63,8 +64,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -97,6 +96,212 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
 
     ReadingBehavior myReadingBehavior = new ReadingBehavior();//sqlite
     ReadingBehaviorDbHelper dbHandler;
+
+    private static final HashSet<Character> ch_except = new HashSet<Character>();
+    private static final HashSet<Character> full_num = new HashSet<Character>();
+    private static final HashSet<Character> latin = new HashSet<Character>();
+    private static final HashSet<Character> full_en = new HashSet<Character>();
+    /// 32    空格
+    /// 33-47    標點
+    /// 48-57    0~9
+    /// 58-64    標點
+    /// 65-90    A~Z
+    /// 91-96    標點
+    /// 97-122    a~z
+    /// 123-126  標點
+    //全形字元 - 65248 = 半形字元
+    //Initialize vowels hashSet to contain vowel characters
+    static{
+        ch_except.add('，');
+        ch_except.add('、');
+        ch_except.add('。');
+        ch_except.add('．');
+        ch_except.add('‧');
+        ch_except.add('；');
+        ch_except.add('：');
+        ch_except.add('▶');
+        ch_except.add('→');
+//        vowels.add('：');
+        ch_except.add('？');
+        ch_except.add('！');
+        ch_except.add('（');
+        ch_except.add('）');
+        ch_except.add('｛');
+        ch_except.add('｝');
+        ch_except.add('〔');
+        ch_except.add('〕');
+        ch_except.add('【');
+        ch_except.add('】');
+        ch_except.add('《');
+        ch_except.add('》');
+        ch_except.add('〈');
+        ch_except.add('〉');
+        ch_except.add('「');
+        ch_except.add('」');
+        ch_except.add('『');
+        ch_except.add('』');
+        ch_except.add('＃');
+        ch_except.add('＆');
+        ch_except.add('※');
+        ch_except.add('／');
+        ch_except.add('～');
+        ch_except.add('＋');
+    }
+
+    static {
+        full_num.add('０');
+        full_num.add('１');
+        full_num.add('２');
+        full_num.add('３');
+        full_num.add('４');
+        full_num.add('５');
+        full_num.add('６');
+        full_num.add('７');
+        full_num.add('８');
+        full_num.add('９');
+    }
+
+    static {
+        latin.add('À');
+        latin.add('Á');
+        latin.add('Â');
+        latin.add('Ã');
+        latin.add('Ä');
+        latin.add('Å');
+        latin.add('Æ');
+        latin.add('Ç');
+        latin.add('È');
+        latin.add('É');
+        latin.add('Ê');
+        latin.add('Ë');
+        latin.add('Ì');
+        latin.add('Í');
+        latin.add('Î');
+        latin.add('Ï');
+        latin.add('Ð');
+        latin.add('Ñ');
+        latin.add('Ò');
+        latin.add('Ó');
+        latin.add('Ô');
+        latin.add('Õ');
+        latin.add('Ö');
+        latin.add('×');
+        latin.add('Ø');
+        latin.add('Ù');
+        latin.add('Ú');
+        latin.add('Û');
+        latin.add('Ü');
+        latin.add('Ý');
+        latin.add('Þ');
+        latin.add('ß');
+        latin.add('à');
+        latin.add('á');
+        latin.add('â');
+        latin.add('ã');
+        latin.add('ä');
+        latin.add('å');
+        latin.add('æ');
+        latin.add('ç');
+        latin.add('è');
+        latin.add('é');
+        latin.add('ê');
+        latin.add('ë');
+        latin.add('ì');
+        latin.add('í');
+        latin.add('î');
+        latin.add('ï');
+        latin.add('ð');
+        latin.add('ñ');
+        latin.add('ò');
+        latin.add('ó');
+        latin.add('ô');
+        latin.add('õ');
+        latin.add('ö');
+        latin.add('ø');
+        latin.add('ù');
+        latin.add('ú');
+        latin.add('û');
+        latin.add('ü');
+        latin.add('ý');
+        latin.add('þ');
+        latin.add('ÿ');
+        latin.add('µ');
+        latin.add('Ž');
+        latin.add('Š');
+        latin.add('Ÿ');
+        latin.add('ž');
+    }
+
+    static {
+        full_en.add('ｑ');
+        full_en.add('ｗ');
+        full_en.add('ｅ');
+        full_en.add('ｒ');
+        full_en.add('ｔ');
+        full_en.add('ｙ');
+        full_en.add('ｕ');
+        full_en.add('ｉ');
+        full_en.add('ｏ');
+        full_en.add('ｐ');
+        full_en.add('ａ');
+        full_en.add('ｓ');
+        full_en.add('ｄ');
+        full_en.add('ｆ');
+        full_en.add('ｇ');
+        full_en.add('ｈ');
+        full_en.add('ｊ');
+        full_en.add('ｋ');
+        full_en.add('ｌ');
+        full_en.add('ｚ');
+        full_en.add('ｘ');
+        full_en.add('ｃ');
+        full_en.add('ｖ');
+        full_en.add('ｂ');
+        full_en.add('ｎ');
+        full_en.add('ｍ');
+        full_en.add('Ｑ');
+        full_en.add('Ｗ');
+        full_en.add('Ｅ');
+        full_en.add('Ｒ');
+        full_en.add('Ｔ');
+        full_en.add('Ｙ');
+        full_en.add('Ｕ');
+        full_en.add('Ｉ');
+        full_en.add('Ｏ');
+        full_en.add('Ｐ');
+        full_en.add('Ａ');
+        full_en.add('Ｓ');
+        full_en.add('Ｄ');
+        full_en.add('Ｆ');
+        full_en.add('Ｇ');
+        full_en.add('Ｈ');
+        full_en.add('Ｊ');
+        full_en.add('Ｋ');
+        full_en.add('Ｌ');
+        full_en.add('Ｚ');
+        full_en.add('Ｘ');
+        full_en.add('Ｃ');
+        full_en.add('Ｖ');
+        full_en.add('Ｂ');
+        full_en.add('Ｎ');
+        full_en.add('Ｍ');
+    }
+
+    public static boolean is_except(Character c){
+        return ch_except.contains(c);
+    }
+
+    public static boolean is_full_num(Character c){
+        return full_num.contains(c);
+    }
+
+    public static boolean is_latin(Character c){
+        return latin.contains(c);
+    }
+
+    public static boolean is_full_en(Character c){
+        return full_en.contains(c);
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -204,24 +409,6 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
         List<String> list = Arrays.asList("0000e3633ce3f3b0241d69749fc749f0", "0011f17045e0d4f40cc314f27ac91228", "001b575e65a5dd618051065f43b79974", "0030b7b0dada6069a76fb087f631bbb1", "003436a77eccd9d8f0cc9ffbced6844b");
         doc_id = list.get(rand.nextInt(list.size()));
         Log.d("log: firebase news", doc_id);
-//        CollectionReference folder = db.collection("medias").document("chinatimes").collection("news");
-//        folder.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    List<String> list = new ArrayList<>();
-//                    for (QueryDocumentSnapshot document : task.getResult()) {
-//                        list.add(document.getId());
-//                    }
-//                    Random rand = new Random();
-//                    doc_id[0] = list.get(rand.nextInt(list.size()));
-//                    Log.d("log: firebase news", String.valueOf(doc_id));
-//                    Log.d("log: firebase folder", list.toString());
-//                } else {
-//                    Log.d("log: firebase folder", String.valueOf(task.getException()));
-//                }
-//            }
-//        });
         DocumentReference docRef;
         if (news_id=="" || media_name ==""){
             media_name = "ettoday";
@@ -247,13 +434,19 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
                         mImg = "";
 //                        mImg = "https://cc.tvbs.com.tw/img/upload/2021/02/05/20210205183845-85cd46f0.jpg";
                         mTitle = document.getString("title");
-                        mDate = document.getString("pubdate");
+                        Date my_date = document.getTimestamp("pubdate").toDate();
+                        @SuppressLint("SimpleDateFormat")
+                        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+                        List<String> my_tt = new ArrayList<String>(Arrays.asList(formatter.format(my_date).split(" ")));
+                        mDate = String.format("%s %s", my_tt.get(0), my_tt.get(2));
+//                        mDate = "123";
                         mSource = document.getString("media");
 //                        mAuthor = "孟心怡";
                         myReadingBehavior.setKEY_NEWS_ID(document.getString("id"));
 //                        ArrayList<String> c_list = null;
                         ArrayList<String> c_list = (ArrayList<String>) document.get("content");
                         for (int i = 0; i < c_list.size(); i++) {
+                            c_list.set(i, c_list.get(i).trim().replaceAll("\n", ""));
                             Log.d("log: firebase", "DocumentSnapshot content: " + c_list.get(i));
                         }
                         Log.d("log: firebase", "DocumentSnapshot content: end");
@@ -263,21 +456,35 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
                         myReadingBehavior.setKEY_BYTE_PER_LINE(cut_size*2);
                         //loop for each paragraph
                         for (int i = 0; i < c_list.size(); i++) {
-                            if (c_list.get(i)==""){
+                            if (c_list.get(i).length()==0 || TextUtils.isEmpty(c_list.get(i))){
                                 Log.d("log: firebase", "blank line");
                                 continue;
                             } else if (c_list.get(i).contains("\n")){
+//                                c_list.set(i, c_list.get(i)).trim().replaceAll("\n", "");
                                 Log.d("log: firebase", "detect new line");
-                            } else if (c_list.get(i).contains("\\u3000")){
+                                continue;//should not happen
+                            } else if (c_list.get(i).contains("\u3000")){
                                 //全形空白 it works
-                                Log.d("log: firebase", "detect \\u3000");
+                                Log.d("log: firebase", "detect \u3000");
                             }
-                            String str = c_list.get(i).trim().replaceAll("\n ", "");;
+                            //full blank to half
+                            String str = c_list.get(i).replaceAll("　", " ");
                             int front = 0, iter_char_para = 0, para_count = 0;
                             boolean last_line_in_p = false;
 //                            str = "我午我我我午我我我午我我我午我我我午我我我午我我我午我我我午我我我午我我我午我我我午我我我午我我我午我我我午我我我午我我我午我我";
-//                            str = "\"This is a message that needs to be split over multiple lines because it is too long. The result must be a list of strings with a maximum length provided as input. Will this procedure work? I hope so!\"";
+//                            str = "This is a message that needs to be split over multiple lines because it is too long. The result must be a list of strings with a maximum length provided as input. Will this procedure work? I hope so!";
+//                            str = "Ｔｈｉｓ　ｉｓ　ａ　ｍｅｓｓａｇｅ　ｔｈａｔ　ｎｅｅｄｓ　ｔｏ　ｂｅ　ｓｐｌｉｔ　ｏｖｅｒ　ｍｕｌｔｉｐｌｅ　ｌｉｎｅｓ　ｂｅｃａｕｓｅ　ｉｔ　ｉｓ　ｔｏｏ　ｌｏｎｇ．　Ｔｈｅ　ｒｅｓｕｌｔ　ｍｕｓｔ　ｂｅ　ａ　ｌｉｓｔ　ｏｆ　ｓｔｒｉｎｇｓ　ｗｉｔｈ　ａ　ｍａｘｉｍｕｍ　ｌｅｎｇｔｈ　ｐｒｏｖｉｄｅｄ　ａｓ　ｉｎｐｕｔ．　Ｗｉｌｌ　ｔｈｉｓ　ｐｒｏｃｅｄｕｒｅ　ｗｏｒｋ？　Ｉ　ｈｏｐｅ　ｓｏ！";
+//                            str = "１２３４５６１我我午我我我午我我我午我我我我午我我我午我我我午我我２３４５６７８９０";
+                            str = str.replaceAll("　", " ");
                             char[] para = str.toCharArray();
+                            //conerter
+//                            for (int itt=0; itt< para.length; itt++){
+//                                if (para[itt] > '\uFF00' && para[itt] < '\uFF5F') {
+//                                    Log.d("log: firebase", "detect" + para[itt]);
+//                                    para[itt] = (char) (para[itt] - 65248);
+//                                    Log.d("log: firebase", "detect" + para[itt]);
+//                                }
+//                            }
 //                            char_num_total+=para.length;
                             //one paragraph split to line
                             while (!last_line_in_p){
@@ -292,7 +499,7 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
                                         front+=1;
                                         continue;
                                     }
-                                    if (isChineseChar(para[iter_char_para]) || para[iter_char_para]=='（' || para[iter_char_para]=='）' || para[iter_char_para]=='，'){
+                                    if (isChineseChar(para[iter_char_para]) || is_except(para[iter_char_para])){
 //                                        Log.d("log: firebase", "chinese " + para[iter_char_para]);
                                         //is chinese
                                         //first check line space
@@ -314,6 +521,72 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
                                         } else {
                                             //line space not enough
 //                                            Log.d("log: firebase", "new line");
+                                            last_char_in_line = true;
+                                            break;
+                                        }
+                                    } else if (is_full_en(para[iter_char_para])){
+                                        Log.d("log: firebase", "full en " + para[iter_char_para]);
+                                        //is number word
+                                        //find word
+                                        int tmp_iter_char_line = iter_char_line+2;
+                                        int tmp_iter_char_para = iter_char_para+1;
+                                        for (; tmp_iter_char_para< para.length; tmp_iter_char_para++){
+                                            if (is_full_en(para[tmp_iter_char_para])){
+                                                Log.d("log: firebase", "full en " + para[tmp_iter_char_para]);
+                                                tmp_iter_char_line +=2;
+                                            } else {
+                                                Log.d("log: firebase", "break " + para[tmp_iter_char_para]);
+                                                tmp_iter_char_para--;
+                                                break;
+                                            }
+                                        }
+                                        //check line space
+                                        if (tmp_iter_char_line <= (cut_size*2)){
+                                            iter_char_line = tmp_iter_char_line;
+                                            //second check if last char in para
+                                            if (tmp_iter_char_para < para.length){
+                                                iter_char_para = tmp_iter_char_para+1;
+                                                continue;
+                                            } else {
+                                                //is last char in para
+                                                iter_char_para = tmp_iter_char_para-1;
+                                                last_line_in_p = true;
+                                                last_char_in_line = true;
+                                                break;
+                                            }
+                                        } else {
+                                            last_char_in_line = true;
+                                            break;
+                                        }
+                                    } else if (is_full_num(para[iter_char_para])){
+                                        Log.d("log: firebase", "full num " + para[iter_char_para]);
+                                        //is number word
+                                        //find word
+                                        int tmp_iter_char_line = iter_char_line+2;
+                                        int tmp_iter_char_para = iter_char_para+1;
+                                        for (; tmp_iter_char_para< para.length; tmp_iter_char_para++){
+                                            if (is_full_num(para[tmp_iter_char_para])){
+                                                tmp_iter_char_line +=2;
+                                            } else {
+                                                tmp_iter_char_para--;
+                                                break;
+                                            }
+                                        }
+                                        //check line space
+                                        if (tmp_iter_char_line <= (cut_size*2)){
+                                            iter_char_line = tmp_iter_char_line;
+                                            //second check if last char in para
+                                            if (tmp_iter_char_para < para.length){
+                                                iter_char_para = tmp_iter_char_para+1;
+                                                continue;
+                                            } else {
+                                                //is last char in para
+                                                iter_char_para = tmp_iter_char_para-1;
+                                                last_line_in_p = true;
+                                                last_char_in_line = true;
+                                                break;
+                                            }
+                                        } else {
                                             last_char_in_line = true;
                                             break;
                                         }
@@ -349,7 +622,7 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
                                             last_char_in_line = true;
                                             break;
                                         }
-                                    } else if ((para[iter_char_para] >= 'a' && para[iter_char_para] <= 'z') || (para[iter_char_para] >= 'A' && para[iter_char_para] <= 'Z')){
+                                    } else if ((para[iter_char_para] >= 'a' && para[iter_char_para] <= 'z') || (para[iter_char_para] >= 'A' && para[iter_char_para] <= 'Z') || is_latin(para[iter_char_para])){
 //                                        Log.d("log: firebase", "english " + para[iter_char_para]);
                                         //english word
                                         //find word
@@ -387,7 +660,7 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
                                         }
                                     } else {
                                         //other symbol
-//                                        Log.d("log: firebase", "symbol " + para[iter_char_para]);
+                                        Log.d("log: firebase", "symbol " + para[iter_char_para]);
                                         int tmp_iter_char_line = iter_char_line+1;//tmp cursor
                                         int tmp_iter_char_para = iter_char_para+1;//tmp cursor
                                         if (tmp_iter_char_line <= (cut_size*2)){
@@ -412,78 +685,17 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
                                 //end of line do some thing;
                                 if(last_line_in_p){
                                     String childStr = str.substring(front, iter_char_para+1);
-                                    Log.d("log: firebase", childStr);
+//                                    Log.d("log: firebase", childStr);
                                     divList.add(childStr);
                                     divList.add("\n");
                                     break;
                                 } else {
                                     String childStr = str.substring(front, iter_char_para);
-                                    Log.d("log: firebase", childStr);
+//                                    Log.d("log: firebase", childStr);
                                     divList.add(childStr);
                                     front = iter_char_para;
                                 }
                             }
-//                            while (iter_char_para < para.length) {
-
-
-//                                line_count++;
-//                                int iter_char_line = 0;
-//                                //one sentence at most cut_size * 2 bytes
-//                                while (iter_char_line < cut_size * 2) {
-//                                    // if chinese two byte
-//                                    if (isChineseChar(para[iter_char_para])) {
-//                                        iter_char_line += 2;
-//                                        if (iter_char_para + 1 == para.length) {
-//                                            //last char in para and last line
-//                                            last_line_in_p = true;
-//                                            break;
-//                                        } else {
-//                                            iter_char_para += 1;
-//                                        }
-//                                    } else if ((para[iter_char_para] >= 'a' && para[iter_char_para] <= 'z') || (para[iter_char_para] >= 'A' && para[iter_char_para] <= 'Z')) {
-//                                        //english letter then check word
-//                                        int word_length = 0, word_index, tmp_count_byte = iter_char_line;
-//                                        for (word_index = iter_char_para; word_index + 1 <= str.length(); word_index++) {
-//                                            if ((para[word_index] >= 'a' && para[word_index] <= 'z') || (para[word_index] >= 'A' && para[word_index] <= 'Z' ) || para[word_index] == '-') {
-//                                                word_length += 1;
-//                                                tmp_count_byte += 1;
-//                                            } else {
-//                                                // move to next line
-////                                                Log.d("log: firebase", "3");
-//                                                break;
-//                                            }
-//                                        }
-//                                        word_index -= 1;
-//                                        if (tmp_count_byte < cut_size * 2) {
-//                                            iter_char_para = word_index;
-//                                            iter_char_line = tmp_count_byte;
-//                                        } else {
-//                                            iter_char_para -= 1;
-////                                            Log.d("log: firebase", "2");
-//                                            break;
-//                                        }
-//                                    } else {
-//                                        // may be some symbol or number
-//                                        iter_char_line += 1;
-//                                        if (iter_char_para + 1 == para.length) {
-//                                            //last char in para and last line
-//                                            last_line_in_p = true;
-//                                            break;
-//                                        } else {
-//                                            iter_char_para += 1;
-//                                        }
-//                                    }
-//                                }
-//                                String childStr = str.substring(front, iter_char_para);
-////                                Log.d("log: firebase", childStr);
-//                                divList.add(childStr);
-//                                if(last_line_in_p){
-//                                    divList.add("\n");
-//                                    break;
-//                                } else {
-//                                    front = iter_char_para;
-//                                }
-//                            }
                         }
                         myReadingBehavior.setKEY_CHAR_NUM_TOTAL(char_num_total);
                         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);

@@ -20,7 +20,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Widget.SurveyAndroid">
-        <activity android:name=".NewsMainActivity">
+        <activity android:name=".NewsOneActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -30,7 +30,7 @@
 
         <activity android:name=".BasicActivity" />
         <activity android:name=".NewsModuleActivity" />
-        <activity android:name=".BasicNewsMainActivity" />
+        <activity android:name=".NewsAllActivity" />
         <activity android:name=".ExampleSurveyActivity" />
         <activity android:name=".NetworkCheckerActivity" />
         <receiver android:name=".receiever.ApplicationSelectorReceiver"></receiver>

@@ -65,6 +65,7 @@ public class MyPagerAdapter extends PagerAdapter {
         switch (position) {
             case 0:
                 media_name = "中時";
+//                media_name = "中央社";
                 break;
             case 1:
                 media_name = "中央社";

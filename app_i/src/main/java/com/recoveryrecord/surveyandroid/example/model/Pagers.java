@@ -92,8 +92,8 @@ public class Pagers extends RelativeLayout {
         Log.d("log: pager", media_nn);
         db.collection("medias")
                 .document(media_nn)
-                .collection("news")
-                .orderBy("pubdate", Query.Direction.DESCENDING)
+                .collection("news")////
+                .orderBy("id", Query.Direction.DESCENDING)//                 .orderBy("pubdate", Query.Direction.DESCENDING)
                 .limit(50)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {

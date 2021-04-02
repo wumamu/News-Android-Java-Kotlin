@@ -1,48 +1,57 @@
 package com.recoveryrecord.surveyandroid.example;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.recoveryrecord.surveyandroid.example.model.NewsModel;
+import com.recoveryrecord.surveyandroid.example.model.NewsModelOne;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 //import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
-
-public class NewsRecycleViewAdapter extends RecyclerView.Adapter<NewsRecycleViewAdapter.ViewHolder> {
-    private ArrayList<NewsModel> dataModelArrayList;
+public class NewsRecycleViewAdapterOne extends RecyclerView.Adapter<NewsRecycleViewAdapterOne.ViewHolder> {
+    private ArrayList<NewsModelOne> dataModelArrayList;
     private Context context;
 
     // constructor class for our Adapter
-    public NewsRecycleViewAdapter(ArrayList<NewsModel> dataModalArrayList, Context context) {
+    public NewsRecycleViewAdapterOne(ArrayList<NewsModelOne> dataModalArrayList, Context context) {
         this.dataModelArrayList = dataModalArrayList;
         this.context = context;
     }
 
     @NonNull
     @Override
-    public NewsRecycleViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public NewsRecycleViewAdapterOne.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // passing our layout file for displaying our card item
-        return new NewsRecycleViewAdapter.ViewHolder(LayoutInflater.from(context).inflate(R.layout.rv_item, parent, false));
+        return new NewsRecycleViewAdapterOne.ViewHolder(LayoutInflater.from(context).inflate(R.layout.rv_item, parent, false));
     }
 
 
     @Override
-    public void onBindViewHolder(@NonNull NewsRecycleViewAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull NewsRecycleViewAdapterOne.ViewHolder holder, int position) {
         // setting data to our views in Recycler view items.
-        NewsModel model = dataModelArrayList.get(position);
+        NewsModelOne model = dataModelArrayList.get(position);
         holder.newsTitle.setText(model.getTitle());
-        holder.newsPubTime.setText(model.getPubdate());
+        Date date = model.getPubdate().toDate();
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+        List<String> my_tt = new ArrayList<String>(Arrays.asList(formatter.format(date).split(" ")));
+        holder.newsPubTime.setText(String.format("%s %s", my_tt.get(0), my_tt.get(2)));
+//        holder.newsPubTime.setText("123");
         holder.newsMedia.setText(model.getMedia());
 
         // we are using Picasso to load images
@@ -83,7 +92,7 @@ public class NewsRecycleViewAdapter extends RecyclerView.Adapter<NewsRecycleView
                 @Override
                 public void onClick(View view) {
 //                    Toast.makeText(view.getContext(), "click " +getAdapterPosition(),Toast.LENGTH_SHORT).show();
-                    NewsModel model = dataModelArrayList.get(getAdapterPosition());
+                    NewsModelOne model = dataModelArrayList.get(getAdapterPosition());
                     Intent intent = new Intent();
                     intent.setClass(context, NewsModuleActivity.class);
                     intent.putExtra("trigger_from", "self_trigger");

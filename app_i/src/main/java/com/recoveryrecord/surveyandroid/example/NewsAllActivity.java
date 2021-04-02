@@ -1,6 +1,5 @@
-package com.recoveryrecord.surveyandroid.example;
+ package com.recoveryrecord.surveyandroid.example;
 
-import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -8,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.Menu;
@@ -41,7 +41,7 @@ import androidx.viewpager.widget.ViewPager;
 
 //import com.google.firebase.FirebaseApp;
 
-public class NewsMainActivity extends AppCompatActivity {
+public class NewsAllActivity extends AppCompatActivity {
 //    private RecyclerView courseRV;
 //    private ArrayList<NewsModel> dataModalArrayList;
 //    private NewsRecycleViewAdapter dataRVAdapter;
@@ -52,12 +52,12 @@ public class NewsMainActivity extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DocumentReference noteRef = db.document("server_push_notifications/start");
     private CollectionReference noteRefqq = db.collection("server_push_notifications");
-
+    boolean doubleBackToExitPressedOnce = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        FirebaseApp.initializeApp();
-        setContentView(R.layout.activity_main_news);
+        setContentView(R.layout.activity_all_news);
         setTitle("即時新聞");
 
         ArrayList<View> mPages = new ArrayList<>();
@@ -135,7 +135,24 @@ public class NewsMainActivity extends AppCompatActivity {
 //            }
 //        });
     }
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
 
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce=false;
+            }
+        }, 2000);
+    }
 
 
     @Override
@@ -154,11 +171,11 @@ public class NewsMainActivity extends AppCompatActivity {
                 scheduleNotification_repeat(getNotification_esm("time"));
                 return true;
             case R.id.action_10 :
-                Intent intent_ems = new Intent(NewsMainActivity.this, ExampleSurveyActivity.class);
+                Intent intent_ems = new Intent(NewsAllActivity.this, ExampleSurveyActivity.class);
                 startActivity(intent_ems);
                 return true;
             case R.id.action_30 :
-                Intent intent_noti_db = new Intent(NewsMainActivity.this, NotificationDbViewActivity.class);
+                Intent intent_noti_db = new Intent(NewsAllActivity.this, NotificationDbViewActivity.class);
                 startActivity(intent_noti_db);
 //                scheduleNotification(getNotification("news (30 second delay)" ), 30000 );
 //                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
@@ -185,7 +202,7 @@ public class NewsMainActivity extends AppCompatActivity {
         int nid = (int) System.currentTimeMillis();
         Log.d("log: notification", "news id" + nid);
         Intent intent_news = new Intent();
-        intent_news.setClass(NewsMainActivity.this, NewsModuleActivity.class);
+        intent_news.setClass(NewsAllActivity.this, NewsModuleActivity.class);
         intent_news.putExtra("trigger_from", "Notification");
         intent_news.putExtra("news_id", news_id);
         intent_news.putExtra("media", media);
@@ -231,7 +248,7 @@ public class NewsMainActivity extends AppCompatActivity {
         int nid = (int) System.currentTimeMillis();
         Log.d("log: notification", "esm id" + nid);
         Intent intent_esm = new Intent();
-        intent_esm.setClass(NewsMainActivity.this, ExampleSurveyActivity.class);
+        intent_esm.setClass(NewsAllActivity.this, ExampleSurveyActivity.class);
         intent_esm.putExtra("trigger_from", "Notification");
         intent_esm.putExtra("esm_id", System.currentTimeMillis());
         PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_esm, 0);
