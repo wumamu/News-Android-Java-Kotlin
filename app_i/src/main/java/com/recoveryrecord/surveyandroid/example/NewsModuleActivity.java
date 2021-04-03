@@ -1040,7 +1040,10 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        supportFinishAfterTransition();
+//        supportFinishAfterTransition();
+        Intent intent = new Intent(NewsModuleActivity.this, NewsAllActivity.class);
+        startActivity(intent);
+
     }
 
     public int pxToDp(int px, Context tmp) {

@@ -31,4 +31,6 @@
 
     <string name="openNavDrawer">Navigation Drawer Open</string>
     <string name="closeNavDrawer">Navigation Drawer Close</string>
+    <string name="user_id">user_id</string>
+    <string name="user_phone_Id">user_phone_Id</string>
 </resources>
