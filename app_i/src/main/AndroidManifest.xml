@@ -19,7 +19,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Widget.SurveyAndroid">
+        android:theme="@style/AppTheme">
         <activity android:name=".NewsAllActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,19 +33,20 @@
         <activity android:name=".NewsOneActivity" />
         <activity android:name=".ExampleSurveyActivity" />
         <activity android:name=".NetworkCheckerActivity" />
-        <receiver android:name=".receiever.ApplicationSelectorReceiver"></receiver>
-        <receiver android:name=".receiever.ScreenStateReceiver"></receiver>
-<!--        <receiver android:name=".NotificationReceiver"></receiver>-->
-        <receiver android:name=".receiever.ApplicationSelectorReceiver"></receiver>
-        <receiver android:name=".receiever.BlueToothReceiver"></receiver>
 
-        <activity android:name=".AddNotificationActivity"></activity>
-        <activity android:name=".activity.NotificationDbViewActivity"></activity>
-        <activity android:name=".ESMDbViewActivity"></activity>
-        <activity android:name=".ESMJsonViewActivity"></activity>
+        <receiver android:name=".receiever.ApplicationSelectorReceiver" />
+        <receiver android:name=".receiever.ScreenStateReceiver" />
+        <receiver android:name=".receiever.ApplicationSelectorReceiver" />
+        <receiver android:name=".receiever.BlueToothReceiver" />
+
+        <activity android:name=".AddNotificationActivity" />
+        <activity android:name=".activity.NotificationDbViewActivity" />
+        <activity android:name=".ESMDbViewActivity" />
+        <activity android:name=".ESMJsonViewActivity" />
         <receiver android:name=".receiever.NetworkChangeReceiver">
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"
+                    tools:ignore="BatteryLife" />
             </intent-filter>
         </receiver>
         <activity android:name=".NotificationSettingActivity" />

@@ -25,4 +25,10 @@
     <string name="btn_to_noti_list">通知紀錄</string>
     <string name="setting">setting</string>
     <string name="esm">esm</string>
+    <!-- navigation bar -->
+    <string name="my_files">My Files</string>
+    <string name="shared">Shared</string>
+
+    <string name="openNavDrawer">Navigation Drawer Open</string>
+    <string name="closeNavDrawer">Navigation Drawer Close</string>
 </resources>

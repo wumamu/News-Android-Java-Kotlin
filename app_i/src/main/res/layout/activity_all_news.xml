@@ -1,32 +1,47 @@
-<!--<?xml version="1.0" encoding="utf-8"?>-->
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NewsAllActivity">
-
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab"
+    tools:context=".NewsAllActivity"
+    android:id="@+id/drawer_layout">
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tabMaxWidth="0dp"
-        app:tabGravity="fill"
-        app:tabMode="scrollable"
-        />
-
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/mViewPager"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tab" />
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
-
+        android:layout_height="match_parent"
+        android:id="@+id/cons_one"
+        android:orientation="vertical">
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:ignore="MissingConstraints"
+            android:id="@+id/appbar_layout">
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/main_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@android:color/white" />
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tab"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tabMaxWidth="0dp"
+                app:tabGravity="fill"
+                app:tabMode="scrollable"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        </com.google.android.material.appbar.AppBarLayout>
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/mViewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <com.google.android.material.navigation.NavigationView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:menu="@menu/nav_menu"
+        android:id="@+id/nav_view"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/nav_header_layout" />
+</androidx.drawerlayout.widget.DrawerLayout>

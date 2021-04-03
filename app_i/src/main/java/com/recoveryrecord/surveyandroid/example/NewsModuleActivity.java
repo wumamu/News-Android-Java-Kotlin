@@ -68,6 +68,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 //import android.support.v7.widget.Toolbar;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
@@ -96,6 +97,8 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
 
     ReadingBehavior myReadingBehavior = new ReadingBehavior();//sqlite
     ReadingBehaviorDbHelper dbHandler;
+
+    private Toolbar toolbar;
 
     private static final HashSet<Character> ch_except = new HashSet<Character>();
     private static final HashSet<Character> full_num = new HashSet<Character>();
@@ -308,8 +311,11 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("log: activity cycle", "On create");
         super.onCreate(savedInstanceState);
+
 //        getSupportActionBar().hide();
         setContentView(R.layout.activity_news_module);
+        toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        setSupportActionBar(toolbar);
         //open database ############################################################################
         dbHandler = new ReadingBehaviorDbHelper(NewsModuleActivity.this);
         //check trigger from #######################################################################

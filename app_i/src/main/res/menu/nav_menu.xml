@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="STORAGAE">
+        <menu>
+            <item android:title="@string/my_files"/>
+            <item android:title="@string/shared"/>
+            <item android:title="Starred"/>
+            <item android:title="Recent"/>
+            <item android:title="Backup"/>
+        </menu>
+    </item>
+
+    <item android:title="APP">
+        <menu>
+            <item android:title="Settings"/>
+            <item android:title="Log Out"/>
+        </menu>
+    </item>
+
+</menu>

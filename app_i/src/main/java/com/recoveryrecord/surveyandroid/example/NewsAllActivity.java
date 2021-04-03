@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
@@ -33,15 +34,19 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.ThreadLocalRandom;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.ViewPager;
 
 //import com.google.firebase.FirebaseApp;
 
-public class NewsAllActivity extends AppCompatActivity {
+public class NewsAllActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 //    private RecyclerView courseRV;
 //    private ArrayList<NewsModel> dataModalArrayList;
 //    private NewsRecycleViewAdapter dataRVAdapter;
@@ -53,11 +58,37 @@ public class NewsAllActivity extends AppCompatActivity {
     private DocumentReference noteRef = db.document("server_push_notifications/start");
     private CollectionReference noteRefqq = db.collection("server_push_notifications");
     boolean doubleBackToExitPressedOnce = false;
+
+    private Toolbar toolbar;
+
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        FirebaseApp.initializeApp();
         setContentView(R.layout.activity_all_news);
+        //navi
+        toolbar = findViewById(R.id.main_toolbar);
+        setSupportActionBar(toolbar);
+
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
+
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
+                this,
+                drawerLayout,
+                toolbar,
+                R.string.openNavDrawer,
+                R.string.closeNavDrawer
+        );
+
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
+        navigationView.setNavigationItemSelectedListener(this);
+
+
         setTitle("即時新聞");
 
         ArrayList<View> mPages = new ArrayList<>();
@@ -85,38 +116,39 @@ public class NewsAllActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        noteRefqq.addSnapshotListener(this, new EventListener<QuerySnapshot>() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    Log.d("onstart", "listen:error", e);
-                    return;
-                }
-                for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
-                    DocumentSnapshot documentSnapshot = dc.getDocument();
-//                    String id = documentSnapshot.getId();
-//                    int oldIndex = dc.getOldIndex();
-//                    int newIndex = dc.getNewIndex();
-                    switch (dc.getType()) {
-                        case ADDED:
-                            Log.d("onstart", "New city: " + dc.getDocument().getData());
-                            String news_id = dc.getDocument().getString("news_id");
-                            String media  = dc.getDocument().getString("media");
-                            String title = dc.getDocument().getString("title");
-                            scheduleNotification(getNotification(news_id, media, title), 1000 );
-                            scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
-                            break;
-                        case MODIFIED:
-                            Log.d("onstart", "Modified city: " + dc.getDocument().getData());
-                            break;
-                        case REMOVED:
-                            Log.d("onstart", "Removed city: " + dc.getDocument().getData());
-                            break;
-                    }
-                }
-            }
-        });
+        //listener for fire store
+//        noteRefqq.addSnapshotListener(this, new EventListener<QuerySnapshot>() {
+//            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+//            @Override
+//            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+//                if (e != null) {
+//                    Log.d("onstart", "listen:error", e);
+//                    return;
+//                }
+//                for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
+//                    DocumentSnapshot documentSnapshot = dc.getDocument();
+////                    String id = documentSnapshot.getId();
+////                    int oldIndex = dc.getOldIndex();
+////                    int newIndex = dc.getNewIndex();
+//                    switch (dc.getType()) {
+//                        case ADDED:
+//                            Log.d("onstart", "New city: " + dc.getDocument().getData());
+//                            String news_id = dc.getDocument().getString("news_id");
+//                            String media  = dc.getDocument().getString("media");
+//                            String title = dc.getDocument().getString("title");
+//                            scheduleNotification(getNotification(news_id, media, title), 1000 );
+//                            scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
+//                            break;
+//                        case MODIFIED:
+//                            Log.d("onstart", "Modified city: " + dc.getDocument().getData());
+//                            break;
+//                        case REMOVED:
+//                            Log.d("onstart", "Removed city: " + dc.getDocument().getData());
+//                            break;
+//                    }
+//                }
+//            }
+//        });
 //        noteRef.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
 //            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 //            @Override
@@ -135,6 +167,17 @@ public class NewsAllActivity extends AppCompatActivity {
 //            }
 //        });
     }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        return false;
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
+    }
+
     @Override
     public void onBackPressed() {
         if (doubleBackToExitPressedOnce) {
@@ -154,36 +197,36 @@ public class NewsAllActivity extends AppCompatActivity {
         }, 2000);
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu (Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main_news, menu);
-        //getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
-    }
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    @Override
-    public boolean onOptionsItemSelected (MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_5 :
-                scheduleNotification(getNotification("0143b739b1c33d46cd18b6af12b2d5b2", "ettoday", "wa_title" ), 5000 );
-                scheduleNotification_repeat(getNotification_esm("time"));
-                return true;
-            case R.id.action_10 :
-                Intent intent_ems = new Intent(NewsAllActivity.this, ExampleSurveyActivity.class);
-                startActivity(intent_ems);
-                return true;
-            case R.id.action_30 :
-                Intent intent_noti_db = new Intent(NewsAllActivity.this, NotificationDbViewActivity.class);
-                startActivity(intent_noti_db);
-//                scheduleNotification(getNotification("news (30 second delay)" ), 30000 );
-//                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
-                return true;
-            default :
-                return super.onOptionsItemSelected(item);
-        }
-    }
+//
+//    @Override
+//    public boolean onCreateOptionsMenu (Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.menu_main_news, menu);
+//        //getMenuInflater().inflate(R.menu.menu, menu);
+//        return true;
+//    }
+//    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+//    @Override
+//    public boolean onOptionsItemSelected (MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.action_5 :
+//                scheduleNotification(getNotification("0143b739b1c33d46cd18b6af12b2d5b2", "ettoday", "wa_title" ), 5000 );
+//                scheduleNotification_repeat(getNotification_esm("time"));
+//                return true;
+//            case R.id.action_10 :
+//                Intent intent_ems = new Intent(NewsAllActivity.this, ExampleSurveyActivity.class);
+//                startActivity(intent_ems);
+//                return true;
+//            case R.id.action_30 :
+//                Intent intent_noti_db = new Intent(NewsAllActivity.this, NotificationDbViewActivity.class);
+//                startActivity(intent_noti_db);
+////                scheduleNotification(getNotification("news (30 second delay)" ), 30000 );
+////                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
+//                return true;
+//            default :
+//                return super.onOptionsItemSelected(item);
+//        }
+//    }
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void scheduleNotification (Notification notification, int delay) {
 //        int nid = (int) System.currentTimeMillis();
