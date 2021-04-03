@@ -15,7 +15,6 @@
     <string name="pref_header_notifications">Notifications</string>
     <string name="pref_title_enable_notifications">Enable notifications</string>
     <string name="pref_title_notification_time">Notification time</string>
-
     <string name="settings_button_text">Settings</string>
 
     <!-- Strings related to notification channels -->
@@ -25,12 +24,31 @@
     <string name="btn_to_noti_list">通知紀錄</string>
     <string name="setting">setting</string>
     <string name="esm">esm</string>
+
     <!-- navigation bar -->
     <string name="my_files">My Files</string>
     <string name="shared">Shared</string>
-
     <string name="openNavDrawer">Navigation Drawer Open</string>
     <string name="closeNavDrawer">Navigation Drawer Close</string>
     <string name="user_id">user_id</string>
     <string name="user_phone_Id">user_phone_Id</string>
+
+
+    <!-- setting -->
+    <!-- Settings Activity Title -->
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
 </resources>

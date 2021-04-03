@@ -100,6 +100,8 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
 
     private Toolbar toolbar;
 
+    boolean self_trigger = false;
+
     private static final HashSet<Character> ch_except = new HashSet<Character>();
     private static final HashSet<Character> full_num = new HashSet<Character>();
     private static final HashSet<Character> latin = new HashSet<Character>();
@@ -322,6 +324,9 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
         if (getIntent().getExtras() != null) {
             Bundle b = getIntent().getExtras();
             myReadingBehavior.setKEY_TRIGGER_BY(b.getString("trigger_from"));
+            if(myReadingBehavior.getKEY_TRIGGER_BY().equals("self_trigger")){
+                self_trigger = true;
+            }
             if (b.getString("news_id")!= null){
                 news_id = b.getString("news_id");
             }
@@ -1041,8 +1046,10 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
     public void onBackPressed() {
         super.onBackPressed();
 //        supportFinishAfterTransition();
-        Intent intent = new Intent(NewsModuleActivity.this, NewsAllActivity.class);
-        startActivity(intent);
+        if (!self_trigger){
+            Intent intent = new Intent(NewsModuleActivity.this, NewsAllActivity.class);
+            startActivity(intent);
+        }
 
     }
 

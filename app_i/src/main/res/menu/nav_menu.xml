@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:title="帳號設定"
+    <item android:id="@+id/nav_setting"
+        android:title="帳號設定"
         android:icon="@drawable/ic_baseline_settings_24"/>
-    <item android:title="問卷進度"
+    <item android:id="@+id/nav_progressing"
+        android:title="問卷進度"
         android:icon="@drawable/ic_baseline_analytics_24"/>
-    <item android:title="閱讀紀錄"
+    <item android:id="@+id/nav_history"
+        android:title="閱讀紀錄"
         android:icon="@drawable/ic_baseline_history_24"/>
-    <item android:title="通知時間"
+    <item android:id="@+id/nav_reschedule"
+        android:title="通知時間"
         android:icon="@drawable/ic_baseline_edit_notifications_24"/>
-    <item android:title="聯絡我們"
+    <item android:id="@+id/nav_contact"
+        android:title="聯絡我們"
         android:icon="@drawable/ic_baseline_email_24"/>
 </menu>
 <!--<?xml version="1.0" encoding="utf-8"?>-->

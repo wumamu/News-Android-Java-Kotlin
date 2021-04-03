@@ -416,7 +416,7 @@ public class BasicActivity extends AppCompatActivity {
     }
 
     //    public void notificationButtonOnClick(View view) {
-    //        Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+    //        Intent intent = new Intent(MainActivity.this, com.recoveryrecord.surveyandroid.example.SettingsActivity.class);
     //        startActivity(intent);
     //    }
     @Override

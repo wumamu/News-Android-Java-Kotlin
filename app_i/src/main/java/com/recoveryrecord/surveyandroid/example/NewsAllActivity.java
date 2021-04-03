@@ -1,5 +1,6 @@
  package com.recoveryrecord.surveyandroid.example;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -41,7 +42,10 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 //import com.google.firebase.FirebaseApp;
@@ -168,9 +172,41 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
 //        });
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return false;
+//        displayView(item.getItemId());
+//        int selectedItemId = item.getItemId();
+//        Log.d("log: navigation", "here " + item.getItemId());
+//        Toast.makeText(this, " " + stringselectedItemId, Toast.LENGTH_SHORT).show();
+        switch (item.getItemId()) {
+            case R.id.nav_setting :
+                Log.d("log: navigation", "nav_setting " + item.getItemId());
+                Intent intent_ems = new Intent(NewsAllActivity.this, ExampleSurveyActivity.class);
+                startActivity(intent_ems);
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+            case R.id.nav_progressing :
+                Log.d("log: navigation", "nav_progressing " + item.getItemId());
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+            case R.id.nav_history :
+                Log.d("log: navigation", "nav_history " + item.getItemId());
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+            case R.id.nav_reschedule :
+                Log.d("log: navigation", "nav_reschedule " + item.getItemId());
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+            case R.id.nav_contact :
+                Log.d("log: navigation", "nav_contact " + item.getItemId());
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+            default :
+                return false;
+        }
+
+//        return false;
     }
 
     @Override
@@ -180,21 +216,24 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
 
     @Override
     public void onBackPressed() {
-        if (doubleBackToExitPressedOnce) {
-            super.onBackPressed();
-            return;
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)){
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            if (doubleBackToExitPressedOnce) {
+                super.onBackPressed();
+                return;
+            }
+            this.doubleBackToExitPressedOnce = true;
+            Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    doubleBackToExitPressedOnce=false;
+                }
+            }, 2000);
         }
 
-        this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
-
-        new Handler().postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                doubleBackToExitPressedOnce=false;
-            }
-        }, 2000);
     }
 
 //
@@ -318,4 +357,35 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
         assert alarmManager != null;
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
     }
+//    public void displayView(int viewId) {
+//
+//        Fragment fragment = null;
+//        String title = getString(R.string.app_name);
+//
+//        switch (viewId) {
+//            case R.id.nav_setting:
+//                fragment = new NewsFragment();
+//                title  = "Setting";
+//                break;
+//            case R.id.nav_progressing:
+//                fragment = new EventsFragment();
+//                title = "Progressing";
+//                break;
+//        }
+//
+//        if (fragment != null) {
+//            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//            ft.replace(R.id.content_frame, fragment);
+//            ft.commit();
+//        }
+//
+//        // set the toolbar title
+//        if (getSupportActionBar() != null) {
+//            getSupportActionBar().setTitle(title);
+//        }
+//
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        drawer.closeDrawer(GravityCompat.START);
+//
+//    }
 }
