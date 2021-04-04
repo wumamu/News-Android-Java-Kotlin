@@ -9,4 +9,28 @@
         <item>reply</item>
         <item>reply_all</item>
     </string-array>
+
+    <string-array name="media_select_entries">
+        <item>中時</item>
+        <item>中央社</item>
+        <item>華視</item>
+        <item>東森</item>
+        <item>自由時報</item>
+        <item>風傳媒</item>
+        <item>聯合</item>
+        <item>ETTODAY</item>
+    </string-array>
+
+    <string-array name="media_select_values">
+        <item>chinatimes</item>
+        <item>cna</item>
+        <item>cts</item>
+        <item>ebc</item>
+        <item>ltn</item>
+        <item>storm</item>
+        <item>udn</item>
+        <item>ettoday</item>
+    </string-array>
+
+    <string-array name="empty_array"/>
 </resources>

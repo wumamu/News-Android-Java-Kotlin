@@ -4,8 +4,10 @@ import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,8 +33,10 @@ import com.recoveryrecord.surveyandroid.example.model.Pagers;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 import androidx.annotation.NonNull;
@@ -46,6 +50,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.preference.PreferenceManager;
 import androidx.viewpager.widget.ViewPager;
 
 //import com.google.firebase.FirebaseApp;
@@ -71,6 +76,18 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //check preference
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+//        SharedPreferences.Editor editor = sharedPrefs.edit();
+//        editor.clear();
+//        editor.commit();
+        Set<String> selections = sharedPrefs.getStringSet("media_select", null);
+        if (selections==null){
+            Toast.makeText(this, "趕快去設定選擇想要的媒體吧~", Toast.LENGTH_LONG).show();
+        } else {
+            String[] selected = selections.toArray(new String[] {});
+            Log.d("myprefer", Arrays.toString(new Set[]{selections}));
+        }
 //        FirebaseApp.initializeApp();
         setContentView(R.layout.activity_all_news);
         //navi
@@ -182,24 +199,32 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
         switch (item.getItemId()) {
             case R.id.nav_setting :
                 Log.d("log: navigation", "nav_setting " + item.getItemId());
-                Intent intent_ems = new Intent(NewsAllActivity.this, ExampleSurveyActivity.class);
-                startActivity(intent_ems);
+                Intent intent_setting = new Intent(NewsAllActivity.this, SettingsActivity.class);
+                startActivity(intent_setting);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             case R.id.nav_progressing :
                 Log.d("log: navigation", "nav_progressing " + item.getItemId());
+                Intent intent_db = new Intent(NewsAllActivity.this, NotificationDbViewActivity.class);
+                startActivity(intent_db);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             case R.id.nav_history :
                 Log.d("log: navigation", "nav_history " + item.getItemId());
+                Intent intent_noti = new Intent(NewsAllActivity.this, NotificationSettingActivity.class);
+                startActivity(intent_noti);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             case R.id.nav_reschedule :
                 Log.d("log: navigation", "nav_reschedule " + item.getItemId());
+                Intent intent_base = new Intent(NewsAllActivity.this, BasicActivity.class);
+                startActivity(intent_base);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             case R.id.nav_contact :
                 Log.d("log: navigation", "nav_contact " + item.getItemId());
+                Intent intent_ems = new Intent(NewsAllActivity.this, ExampleSurveyActivity.class);
+                startActivity(intent_ems);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             default :
@@ -357,35 +382,5 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
         assert alarmManager != null;
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
     }
-//    public void displayView(int viewId) {
-//
-//        Fragment fragment = null;
-//        String title = getString(R.string.app_name);
-//
-//        switch (viewId) {
-//            case R.id.nav_setting:
-//                fragment = new NewsFragment();
-//                title  = "Setting";
-//                break;
-//            case R.id.nav_progressing:
-//                fragment = new EventsFragment();
-//                title = "Progressing";
-//                break;
-//        }
-//
-//        if (fragment != null) {
-//            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//            ft.replace(R.id.content_frame, fragment);
-//            ft.commit();
-//        }
-//
-//        // set the toolbar title
-//        if (getSupportActionBar() != null) {
-//            getSupportActionBar().setTitle(title);
-//        }
-//
-//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        drawer.closeDrawer(GravityCompat.START);
-//
-//    }
+
 }

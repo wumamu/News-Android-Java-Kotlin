@@ -28,7 +28,8 @@
         </activity>
         <receiver android:name = ".MyNotificationPublisherNews" />
 
-        <activity android:name=".SettingsActivity" />
+        <activity android:name=".SettingsActivity"
+            android:theme="@style/AppThemeActionBar"/>
         <activity android:name=".BasicActivity" />
         <activity android:name=".NewsModuleActivity" />
         <activity android:name=".NewsOneActivity" />

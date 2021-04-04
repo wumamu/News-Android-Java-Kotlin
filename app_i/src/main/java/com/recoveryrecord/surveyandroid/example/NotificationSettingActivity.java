@@ -133,7 +133,7 @@ public class NotificationSettingActivity extends Activity {
     }
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(NotificationSettingActivity.this, BasicActivity.class);
+        Intent intent = new Intent(NotificationSettingActivity.this, NewsAllActivity.class);
         startActivity(intent);
     }
 

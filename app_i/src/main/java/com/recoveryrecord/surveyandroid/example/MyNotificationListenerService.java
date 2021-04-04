@@ -1,5 +1,6 @@
 package com.recoveryrecord.surveyandroid.example;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -25,6 +26,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import androidx.annotation.RequiresApi;
 
@@ -121,9 +123,11 @@ public class MyNotificationListenerService extends NotificationListenerService {
 
         //add to sql
         Intent i_post = new Intent("com.recoveryrecord.surveyandroid.example.NOTIFICATION_LISTENER_EXAMPLE");
-        i_post.putExtra("notification_list", on_noti_post);
-        sendBroadcast(i_post);
-
+        if (is_target){
+            i_post.putExtra("notification_list", on_noti_post);
+            sendBroadcast(i_post);
+        }
+        //add to fire base
         boolean receieve_to_firestore = false;
         String document_name ="";
         switch (sbn.getPackageName()) {
@@ -147,6 +151,7 @@ public class MyNotificationListenerService extends NotificationListenerService {
         }
         boolean check_title = false, check_text = false;
         if(receieve_to_firestore){
+            Log.d("checking", "NLService");
             List<String> in_time_split = new ArrayList<String>(Arrays.asList(formatter.format(date).split(" ")));
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             Map<String, Object> receieve_notification = new HashMap<>();
@@ -155,26 +160,11 @@ public class MyNotificationListenerService extends NotificationListenerService {
             receieve_notification.put("noti_time", in_time_split.get(2));
             if (extras.containsKey("android.title")) {
                 if(extras.getString("android.title")!=null){
-                    receieve_notification.put("title",  extras.getString("android.title"));
+                    receieve_notification.put("title", Objects.requireNonNull(extras.getString("android.title")));
                     check_title = true;
                 } else {
                     receieve_notification.put("title",  "null");
                 }
-//                StringBuilder builder = new StringBuilder("Extras:\n");
-
-//                for (String key : extras.keySet()) { //extras is the Bundle containing info
-//                    Object value = extras.get(key); //get the current object
-////                    builder.append(key).append(": ").append(value).append("\n"); //add the key-value pair to the
-//                    receieve_notification.put(key, value);
-//                }
-//                Bundle extras = getIntent().getExtras();
-//                for (String key : extras.keySet()) {
-//                    Log.d(TAG, "Extra '" + key + "': '" + extras.getString(key) + "'");
-//                    if(extras.getString(key)!=null){
-//                        receieve_notification.put(key, extras.getString(key));
-//                    }
-//                }
-//                receieve_notification.put("bundle", builder.toString());
             } else {
                 receieve_notification.put("title",  "null");
             }
@@ -190,13 +180,19 @@ public class MyNotificationListenerService extends NotificationListenerService {
             }
             // if both is null then we don't need it
             if (check_title || check_text){
+                Log.d("checking", "13");
+                @SuppressLint("HardwareIds")
                 String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+//                db.collection("test_users")
+//                        .document(formatter.format(date))
+//                         .set(receieve_notification);
                 db.collection("test_users")
                         .document(device_id)
                         .collection(document_name)
                         .document(formatter.format(date))
                         .set(receieve_notification);
-                Toast.makeText(getApplicationContext(), "Post Inserted Successfully", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "firebase Inserted Successfully", Toast.LENGTH_SHORT).show();
+                Log.d("checking", "55");
             }
 
         }

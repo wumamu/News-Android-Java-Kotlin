@@ -1,6 +1,8 @@
 package com.recoveryrecord.surveyandroid.example;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +30,18 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
+        }
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                //do whatever
+                Intent intent_back = new Intent(SettingsActivity.this, NewsAllActivity.class);
+                startActivity(intent_back);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 }

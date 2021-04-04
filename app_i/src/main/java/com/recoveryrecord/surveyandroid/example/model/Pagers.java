@@ -103,7 +103,6 @@ public class Pagers extends RelativeLayout {
                         // after getting the data we are calling on success method
                         // and inside this method we are checking if the received
                         // query snapshot is empty or not.
-//                        Log.d("log: pager", "onSuccess");
                         if (!queryDocumentSnapshots.isEmpty()) {
                             // if the snapshot is not empty we are hiding our
                             // progress bar and adding our data in a list.
@@ -112,7 +111,6 @@ public class Pagers extends RelativeLayout {
                                 // after getting this list we are passing that
                                 // list to our object class.
                                 NewsModelOne dataModal = d.toObject(NewsModelOne.class);
-
                                 // and we will pass this object class
                                 // inside our arraylist which we have
                                 // created for recycler view.
