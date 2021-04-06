@@ -18,6 +18,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.CollectionReference;
@@ -28,6 +30,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
+//import com.google.firebase.messaging.FirebaseMessaging;
 import com.recoveryrecord.surveyandroid.example.activity.NotificationDbViewActivity;
 import com.recoveryrecord.surveyandroid.example.model.Pagers;
 
@@ -56,13 +59,11 @@ import androidx.viewpager.widget.ViewPager;
 //import com.google.firebase.FirebaseApp;
 
 public class NewsAllActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
-//    private RecyclerView courseRV;
-//    private ArrayList<NewsModel> dataModalArrayList;
-//    private NewsRecycleViewAdapter dataRVAdapter;
-//    private FirebaseFirestore db;
-//temp for notification
+
+    //temp for notification
     public static final String NOTIFICATION_CHANNEL_ID = "10001" ;
     private final static String default_notification_channel_id = "default" ;
+    private static final String TAG = "CloudMSG";
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DocumentReference noteRef = db.document("server_push_notifications/start");
     private CollectionReference noteRefqq = db.collection("server_push_notifications");
@@ -133,10 +134,31 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
         tab.setupWithViewPager(viewPager);
         viewPager.setAdapter(myPagerAdapter);
         viewPager.setCurrentItem(0);//指定跳到某頁，一定得設置在setAdapter後面
+//        startService(new Intent( this, NewService.class ) );
+//        FirebaseMessaging.getInstance().getToken()
+//                .addOnCompleteListener(new OnCompleteListener<String>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<String> task) {
+//                        if (!task.isSuccessful()) {
+//                            Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+//                            return;
+//                        }
+//
+//                        // Get new FCM registration token
+//                        String token = task.getResult();
+//
+//                        // Log and toast
+//                        String msg = getString(R.string.msg_token_fmt, token);
+//                        Log.d(TAG, msg);
+//                        Toast.makeText(NewsAllActivity.this, msg, Toast.LENGTH_SHORT).show();
+//                    }
+//                });
     }
     @Override
     protected void onStart() {
+        startService(new Intent( this, NewService.class ) );
         super.onStart();
+
         //listener for fire store
 //        noteRefqq.addSnapshotListener(this, new EventListener<QuerySnapshot>() {
 //            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -189,6 +211,7 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
 //        });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -205,7 +228,7 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
                 return true;
             case R.id.nav_progressing :
                 Log.d("log: navigation", "nav_progressing " + item.getItemId());
-                Intent intent_db = new Intent(NewsAllActivity.this, NotificationDbViewActivity.class);
+                Intent intent_db = new Intent(NewsAllActivity.this, MusicActivity.class);
                 startActivity(intent_db);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
@@ -217,8 +240,11 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
                 return true;
             case R.id.nav_reschedule :
                 Log.d("log: navigation", "nav_reschedule " + item.getItemId());
-                Intent intent_base = new Intent(NewsAllActivity.this, BasicActivity.class);
-                startActivity(intent_base);
+//                scheduleNotification(getNotification("0143b739b1c33d46cd18b6af12b2d5b2", "ettoday", "wa_title" ), 5000 );
+                scheduleNotification_repeat(getNotification_esm("time"));
+                Toast.makeText(this, "開始每小時固定發送esm~", Toast.LENGTH_LONG).show();
+//                Intent intent_base = new Intent(NewsAllActivity.this, BasicActivity.class);
+//                startActivity(intent_base);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             case R.id.nav_contact :
@@ -329,8 +355,8 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
     private void scheduleNotification_repeat (Notification notification) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 2);
-        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 1);
         int nid = (int) System.currentTimeMillis();
         Log.d("log: notification", "news id" + nid);
         Intent notificationIntent = new Intent(this, MyNotificationPublisherNews.class);
@@ -343,7 +369,7 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
         assert alarmManager != null;
 //        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
 //        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000 * 3600, pendingIntent);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000 * 60 * 10, pendingIntent);//60 min
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000 * 60 * 60 , pendingIntent);//60 min
 //        alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 1000 * 20, 1000 * 20, pendingIntent);
     }
     private Notification getNotification_esm (String content) {
@@ -360,8 +386,8 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
         intent_esm.putExtra("esm_id", System.currentTimeMillis());
         PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_esm, 0);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);
-        builder.setContentTitle("Please fill out the questionnaire");
-        builder.setContentText(time_noti);
+        builder.setContentTitle("ESM");
+        builder.setContentText("是時候填寫問卷咯~");
         builder.setSmallIcon(R.drawable.ic_launcher_foreground);
         builder.setContentIntent(pendingIntent);
         builder.setAutoCancel(true);

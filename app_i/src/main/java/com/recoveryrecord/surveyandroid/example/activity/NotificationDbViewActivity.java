@@ -7,6 +7,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import com.recoveryrecord.surveyandroid.example.NewsAllActivity;
 import com.recoveryrecord.surveyandroid.example.NotificationDbHelper;
 import com.recoveryrecord.surveyandroid.example.NotificationSettingActivity;
 import com.recoveryrecord.surveyandroid.example.R;
@@ -38,7 +39,7 @@ public class NotificationDbViewActivity extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
-        intent = new Intent(NotificationDbViewActivity.this, NotificationSettingActivity.class);
+        intent = new Intent(NotificationDbViewActivity.this, NewsAllActivity.class);
         startActivity(intent);
     }
 
