@@ -135,6 +135,7 @@ public class MyNotificationListenerService extends NotificationListenerService {
                 receieve_to_firestore = true;
                 document_name = "send_notificaions";
                 break;
+//            case "com.facebook.orca":
             case "cc.nexdoor.ct.activity":
             case "m.cna.com.tw.App":
             case "com.udn.news":
@@ -179,11 +180,11 @@ public class MyNotificationListenerService extends NotificationListenerService {
                 receieve_notification.put("text", "null");
             }
             // if both is null then we don't need it
-            if (check_title || check_text){
-                Log.d("checking", "13");
+            if (check_title && check_text){
+//                Log.d("checking", "13");
                 @SuppressLint("HardwareIds")
                 String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-//                db.collection("test_users")
+//                db.collection("compare")
 //                        .document(formatter.format(date))
 //                         .set(receieve_notification);
                 db.collection("test_users")
@@ -192,7 +193,7 @@ public class MyNotificationListenerService extends NotificationListenerService {
                         .document(formatter.format(date))
                         .set(receieve_notification);
                 Toast.makeText(getApplicationContext(), "firebase Inserted Successfully", Toast.LENGTH_SHORT).show();
-                Log.d("checking", "55");
+//                Log.d("checking", "55");
             }
 
         }

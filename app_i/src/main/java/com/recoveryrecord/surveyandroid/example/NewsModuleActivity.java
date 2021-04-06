@@ -98,7 +98,7 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
     ReadingBehavior myReadingBehavior = new ReadingBehavior();//sqlite
     ReadingBehaviorDbHelper dbHandler;
 
-    private Toolbar toolbar;
+//    private Toolbar toolbar;
 
     boolean self_trigger = false;
 
@@ -316,8 +316,8 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
 
 //        getSupportActionBar().hide();
         setContentView(R.layout.activity_news_module);
-        toolbar = (Toolbar) findViewById(R.id.main_toolbar);
-        setSupportActionBar(toolbar);
+//        toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+//        setSupportActionBar(toolbar);
         //open database ############################################################################
         dbHandler = new ReadingBehaviorDbHelper(NewsModuleActivity.this);
         //check trigger from #######################################################################
