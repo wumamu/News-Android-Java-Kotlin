@@ -33,7 +33,12 @@
         <activity android:name=".SettingsActivity"
             android:theme="@style/AppThemeActionBar"/>
         <activity android:name=".BasicActivity"
-            android:theme="@style/AppThemeActionBar"/>
+            android:theme="@style/AppThemeActionBar">
+            <intent-filter>
+                <action android:name="com.recoveryrecord.surveyandroid.example.BasicActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name=".NewsModuleActivity"
             android:theme="@style/AppThemeActionBar"/>
         <activity android:name=".NewsOneActivity" />

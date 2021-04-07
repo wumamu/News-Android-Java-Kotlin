@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import com.google.firebase.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -94,39 +95,39 @@ public class MyNotificationListenerService extends NotificationListenerService {
 //        Notification notification = sbn.getNotification();
 //        PendingIntent contentIntent = notification.contentIntent;
 
-
-        String on_noti_post = "";
+//        no need to add to sql
+//        String on_noti_post = "";
         //keep length 6
-        on_noti_post = "hello" + "\n";
-        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-        Date date = new Date(sbn.getPostTime());
-        on_noti_post = on_noti_post + formatter.format(date) + "\n";
-        on_noti_post = on_noti_post + sbn.getPackageName() + "\n";
-        on_noti_post = on_noti_post + "tickertext: " + sbn.getNotification().tickerText + "\n";
-        Bundle extras = sbn.getNotification().extras;
-        if (extras.containsKey("android.title")) {
-            on_noti_post = on_noti_post + "title: " + extras.getString("android.title") + "\n";
-        } else {
-            on_noti_post = on_noti_post + "title: null\n";
-        }
-        if (extras.containsKey("android.text")) {
-            if (extras.getCharSequence("android.text") != null) {
-                String text = extras.getCharSequence("android.text").toString();
-//                            Log.i(TAG, "------------------------- in onNotificationPosted(), Bundle.text != NULL, so here it is = " + text);
-                on_noti_post = on_noti_post + "text: " + text + "\n";
-            } else {
-                on_noti_post = on_noti_post + "text: null\n";
-            }
-        } else {
-            on_noti_post = on_noti_post + "text: null\n";
-        }
-
-        //add to sql
-        Intent i_post = new Intent("com.recoveryrecord.surveyandroid.example.NOTIFICATION_LISTENER_EXAMPLE");
-        if (is_target){
-            i_post.putExtra("notification_list", on_noti_post);
-            sendBroadcast(i_post);
-        }
+//        on_noti_post = "hello" + "\n";
+//        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+//        Date date = new Date(sbn.getPostTime());
+//        on_noti_post = on_noti_post + formatter.format(date) + "\n";
+//        on_noti_post = on_noti_post + sbn.getPackageName() + "\n";
+//        on_noti_post = on_noti_post + "tickertext: " + sbn.getNotification().tickerText + "\n";
+//        Bundle extras = sbn.getNotification().extras;
+//        if (extras.containsKey("android.title")) {
+//            on_noti_post = on_noti_post + "title: " + extras.getString("android.title") + "\n";
+//        } else {
+//            on_noti_post = on_noti_post + "title: null\n";
+//        }
+//        if (extras.containsKey("android.text")) {
+//            if (extras.getCharSequence("android.text") != null) {
+//                String text = extras.getCharSequence("android.text").toString();
+////                            Log.i(TAG, "------------------------- in onNotificationPosted(), Bundle.text != NULL, so here it is = " + text);
+//                on_noti_post = on_noti_post + "text: " + text + "\n";
+//            } else {
+//                on_noti_post = on_noti_post + "text: null\n";
+//            }
+//        } else {
+//            on_noti_post = on_noti_post + "text: null\n";
+//        }
+//
+//        //add to sql
+//        Intent i_post = new Intent("com.recoveryrecord.surveyandroid.example.NOTIFICATION_LISTENER_EXAMPLE");
+//        if (is_target){
+//            i_post.putExtra("notification_list", on_noti_post);
+//            sendBroadcast(i_post);
+//        }
         //add to fire base
         boolean receieve_to_firestore = false;
         String document_name ="";
@@ -153,12 +154,17 @@ public class MyNotificationListenerService extends NotificationListenerService {
         boolean check_title = false, check_text = false;
         if(receieve_to_firestore){
             Log.d("checking", "NLService");
+            Bundle extras = sbn.getNotification().extras;
+            SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+            Date date = new Date(sbn.getPostTime());
             List<String> in_time_split = new ArrayList<String>(Arrays.asList(formatter.format(date).split(" ")));
             FirebaseFirestore db = FirebaseFirestore.getInstance();
+            Timestamp mytimestamp = Timestamp.now();//new Timestamp(System.currentTimeMillis());
             Map<String, Object> receieve_notification = new HashMap<>();
             receieve_notification.put("media", sbn.getPackageName());
             receieve_notification.put("noti_date", in_time_split.get(0));
             receieve_notification.put("noti_time", in_time_split.get(2));
+            receieve_notification.put("noti_timestamp", mytimestamp);
             if (extras.containsKey("android.title")) {
                 if(extras.getString("android.title")!=null){
                     receieve_notification.put("title", Objects.requireNonNull(extras.getString("android.title")));
@@ -184,9 +190,12 @@ public class MyNotificationListenerService extends NotificationListenerService {
 //                Log.d("checking", "13");
                 @SuppressLint("HardwareIds")
                 String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-//                db.collection("compare")
-//                        .document(formatter.format(date))
-//                         .set(receieve_notification);
+                if (document_name.equals("receieve_notificaions")){
+                    db.collection("compare")
+                            .document(formatter.format(date))
+                            .set(receieve_notification);
+                    Toast.makeText(getApplicationContext(), "compare Inserted Successfully", Toast.LENGTH_SHORT).show();
+                }
                 db.collection("test_users")
                         .document(device_id)
                         .collection(document_name)

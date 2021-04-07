@@ -14,7 +14,7 @@ public class MusicActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
-        setContentView( R.layout.activity_music );
+        setContentView( R.layout.activity_music);
 
         // assigning ID of startButton
         // to the object start
@@ -27,8 +27,8 @@ public class MusicActivity extends AppCompatActivity implements View.OnClickList
         // declaring listeners for the
         // buttons to make them respond
         // correctly according to the process
-        start.setOnClickListener( this );
-        stop.setOnClickListener( this );
+        start.setOnClickListener(this);
+        stop.setOnClickListener(this);
 //        startService(new Intent( this, NewService.class ) );
     }
 

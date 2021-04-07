@@ -14,6 +14,8 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
@@ -24,6 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firestore.v1.WriteResult;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -31,6 +34,7 @@ import java.util.Date;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadLocalRandom;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
@@ -43,7 +47,7 @@ public class NewService extends Service {
     private MediaPlayer player;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final DocumentReference noteRef = db.document("server_push_notifications/start");
-    private CollectionReference noteRefqq = db.collection("server_push_notifications");
+    private CollectionReference noteRefqq = db.collection("compare_result");
 
 //    private FirebaseFirestore firestore;
 //    @Override
@@ -92,11 +96,26 @@ public class NewService extends Service {
                     switch (dc.getType()) {
                         case ADDED:
                             Log.d("onstart", "New doc: " + dc.getDocument().getData());
-
-//                            String news_id = dc.getDocument().getString("id");
-//                            String media  = dc.getDocument().getString("media");
-//                            String title = dc.getDocument().getString("news_title");
-//                            scheduleNotification(getNotification(news_id, media, title), 1000 );
+                            String news_id = dc.getDocument().getString("id");
+                            String media  = dc.getDocument().getString("media");
+                            String title = dc.getDocument().getString("news_title");
+                            String doc_id = dc.getDocument().getId();
+                            scheduleNotification(getNotification(news_id, media, title), 1000 );
+                            Log.d("onstart", "doc id" + doc_id);
+                            db.collection("compare_result").document(doc_id)
+                                    .delete()
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.d("onstart", "DocumentSnapshot successfully deleted!");
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.d("onstart", "Error deleting document", e);
+                                        }
+                                    });
 //                            scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
                             break;
                         case MODIFIED:

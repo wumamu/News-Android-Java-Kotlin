@@ -12,7 +12,12 @@
     </PreferenceCategory>
 
     <PreferenceCategory app:title="偏好">
-
+        <SwitchPreferenceCompat
+            app:key="news_notification"
+            app:defaultValue="false"
+            app:summaryOff="記得開喔"
+            app:summaryOn="不要關掉喔"
+            app:title="新聞通知推播" />
         <MultiSelectListPreference
             app:key="media_select"
             app:title="推播媒體列"
@@ -21,11 +26,19 @@
             app:entryValues="@array/media_select_values"
             app:persistent="true"/>
         <Preference
+            app:key="media_order"
+            app:fragment="com.recoveryrecord.surveyandroid.example.DemoFragment"
+            app:title="首頁媒體排序" />
+        <Preference
             app:title="open url">
             <intent
                 android:action="android.intent.action.VIEW"
                 android:data="http://codepath.com/" />
         </Preference>
+        <PreferenceScreen
+            android:title="intent">
+            <intent android:action="com.recoveryrecord.surveyandroid.example.BasicActivity"/>
+        </PreferenceScreen>
 <!--        <Preference-->
 <!--            app:fragment="com.example.SyncFragment"-->
 <!--            app:title="首頁媒體排序"/>-->
@@ -38,9 +51,7 @@
 <!--            app:title="@string/reply_title"-->
 <!--            app:useSimpleSummaryProvider="true" />-->
 
-<!--        <SwitchPreferenceCompat-->
-<!--            app:key="sync"-->
-<!--            app:title="@string/sync_title" />-->
+
 
 <!--        <SwitchPreferenceCompat-->
 <!--            app:dependency="sync"-->

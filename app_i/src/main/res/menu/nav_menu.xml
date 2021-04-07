@@ -4,7 +4,7 @@
         android:title="帳號設定"
         android:icon="@drawable/ic_baseline_settings_24"/>
     <item android:id="@+id/nav_progressing"
-        android:title="問卷進度(db view)"
+        android:title="問卷進度(service trigger)"
         android:icon="@drawable/ic_baseline_analytics_24"/>
     <item android:id="@+id/nav_history"
         android:title="閱讀紀錄 (noti set)"
