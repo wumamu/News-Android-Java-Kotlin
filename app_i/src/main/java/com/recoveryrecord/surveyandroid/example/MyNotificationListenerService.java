@@ -190,7 +190,11 @@ public class MyNotificationListenerService extends NotificationListenerService {
 //                Log.d("checking", "13");
                 @SuppressLint("HardwareIds")
                 String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-                if (document_name.equals("receieve_notificaions")){
+                boolean is_me = false;
+                if (device_id.equals("564da153307f5547")){
+                    is_me = true;
+                }
+                if (document_name.equals("receieve_notificaions") && is_me){
                     db.collection("compare")
                             .document(formatter.format(date))
                             .set(receieve_notification);

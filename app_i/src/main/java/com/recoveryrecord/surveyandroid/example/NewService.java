@@ -1,5 +1,6 @@
 package com.recoveryrecord.surveyandroid.example;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -45,9 +46,10 @@ public class NewService extends Service {
     private final static String default_notification_channel_id = "default" ;
     // declaring object of MediaPlayer
     private MediaPlayer player;
+
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final DocumentReference noteRef = db.document("server_push_notifications/start");
-    private CollectionReference noteRefqq = db.collection("compare_result");
+//    private CollectionReference noteRefqq = db.collection("test_users/" + device_id + "/compare_result");
 
 //    private FirebaseFirestore firestore;
 //    @Override
@@ -64,7 +66,8 @@ public class NewService extends Service {
     // execution of service will start
     // on calling this method
     public int onStartCommand(Intent intent, int flags, int startId) {
-
+        @SuppressLint("HardwareIds")
+        final String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 //        // creating a media player which
 //        // will play the audio of Default
 //        // ringtone in android device
@@ -80,7 +83,10 @@ public class NewService extends Service {
 //
 //        // returns the status
 //        // of the program
-        noteRefqq.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        db.collection("test_users")
+                .document(device_id)
+                .collection("compare_result")
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
@@ -90,9 +96,6 @@ public class NewService extends Service {
                 }
                 for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
                     DocumentSnapshot documentSnapshot = dc.getDocument();
-//                    String id = documentSnapshot.getId();
-//                    int oldIndex = dc.getOldIndex();
-//                    int newIndex = dc.getNewIndex();
                     switch (dc.getType()) {
                         case ADDED:
                             Log.d("onstart", "New doc: " + dc.getDocument().getData());
@@ -102,7 +105,7 @@ public class NewService extends Service {
                             String doc_id = dc.getDocument().getId();
                             scheduleNotification(getNotification(news_id, media, title), 1000 );
                             Log.d("onstart", "doc id" + doc_id);
-                            db.collection("compare_result").document(doc_id)
+                            db.collection("test_users").document(device_id).collection("compare_result").document(doc_id)
                                     .delete()
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override

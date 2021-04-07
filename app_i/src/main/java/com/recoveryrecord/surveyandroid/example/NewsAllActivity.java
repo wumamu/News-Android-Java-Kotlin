@@ -197,10 +197,6 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
     @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-//        displayView(item.getItemId());
-//        int selectedItemId = item.getItemId();
-//        Log.d("log: navigation", "here " + item.getItemId());
-//        Toast.makeText(this, " " + stringselectedItemId, Toast.LENGTH_SHORT).show();
         switch (item.getItemId()) {
             case R.id.nav_setting :
                 Log.d("log: navigation", "nav_setting " + item.getItemId());
@@ -210,13 +206,13 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
                 return true;
             case R.id.nav_progressing :
                 Log.d("log: navigation", "nav_progressing " + item.getItemId());
-                Intent intent_db = new Intent(NewsAllActivity.this, MusicActivity.class);
+                Intent intent_db = new Intent(NewsAllActivity.this, SurveyProgressActivity.class);
                 startActivity(intent_db);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             case R.id.nav_history :
                 Log.d("log: navigation", "nav_history " + item.getItemId());
-                Intent intent_noti = new Intent(NewsAllActivity.this, NotificationSettingActivity.class);
+                Intent intent_noti = new Intent(NewsAllActivity.this, ReadHistoryActivity.class);
                 startActivity(intent_noti);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;

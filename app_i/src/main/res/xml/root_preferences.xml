@@ -11,34 +11,51 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="偏好">
+    <PreferenceCategory app:title="基礎設置">
+        <Preference
+            app:title="通知存取權"
+            app:summary="進入系統通知頁面打開">
+            <intent android:action="android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"/>
+        </Preference>
         <SwitchPreferenceCompat
             app:key="news_notification"
             app:defaultValue="false"
             app:summaryOff="記得開喔"
             app:summaryOn="不要關掉喔"
             app:title="新聞通知推播" />
+
+    <PreferenceCategory app:title="偏好">
         <MultiSelectListPreference
             app:key="media_select"
-            app:title="推播媒體列"
+            app:title="推播媒體選擇"
             app:defaultValue="@array/empty_array"
             app:entries="@array/media_select_entries"
             app:entryValues="@array/media_select_values"
             app:persistent="true"/>
-        <Preference
-            app:key="media_order"
-            app:fragment="com.recoveryrecord.surveyandroid.example.DemoFragment"
-            app:title="首頁媒體排序" />
-        <Preference
-            app:title="open url">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="http://codepath.com/" />
-        </Preference>
+<!--        <Preference-->
+<!--            app:key="media_order"-->
+<!--            app:fragment="com.recoveryrecord.surveyandroid.example.DemoFragment"-->
+<!--            app:title="首頁媒體排序" />-->
         <PreferenceScreen
-            android:title="intent">
-            <intent android:action="com.recoveryrecord.surveyandroid.example.BasicActivity"/>
+            android:title="首頁媒體排序">
+            <intent android:action="com.recoveryrecord.surveyandroid.example.MediaRankActivity"/>
         </PreferenceScreen>
+        <PreferenceScreen
+            android:title="通知時間調整">
+            <intent android:action="com.recoveryrecord.surveyandroid.example.NotificationRangeActivity"/>
+        </PreferenceScreen>
+        <Preference
+            android:summary="to be continue"
+            android:title="聯絡我們"/>
+        <!--        <Preference-->
+        <!--            app:title="open url">-->
+        <!--            <intent-->
+        <!--                android:action="android.intent.action.VIEW"-->
+        <!--                android:data="http://codepath.com/" />-->
+        <!--        </Preference>-->
+
+
+    </PreferenceCategory>
 <!--        <Preference-->
 <!--            app:fragment="com.example.SyncFragment"-->
 <!--            app:title="首頁媒體排序"/>-->

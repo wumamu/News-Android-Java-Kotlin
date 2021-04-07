@@ -39,6 +39,34 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity android:name=".SurveyProgressActivity"
+            android:theme="@style/AppThemeActionBar">
+            <intent-filter>
+                <action android:name="com.recoveryrecord.surveyandroid.example.SurveyProgressActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ReadHistoryActivity"
+            android:theme="@style/AppThemeActionBar">
+            <intent-filter>
+                <action android:name="com.recoveryrecord.surveyandroid.example.ReadHistoryActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".NotificationRangeActivity"
+            android:theme="@style/AppThemeActionBar">
+            <intent-filter>
+                <action android:name="com.recoveryrecord.surveyandroid.example.NotificationRangeActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".MediaRankActivity"
+            android:theme="@style/AppThemeActionBar">
+            <intent-filter>
+                <action android:name="com.recoveryrecord.surveyandroid.example.MediaRankActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name=".NewsModuleActivity"
             android:theme="@style/AppThemeActionBar"/>
         <activity android:name=".NewsOneActivity" />
