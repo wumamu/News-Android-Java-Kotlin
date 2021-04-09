@@ -212,7 +212,7 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
                 return true;
             case R.id.nav_history :
                 Log.d("log: navigation", "nav_history " + item.getItemId());
-                Intent intent_noti = new Intent(NewsAllActivity.this, ReadHistoryActivity.class);
+                Intent intent_noti = new Intent(NewsAllActivity.this, MainActivity.class);
                 startActivity(intent_noti);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;

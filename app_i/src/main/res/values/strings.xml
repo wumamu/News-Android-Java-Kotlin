@@ -57,4 +57,14 @@
     <string name="heading">Services In Android</string>
     <string name="startButtonText">Start the Service</string>
     <string name="stopButtonText">Stop the Service</string>
+
+    <!-- activity recog-->
+    <string name="action_settings">Settings</string>
+
+    <string name="title_activity_permission_rational">PermissionRationalActivity</string>
+    <string name="main_message_activity_permission_rational">Track activity changes by letting us read your phone\'s activity transitions.</string>
+    <string name="details_message_activity_permission_rational">This app\'s experience requires access to your phone\'s activity transitions to display changes from walking to standing still.</string>
+    <string name="no_thanks_activity_permission_rational">No Thanks</string>
+    <string name="continue_activity_permission_rational">Continue</string>
+    <string name="enable_disable_button_activity_recognition">Enable/Disable Activity Recognition</string>
 </resources>

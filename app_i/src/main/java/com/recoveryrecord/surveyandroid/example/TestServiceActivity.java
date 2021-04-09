@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class MusicActivity extends AppCompatActivity implements View.OnClickListener {
+public class TestServiceActivity extends AppCompatActivity implements View.OnClickListener {
 
     // declaring objects of Button class
     private Button start, stop;
@@ -39,7 +39,7 @@ public class MusicActivity extends AppCompatActivity implements View.OnClickList
         if(view == start){
 
             // starting the service
-            startService(new Intent( this, NewService.class ) );
+            startService(new Intent( this, NewsService.class ) );
         }
 
         // process to be performed
@@ -47,7 +47,7 @@ public class MusicActivity extends AppCompatActivity implements View.OnClickList
         else if (view == stop){
 
             // stopping the service
-            stopService(new Intent( this, NewService.class ) );
+            stopService(new Intent( this, NewsService.class ) );
 
         }
     }

@@ -13,26 +13,19 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firestore.v1.WriteResult;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadLocalRandom;
 
 import androidx.annotation.NonNull;
@@ -40,7 +33,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
-public class NewService extends Service {
+public class NewsService extends Service {
     //temp for notification
     public static final String NOTIFICATION_CHANNEL_ID = "10001" ;
     private final static String default_notification_channel_id = "default" ;
@@ -191,7 +184,7 @@ public class NewService extends Service {
         int nid = (int) System.currentTimeMillis();
         Log.d("log: notification", "news id" + nid);
         Intent intent_news = new Intent();
-        intent_news.setClass(NewService.this, NewsModuleActivity.class);
+        intent_news.setClass(NewsService.this, NewsModuleActivity.class);
         intent_news.putExtra("trigger_from", "Notification");
         intent_news.putExtra("news_id", news_id);
         intent_news.putExtra("media", media);
@@ -216,7 +209,7 @@ public class NewService extends Service {
         int nid = (int) System.currentTimeMillis();
         Log.d("log: notification", "esm id" + nid);
         Intent intent_esm = new Intent();
-        intent_esm.setClass(NewService.this, ExampleSurveyActivity.class);
+        intent_esm.setClass(NewsService.this, ExampleSurveyActivity.class);
         intent_esm.putExtra("trigger_from", "Notification");
         intent_esm.putExtra("esm_id", System.currentTimeMillis());
         PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_esm, 0);
