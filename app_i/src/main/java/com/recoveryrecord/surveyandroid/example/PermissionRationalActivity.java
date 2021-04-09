@@ -57,7 +57,7 @@ public class PermissionRationalActivity extends AppCompatActivity implements
     }
 
     @SuppressLint("LongLogTag")
-    @RequiresApi(api = 29)
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     public void onClickApprovePermissionRequest(View view) {
         Log.d(TAG, "onClickApprovePermissionRequest()");
 
