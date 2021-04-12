@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,11 +27,13 @@ public class MediaRecycleViewAdapter extends RecyclerView.Adapter<MediaRecycleVi
     private ArrayList<MediaModel> dataModelArrayList;
     private Context context;
     private ItemTouchHelper mTouchHelper;
+    private OnCustomerListChangedListener mListChangedListener;
 
     // constructor class for our Adapter
     public MediaRecycleViewAdapter(ArrayList<MediaModel> dataModalArrayList, Context context) {
         this.dataModelArrayList = dataModalArrayList;
         this.context = context;
+//        mListChangedListener = listChangedListener;
     }
 
     @NonNull
@@ -78,11 +81,11 @@ public class MediaRecycleViewAdapter extends RecyclerView.Adapter<MediaRecycleVi
                 dr = context.getResources().getDrawable(R.drawable.storm);
 //                holder.media_icon.setImageResource(R.drawable.storm);
                 break;
-            case "聯合(udn)":
+            case "聯合":
                 dr = context.getResources().getDrawable(R.drawable.udn);
 //                holder.media_icon.setImageResource(R.drawable.swap_vert);
                 break;
-            case "ETTODAY":
+            case "ettoday":
                 dr = context.getResources().getDrawable(R.drawable.ettoday);
 //                holder.media_icon.setImageResource(R.drawable.swap_vert);
                 break;
@@ -95,11 +98,6 @@ public class MediaRecycleViewAdapter extends RecyclerView.Adapter<MediaRecycleVi
         Drawable d = new BitmapDrawable(context.getResources(), Bitmap.createScaledBitmap(bitmap, 36, 36, true));
         // Set your new, scaled drawable "d"
         holder.media_icon.setImageDrawable(d);
-//        int imageResource = getResources().getIdentifier(uri, null, getPackageName());
-//
-//        imageview= (ImageView)findViewById(R.id.imageView);
-//        Drawable res = getResources().getDrawable(imageResource);
-//        imageView.setImageDrawable(res);
     }
 
     @Override
@@ -108,30 +106,25 @@ public class MediaRecycleViewAdapter extends RecyclerView.Adapter<MediaRecycleVi
         return dataModelArrayList.size();
     }
 
+
     @Override
     public void onItemMove(int fromPosition, int toPosition) {
         MediaModel fromNote = dataModelArrayList.get(fromPosition);
         dataModelArrayList.remove(fromNote);
         dataModelArrayList.add(toPosition, fromNote);
         notifyItemMoved(fromPosition, toPosition);
+        Log.d("onItemMove", "1" + String.valueOf(fromPosition));
+        Log.d("onItemMove", "2" + String.valueOf(toPosition));
+        Log.d("onItemMove", "23" + fromNote.getMedia());
     }
 
     @Override
-    public void onItemSwiped(int position) {
-
-    }
+    public void onItemSwiped(int position) { }
 
     public void setTouchHelper(ItemTouchHelper touchHelper){
         this.mTouchHelper = touchHelper;
     }
 
-//    @Override
-//    public void onItemMove(int fromPosition, int toPosition) {
-//        MediaModel fromNote = dataModelArrayList.get(fromPosition);
-//        dataModelArrayList.remove(fromNote);
-//        dataModelArrayList.add(toPosition, fromNote);
-//        notifyItemMoved(fromPosition, toPosition);
-//    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         // creating variables for our
@@ -142,32 +135,8 @@ public class MediaRecycleViewAdapter extends RecyclerView.Adapter<MediaRecycleVi
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            // initializing the views of recycler views.
-//            newsTitle = itemView.findViewById(R.id.text_view_title);
-//            newsPubTime = itemView.findViewById(R.id.text_view_pubtime);
             newsMedia = itemView.findViewById(R.id.text_view_media_rank);
             media_icon = itemView.findViewById(R.id.mediaiconView);
-//            courseIV = itemView.findViewById(R.id.idIVimage);
-//            itemView.setCardBackgroundColor(Color.parseColor("#e0efff"));
-            // 點擊項目時
-//            itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-////                    Toast.makeText(view.getContext(), "click " +getAdapterPosition(),Toast.LENGTH_SHORT).show();
-//                    NewsModel model = dataModelArrayList.get(getAdapterPosition());
-//                    Intent intent = new Intent();
-//                    intent.setClass(context, NewsModuleActivity.class);
-//                    intent.putExtra("trigger_from", "self_trigger");
-//                    intent.putExtra("news_id", model.getId());
-//                    intent.putExtra("media", model.getMedia());
-//
-//                    Log.d("log: onClick", model.getTitle());
-////                    Toast.makeText(view.getContext(), "click " +model.getTitle(),Toast.LENGTH_SHORT).show();
-//                    context.startActivity(intent);
-//                    //MainActivity.this.finish();
-//                }
-//            });
-
         }
     }
 }

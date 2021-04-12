@@ -39,7 +39,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -75,6 +77,19 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
 
+
+    private static final HashMap<String, String> media_hash = new HashMap<String, String>();
+    static{
+        media_hash.put("中時", "chinatimes");
+        media_hash.put("中央社", "cna");
+        media_hash.put("華視", "cts");
+        media_hash.put("東森", "ebc");
+        media_hash.put("自由時報", "ltn");
+        media_hash.put("風傳媒", "storm");
+        media_hash.put("聯合", "udn");
+        media_hash.put("ettoday", "ettoday");
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,28 +106,7 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
 //            String[] selected = selections.toArray(new String[] {});
             Log.d("myprefer", Arrays.toString(new Set[]{selections}));
         }
-        //notification media_rank
-        Set<String> ranking = sharedPrefs.getStringSet("media_rank", null);
-        if (ranking==null){
-            Set<String> set = new HashSet<String>();
-            set.add("中時");
-            set.add("中央社");
-            set.add("華視");
-            set.add("東森");
-            set.add("自由時報");
-            set.add("風傳媒");
-            set.add("聯合");
-            set.add("ettoday");
-            SharedPreferences.Editor edit = sharedPrefs.edit();
-            edit.clear();
-            edit.putStringSet("media_rank", set);
-            edit.apply();
-            Toast.makeText(this, "趕快去設定調整首頁app排序八~", Toast.LENGTH_LONG).show();
-        } else {
-//            String[] ranking_result = ranking.toArray(new String[] {});
-            Log.d("myprefer", Arrays.toString(new Set[]{ranking}));
-        }
-
+        //some initial
         //FirebaseApp.initializeApp();
         setContentView(R.layout.activity_all_news);
         //navi
@@ -134,26 +128,55 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
         actionBarDrawerToggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-
         setTitle("即時新聞");
 
         ArrayList<View> mPages = new ArrayList<>();
-//        for (int i=0;i<5;i++) {
-//            mPages.add(new Pagers(this, (i + 1)));
-//        }
-        int i = 0;
-        mPages.add(new Pagers(this, (i + 1), "中時", "chinatimes"));
-        mPages.add(new Pagers(this, (i + 1), "中央社", "cna"));
-        mPages.add(new Pagers(this, (i + 1), "華視", "cts"));//cts
-        mPages.add(new Pagers(this, (i + 1), "東森", "ebc"));
-        mPages.add(new Pagers(this, (i + 1), "自由時報", "ltn"));
-        mPages.add(new Pagers(this, (i + 1), "風傳媒", "storm"));
-        mPages.add(new Pagers(this, (i + 1), "聯合", "udn"));
-        mPages.add(new Pagers(this, (i + 1), "ettoday", "ettoday"));
+        //notification media_rank
+        Set<String> ranking = sharedPrefs.getStringSet("media_rank", null);
+        if (ranking==null){
+            Set<String> set = new HashSet<String>();
+            set.add("中時 1");
+            set.add("中央社 2");
+            set.add("華視 3");
+            set.add("東森 4");
+            set.add("自由時報 5");
+            set.add("風傳媒 6");
+            set.add("聯合 7");
+            set.add("ettoday 8");
+            SharedPreferences.Editor edit = sharedPrefs.edit();
+            edit.clear();
+            edit.putStringSet("media_rank", set);
+            edit.apply();
+            Toast.makeText(this, "趕快去設定調整首頁app排序八~", Toast.LENGTH_LONG).show();
+            mPages.add(new Pagers(this, (1), "中時", "chinatimes"));
+            mPages.add(new Pagers(this, (1), "中央社", "cna"));
+            mPages.add(new Pagers(this, (1), "華視", "cts"));//cts
+            mPages.add(new Pagers(this, (1), "東森", "ebc"));
+            mPages.add(new Pagers(this, (1), "自由時報", "ltn"));
+            mPages.add(new Pagers(this, (1), "風傳媒", "storm"));
+            mPages.add(new Pagers(this, (1), "聯合", "udn"));
+            mPages.add(new Pagers(this, (1), "ettoday", "ettoday"));
+        } else {
+//            String[] ranking_result = ranking.toArray(new String[] {});
+            Log.d("myprefer", Arrays.toString(new Set[]{ranking}));
+            for (int i = 1; i<=8; i++){
+                for (String r : ranking){
+                    List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+//            Log.d("myprefer", out.get(0));
+                    if(Integer.parseInt(out.get(1))==i){
+//                    Log.d("myprefer", out.get(0));
+//                    Log.d("myprefer", String.valueOf(Integer.parseInt(out.get(1))));
+//                i++;
+                        mPages.add(new Pagers(this, (1), out.get(0), media_hash.get(out.get(0))));
+                        continue;
+                    }
+                }
+            }
+        }
 
         ViewPager viewPager = findViewById(R.id.mViewPager);
         TabLayout tab = findViewById(R.id.tab);
-        MyPagerAdapter myPagerAdapter = new MyPagerAdapter(mPages);
+        MyPagerAdapter myPagerAdapter = new MyPagerAdapter(mPages, this);
 
         tab.setupWithViewPager(viewPager);
         viewPager.setAdapter(myPagerAdapter);
