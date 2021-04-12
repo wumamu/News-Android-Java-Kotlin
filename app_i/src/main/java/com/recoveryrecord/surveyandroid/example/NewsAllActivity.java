@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -82,14 +83,37 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
 //        SharedPreferences.Editor editor = sharedPrefs.edit();
 //        editor.clear();
 //        editor.commit();
+        //notification media_select
         Set<String> selections = sharedPrefs.getStringSet("media_select", null);
         if (selections==null){
             Toast.makeText(this, "趕快去設定選擇想要的媒體吧~", Toast.LENGTH_LONG).show();
         } else {
-            String[] selected = selections.toArray(new String[] {});
+//            String[] selected = selections.toArray(new String[] {});
             Log.d("myprefer", Arrays.toString(new Set[]{selections}));
         }
-//        FirebaseApp.initializeApp();
+        //notification media_rank
+        Set<String> ranking = sharedPrefs.getStringSet("media_rank", null);
+        if (ranking==null){
+            Set<String> set = new HashSet<String>();
+            set.add("中時");
+            set.add("中央社");
+            set.add("華視");
+            set.add("東森");
+            set.add("自由時報");
+            set.add("風傳媒");
+            set.add("聯合");
+            set.add("ettoday");
+            SharedPreferences.Editor edit = sharedPrefs.edit();
+            edit.clear();
+            edit.putStringSet("media_rank", set);
+            edit.apply();
+            Toast.makeText(this, "趕快去設定調整首頁app排序八~", Toast.LENGTH_LONG).show();
+        } else {
+//            String[] ranking_result = ranking.toArray(new String[] {});
+            Log.d("myprefer", Arrays.toString(new Set[]{ranking}));
+        }
+
+        //FirebaseApp.initializeApp();
         setContentView(R.layout.activity_all_news);
         //navi
         toolbar = findViewById(R.id.main_toolbar);
@@ -138,59 +162,7 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
     }
     @Override
     protected void onStart() {
-//        startService(new Intent( this, NewService.class ) );
         super.onStart();
-
-        //listener for fire store
-//        noteRefqq.addSnapshotListener(this, new EventListener<QuerySnapshot>() {
-//            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-//            @Override
-//            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-//                if (e != null) {
-//                    Log.d("onstart", "listen:error", e);
-//                    return;
-//                }
-//                for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
-//                    DocumentSnapshot documentSnapshot = dc.getDocument();
-////                    String id = documentSnapshot.getId();
-////                    int oldIndex = dc.getOldIndex();
-////                    int newIndex = dc.getNewIndex();
-//                    switch (dc.getType()) {
-//                        case ADDED:
-//                            Log.d("onstart", "New city: " + dc.getDocument().getData());
-//                            String news_id = dc.getDocument().getString("news_id");
-//                            String media  = dc.getDocument().getString("media");
-//                            String title = dc.getDocument().getString("title");
-//                            scheduleNotification(getNotification(news_id, media, title), 1000 );
-//                            scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
-//                            break;
-//                        case MODIFIED:
-//                            Log.d("onstart", "Modified city: " + dc.getDocument().getData());
-//                            break;
-//                        case REMOVED:
-//                            Log.d("onstart", "Removed city: " + dc.getDocument().getData());
-//                            break;
-//                    }
-//                }
-//            }
-//        });
-//        noteRef.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
-//            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-//            @Override
-//            public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
-//                if (e != null) {
-//                    Toast.makeText(NewsMainActivity.this, "Error while loading!", Toast.LENGTH_SHORT).show();
-////                    Log.d(TAG, e.toString());
-//                    return;
-//                }
-//                if (documentSnapshot.exists()) {
-//                    scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
-//                    String news_id = documentSnapshot.getString("news_id");
-//                    scheduleNotification(getNotification(news_id, "wahaha" ), 5000 );
-//                    Toast.makeText(NewsMainActivity.this, news_id, Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -212,7 +184,7 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
                 return true;
             case R.id.nav_history :
                 Log.d("log: navigation", "nav_history " + item.getItemId());
-                Intent intent_noti = new Intent(NewsAllActivity.this, MainActivity.class);
+                Intent intent_noti = new Intent(NewsAllActivity.this, ReadHistoryActivity.class);
                 startActivity(intent_noti);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;

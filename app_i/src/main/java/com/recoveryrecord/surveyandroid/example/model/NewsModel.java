@@ -1,13 +1,15 @@
 package com.recoveryrecord.surveyandroid.example.model;
 
+import com.google.firebase.Timestamp;
+
 public class NewsModel {
-    private String title, media, pubdate, id;
+    private String title, media, id;
+    private Timestamp pubdate;
     public NewsModel(){
 
     }
-    public NewsModel(String title, String media, String pubdate, String id) {
+    public NewsModel(String title, String media, String id, Timestamp pubdate) {
         this.title = title;
-//        this.content = content;
         this.media = media;
         this.pubdate = pubdate;
         this.id = id;
@@ -21,15 +23,6 @@ public class NewsModel {
         this.title = title;
     }
 
-//    public String getContent() {
-//        return content;
-//    }
-//
-//    public void setContent(String content) {
-//        this.content = content;
-//    }
-
-
     public String getMedia() {
         return media;
     }
@@ -38,19 +31,19 @@ public class NewsModel {
         this.media = media;
     }
 
-    public String getPubdate() {
-        return pubdate;
-    }
-
-    public void setPubdate(String pubdate) {
-        this.pubdate = pubdate;
-    }
-
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Timestamp getPubdate() {
+        return pubdate;
+    }
+
+    public void setPubdate(Timestamp pubdate) {
+        this.pubdate = pubdate;
     }
 }

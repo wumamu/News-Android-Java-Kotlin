@@ -26,7 +26,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.recoveryrecord.surveyandroid.example.model.NewsModelOne;
+import com.recoveryrecord.surveyandroid.example.model.NewsModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +34,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class NewsOneActivity extends AppCompatActivity {
     private RecyclerView courseRV;
-    private ArrayList<NewsModelOne> dataModalArrayList;
-    private NewsRecycleViewAdapterOne dataRVAdapter;
+    private ArrayList<NewsModel> dataModalArrayList;
+    private NewsRecycleViewAdapter dataRVAdapter;
     private FirebaseFirestore db;
 
     //temp for notification
@@ -64,7 +64,7 @@ public class NewsOneActivity extends AppCompatActivity {
         courseRV.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
         // adding our array list to our recycler view adapter class.
-        dataRVAdapter = new NewsRecycleViewAdapterOne(dataModalArrayList, this);
+        dataRVAdapter = new NewsRecycleViewAdapter(dataModalArrayList, this);
 
         // setting adapter to our recycler view.
         courseRV.setAdapter(dataRVAdapter);
@@ -93,7 +93,7 @@ public class NewsOneActivity extends AppCompatActivity {
                             for (DocumentSnapshot d : list) {
                                 // after getting this list we are passing that
                                 // list to our object class.
-                                NewsModelOne dataModal = d.toObject(NewsModelOne.class);
+                                NewsModel dataModal = d.toObject(NewsModel.class);
 
                                 // and we will pass this object class
                                 // inside our arraylist which we have

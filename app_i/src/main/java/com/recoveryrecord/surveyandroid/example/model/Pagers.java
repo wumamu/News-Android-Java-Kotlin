@@ -5,26 +5,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.recoveryrecord.surveyandroid.example.NewsRecycleViewAdapter;
-import com.recoveryrecord.surveyandroid.example.NewsRecycleViewAdapterOne;
 import com.recoveryrecord.surveyandroid.example.R;
-import com.recoveryrecord.surveyandroid.example.model.NewsModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,13 +22,12 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 
 public class Pagers extends RelativeLayout {
     private RecyclerView courseRV;
-    private ArrayList<NewsModelOne> dataModalArrayList;
-    private NewsRecycleViewAdapterOne dataRVAdapter;
+    private ArrayList<NewsModel> dataModalArrayList;
+    private NewsRecycleViewAdapter dataRVAdapter;
 //    private SwipeRefreshLayout swipeRefreshLayout;
 //    private RelativeLayout errorLayout;
 //    private ImageView errorImage;
@@ -76,7 +65,7 @@ public class Pagers extends RelativeLayout {
         courseRV.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
 
         // adding our array list to our recycler view adapter class.
-        dataRVAdapter = new NewsRecycleViewAdapterOne(dataModalArrayList, context);
+        dataRVAdapter = new NewsRecycleViewAdapter(dataModalArrayList, context);
 
         // setting adapter to our recycler view.
         courseRV.setAdapter(dataRVAdapter);
@@ -110,7 +99,7 @@ public class Pagers extends RelativeLayout {
                             for (DocumentSnapshot d : list) {
                                 // after getting this list we are passing that
                                 // list to our object class.
-                                NewsModelOne dataModal = d.toObject(NewsModelOne.class);
+                                NewsModel dataModal = d.toObject(NewsModel.class);
                                 // and we will pass this object class
                                 // inside our arraylist which we have
                                 // created for recycler view.
