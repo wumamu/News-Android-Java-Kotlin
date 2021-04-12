@@ -113,9 +113,9 @@ public class MediaRecycleViewAdapter extends RecyclerView.Adapter<MediaRecycleVi
         dataModelArrayList.remove(fromNote);
         dataModelArrayList.add(toPosition, fromNote);
         notifyItemMoved(fromPosition, toPosition);
-        Log.d("onItemMove", "1" + String.valueOf(fromPosition));
-        Log.d("onItemMove", "2" + String.valueOf(toPosition));
-        Log.d("onItemMove", "23" + fromNote.getMedia());
+//        Log.d("onItemMove", "front " + String.valueOf(fromPosition));
+//        Log.d("onItemMove", "to " + String.valueOf(toPosition));
+//        Log.d("onItemMove", "mm" + fromNote.getMedia());
     }
 
     @Override

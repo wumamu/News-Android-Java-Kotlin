@@ -101,16 +101,31 @@ public class MediaRankActivity extends AppCompatActivity{
 
     @Override
     protected void onStart() {
+//        for(int i=0; i < dataModalArrayList.size(); i++){
+//            System.out.println( dataModalArrayList.get(i).getMedia() );
+//        }
         super.onStart();
     }
 
     @Override
     protected void onStop(){
+        Set<String> new_set = new HashSet<String>();
+        for(int i=0; i < dataModalArrayList.size(); i++){
+//            System.out.println( dataModalArrayList.get(i).getMedia());
+            String tmp = dataModalArrayList.get(i).getMedia() + " " + (i+1);
+            System.out.println(tmp);
+            new_set.add(tmp);
+        }
+
+        //save to SharedPreference
+        mEditor.putStringSet("media_rank", new_set).commit();
+        mEditor.commit();
         super.onStop();
     }
 
     @Override
     public void onDestroy() {
+        Toast.makeText(this, "可能要重啟app設定才會生效", Toast.LENGTH_SHORT).show();
         super.onDestroy();
 
     }
