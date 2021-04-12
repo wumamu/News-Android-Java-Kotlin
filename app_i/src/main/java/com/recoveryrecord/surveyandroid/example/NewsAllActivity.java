@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,26 +11,23 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
 //import com.google.firebase.messaging.FirebaseMessaging;
-import com.recoveryrecord.surveyandroid.example.activity.NotificationDbViewActivity;
 import com.recoveryrecord.surveyandroid.example.model.Pagers;
 
 import java.text.SimpleDateFormat;
@@ -42,11 +38,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -54,8 +50,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
 import androidx.viewpager.widget.ViewPager;
 
@@ -66,7 +60,7 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
     //temp for notification
     public static final String NOTIFICATION_CHANNEL_ID = "10001" ;
     private final static String default_notification_channel_id = "default" ;
-    private static final String TAG = "CloudMSG";
+    private static final String TAG = "NewsAllActivity";
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DocumentReference noteRef = db.document("server_push_notifications/start");
     private CollectionReference noteRefqq = db.collection("server_push_notifications");
@@ -76,6 +70,8 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
+
+    private TextView user_phone, user_id, user_name;
 
 
     private static final HashMap<String, String> media_hash = new HashMap<String, String>();
@@ -90,9 +86,34 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
         media_hash.put("ettoday", "ettoday");
     }
 
+    @SuppressLint("HardwareIds")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //initial value for collection
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        DocumentReference docIdRef = db.collection("test_users").document(device_id);
+        docIdRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d(TAG, "Document exists!");
+                    } else {
+                        Log.d(TAG, "Document does not exist!");
+                        Map<String, Object> first = new HashMap<>();
+                        first.put("test", Timestamp.now());
+                        db.collection("test_users")
+                                .document(device_id)
+                                .set(first);
+                    }
+                } else {
+                    Log.d(TAG, "Failed with: ", task.getException());
+                }
+            }
+        });
         //check preference
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 //        SharedPreferences.Editor editor = sharedPrefs.edit();
@@ -115,6 +136,21 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
 
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
+
+
+        View header = navigationView.getHeaderView(0);
+        user_phone = (TextView) header.findViewById(R.id.textView_user_phone);
+        user_phone.setText(Build.MODEL);
+        user_id = (TextView) header.findViewById(R.id.textView_user_id);
+        user_id.setText(Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID));
+        user_name = (TextView) header.findViewById(R.id.textView_user_name);
+        String signature = sharedPrefs.getString("signature", null);
+        if (signature==null){
+//            Toast.makeText(this, "趕快去設定選擇想要的媒體吧~", Toast.LENGTH_LONG).show();
+            user_name.setText("使用者名稱");
+        } else {
+            user_name.setText(signature);
+        }
 
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
                 this,

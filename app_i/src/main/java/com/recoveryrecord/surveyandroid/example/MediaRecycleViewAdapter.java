@@ -27,7 +27,7 @@ public class MediaRecycleViewAdapter extends RecyclerView.Adapter<MediaRecycleVi
     private ArrayList<MediaModel> dataModelArrayList;
     private Context context;
     private ItemTouchHelper mTouchHelper;
-    private OnCustomerListChangedListener mListChangedListener;
+//    private OnCustomerListChangedListener mListChangedListener;
 
     // constructor class for our Adapter
     public MediaRecycleViewAdapter(ArrayList<MediaModel> dataModalArrayList, Context context) {

@@ -16,15 +16,21 @@ import android.util.Log;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -79,6 +85,7 @@ public class NewsService extends Service {
         db.collection("test_users")
                 .document(device_id)
                 .collection("compare_result")
+                .orderBy("pubdate", Query.Direction.DESCENDING)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
@@ -87,18 +94,23 @@ public class NewsService extends Service {
                     Log.d("onstart", "listen:error", e);
                     return;
                 }
+                Timestamp right_now = Timestamp.now();
+                int count = 0;
                 for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
                     DocumentSnapshot documentSnapshot = dc.getDocument();
+                    count++;
                     switch (dc.getType()) {
                         case ADDED:
-                            Log.d("onstart", "New doc: " + dc.getDocument().getData());
-                            String news_id = dc.getDocument().getString("id");
-                            String media  = dc.getDocument().getString("media");
-                            String title = dc.getDocument().getString("news_title");
-                            String doc_id = dc.getDocument().getId();
-                            scheduleNotification(getNotification(news_id, media, title), 1000 );
-                            Log.d("onstart", "doc id" + doc_id);
-                            db.collection("test_users").document(device_id).collection("compare_result").document(doc_id)
+                            if(count<20){
+                                Log.d("onstart", "New doc: " + dc.getDocument().getData());
+                                String news_id = dc.getDocument().getString("id");
+                                String media  = dc.getDocument().getString("media");
+                                String title = dc.getDocument().getString("news_title");
+                                String doc_id = dc.getDocument().getId();
+                                scheduleNotification(getNotification(news_id, media, title), 1000 );
+                                Log.d("onstart", "doc id" + doc_id);
+                            }
+                            db.collection("test_users").document(device_id).collection("compare_result").document(dc.getDocument().getId())
                                     .delete()
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override

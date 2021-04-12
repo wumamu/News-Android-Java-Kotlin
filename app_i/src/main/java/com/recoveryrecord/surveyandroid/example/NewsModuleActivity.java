@@ -38,6 +38,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -84,6 +85,7 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
     private ScreenStateReceiver mReceiver;//screen on or off
     boolean first_in = true;
     int char_num_total = 0;
+    Timestamp enter_timestamp;
 
     String time_ss = "";//time series
     String tmp_record = "";//viewport
@@ -376,6 +378,7 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
         String time_now = formatter.format(date);
         myReadingBehavior.setKEY_TIME_IN(time_now);
         Log.d("log: time_in", myReadingBehavior.getKEY_TIME_IN());
+        enter_timestamp = Timestamp.now();//new Timestamp(System.currentTimeMillis());
         //set gesture listener #####################################################################
         detector = new MySimpleGestureListener(this,this);
         //check screen on or off ###################################################################
@@ -1266,8 +1269,10 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
         readingBehavior.put("news_id",  "NA");
         readingBehavior.put("trigger_by", myReadingBehavior.getKEY_TRIGGER_BY());
 //        readingBehavior.put("time_in", myReadingBehavior.getKEY_TIME_IN());
+        readingBehavior.put("in_timestamp", enter_timestamp);
         readingBehavior.put("in_date", in_tt.get(0));
         readingBehavior.put("in_time", in_tt.get(2));
+        readingBehavior.put("out_timestamp", "NA");
         readingBehavior.put("out_date", "NA");
         readingBehavior.put("out_time", "NA");
         readingBehavior.put("content_length(dp)", "NA");
@@ -1356,6 +1361,7 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
 //                "share_via", "none",//none
                 "time_on_page(s)", myReadingBehavior.getKEY_TIME_ON_PAGE(),//auto
 //                "time_out", myReadingBehavior.getKEY_TIME_OUT(),
+                "out_timestamp", Timestamp.now(),
                 "out_time", out_tt.get(2),
                 "out_date", out_tt.get(0),
                 "time_series(s)", time_series_list,//auto

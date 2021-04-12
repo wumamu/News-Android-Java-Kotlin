@@ -1,6 +1,7 @@
 package com.recoveryrecord.surveyandroid.example;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -13,7 +14,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
-
+//        String model = "MODEL : " + Build.MODEL;
         SwitchPreferenceCompat switchPref = findPreference("news_notification");
         switchPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
