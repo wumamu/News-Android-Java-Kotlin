@@ -68,8 +68,8 @@ public class DefaultSubmitSurveyHandler implements SubmitSurveyHandler {
     @Override
     public void submit(String url, String jsonQuestionAnswerData) {
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        Log.i("log: ESM", jsonQuestionAnswerData);
-        addESM(jsonQuestionAnswerData);
+//        Log.i("log: ESM", jsonQuestionAnswerData);
+//        addESM(jsonQuestionAnswerData);
 
 //        JSONObject requestBody = null;
 //        try {
@@ -83,22 +83,4 @@ public class DefaultSubmitSurveyHandler implements SubmitSurveyHandler {
 
     }
 
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void addESM(String jsonQuestionAnswerData) {
-//        Date date = new Date(System.currentTimeMillis());
-//        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-//        String time_now = formatter.format(date);
-//        Map<String, Object> esm = new HashMap<>();
-//        esm.put("submit_time", time_now);
-//        esm.put("result",  jsonQuestionAnswerData);
-//        LocalDate l_date = LocalDate.now();
-//        String device_id = Settings.Secure.getString(mContext.getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-//        db.collection("test_users")
-//                .document(device_id)
-//                .collection("esms")
-//                .document(time_now)
-//                .set(esm);
-
-    }
 }

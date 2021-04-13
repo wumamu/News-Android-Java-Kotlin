@@ -31,7 +31,7 @@ public abstract class SurveyActivity extends AppCompatActivity implements Failed
         super.onCreate(savedInstanceState);
         setContentView(getLayoutResId());
         setTitle(getSurveyTitle());
-
+        getSurveyId();
         SurveyQuestions surveyQuestions = createSurveyQuestions();
         Log.d(TAG, "Questions = " + surveyQuestions);
 
@@ -79,6 +79,13 @@ public abstract class SurveyActivity extends AppCompatActivity implements Failed
     protected void onStop() {
         super.onStop();
         mState.removeOnSurveyStateChangedListener(getOnSurveyStateChangedListener());
+    }
+    //add
+    protected String getSurveyId() {
+        if (getIntent().hasExtra(SURVEY_TITLE_EXTRA)) {
+            return getIntent().getStringExtra(SURVEY_TITLE_EXTRA);
+        }
+        return null;
     }
 
     protected String getSurveyTitle() {

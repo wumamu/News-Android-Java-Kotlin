@@ -249,18 +249,21 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
                 return true;
             case R.id.nav_reschedule :
                 Log.d("log: navigation", "nav_reschedule " + item.getItemId());
+                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 1000 );
 //                scheduleNotification(getNotification("0143b739b1c33d46cd18b6af12b2d5b2", "ettoday", "wa_title" ), 5000 );
-                scheduleNotification_repeat(getNotification_esm("time"));
-                Toast.makeText(this, "開始每小時固定發送esm~", Toast.LENGTH_LONG).show();
+//                scheduleNotification_repeat(getNotification_esm("time"));
+//                Toast.makeText(this, "開始每小時固定發送esm~", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "發送esm~", Toast.LENGTH_LONG).show();
 //                Intent intent_base = new Intent(NewsAllActivity.this, BasicActivity.class);
 //                startActivity(intent_base);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             case R.id.nav_contact :
                 Log.d("log: navigation", "nav_contact " + item.getItemId());
-                Intent intent_ems = new Intent(NewsAllActivity.this, ExampleSurveyActivity.class);
-                startActivity(intent_ems);
-                drawerLayout.closeDrawer(GravityCompat.START);
+                Toast.makeText(this, "目前什麼都沒有拉~", Toast.LENGTH_LONG).show();
+//                Intent intent_ems = new Intent(NewsAllActivity.this, ExampleSurveyActivity.class);
+//                startActivity(intent_ems);
+//                drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             default :
                 return false;
@@ -367,10 +370,11 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 1);
         int nid = (int) System.currentTimeMillis();
-        Log.d("log: notification", "news id" + nid);
+        Log.d("logesm", "news id" + nid);
         Intent notificationIntent = new Intent(this, MyNotificationPublisherNews.class);
         notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION_ID, 1 ) ;
         notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION, notification) ;
+//        notificationIntent.putExtra("noti_time", nid) ;
         int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
         PendingIntent pendingIntent = PendingIntent.getBroadcast( this, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 //        long futureInMillis = SystemClock.elapsedRealtime() + delay;
@@ -378,21 +382,24 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
         assert alarmManager != null;
 //        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
 //        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000 * 3600, pendingIntent);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000 * 60 * 60 , pendingIntent);//60 min
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000 * 60 * 60, pendingIntent);//60 min
 //        alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 1000 * 20, 1000 * 20, pendingIntent);
     }
     private Notification getNotification_esm (String content) {
         //replace content with time
         Date date = new Date(System.currentTimeMillis());
+        String esm_id = "";
+        esm_id = String.valueOf(date);
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-        String time_noti = formatter.format(date);
+        String time_now = formatter.format(date);
 
         int nid = (int) System.currentTimeMillis();
-        Log.d("log: notification", "esm id" + nid);
+        Log.d("logesm", "esm id " + nid + " " + Timestamp.now());
         Intent intent_esm = new Intent();
         intent_esm.setClass(NewsAllActivity.this, ExampleSurveyActivity.class);
         intent_esm.putExtra("trigger_from", "Notification");
-        intent_esm.putExtra("esm_id", System.currentTimeMillis());
+        intent_esm.putExtra("esm_id", esm_id);
+        intent_esm.putExtra("noti_timestamp", Timestamp.now());
         PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_esm, 0);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);
         builder.setContentTitle("ESM");
@@ -401,12 +408,22 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
         builder.setContentIntent(pendingIntent);
         builder.setAutoCancel(true);
         builder.setChannelId(NOTIFICATION_CHANNEL_ID);
+
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        Map<String, Object> esm = new HashMap<>();
+        esm.put("noti_time", time_now);
+        esm.put("noti_timestamp", Timestamp.now());
+        db.collection("test_users")
+                .document(device_id)
+                .collection("esms")
+                .document(esm_id)
+                .set(esm);
         return builder.build() ;
     }
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void scheduleNotification_esm (Notification notification, int delay) {
-//        int nid = (int) System.currentTimeMillis();
-//        Log.d("log: notification", "news id" + nid);
         Intent notificationIntent = new Intent(this, MyNotificationPublisherNews.class);
         notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION_ID, 1 ) ;
         notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION, notification) ;

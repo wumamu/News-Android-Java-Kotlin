@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -33,6 +34,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class ExampleSurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActivity implements CustomConditionHandler {
     String esm_id = "";
@@ -40,44 +42,86 @@ public class ExampleSurveyActivity extends com.recoveryrecord.surveyandroid.Surv
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        if (getIntent().getExtras() != null) {
-//            Bundle b = getIntent().getExtras();
-//            esm_id = b.getString("esm_id");
-//        }
+
+
+        final Timestamp current_now = Timestamp.now();
         Date date = new Date(System.currentTimeMillis());
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-        String time_now = formatter.format(date);
+        final String time_now = formatter.format(date);
+        //new
         Map<String, Object> esm = new HashMap<>();
         esm.put("open_time", time_now);
-        LocalDate l_date = LocalDate.now();
+        esm.put("open_timestamp", current_now);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-//        db.collection(Build.ID)
-//                .document(device_id)
-//                .collection("esms")
-//                .document(time_now)
-//                .set(esm);
+        esm_id = String.valueOf(date);
+        if (getIntent().getExtras() != null) {
+            Bundle b = getIntent().getExtras();
+            esm_id = Objects.requireNonNull(b.getString("esm_id"));
+//            Log.d("logesm", Objects.requireNonNull(b.getString("trigger_from")));
+//            Log.d("logesm", String.valueOf(Objects.requireNonNull(b.getInt("esm_id"))));
+//            Log.d("logesm", String.valueOf(Objects.requireNonNull(b.get("noti_timestamp"))));
+            Log.d("logesm", String.valueOf(123));
+//            b.putString("esm_id", esm_id);
+//            esm_id = b.getString("trigger_from");
+        }
+        //temp
 
         if (esm_id!=""){
-            db.collection("test_users")
-                    .document(device_id)
-                    .collection("esms")
-                    .document(esm_id)
-                    .set(esm);
+//            db.collection("test_users")
+//                    .document(device_id)
+//                    .collection("esms")
+//                    .document(esm_id)
+//                    .set(esm);
+            final DocumentReference rbRef = db.collection("test_users").document(device_id).collection("esms").document(esm_id);
+            rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            rbRef.update("open_time", time_now, "open_timestamp", current_now)//another field
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.d("log: firebase share", "DocumentSnapshot successfully updated!");
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.w("log: firebase share", "Error updating document", e);
+                                        }
+                                    });
+                        } else {
+                            Log.d("log: firebase share", "No such document");
+                        }
+                    } else {
+                        Log.d("log: firebase share", "get failed with ", task.getException());
+                    }
+                }
+            });
+            Log.d("logesm", "in yes esm_id");
         } else {
             db.collection("test_users")
                     .document(device_id)
                     .collection("esms")
                     .document(time_now)
                     .set(esm);
+            Log.d("logesm", "in no esm_id");
         }
 
+    }
+    //add survey activity
+    //seems useless now
+    @Override
+    protected String getSurveyId() {
+        return "123123";
     }
 
     @Override
     protected String getSurveyTitle() {
-        return getString(R.string.example_survey);
+        return "ESM";
     }
 
     @Override
@@ -138,6 +182,7 @@ public class ExampleSurveyActivity extends com.recoveryrecord.surveyandroid.Surv
     protected void onDestroy() {
         super.onDestroy();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final Timestamp current_end = Timestamp.now();
         Date date = new Date(System.currentTimeMillis());
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         final String time_now = formatter.format(date);
@@ -150,7 +195,7 @@ public class ExampleSurveyActivity extends com.recoveryrecord.surveyandroid.Surv
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
-                            rbRef.update("close_time", time_now)
+                            rbRef.update("close_timestamp", current_end, "close_time", time_now)//another field
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
@@ -171,8 +216,10 @@ public class ExampleSurveyActivity extends com.recoveryrecord.surveyandroid.Surv
                     }
                 }
             });
+            Log.d("logesm", "out yes esm_id");
         } else {
             Map<String, Object> esm = new HashMap<>();
+            esm.put("close_timestamp", current_end);
             esm.put("close_time", time_now);
             String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
             db.collection("test_users")
@@ -180,6 +227,7 @@ public class ExampleSurveyActivity extends com.recoveryrecord.surveyandroid.Surv
                     .collection("esms")
                     .document(time_now)
                     .set(esm);
+            Log.d("logesm", "out no esm_id");
         }
 
     }

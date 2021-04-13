@@ -134,7 +134,7 @@ public class MyNotificationListenerService extends NotificationListenerService {
         switch (sbn.getPackageName()) {
             case "com.recoveryrecord.surveyandroid":
                 receieve_to_firestore = true;
-                document_name = "send_notificaions";
+                document_name = "send_notifications";
                 break;
 //            case "com.facebook.orca":
             case "cc.nexdoor.ct.activity":
@@ -168,6 +168,10 @@ public class MyNotificationListenerService extends NotificationListenerService {
             if (extras.containsKey("android.title")) {
                 if(extras.getString("android.title")!=null){
                     receieve_notification.put("title", Objects.requireNonNull(extras.getString("android.title")));
+                    //check if is news or esm
+                    if(extras.getString("android.title").equals("ESM")){
+                        document_name = "esms";
+                    }
                     check_title = true;
                 } else {
                     receieve_notification.put("title",  "null");
