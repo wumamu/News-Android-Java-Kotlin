@@ -39,7 +39,7 @@ public class TestServiceActivity extends AppCompatActivity implements View.OnCli
         if(view == start){
 
             // starting the service
-            startService(new Intent( this, NewsService.class ) );
+            startService(new Intent( this, NewsNotificationService.class ) );
         }
 
         // process to be performed
@@ -47,7 +47,7 @@ public class TestServiceActivity extends AppCompatActivity implements View.OnCli
         else if (view == stop){
 
             // stopping the service
-            stopService(new Intent( this, NewsService.class ) );
+            stopService(new Intent( this, NewsNotificationService.class ) );
 
         }
     }

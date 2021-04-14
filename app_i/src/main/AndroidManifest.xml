@@ -105,7 +105,7 @@
         </receiver>
 
         <!-- Mention the service name here -->
-        <service android:name=".NewsService"/>
+        <service android:name=".NewsNotificationService"/>
         <activity android:name=".TestServiceActivity"
             android:theme="@style/AppThemeActionBar"/>
 

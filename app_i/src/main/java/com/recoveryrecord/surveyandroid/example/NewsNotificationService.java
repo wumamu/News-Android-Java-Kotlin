@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.IBinder;
@@ -26,20 +27,18 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Calendar;
 import java.util.Date;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
+import androidx.preference.PreferenceManager;
 
-public class NewsService extends Service {
+public class NewsNotificationService extends Service {
     //temp for notification
     public static final String NOTIFICATION_CHANNEL_ID = "10001" ;
     private final static String default_notification_channel_id = "default" ;
@@ -82,6 +81,18 @@ public class NewsService extends Service {
 //
 //        // returns the status
 //        // of the program
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        final Set<String> selections = sharedPrefs.getStringSet("media_select", null);
+        if (selections==null){
+            selections.add("中時");
+            selections.add("中央社");
+            selections.add("華視");
+            selections.add("東森");
+            selections.add("自由時報");
+            selections.add("風傳媒");
+            selections.add("聯合");
+            selections.add("ettoday");
+        }
         db.collection("test_users")
                 .document(device_id)
                 .collection("compare_result")
@@ -101,7 +112,7 @@ public class NewsService extends Service {
                     count++;
                     switch (dc.getType()) {
                         case ADDED:
-                            if(count<20){
+                            if(count<20 && selections.contains(dc.getDocument().getString("media"))){
                                 Log.d("onstart", "New doc: " + dc.getDocument().getData());
                                 String news_id = dc.getDocument().getString("id");
                                 String media  = dc.getDocument().getString("media");
@@ -163,16 +174,41 @@ public class NewsService extends Service {
     }
 
     @Override
-
     // execution of the service will
     // stop on calling this method
     public void onDestroy() {
         super.onDestroy();
 
         // stopping the process
-        player.stop();
+//        player.stop();
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction("restartservice");
+        broadcastIntent.setClass(this, NewsNotificationRestarter.class);
+        this.sendBroadcast(broadcastIntent);
     }
 
+//    void detachListener() {
+//        // [START detach_errors]
+//        // [START firestore_listen_detach]
+//        Query query = db.collection("cities");
+//        ListenerRegistration registration = query.addSnapshotListener(
+//                new EventListener<QuerySnapshot>() {
+//                    // [START_EXCLUDE]
+//                    @Override
+//                    public void onEvent(@Nullable QuerySnapshot snapshots,
+//                                        @Nullable FirestoreException e) {
+//
+//                    }
+//                    // [END_EXCLUDE]
+//                });
+//
+//        // ...
+//
+//        // Stop listening to changes
+//        registration.remove();
+//        // [END firestore_listen_detach]
+//        // [END detach_errors]
+//    }
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -196,7 +232,7 @@ public class NewsService extends Service {
         int nid = (int) System.currentTimeMillis();
         Log.d("log: notification", "news id" + nid);
         Intent intent_news = new Intent();
-        intent_news.setClass(NewsService.this, NewsModuleActivity.class);
+        intent_news.setClass(NewsNotificationService.this, NewsModuleActivity.class);
         intent_news.putExtra("trigger_from", "Notification");
         intent_news.putExtra("news_id", news_id);
         intent_news.putExtra("media", media);
@@ -221,7 +257,7 @@ public class NewsService extends Service {
         int nid = (int) System.currentTimeMillis();
         Log.d("log: notification", "esm id" + nid);
         Intent intent_esm = new Intent();
-        intent_esm.setClass(NewsService.this, ExampleSurveyActivity.class);
+        intent_esm.setClass(NewsNotificationService.this, ExampleSurveyActivity.class);
         intent_esm.putExtra("trigger_from", "Notification");
         intent_esm.putExtra("esm_id", System.currentTimeMillis());
         PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_esm, 0);

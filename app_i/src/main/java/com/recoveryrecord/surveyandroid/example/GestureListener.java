@@ -8,7 +8,7 @@ import android.view.MotionEvent;
 import com.recoveryrecord.surveyandroid.example.sqlite.DragObj;
 import com.recoveryrecord.surveyandroid.example.sqlite.FlingObj;
 
-public class MySimpleGestureListener extends GestureDetector.SimpleOnGestureListener{
+public class GestureListener extends GestureDetector.SimpleOnGestureListener{
 
     public final static int SWIPE_UP    = 1;
     public final static int SWIPE_DOWN  = 2;
@@ -33,7 +33,7 @@ public class MySimpleGestureListener extends GestureDetector.SimpleOnGestureList
     private SimpleGestureListener listener;
 
 
-    public MySimpleGestureListener(Activity context, SimpleGestureListener sgl) {
+    public GestureListener(Activity context, SimpleGestureListener sgl) {
 
         this.context = context;
         this.detector = new GestureDetector(context, this);
@@ -41,6 +41,7 @@ public class MySimpleGestureListener extends GestureDetector.SimpleOnGestureList
     }
 
     public void onTouchEvent(MotionEvent event){
+        //disable lomg press
         detector.setIsLongpressEnabled(false);
         if(!this.running)
             return;

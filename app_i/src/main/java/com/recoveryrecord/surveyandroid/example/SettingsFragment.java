@@ -22,13 +22,17 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 //                    getActivity().finish();
                 if (newValue.equals(true)){
                     Log.d("mysetting", "service on");
-                        Intent intent = new Intent(getActivity().getApplicationContext(), NewsService.class);
+                        Intent intent = new Intent(getActivity().getApplicationContext(), NewsNotificationService.class);
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                        getActivity().getApplicationContext().startForegroundService(intent);
+//                    } else {
+//                        getActivity().getApplicationContext().startService(intent);
+//                    }
                         getActivity().getApplicationContext().startService(intent);
                         Toast.makeText(getActivity().getApplicationContext(), "可能會突然迸出很多通知xd", Toast.LENGTH_SHORT).show();
-//                        startService(new Intent( this, NewService.class ) );
                 } else {
                     Log.d("mysetting", "service stop");
-                    Intent intent = new Intent(getActivity().getApplicationContext(), NewsService.class);
+                    Intent intent = new Intent(getActivity().getApplicationContext(), NewsNotificationService.class);
                     getActivity().getApplicationContext().stopService(intent);
                 }
                 return true;

@@ -69,11 +69,10 @@ import java.util.concurrent.ThreadLocalRandom;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 //import android.support.v7.widget.Toolbar;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
-public class NewsModuleActivity extends AppCompatActivity implements MySimpleGestureListener.SimpleGestureListener {
+public class NewsModuleActivity extends AppCompatActivity implements GestureListener.SimpleGestureListener {
     //    String TagCycle = "my activity cycle";
 //    String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -94,7 +93,7 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
     private String mUrl, mImg, mTitle, mDate, mSource;
 
     private static final String DEBUG_TAG = "Gestures";
-    private MySimpleGestureListener detector;
+    private GestureListener detector;
     List<DragObj> dragObjArrayListArray = new ArrayList<>();//drag gesture
 
     ReadingBehavior myReadingBehavior = new ReadingBehavior();//sqlite
@@ -380,7 +379,7 @@ public class NewsModuleActivity extends AppCompatActivity implements MySimpleGes
         Log.d("log: time_in", myReadingBehavior.getKEY_TIME_IN());
         enter_timestamp = Timestamp.now();//new Timestamp(System.currentTimeMillis());
         //set gesture listener #####################################################################
-        detector = new MySimpleGestureListener(this,this);
+        detector = new GestureListener(this,this);
         //check screen on or off ###################################################################
         //screen off #########################
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);

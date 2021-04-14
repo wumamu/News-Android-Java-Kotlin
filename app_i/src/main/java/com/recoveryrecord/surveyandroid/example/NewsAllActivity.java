@@ -1,6 +1,7 @@
  package com.recoveryrecord.surveyandroid.example;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -73,6 +74,9 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
 
     private TextView user_phone, user_id, user_name;
 
+    Intent mServiceIntent;
+    private NewsNotificationService mYourService;
+
 
     private static final HashMap<String, String> media_hash = new HashMap<String, String>();
     static{
@@ -90,6 +94,13 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mYourService = new NewsNotificationService();
+        mServiceIntent = new Intent(this, mYourService.getClass());
+        if (!isMyServiceRunning(mYourService.getClass())) {
+            startService(mServiceIntent);
+        }
+
         //initial value for collection
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         final String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -218,6 +229,8 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
         viewPager.setAdapter(myPagerAdapter);
         viewPager.setCurrentItem(0);//指定跳到某頁，一定得設置在setAdapter後面
 
+
+
     }
     @Override
     protected void onStart() {
@@ -270,6 +283,18 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
         }
 
 //        return false;
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                Log.d ("Servicestatus", "Running");
+                return true;
+            }
+        }
+        Log.d ("Servicestatus", "Not running");
+        return false;
     }
 
     @Override

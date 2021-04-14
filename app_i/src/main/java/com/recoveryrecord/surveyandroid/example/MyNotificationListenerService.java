@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -28,8 +29,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import androidx.annotation.RequiresApi;
+import androidx.preference.PreferenceManager;
 
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class MyNotificationListenerService extends NotificationListenerService {
@@ -57,6 +60,7 @@ public class MyNotificationListenerService extends NotificationListenerService {
         Log.i(TAG,"**********  onNotificationPosted ***********");
 //        Log.i(TAG,sbn.getPackageName());
         boolean is_target = false;
+        String p_name = sbn.getPackageName();
         switch (sbn.getPackageName()) {
 //            case "com.recoveryrecord.surveyandroid":
 //            case "com.facebook.orca":

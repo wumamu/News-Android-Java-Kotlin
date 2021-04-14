@@ -22,14 +22,22 @@
     </string-array>
 
     <string-array name="media_select_values">
-        <item>chinatimes</item>
-        <item>cna</item>
-        <item>cts</item>
-        <item>ebc</item>
-        <item>ltn</item>
-        <item>storm</item>
-        <item>udn</item>
+        <item>中時</item>
+        <item>中央社</item>
+        <item>華視</item>
+        <item>東森</item>
+        <item>自由時報</item>
+        <item>風傳媒</item>
+        <item>聯合</item>
         <item>ettoday</item>
+<!--        <item>cc.nexdoor.ct.activity</item>-->
+<!--        <item>m.cna.com.tw.App</item>-->
+<!--        <item>com.news.ctsapp</item>-->
+<!--        <item>com.ebc.news</item>-->
+<!--        <item>com.ltnnews.news</item>-->
+<!--        <item>cc.nexdoor.stormmedia</item>-->
+<!--        <item>com.udn.news</item>-->
+<!--        <item>net.ettoday.phone</item>-->
     </string-array>
 
     <string-array name="empty_array"/>
