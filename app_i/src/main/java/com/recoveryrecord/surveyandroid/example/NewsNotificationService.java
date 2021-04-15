@@ -112,7 +112,7 @@ public class NewsNotificationService extends Service {
                     count++;
                     switch (dc.getType()) {
                         case ADDED:
-                            if(count<20){
+                            if(count<20 && selections.contains(dc.getDocument().getString("media"))){
 //                                if(selections.contains(dc.getDocument().getString("media")))
 //                                {
                                     Log.d("onstart", "New doc: " + dc.getDocument().getData());

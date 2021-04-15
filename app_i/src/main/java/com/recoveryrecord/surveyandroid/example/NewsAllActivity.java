@@ -96,9 +96,13 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
         super.onCreate(savedInstanceState);
 
         mYourService = new NewsNotificationService();
-        mServiceIntent = new Intent(this, mYourService.getClass());
+//        mServiceIntent = new Intent(this, mYourService.getClass());
+        mServiceIntent = new Intent(this, NewsNotificationService.class);
         if (!isMyServiceRunning(mYourService.getClass())) {
+            Toast.makeText(this, "service failed", Toast.LENGTH_LONG).show();
             startService(mServiceIntent);
+        } else {
+            Toast.makeText(this, "service running", Toast.LENGTH_LONG).show();
         }
 
         //initial value for collection

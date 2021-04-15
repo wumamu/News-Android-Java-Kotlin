@@ -17,7 +17,6 @@ public class NotificationListenerNews extends BroadcastReceiver {
 //    public static String NOTIFICATION_s = "notification_s" ;
     public void onReceive (Context context , Intent intent) {
         //判断app进程是否存活
-
         if (AppAliveHelper.isAppRunning(context, "androidx.multidex.MultiDexApplication")) {
             // App is running
             //如果存活的话，就直接启动DetailActivity，但要考虑一种情况，就是app的进程虽然仍然在
