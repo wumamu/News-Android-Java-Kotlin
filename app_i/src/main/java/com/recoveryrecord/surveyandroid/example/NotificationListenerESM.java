@@ -9,7 +9,7 @@ import android.content.Intent;
 
 import static com.recoveryrecord.surveyandroid.example.BasicActivity.NOTIFICATION_CHANNEL_ID;
 
-public class MyNotificationPublisherESM extends BroadcastReceiver {
+public class NotificationListenerESM extends BroadcastReceiver {
     public static String NOTIFICATION_ID = "notification-id" ;
     public static String NOTIFICATION = "notification" ;
     public void onReceive (Context context , Intent intent) {

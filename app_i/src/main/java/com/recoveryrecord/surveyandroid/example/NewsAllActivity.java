@@ -354,62 +354,62 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
 //                return super.onOptionsItemSelected(item);
 //        }
 //    }
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void scheduleNotification (Notification notification, int delay) {
+//    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+//    private void scheduleNotification (Notification notification, int delay) {
+////        int nid = (int) System.currentTimeMillis();
+////        Log.d("log: notification", "news id" + nid);
+//        Intent notificationIntent = new Intent(this, NotificationListenerNews.class);
+//        notificationIntent.putExtra(NotificationListenerNews.NOTIFICATION_ID, 1 ) ;
+//        notificationIntent.putExtra(NotificationListenerNews.NOTIFICATION, notification) ;
+//        int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast( this, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//        assert alarmManager != null;
+//        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+//    }
+//    private Notification getNotification (String news_id, String media, String title) {
 //        int nid = (int) System.currentTimeMillis();
 //        Log.d("log: notification", "news id" + nid);
-        Intent notificationIntent = new Intent(this, MyNotificationPublisherNews.class);
-        notificationIntent.putExtra(MyNotificationPublisherNews.NOTIFICATION_ID, 1 ) ;
-        notificationIntent.putExtra(MyNotificationPublisherNews.NOTIFICATION, notification) ;
-        int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast( this, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        long futureInMillis = SystemClock.elapsedRealtime() + delay;
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        assert alarmManager != null;
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
-    }
-    private Notification getNotification (String news_id, String media, String title) {
-        int nid = (int) System.currentTimeMillis();
-        Log.d("log: notification", "news id" + nid);
-        Intent intent_news = new Intent();
-        intent_news.setClass(NewsAllActivity.this, NewsModuleActivity.class);
-        intent_news.putExtra("trigger_from", "Notification");
-        intent_news.putExtra("news_id", news_id);
-        intent_news.putExtra("media", media);
-//        intent_news.putExtra("media", "Notification");
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_news, 0);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);
-        builder.setContentTitle(title);
-        builder.setContentText(media);
-        builder.setSmallIcon(R.drawable.ic_launcher_foreground);
-        builder.setContentIntent(pendingIntent);
-        builder.setAutoCancel(true);
-        builder.setChannelId(NOTIFICATION_CHANNEL_ID);
-        return builder.build() ;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void scheduleNotification_repeat (Notification notification) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 1);
-        int nid = (int) System.currentTimeMillis();
-        Log.d("logesm", "news id" + nid);
-        Intent notificationIntent = new Intent(this, MyNotificationPublisherNews.class);
-        notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION_ID, 1 ) ;
-        notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION, notification) ;
-//        notificationIntent.putExtra("noti_time", nid) ;
-        int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast( this, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-//        long futureInMillis = SystemClock.elapsedRealtime() + delay;
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        assert alarmManager != null;
-//        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
-//        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000 * 3600, pendingIntent);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000 * 60 * 60, pendingIntent);//60 min
-//        alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 1000 * 20, 1000 * 20, pendingIntent);
-    }
+//        Intent intent_news = new Intent();
+//        intent_news.setClass(NewsAllActivity.this, NewsModuleActivity.class);
+//        intent_news.putExtra("trigger_from", "Notification");
+//        intent_news.putExtra("news_id", news_id);
+//        intent_news.putExtra("media", media);
+////        intent_news.putExtra("media", "Notification");
+//        PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_news, 0);
+//        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);
+//        builder.setContentTitle(title);
+//        builder.setContentText(media);
+//        builder.setSmallIcon(R.drawable.ic_launcher_foreground);
+//        builder.setContentIntent(pendingIntent);
+//        builder.setAutoCancel(true);
+//        builder.setChannelId(NOTIFICATION_CHANNEL_ID);
+//        return builder.build() ;
+//    }
+//
+//    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+//    private void scheduleNotification_repeat (Notification notification) {
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTimeInMillis(System.currentTimeMillis());
+//        calendar.set(Calendar.HOUR_OF_DAY, 0);
+//        calendar.set(Calendar.MINUTE, 1);
+//        int nid = (int) System.currentTimeMillis();
+//        Log.d("logesm", "news id" + nid);
+//        Intent notificationIntent = new Intent(this, NotificationListenerNews.class);
+//        notificationIntent.putExtra(NotificationListenerESM.NOTIFICATION_ID, 1 ) ;
+//        notificationIntent.putExtra(NotificationListenerESM.NOTIFICATION, notification) ;
+////        notificationIntent.putExtra("noti_time", nid) ;
+//        int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast( this, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+////        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//        assert alarmManager != null;
+////        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+////        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000 * 3600, pendingIntent);
+//        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000 * 60 * 60, pendingIntent);//60 min
+////        alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 1000 * 20, 1000 * 20, pendingIntent);
+//    }
     private Notification getNotification_esm (String content) {
         //replace content with time
         Date date = new Date(System.currentTimeMillis());
@@ -449,9 +449,9 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
     }
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void scheduleNotification_esm (Notification notification, int delay) {
-        Intent notificationIntent = new Intent(this, MyNotificationPublisherNews.class);
-        notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION_ID, 1 ) ;
-        notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION, notification) ;
+        Intent notificationIntent = new Intent(this, NotificationListenerNews.class);
+        notificationIntent.putExtra(NotificationListenerESM.NOTIFICATION_ID, 1 ) ;
+        notificationIntent.putExtra(NotificationListenerESM.NOTIFICATION, notification) ;
         int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
         PendingIntent pendingIntent = PendingIntent.getBroadcast( this, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         long futureInMillis = SystemClock.elapsedRealtime() + delay;

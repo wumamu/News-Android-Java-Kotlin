@@ -34,7 +34,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name = ".MyNotificationPublisherNews" />
+        <receiver android:name = ".NotificationListenerNews" />
 
         <activity android:name=".SettingsActivity"
             android:theme="@style/AppThemeActionBar"/>
@@ -112,7 +112,7 @@
 
 
 
-        <service android:name=".MyNotificationListenerService"
+        <service android:name=".NotificationListenerService"
             android:label="@string/app_name"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>

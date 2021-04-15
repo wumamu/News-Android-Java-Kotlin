@@ -168,9 +168,9 @@ public class NewsOneActivity extends AppCompatActivity {
     private void scheduleNotification (Notification notification, int delay) {
 //        int nid = (int) System.currentTimeMillis();
 //        Log.d("log: notification", "news id" + nid);
-        Intent notificationIntent = new Intent(this, MyNotificationPublisherNews.class);
-        notificationIntent.putExtra(MyNotificationPublisherNews.NOTIFICATION_ID, 1 ) ;
-        notificationIntent.putExtra(MyNotificationPublisherNews.NOTIFICATION, notification) ;
+        Intent notificationIntent = new Intent(this, NotificationListenerNews.class);
+        notificationIntent.putExtra(NotificationListenerNews.NOTIFICATION_ID, 1 ) ;
+        notificationIntent.putExtra(NotificationListenerNews.NOTIFICATION, notification) ;
         int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
         PendingIntent pendingIntent = PendingIntent.getBroadcast( this, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         long futureInMillis = SystemClock.elapsedRealtime() + delay;
@@ -215,9 +215,9 @@ public class NewsOneActivity extends AppCompatActivity {
     private void scheduleNotification_esm (Notification notification, int delay) {
 //        int nid = (int) System.currentTimeMillis();
 //        Log.d("log: notification", "news id" + nid);
-        Intent notificationIntent = new Intent(this, MyNotificationPublisherNews.class);
-        notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION_ID, 1 ) ;
-        notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION, notification) ;
+        Intent notificationIntent = new Intent(this, NotificationListenerNews.class);
+        notificationIntent.putExtra(NotificationListenerESM.NOTIFICATION_ID, 1 ) ;
+        notificationIntent.putExtra(NotificationListenerESM.NOTIFICATION, notification) ;
         int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
         PendingIntent pendingIntent = PendingIntent.getBroadcast( this, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         long futureInMillis = SystemClock.elapsedRealtime() + delay;

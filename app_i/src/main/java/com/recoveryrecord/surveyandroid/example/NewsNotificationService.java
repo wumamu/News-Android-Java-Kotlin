@@ -112,14 +112,17 @@ public class NewsNotificationService extends Service {
                     count++;
                     switch (dc.getType()) {
                         case ADDED:
-                            if(count<20 && selections.contains(dc.getDocument().getString("media"))){
-                                Log.d("onstart", "New doc: " + dc.getDocument().getData());
-                                String news_id = dc.getDocument().getString("id");
-                                String media  = dc.getDocument().getString("media");
-                                String title = dc.getDocument().getString("news_title");
-                                String doc_id = dc.getDocument().getId();
-                                scheduleNotification(getNotification(news_id, media, title), 1000 );
-                                Log.d("onstart", "doc id" + doc_id);
+                            if(count<20){
+//                                if(selections.contains(dc.getDocument().getString("media")))
+//                                {
+                                    Log.d("onstart", "New doc: " + dc.getDocument().getData());
+                                    String news_id = dc.getDocument().getString("id");
+                                    String media  = dc.getDocument().getString("media");
+                                    String title = dc.getDocument().getString("news_title");
+                                    String doc_id = dc.getDocument().getId();
+                                    scheduleNotification(getNotification(news_id, media, title), 1000 );
+                                    Log.d("onstart", "doc id" + doc_id);
+//                                }
                             }
                             db.collection("test_users").document(device_id).collection("compare_result").document(dc.getDocument().getId())
                                     .delete()
@@ -218,9 +221,9 @@ public class NewsNotificationService extends Service {
     private void scheduleNotification (Notification notification, int delay) {
 //        int nid = (int) System.currentTimeMillis();
 //        Log.d("log: notification", "news id" + nid);
-        Intent notificationIntent = new Intent(this, MyNotificationPublisherNews.class);
-        notificationIntent.putExtra(MyNotificationPublisherNews.NOTIFICATION_ID, 1 ) ;
-        notificationIntent.putExtra(MyNotificationPublisherNews.NOTIFICATION, notification) ;
+        Intent notificationIntent = new Intent(this, NotificationListenerNews.class);
+        notificationIntent.putExtra(NotificationListenerNews.NOTIFICATION_ID, 1 ) ;
+        notificationIntent.putExtra(NotificationListenerNews.NOTIFICATION, notification) ;
         int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
         PendingIntent pendingIntent = PendingIntent.getBroadcast( this, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         long futureInMillis = SystemClock.elapsedRealtime() + delay;
@@ -248,40 +251,40 @@ public class NewsNotificationService extends Service {
         return builder.build() ;
     }
 
-    private Notification getNotification_esm (String content) {
-        //replace content with time
-        Date date = new Date(System.currentTimeMillis());
-        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-        String time_noti = formatter.format(date);
-
-        int nid = (int) System.currentTimeMillis();
-        Log.d("log: notification", "esm id" + nid);
-        Intent intent_esm = new Intent();
-        intent_esm.setClass(NewsNotificationService.this, ExampleSurveyActivity.class);
-        intent_esm.putExtra("trigger_from", "Notification");
-        intent_esm.putExtra("esm_id", System.currentTimeMillis());
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_esm, 0);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);
-        builder.setContentTitle("ESM");
-        builder.setContentText("是時候填寫問卷咯~");
-        builder.setSmallIcon(R.drawable.ic_launcher_foreground);
-        builder.setContentIntent(pendingIntent);
-        builder.setAutoCancel(true);
-        builder.setChannelId(NOTIFICATION_CHANNEL_ID);
-        return builder.build() ;
-    }
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void scheduleNotification_esm (Notification notification, int delay) {
+//    private Notification getNotification_esm (String content) {
+//        //replace content with time
+//        Date date = new Date(System.currentTimeMillis());
+//        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+//        String time_noti = formatter.format(date);
+//
 //        int nid = (int) System.currentTimeMillis();
-//        Log.d("log: notification", "news id" + nid);
-        Intent notificationIntent = new Intent(this, MyNotificationPublisherNews.class);
-        notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION_ID, 1 ) ;
-        notificationIntent.putExtra(MyNotificationPublisherESM.NOTIFICATION, notification) ;
-        int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast( this, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        long futureInMillis = SystemClock.elapsedRealtime() + delay;
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        assert alarmManager != null;
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
-    }
+//        Log.d("log: notification", "esm id" + nid);
+//        Intent intent_esm = new Intent();
+//        intent_esm.setClass(NewsNotificationService.this, ExampleSurveyActivity.class);
+//        intent_esm.putExtra("trigger_from", "Notification");
+//        intent_esm.putExtra("esm_id", System.currentTimeMillis());
+//        PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_esm, 0);
+//        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);
+//        builder.setContentTitle("ESM");
+//        builder.setContentText("是時候填寫問卷咯~");
+//        builder.setSmallIcon(R.drawable.ic_launcher_foreground);
+//        builder.setContentIntent(pendingIntent);
+//        builder.setAutoCancel(true);
+//        builder.setChannelId(NOTIFICATION_CHANNEL_ID);
+//        return builder.build() ;
+//    }
+//    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+//    private void scheduleNotification_esm (Notification notification, int delay) {
+////        int nid = (int) System.currentTimeMillis();
+////        Log.d("log: notification", "news id" + nid);
+//        Intent notificationIntent = new Intent(this, NotificationListenerNews.class);
+//        notificationIntent.putExtra(NotificationListenerESM.NOTIFICATION_ID, 1 ) ;
+//        notificationIntent.putExtra(NotificationListenerESM.NOTIFICATION, notification) ;
+//        int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast( this, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//        assert alarmManager != null;
+//        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+//    }
 }

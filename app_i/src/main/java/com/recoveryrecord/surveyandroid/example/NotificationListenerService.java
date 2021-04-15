@@ -1,27 +1,21 @@
 package com.recoveryrecord.surveyandroid.example;
 
 import android.annotation.SuppressLint;
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import com.google.firebase.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -29,20 +23,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 import androidx.annotation.RequiresApi;
-import androidx.preference.PreferenceManager;
 
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-public class MyNotificationListenerService extends NotificationListenerService {
+public class NotificationListenerService extends android.service.notification.NotificationListenerService {
 
     private String TAG = this.getClass().getSimpleName();
-    private NLServiceReceiver nlservicereciver;
+    private NotificationListenerServiceReceiver nlservicereciver;
     @Override
     public void onCreate() {
         super.onCreate();
-        nlservicereciver = new NLServiceReceiver();
+        nlservicereciver = new NotificationListenerServiceReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction("com.recoveryrecord.surveyandroid.example.NOTIFICATION_LISTENER_SERVICE_EXAMPLE");
         registerReceiver(nlservicereciver,filter);
@@ -226,13 +218,13 @@ public class MyNotificationListenerService extends NotificationListenerService {
         Log.i(TAG, java.text.DateFormat.getDateTimeInstance().format(new Date()) + "\t" + "\t" + sbn.getPackageName());
     }
 
-    class NLServiceReceiver extends BroadcastReceiver{
+    class NotificationListenerServiceReceiver extends BroadcastReceiver{
         @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.i(TAG,"**********  onNotificationonReceive");
             if(intent.getStringExtra("command").equals("clearall")){
-                MyNotificationListenerService.this.cancelAllNotifications();
+                NotificationListenerService.this.cancelAllNotifications();
             } else if(intent.getStringExtra("command").equals("list")){
                 Log.i("log: NLService", "NLService");
                 List<String> noti_list = new ArrayList<String>();
@@ -240,7 +232,7 @@ public class MyNotificationListenerService extends NotificationListenerService {
                 String tmp = "";
 //                noti_list.add(tmp);
                 int count=1;
-                for (StatusBarNotification sbn : MyNotificationListenerService.this.getActiveNotifications()) {
+                for (StatusBarNotification sbn : NotificationListenerService.this.getActiveNotifications()) {
                     tmp = "";
                     tmp = count + "\n";
                     SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
