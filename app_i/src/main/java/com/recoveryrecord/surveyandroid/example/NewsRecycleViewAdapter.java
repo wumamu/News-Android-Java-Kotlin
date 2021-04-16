@@ -102,7 +102,7 @@ public class NewsRecycleViewAdapter extends RecyclerView.Adapter<NewsRecycleView
                     Log.d("log: onClick", model.getTitle());
 //                    Toast.makeText(view.getContext(), "click " +model.getTitle(),Toast.LENGTH_SHORT).show();
                     context.startActivity(intent);
-                    //MainActivity.this.finish();
+                    //TestActivityRecognitionActivity.this.finish();
                 }
             });
 

@@ -56,9 +56,9 @@ public class AddNotificationActivity extends AppCompatActivity {
                     text.setError("Please enter text!");
                     text.requestFocus();
                 } else {
-                    NotificationDbHelper dbHandler = new NotificationDbHelper(AddNotificationActivity.this);
+                    TestNotificationDbHelper dbHandler = new TestNotificationDbHelper(AddNotificationActivity.this);
                     dbHandler.insertNotificationDetails(pn, t, tt, ti, te);
-//                    intent = new Intent(MainActivity.this, DetailsActivity.class);
+//                    intent = new Intent(TestActivityRecognitionActivity.this, DetailsActivity.class);
 //                    startActivity(intent);
                     packagename.getText().clear();
                     time.getText().clear();
@@ -81,7 +81,7 @@ public class AddNotificationActivity extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
-        intent = new Intent(AddNotificationActivity.this, NotificationSettingActivity.class);
+        intent = new Intent(AddNotificationActivity.this, TestNotificationSettingActivity.class);
         startActivity(intent);
     }
 }

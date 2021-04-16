@@ -28,7 +28,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
-//import com.example.android.common.logger.LogFragment;
+//import com.example.android.common.logger.TestActivityRecognitionLogFragment;
 //import com.google.android.gms.location.ActivityRecognition;
 //import com.google.android.gms.location.ActivityTransition;
 //import com.google.android.gms.location.ActivityTransitionEvent;
@@ -56,15 +56,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-//import logger.LogFragment;
+//import logger.TestActivityRecognitionLogFragment;
 
 /**
  * Demos enabling/disabling Activity Recognition transitions, e.g., starting or stopping a walk,
  * run, drive, etc.).
  */
-public class MainActivity extends AppCompatActivity {
+public class TestActivityRecognitionActivity extends AppCompatActivity {
 
-    private final static String TAG = "MainActivity";
+    private final static String TAG = "TestActivityRecognitionActivity";
 
     // TODO: Review check for devices with Android 10 (29+).
     private boolean runningQOrLater =
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
     private PendingIntent mActivityTransitionsPendingIntent;
     private TransitionsReceiver mTransitionsReceiver;
-    private LogFragment mLogFragment;
+    private TestActivityRecognitionLogFragment mTestActivityRecognitionLogFragment;
 
     private static String toActivityString(int activity) {
         switch (activity) {
@@ -111,8 +111,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        mLogFragment =
-                (LogFragment) getSupportFragmentManager().findFragmentById(R.id.log_fragment);
+        mTestActivityRecognitionLogFragment =
+                (TestActivityRecognitionLogFragment) getSupportFragmentManager().findFragmentById(R.id.log_fragment);
 
         activityTrackingEnabled = false;
 
@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
         // TODO: Initialize PendingIntent that will be triggered when a activity transition occurs.
         Intent intent = new Intent(TRANSITIONS_RECEIVER_ACTION);
         mActivityTransitionsPendingIntent =
-                PendingIntent.getBroadcast(com.recoveryrecord.surveyandroid.example.MainActivity.this, 0, intent, 0);
+                PendingIntent.getBroadcast(TestActivityRecognitionActivity.this, 0, intent, 0);
 
         // TODO: Create a BroadcastReceiver to listen for activity transitions.
         // The receiver listens for the PendingIntent above that is triggered by the system when an
@@ -286,13 +286,13 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // Request permission and start activity for result. If the permission is approved, we
             // want to make sure we start activity recognition tracking.
-            Intent startIntent = new Intent(this, PermissionRationalActivity.class);
+            Intent startIntent = new Intent(this, ActivityRecognitionPermissionRationalActivity.class);
             startActivityForResult(startIntent, 0);
         }
     }
 
     private void printToScreen(@NonNull String message) {
-        mLogFragment.getLogView().println(message);
+        mTestActivityRecognitionLogFragment.getLogView().println(message);
         Log.d(TAG, message);
     }
 

@@ -97,7 +97,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
     List<DragObj> dragObjArrayListArray = new ArrayList<>();//drag gesture
 
     ReadingBehavior myReadingBehavior = new ReadingBehavior();//sqlite
-    ReadingBehaviorDbHelper dbHandler;
+    TestReadingBehaviorDbHelper dbHandler;
 
 //    private Toolbar toolbar;
 
@@ -320,7 +320,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
 //        toolbar = (Toolbar) findViewById(R.id.main_toolbar);
 //        setSupportActionBar(toolbar);
         //open database ############################################################################
-        dbHandler = new ReadingBehaviorDbHelper(NewsModuleActivity.this);
+        dbHandler = new TestReadingBehaviorDbHelper(NewsModuleActivity.this);
         //check trigger from #######################################################################
         if (getIntent().getExtras() != null) {
             Bundle b = getIntent().getExtras();

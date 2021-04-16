@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class NewsOneActivity extends AppCompatActivity {
+public class TestNewsOneActivity extends AppCompatActivity {
     private RecyclerView courseRV;
     private ArrayList<NewsModel> dataModalArrayList;
     private NewsRecycleViewAdapter dataRVAdapter;
@@ -107,7 +107,7 @@ public class NewsOneActivity extends AppCompatActivity {
                         } else {
                             // if the snapshot is empty we are
                             // displaying a toast message.
-                            Toast.makeText(NewsOneActivity.this, "No data found in Database", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(TestNewsOneActivity.this, "No data found in Database", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -115,7 +115,7 @@ public class NewsOneActivity extends AppCompatActivity {
             public void onFailure(@NonNull Exception e) {
                 // if we do not get any data or any error we are displaying
                 // a toast message that we do not get any data
-                Toast.makeText(NewsOneActivity.this, "Fail to get the data.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(TestNewsOneActivity.this, "Fail to get the data.", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -182,7 +182,7 @@ public class NewsOneActivity extends AppCompatActivity {
         int nid = (int) System.currentTimeMillis();
         Log.d("log: notification", "news id" + nid);
         Intent intent_news = new Intent();
-        intent_news.setClass(NewsOneActivity.this, NewsModuleActivity.class);
+        intent_news.setClass(TestNewsOneActivity.this, NewsModuleActivity.class);
         intent_news.putExtra("trigger_from", "Notification");
         PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_news, 0);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);
@@ -198,7 +198,7 @@ public class NewsOneActivity extends AppCompatActivity {
         int nid = (int) System.currentTimeMillis();
         Log.d("log: notification", "esm id" + nid);
         Intent intent_esm = new Intent();
-        intent_esm.setClass(NewsOneActivity.this, ExampleSurveyActivity.class);
+        intent_esm.setClass(TestNewsOneActivity.this, ESMActivity.class);
         intent_esm.putExtra("trigger_from", "Notification");
         intent_esm.putExtra("esm_id", System.currentTimeMillis());
         PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_esm, 0);

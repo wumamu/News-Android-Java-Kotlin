@@ -34,7 +34,7 @@
             app:persistent="true"/>
 <!--        <Preference-->
 <!--            app:key="media_order"-->
-<!--            app:fragment="com.recoveryrecord.surveyandroid.example.DemoFragment"-->
+<!--            app:fragment="com.recoveryrecord.surveyandroid.example.TestFragment"-->
 <!--            app:title="首頁媒體排序" />-->
         <PreferenceScreen
             android:title="首頁媒體排序">

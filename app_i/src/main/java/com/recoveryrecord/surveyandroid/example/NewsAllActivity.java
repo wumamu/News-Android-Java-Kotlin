@@ -34,7 +34,6 @@ import com.recoveryrecord.surveyandroid.example.model.Pagers;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -95,15 +94,7 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mYourService = new NewsNotificationService();
-//        mServiceIntent = new Intent(this, mYourService.getClass());
-        mServiceIntent = new Intent(this, NewsNotificationService.class);
-        if (!isMyServiceRunning(mYourService.getClass())) {
-            Toast.makeText(this, "service failed", Toast.LENGTH_LONG).show();
-            startService(mServiceIntent);
-        } else {
-            Toast.makeText(this, "service running", Toast.LENGTH_LONG).show();
-        }
+
 
         //initial value for collection
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -140,7 +131,7 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
             Toast.makeText(this, "趕快去設定選擇想要的媒體吧~", Toast.LENGTH_LONG).show();
         } else {
 //            String[] selected = selections.toArray(new String[] {});
-            Log.d("myprefer", Arrays.toString(new Set[]{selections}));
+            Log.d("lognewsselect", Arrays.toString(new Set[]{selections}));
         }
         //some initial
         //FirebaseApp.initializeApp();
@@ -181,6 +172,16 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
 
         setTitle("即時新聞");
 
+
+        mYourService = new NewsNotificationService();
+//        mServiceIntent = new Intent(this, mYourService.getClass());
+        mServiceIntent = new Intent(this, NewsNotificationService.class);
+        if (!isMyServiceRunning(mYourService.getClass())) {
+            Toast.makeText(this, "service failed", Toast.LENGTH_LONG).show();
+            startService(mServiceIntent);
+        } else {
+            Toast.makeText(this, "service running", Toast.LENGTH_LONG).show();
+        }
         ArrayList<View> mPages = new ArrayList<>();
         //notification media_rank
         Set<String> ranking = sharedPrefs.getStringSet("media_rank", null);
@@ -209,14 +210,14 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
             mPages.add(new Pagers(this, (1), "ettoday", "ettoday"));
         } else {
 //            String[] ranking_result = ranking.toArray(new String[] {});
-            Log.d("myprefer", Arrays.toString(new Set[]{ranking}));
+            Log.d("lognewsselect", Arrays.toString(new Set[]{ranking}));
             for (int i = 1; i<=8; i++){
                 for (String r : ranking){
                     List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
-//            Log.d("myprefer", out.get(0));
+//            Log.d("lognewsselect", out.get(0));
                     if(Integer.parseInt(out.get(1))==i){
-//                    Log.d("myprefer", out.get(0));
-//                    Log.d("myprefer", String.valueOf(Integer.parseInt(out.get(1))));
+//                    Log.d("lognewsselect", out.get(0));
+//                    Log.d("lognewsselect", String.valueOf(Integer.parseInt(out.get(1))));
 //                i++;
                         mPages.add(new Pagers(this, (1), out.get(0), media_hash.get(out.get(0))));
                         continue;
@@ -227,10 +228,10 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
 
         ViewPager viewPager = findViewById(R.id.mViewPager);
         TabLayout tab = findViewById(R.id.tab);
-        MyPagerAdapter myPagerAdapter = new MyPagerAdapter(mPages, this);
+        NewsPagerAdapter newsPagerAdapter = new NewsPagerAdapter(mPages, this);
 
         tab.setupWithViewPager(viewPager);
-        viewPager.setAdapter(myPagerAdapter);
+        viewPager.setAdapter(newsPagerAdapter);
         viewPager.setCurrentItem(0);//指定跳到某頁，一定得設置在setAdapter後面
 
 
@@ -271,14 +272,14 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
 //                scheduleNotification_repeat(getNotification_esm("time"));
 //                Toast.makeText(this, "開始每小時固定發送esm~", Toast.LENGTH_LONG).show();
                 Toast.makeText(this, "發送esm~", Toast.LENGTH_LONG).show();
-//                Intent intent_base = new Intent(NewsAllActivity.this, BasicActivity.class);
+//                Intent intent_base = new Intent(NewsAllActivity.this, TestBasicActivity.class);
 //                startActivity(intent_base);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             case R.id.nav_contact :
                 Log.d("log: navigation", "nav_contact " + item.getItemId());
                 Toast.makeText(this, "目前什麼都沒有拉~", Toast.LENGTH_LONG).show();
-//                Intent intent_ems = new Intent(NewsAllActivity.this, ExampleSurveyActivity.class);
+//                Intent intent_ems = new Intent(NewsAllActivity.this, ESMActivity.class);
 //                startActivity(intent_ems);
 //                drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
@@ -345,7 +346,7 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
 //                scheduleNotification_repeat(getNotification_esm("time"));
 //                return true;
 //            case R.id.action_10 :
-//                Intent intent_ems = new Intent(NewsAllActivity.this, ExampleSurveyActivity.class);
+//                Intent intent_ems = new Intent(NewsAllActivity.this, ESMActivity.class);
 //                startActivity(intent_ems);
 //                return true;
 //            case R.id.action_30 :
@@ -425,7 +426,7 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
         int nid = (int) System.currentTimeMillis();
         Log.d("logesm", "esm id " + nid + " " + Timestamp.now());
         Intent intent_esm = new Intent();
-        intent_esm.setClass(NewsAllActivity.this, ExampleSurveyActivity.class);
+        intent_esm.setClass(NewsAllActivity.this, ESMActivity.class);
         intent_esm.putExtra("trigger_from", "Notification");
         intent_esm.putExtra("esm_id", esm_id);
         intent_esm.putExtra("noti_timestamp", Timestamp.now());

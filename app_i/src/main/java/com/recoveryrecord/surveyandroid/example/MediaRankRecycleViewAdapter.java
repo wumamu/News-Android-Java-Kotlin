@@ -6,7 +6,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,14 +22,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class MediaRecycleViewAdapter extends RecyclerView.Adapter<MediaRecycleViewAdapter.ViewHolder> implements ItemTouchHelperAdapter{
+public class MediaRankRecycleViewAdapter extends RecyclerView.Adapter<MediaRankRecycleViewAdapter.ViewHolder> implements ItemTouchHelperAdapter{
     private ArrayList<MediaModel> dataModelArrayList;
     private Context context;
     private ItemTouchHelper mTouchHelper;
 //    private OnCustomerListChangedListener mListChangedListener;
 
     // constructor class for our Adapter
-    public MediaRecycleViewAdapter(ArrayList<MediaModel> dataModalArrayList, Context context) {
+    public MediaRankRecycleViewAdapter(ArrayList<MediaModel> dataModalArrayList, Context context) {
         this.dataModelArrayList = dataModalArrayList;
         this.context = context;
 //        mListChangedListener = listChangedListener;
@@ -38,15 +37,15 @@ public class MediaRecycleViewAdapter extends RecyclerView.Adapter<MediaRecycleVi
 
     @NonNull
     @Override
-    public MediaRecycleViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MediaRankRecycleViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // passing our layout file for displaying our card item
-        return new MediaRecycleViewAdapter.ViewHolder(LayoutInflater.from(context).inflate(R.layout.media_rv_item, parent, false));
+        return new MediaRankRecycleViewAdapter.ViewHolder(LayoutInflater.from(context).inflate(R.layout.media_rv_item, parent, false));
     }
 
 
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
-    public void onBindViewHolder(@NonNull MediaRecycleViewAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MediaRankRecycleViewAdapter.ViewHolder holder, int position) {
         // setting data to our views in Recycler view items.
         MediaModel model = dataModelArrayList.get(position);
 //        holder.newsTitle.setText(model.getTitle());

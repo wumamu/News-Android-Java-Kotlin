@@ -11,16 +11,12 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
 
-import java.util.Date;
-
 import androidx.core.app.NotificationCompat;
 
 import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.NOTIFICATION_SERVICE;
 
-import static com.recoveryrecord.surveyandroid.example.config.SharedVariables.DIARY_ALARM;
 import static com.recoveryrecord.surveyandroid.example.config.SharedVariables.ESM_ALARM;
-import static com.recoveryrecord.surveyandroid.example.config.SharedVariables.NEWS_ALARM;
 
 import static com.recoveryrecord.surveyandroid.example.config.Constants.SHAREPREFERENCE_TEST;
 
@@ -203,7 +199,7 @@ public class AlarmReceiever extends BroadcastReceiver {
 
 
         String esm_id = String.valueOf(System.currentTimeMillis());
-        Intent notificationIntent = new Intent(context, ExampleSurveyActivity.class); //Intent(this, 點下去會跳到ESM class)
+        Intent notificationIntent = new Intent(context, ESMActivity.class); //Intent(this, 點下去會跳到ESM class)
         notificationIntent.putExtra("json_file_name", "ExampleQuestions.json");
         notificationIntent.putExtra("esm_id", esm_id);
 

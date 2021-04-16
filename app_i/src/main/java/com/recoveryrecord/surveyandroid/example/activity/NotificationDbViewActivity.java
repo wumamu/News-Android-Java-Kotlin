@@ -8,8 +8,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import com.recoveryrecord.surveyandroid.example.NewsAllActivity;
-import com.recoveryrecord.surveyandroid.example.NotificationDbHelper;
-import com.recoveryrecord.surveyandroid.example.NotificationSettingActivity;
+import com.recoveryrecord.surveyandroid.example.TestNotificationDbHelper;
 import com.recoveryrecord.surveyandroid.example.R;
 
 import java.util.ArrayList;
@@ -23,7 +22,7 @@ public class NotificationDbViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification_db_view);
-        NotificationDbHelper db = new NotificationDbHelper(this);
+        TestNotificationDbHelper db = new TestNotificationDbHelper(this);
         ArrayList<HashMap<String, String>> notificationList = db.GetNotifications();
         ListView lv = (ListView) findViewById(R.id.esm_list);
         ListAdapter adapter = new SimpleAdapter(NotificationDbViewActivity.this, notificationList, R.layout.list_row,new String[]{"packagename","time","tickertext", "notititle", "notitext"}, new int[]{R.id.packagename, R.id.time, R.id.tickertext, R.id.notititle, R.id.notitext});

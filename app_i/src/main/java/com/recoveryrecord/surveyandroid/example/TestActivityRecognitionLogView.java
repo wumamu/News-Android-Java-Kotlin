@@ -23,22 +23,22 @@ import android.widget.TextView;
 /**
  * Outputs log data via Simple TextView.
  */
-public class LogView extends TextView {
+public class TestActivityRecognitionLogView extends TextView {
 
-    public LogView(Context context) {
+    public TestActivityRecognitionLogView(Context context) {
         super(context);
     }
 
-    public LogView(Context context, AttributeSet attrs) {
+    public TestActivityRecognitionLogView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public LogView(Context context, AttributeSet attrs, int defStyle) {
+    public TestActivityRecognitionLogView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
     /**
-     * Formats the log data and prints it out to the LogView.
+     * Formats the log data and prints it out to the TestActivityRecognitionLogView.
      * @param msg The actual message to be logged. The actual message to be logged.
      */
     public void println(final String msg) {
@@ -48,13 +48,13 @@ public class LogView extends TextView {
         ((Activity) getContext()).runOnUiThread( (new Thread(new Runnable() {
             @Override
             public void run() {
-                // Display the text we just generated within the LogView.
+                // Display the text we just generated within the TestActivityRecognitionLogView.
                 appendToLog(msg);
             }
         })));
     }
 
-    /** Outputs the string as a new line of log data in the LogView. */
+    /** Outputs the string as a new line of log data in the TestActivityRecognitionLogView. */
     public void appendToLog(String s) {
         append("\n" + s);
     }

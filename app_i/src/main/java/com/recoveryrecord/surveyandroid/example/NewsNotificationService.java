@@ -83,7 +83,7 @@ public class NewsNotificationService extends Service {
 //        // of the program
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         final Set<String> selections = sharedPrefs.getStringSet("media_select", null);
-        if (selections==null){
+        if (selections.isEmpty()){
             selections.add("中時");
             selections.add("中央社");
             selections.add("華視");
@@ -102,7 +102,7 @@ public class NewsNotificationService extends Service {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                 if (e != null) {
-                    Log.d("onstart", "listen:error", e);
+                    Log.d("lognewsselect", "listen:error", e);
                     return;
                 }
                 Timestamp right_now = Timestamp.now();
@@ -115,13 +115,13 @@ public class NewsNotificationService extends Service {
                             if(count<20 && selections.contains(dc.getDocument().getString("media"))){
 //                                if(selections.contains(dc.getDocument().getString("media")))
 //                                {
-                                    Log.d("onstart", "New doc: " + dc.getDocument().getData());
+                                    Log.d("lognewsselect", "New doc: " + dc.getDocument().getData());
                                     String news_id = dc.getDocument().getString("id");
                                     String media  = dc.getDocument().getString("media");
                                     String title = dc.getDocument().getString("news_title");
                                     String doc_id = dc.getDocument().getId();
                                     scheduleNotification(getNotification(news_id, media, title), 1000 );
-                                    Log.d("onstart", "doc id" + doc_id);
+                                    Log.d("lognewsselect", "doc id" + doc_id);
 //                                }
                             }
                             db.collection("test_users").document(device_id).collection("compare_result").document(dc.getDocument().getId())
@@ -129,19 +129,19 @@ public class NewsNotificationService extends Service {
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            Log.d("onstart", "DocumentSnapshot successfully deleted!");
+                                            Log.d("lognewsselect", "DocumentSnapshot successfully deleted!");
                                         }
                                     })
                                     .addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
-                                            Log.d("onstart", "Error deleting document", e);
+                                            Log.d("lognewsselect", "Error deleting document", e);
                                         }
                                     });
 //                            scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
                             break;
                         case MODIFIED:
-                            Log.d("onstart", "Modified doc: " + dc.getDocument().getData());
+                            Log.d("lognewsselect", "Modified doc: " + dc.getDocument().getData());
                             String news_id_m = dc.getDocument().getString("id");
                             String media_m  = dc.getDocument().getString("media");
                             String title_m = dc.getDocument().getString("news_title");
@@ -149,7 +149,7 @@ public class NewsNotificationService extends Service {
                             scheduleNotification(getNotification(news_id_m, media_m, title_m), 1000 );
                             break;
                         case REMOVED:
-                            Log.d("onstart", "Removed doc: " + dc.getDocument().getData());
+                            Log.d("lognewsselect", "Removed doc: " + dc.getDocument().getData());
                             break;
                     }
                 }
@@ -260,7 +260,7 @@ public class NewsNotificationService extends Service {
 //        int nid = (int) System.currentTimeMillis();
 //        Log.d("log: notification", "esm id" + nid);
 //        Intent intent_esm = new Intent();
-//        intent_esm.setClass(NewsNotificationService.this, ExampleSurveyActivity.class);
+//        intent_esm.setClass(NewsNotificationService.this, ESMActivity.class);
 //        intent_esm.putExtra("trigger_from", "Notification");
 //        intent_esm.putExtra("esm_id", System.currentTimeMillis());
 //        PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_esm, 0);

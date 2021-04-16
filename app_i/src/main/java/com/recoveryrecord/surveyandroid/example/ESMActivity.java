@@ -1,14 +1,10 @@
 package com.recoveryrecord.surveyandroid.example;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.View;
-import android.view.Window;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -24,19 +20,16 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.recoveryrecord.surveyandroid.Answer;
 import com.recoveryrecord.surveyandroid.R;
-import com.recoveryrecord.surveyandroid.SurveyActivity;
 import com.recoveryrecord.surveyandroid.condition.CustomConditionHandler;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class ExampleSurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActivity implements CustomConditionHandler {
+public class ESMActivity extends com.recoveryrecord.surveyandroid.SurveyActivity implements CustomConditionHandler {
     String esm_id = "";
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -172,7 +165,7 @@ public class ExampleSurveyActivity extends com.recoveryrecord.surveyandroid.Surv
                     }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            ExampleSurveyActivity.super.onBackPressed();
+                            ESMActivity.super.onBackPressed();
                         }
             }).show();
         }

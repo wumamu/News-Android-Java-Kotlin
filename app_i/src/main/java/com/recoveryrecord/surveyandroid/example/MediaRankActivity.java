@@ -2,12 +2,10 @@ package com.recoveryrecord.surveyandroid.example;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.recoveryrecord.surveyandroid.example.model.MediaModel;
-import com.recoveryrecord.surveyandroid.example.model.Pagers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,7 +23,7 @@ public class MediaRankActivity extends AppCompatActivity{
 
     private RecyclerView courseRV;
     private ArrayList<MediaModel> dataModalArrayList;
-    private MediaRecycleViewAdapter dataRVAdapter;
+    private MediaRankRecycleViewAdapter dataRVAdapter;
     private FirebaseFirestore db;
 //    private OnCustomerListChangedListener mListChangedListener;
 
@@ -61,8 +59,8 @@ public class MediaRankActivity extends AppCompatActivity{
         courseRV.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
         // adding our array list to our recycler view adapter class.
-//        dataRVAdapter = new MediaRecycleViewAdapter(dataModalArrayList, this, mListChangedListener);
-        dataRVAdapter = new MediaRecycleViewAdapter(dataModalArrayList, this);
+//        dataRVAdapter = new MediaRankRecycleViewAdapter(dataModalArrayList, this, mListChangedListener);
+        dataRVAdapter = new MediaRankRecycleViewAdapter(dataModalArrayList, this);
         // setting adapter to our recycler view.
         courseRV.setAdapter(dataRVAdapter);
         //drag and drop

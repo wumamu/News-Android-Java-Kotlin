@@ -38,7 +38,7 @@
 
         <activity android:name=".SettingsActivity"
             android:theme="@style/AppThemeActionBar"/>
-        <activity android:name=".BasicActivity"
+        <activity android:name=".TestBasicActivity"
             android:theme="@style/AppThemeActionBar">
             <intent-filter>
                 <action android:name="com.recoveryrecord.surveyandroid.example.BasicActivity" />
@@ -75,22 +75,22 @@
         </activity>
         <activity android:name=".NewsModuleActivity"
             android:theme="@style/AppThemeActionBar"/>
-        <activity android:name=".NewsOneActivity" />
-        <activity android:name=".ExampleSurveyActivity"
+        <activity android:name=".TestNewsOneActivity" />
+        <activity android:name=".ESMActivity"
             android:theme="@style/Widget.SurveyAndroid"/>
-        <activity android:name=".NetworkCheckerActivity" />
-        <activity android:name=".NotificationSettingActivity"
+<!--        <activity android:name=".NetworkCheckerActivity" />-->
+        <activity android:name=".TestNotificationSettingActivity"
             android:theme="@style/AppThemeActionBar"/>
         <activity android:name=".AddNotificationActivity"
             android:theme="@style/AppThemeActionBar"/>
         <activity android:name=".activity.NotificationDbViewActivity"
             android:theme="@style/AppThemeActionBar"/>
-        <activity android:name=".PermissionRationalActivity"/>
-        <activity android:name=".MainActivity"/>
+        <activity android:name=".ActivityRecognitionPermissionRationalActivity"/>
+        <activity android:name=".TestActivityRecognitionActivity"/>
 
-        <!--        <activity android:name=".ESMDbViewActivity"-->
+        <!--        <activity android:name=".TestESMDbViewActivity"-->
         <!--            android:theme="@style/AppThemeActionBar"/>-->
-        <!--        <activity android:name=".ESMJsonViewActivity"-->
+        <!--        <activity android:name=".TestESMJsonViewActivity"-->
         <!--            android:theme="@style/AppThemeActionBar"/>-->
 
         <receiver android:name=".receiever.ApplicationSelectorReceiver" />

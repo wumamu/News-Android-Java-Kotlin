@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.recoveryrecord.surveyandroid.example.sqlite.ReadingBehavior;
 
-public class ReadingBehaviorDbHelper extends SQLiteOpenHelper {
+public class TestReadingBehaviorDbHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "reading_behavior.db";
     private static final String TABLE_NAME_READING_BEHAVIOR = "reading_behaviors";
@@ -30,7 +30,7 @@ public class ReadingBehaviorDbHelper extends SQLiteOpenHelper {
     private static final String KEY_SHARE = "share";
     private static final String KEY_TIME_SERIES = "time_series";
 
-    public ReadingBehaviorDbHelper(Context context){
+    public TestReadingBehaviorDbHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
     @Override

@@ -46,7 +46,7 @@ import static android.media.AudioManager.STREAM_RING;
 //import android.support.v7.app.AppCompatActivity ;
 
 
-public class BasicActivity extends AppCompatActivity {
+public class TestBasicActivity extends AppCompatActivity {
 
     public static final String NOTIFICATION_CHANNEL_ID = "10001" ;
     private final static String default_notification_channel_id = "default" ;
@@ -64,7 +64,7 @@ public class BasicActivity extends AppCompatActivity {
     @Override
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        ESMDbHelper esmDbHelper = new ESMDbHelper(this);
+//        TestESMDbHelper esmDbHelper = new TestESMDbHelper(this);
         setTitle("Homepage");
 //        addAdaLovelace();
         setContentView(R.layout.activity_basic);
@@ -77,25 +77,25 @@ public class BasicActivity extends AppCompatActivity {
         //network checker###########################################################################
         mNetworkReceiver = new NetworkChangeReceiver();
         registerNetworkBroadcastForNougat();//register
-        mContext = BasicActivity.this;
+        mContext = TestBasicActivity.this;
         btn_to_news.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
             Intent intent = new Intent();
-            intent.setClass(BasicActivity.this, NewsModuleActivity.class);
-            intent.putExtra("trigger_from", "MainActivity");
+            intent.setClass(TestBasicActivity.this, NewsModuleActivity.class);
+            intent.putExtra("trigger_from", "TestActivityRecognitionActivity");
             startActivity(intent);
-            //MainActivity.this.finish();
+            //TestActivityRecognitionActivity.this.finish();
             }
         });
         btn_to_diary.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
             Intent intent = new Intent();
-            intent.setClass(BasicActivity.this, ExampleSurveyActivity.class);
-//            intent.setClass(MainActivity.this, ESMJsonViewActivity.class);
+            intent.setClass(TestBasicActivity.this, ESMActivity.class);
+//            intent.setClass(TestActivityRecognitionActivity.this, TestESMJsonViewActivity.class);
             startActivity(intent);
-            //MainActivity.this.finish();
+            //TestActivityRecognitionActivity.this.finish();
             }
         });
         manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -104,11 +104,11 @@ public class BasicActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                intent.setClass(BasicActivity.this, NotificationSettingActivity.class);
-//                intent.setClass(MainActivity.this, NewsMainActivity.class);
-//                intent.setClass(MainActivity.this, TmpMainActivity.class);
+                intent.setClass(TestBasicActivity.this, TestNotificationSettingActivity.class);
+//                intent.setClass(TestActivityRecognitionActivity.this, NewsMainActivity.class);
+//                intent.setClass(TestActivityRecognitionActivity.this, TmpMainActivity.class);
                 startActivity(intent);
-                //MainActivity.this.finish();
+                //TestActivityRecognitionActivity.this.finish();
             }
         });
         btn_to_test.setOnClickListener(new View.OnClickListener() {
@@ -121,29 +121,29 @@ public class BasicActivity extends AppCompatActivity {
                 int mode_ring =myAudioManager.getRingerMode();//ringtone mode
                 if(mode_ring==AudioManager.RINGER_MODE_VIBRATE){
                     Log.e("log: ring mode", "Vibrate");
-//            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
+//            Toast.makeText(TestActivityRecognitionActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
                 } else if(mode_ring==AudioManager.RINGER_MODE_NORMAL){
                     Log.e("log: ring mode", "Ringing");
-//            Toast.makeText(MainActivity.this,"Now in Ringing Mode", Toast.LENGTH_LONG).show();
+//            Toast.makeText(TestActivityRecognitionActivity.this,"Now in Ringing Mode", Toast.LENGTH_LONG).show();
                 } else if (mode_ring==AudioManager.RINGER_MODE_SILENT){
                     Log.e("log: ring mode", "Silent");
-//            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
+//            Toast.makeText(TestActivityRecognitionActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
                 } else {
                     Log.e("log: ring mode", "Unknown");
                 }
                 int mode_audio =myAudioManager.getMode();
                 if(mode_audio==AudioManager.MODE_NORMAL){
                     Log.e("log: audio mode", "normal");
-                    //            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
+                    //            Toast.makeText(TestActivityRecognitionActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
                 } else if(mode_audio==AudioManager.MODE_RINGTONE){
                     Log.e("log: audio mode", "is ringing");
-                    //            Toast.makeText(MainActivity.this,"Now in Ringing Mode", Toast.LENGTH_LONG).show();
+                    //            Toast.makeText(TestActivityRecognitionActivity.this,"Now in Ringing Mode", Toast.LENGTH_LONG).show();
                 } else if (mode_audio==AudioManager.MODE_IN_CALL){
                     Log.e("log: audio mode", "in call");
-                    //            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
+                    //            Toast.makeText(TestActivityRecognitionActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
                 } else if (mode_audio==AudioManager.MODE_IN_COMMUNICATION){
                     Log.e("log: audio mode", "in internet chat");
-                    //            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
+                    //            Toast.makeText(TestActivityRecognitionActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
                 } else {
                     Log.e("log: audio mode", "Unknown");
                 }
@@ -165,13 +165,13 @@ public class BasicActivity extends AppCompatActivity {
                 for (AudioDeviceInfo device: devices) {
                     if (device.getType() == AudioDeviceInfo.TYPE_WIRED_HEADPHONES){
                         Log.e("log: AudioDevice type", "headphone");
-//                        Toast.makeText(MainActivity.this,"123", Toast.LENGTH_LONG).show();
+//                        Toast.makeText(TestActivityRecognitionActivity.this,"123", Toast.LENGTH_LONG).show();
                     } else if (device.getType() == AudioDeviceInfo.TYPE_WIRED_HEADSET){
                         Log.e("log: AudioDevice type", "headset");
-//                        Toast.makeText(MainActivity.this,"456", Toast.LENGTH_LONG).show();
+//                        Toast.makeText(TestActivityRecognitionActivity.this,"456", Toast.LENGTH_LONG).show();
                     } else if (device.getType() == AudioDeviceInfo.TYPE_USB_HEADSET) {
                         Log.e("log: AudioDevice type", "headset usb");
-//                        Toast.makeText(MainActivity.this,"789", Toast.LENGTH_LONG).show();
+//                        Toast.makeText(TestActivityRecognitionActivity.this,"789", Toast.LENGTH_LONG).show();
                     } else if (device.getType() == AudioDeviceInfo.TYPE_BLUETOOTH_SCO){
                         Log.e("log: AudioDevice type", "Bluetooth device typically used for telephony");
                     } else if (device.getType() == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP){
@@ -183,7 +183,7 @@ public class BasicActivity extends AppCompatActivity {
 
 //                Intent intent = new Intent();
 //                intent.setClass(TestActivity.this, NewsMainActivity.class);
-////                intent.setClass(MainActivity.this, TmpMainActivity.class);
+////                intent.setClass(TestActivityRecognitionActivity.this, TmpMainActivity.class);
 //                startActivity(intent);
 //                alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000 * 60 * 20, alarmIntent);
 //                scheduleNotification_repeat(getNotification("my repeat alarm"), calendar);
@@ -196,7 +196,7 @@ public class BasicActivity extends AppCompatActivity {
 //                int hour = cldr.get(Calendar.HOUR_OF_DAY);
 //                int minutes = cldr.get(Calendar.MINUTE);
 //                // time picker dialog
-//                picker = new TimePickerDialog(MainActivity.this, new TimePickerDialog.OnTimeSetListener() {
+//                picker = new TimePickerDialog(TestActivityRecognitionActivity.this, new TimePickerDialog.OnTimeSetListener() {
 //                    @Override
 //                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 ////                                eText.setText(sHour + ":" + sMinute);
@@ -215,29 +215,29 @@ public class BasicActivity extends AppCompatActivity {
 //        int mode_ring =myAudioManager.getRingerMode();//ringtone mode
 //        if(mode_ring==AudioManager.RINGER_MODE_VIBRATE){
 //            Log.e("log: ring mode", "Vibrate");
-////            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
+////            Toast.makeText(TestActivityRecognitionActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
 //        } else if(mode_ring==AudioManager.RINGER_MODE_NORMAL){
 //            Log.e("log: ring mode", "Ringing");
-////            Toast.makeText(MainActivity.this,"Now in Ringing Mode", Toast.LENGTH_LONG).show();
+////            Toast.makeText(TestActivityRecognitionActivity.this,"Now in Ringing Mode", Toast.LENGTH_LONG).show();
 //        } else if (mode_ring==AudioManager.RINGER_MODE_SILENT){
 //            Log.e("log: ring mode", "Silent");
-////            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
+////            Toast.makeText(TestActivityRecognitionActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
 //        } else {
 //            Log.e("log: ring mode", "Unknown");
 //        }
 //        int mode_audio =myAudioManager.getMode();
 //        if(mode_audio==AudioManager.MODE_NORMAL){
 //            Log.e("log: audio mode", "normal");
-//            //            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
+//            //            Toast.makeText(TestActivityRecognitionActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
 //        } else if(mode_audio==AudioManager.MODE_RINGTONE){
 //            Log.e("log: audio mode", "is ringing");
-//            //            Toast.makeText(MainActivity.this,"Now in Ringing Mode", Toast.LENGTH_LONG).show();
+//            //            Toast.makeText(TestActivityRecognitionActivity.this,"Now in Ringing Mode", Toast.LENGTH_LONG).show();
 //        } else if (mode_audio==AudioManager.MODE_IN_CALL){
 //            Log.e("log: audio mode", "in call");
-//            //            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
+//            //            Toast.makeText(TestActivityRecognitionActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
 //        } else if (mode_audio==AudioManager.MODE_IN_COMMUNICATION){
 //            Log.e("log: audio mode", "in internet chat");
-//            //            Toast.makeText(MainActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
+//            //            Toast.makeText(TestActivityRecognitionActivity.this,"Now in Vibrate Mode", Toast.LENGTH_LONG).show();
 //        } else {
 //            Log.e("log: audio mode", "Unknown");
 //        }
@@ -259,13 +259,13 @@ public class BasicActivity extends AppCompatActivity {
 //        for (AudioDeviceInfo device: devices) {
 //            if (device.getType() == AudioDeviceInfo.TYPE_WIRED_HEADPHONES){
 //                Log.e("log: AudioDevice type", "headphone");
-////                        Toast.makeText(MainActivity.this,"123", Toast.LENGTH_LONG).show();
+////                        Toast.makeText(TestActivityRecognitionActivity.this,"123", Toast.LENGTH_LONG).show();
 //            } else if (device.getType() == AudioDeviceInfo.TYPE_WIRED_HEADSET){
 //                Log.e("log: AudioDevice type", "headset");
-////                        Toast.makeText(MainActivity.this,"456", Toast.LENGTH_LONG).show();
+////                        Toast.makeText(TestActivityRecognitionActivity.this,"456", Toast.LENGTH_LONG).show();
 //            } else if (device.getType() == AudioDeviceInfo.TYPE_USB_HEADSET) {
 //                Log.e("log: AudioDevice type", "headset usb");
-////                        Toast.makeText(MainActivity.this,"789", Toast.LENGTH_LONG).show();
+////                        Toast.makeText(TestActivityRecognitionActivity.this,"789", Toast.LENGTH_LONG).show();
 //            } else if (device.getType() == AudioDeviceInfo.TYPE_BLUETOOTH_SCO){
 //                Log.e("log: AudioDevice type", "Bluetooth device typically used for telephony");
 //            } else if (device.getType() == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP){
@@ -416,7 +416,7 @@ public class BasicActivity extends AppCompatActivity {
     }
 
     //    public void notificationButtonOnClick(View view) {
-    //        Intent intent = new Intent(MainActivity.this, com.recoveryrecord.surveyandroid.example.SettingsActivity.class);
+    //        Intent intent = new Intent(TestActivityRecognitionActivity.this, com.recoveryrecord.surveyandroid.example.SettingsActivity.class);
     //        startActivity(intent);
     //    }
     @Override
@@ -464,7 +464,7 @@ public class BasicActivity extends AppCompatActivity {
         int nid = (int) System.currentTimeMillis();
         Log.d("log: notification", "news id" + nid);
         Intent intent_news = new Intent();
-        intent_news.setClass(BasicActivity.this, NewsModuleActivity.class);
+        intent_news.setClass(TestBasicActivity.this, NewsModuleActivity.class);
         intent_news.putExtra("trigger_from", "Notification");
         PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_news, 0);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);
@@ -496,7 +496,7 @@ public class BasicActivity extends AppCompatActivity {
     private Notification getNotification_esm (String content) {
         int nid = (int) System.currentTimeMillis();
         Intent intent_esm = new Intent();
-        intent_esm.setClass(BasicActivity.this, ExampleSurveyActivity.class);
+        intent_esm.setClass(TestBasicActivity.this, ESMActivity.class);
         intent_esm.putExtra("trigger_from", "Notification");
         PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_esm, 0);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);

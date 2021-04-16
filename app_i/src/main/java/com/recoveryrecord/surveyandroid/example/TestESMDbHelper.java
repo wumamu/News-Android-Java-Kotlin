@@ -12,7 +12,7 @@ import com.recoveryrecord.surveyandroid.example.sqlite.ESMContract;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ESMDbHelper extends SQLiteOpenHelper {
+public class TestESMDbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "ESM.db";
     private static final int DATABASE_VERSION = 1;
     private SQLiteDatabase db;
@@ -48,7 +48,7 @@ public class ESMDbHelper extends SQLiteOpenHelper {
 //    private static final String KEY_SHARE_2 = "share_2";
 
 
-    public ESMDbHelper(Context context) {
+    public TestESMDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
     @Override

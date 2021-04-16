@@ -31,14 +31,14 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 /**
- * LogView outputs log data to the screen.
+ * TestActivityRecognitionLogView outputs log data to the screen.
  */
-public class LogFragment extends Fragment {
+public class TestActivityRecognitionLogFragment extends Fragment {
 
-    private LogView mLogView;
+    private TestActivityRecognitionLogView mTestActivityRecognitionLogView;
     private ScrollView mScrollView;
 
-    public LogFragment() {}
+    public TestActivityRecognitionLogFragment() {}
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public View inflateViews() {
@@ -48,26 +48,26 @@ public class LogFragment extends Fragment {
                 ViewGroup.LayoutParams.MATCH_PARENT);
         mScrollView.setLayoutParams(scrollParams);
 
-        mLogView = new LogView(getActivity());
+        mTestActivityRecognitionLogView = new TestActivityRecognitionLogView(getActivity());
         ViewGroup.LayoutParams logParams = new ViewGroup.LayoutParams(scrollParams);
         logParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-        mLogView.setLayoutParams(logParams);
-        mLogView.setClickable(true);
-        mLogView.setFocusable(true);
-        mLogView.setTypeface(Typeface.MONOSPACE);
+        mTestActivityRecognitionLogView.setLayoutParams(logParams);
+        mTestActivityRecognitionLogView.setClickable(true);
+        mTestActivityRecognitionLogView.setFocusable(true);
+        mTestActivityRecognitionLogView.setTypeface(Typeface.MONOSPACE);
 
         // Want to set padding as 16 dips, setPadding takes pixels.  Hooray math!
         int paddingDips = 16;
         double scale = getResources().getDisplayMetrics().density;
         int paddingPixels = (int) ((paddingDips * (scale)) + .5);
-        mLogView.setPadding(paddingPixels, paddingPixels, paddingPixels, paddingPixels);
-        mLogView.setCompoundDrawablePadding(paddingPixels);
+        mTestActivityRecognitionLogView.setPadding(paddingPixels, paddingPixels, paddingPixels, paddingPixels);
+        mTestActivityRecognitionLogView.setCompoundDrawablePadding(paddingPixels);
 
-        mLogView.setGravity(Gravity.BOTTOM);
+        mTestActivityRecognitionLogView.setGravity(Gravity.BOTTOM);
 
-        mLogView.setTextAppearance(android.R.style.TextAppearance_DeviceDefault_Medium);
+        mTestActivityRecognitionLogView.setTextAppearance(android.R.style.TextAppearance_DeviceDefault_Medium);
 
-        mScrollView.addView(mLogView);
+        mScrollView.addView(mTestActivityRecognitionLogView);
         return mScrollView;
     }
 
@@ -78,7 +78,7 @@ public class LogFragment extends Fragment {
 
         View result = inflateViews();
 
-        mLogView.addTextChangedListener(new TextWatcher() {
+        mTestActivityRecognitionLogView.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
@@ -93,7 +93,7 @@ public class LogFragment extends Fragment {
         return result;
     }
 
-    public LogView getLogView() {
-        return mLogView;
+    public TestActivityRecognitionLogView getLogView() {
+        return mTestActivityRecognitionLogView;
     }
 }

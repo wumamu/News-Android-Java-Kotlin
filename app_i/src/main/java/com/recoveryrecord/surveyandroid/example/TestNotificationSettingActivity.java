@@ -16,14 +16,14 @@ import com.recoveryrecord.surveyandroid.example.activity.NotificationDbViewActiv
 
 import androidx.core.app.ActivityCompat;
 
-public class NotificationSettingActivity extends Activity {
+public class TestNotificationSettingActivity extends Activity {
 //    private TextView txtView;
     private NotificationReceiver nReceiver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification_setting);
-        if(ActivityCompat.checkSelfPermission(NotificationSettingActivity.this, Manifest.permission.BIND_NOTIFICATION_LISTENER_SERVICE)!= PackageManager.PERMISSION_GRANTED){
+        if(ActivityCompat.checkSelfPermission(TestNotificationSettingActivity.this, Manifest.permission.BIND_NOTIFICATION_LISTENER_SERVICE)!= PackageManager.PERMISSION_GRANTED){
             Intent intent=new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
             startActivity(intent);
         }
@@ -39,7 +39,7 @@ public class NotificationSettingActivity extends Activity {
         btnCreateNotify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(NotificationSettingActivity.this, AddNotificationActivity.class);
+                Intent intent = new Intent(TestNotificationSettingActivity.this, AddNotificationActivity.class);
                 startActivity(intent);
 //                NotificationManager nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 //                NotificationCompat.Builder ncomp = new NotificationCompat.Builder(this);
@@ -72,7 +72,7 @@ public class NotificationSettingActivity extends Activity {
         btnListNotify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(NotificationSettingActivity.this, NotificationDbViewActivity.class);
+                Intent intent = new Intent(TestNotificationSettingActivity.this, NotificationDbViewActivity.class);
                 startActivity(intent);
             }
         });
@@ -105,7 +105,7 @@ public class NotificationSettingActivity extends Activity {
                     tickertext = tickertext + split[3];
                     title = title + split[4];
                     text = text + split[5];
-                    NotificationDbHelper dbHandler = new NotificationDbHelper(NotificationSettingActivity.this);
+                    TestNotificationDbHelper dbHandler = new TestNotificationDbHelper(TestNotificationSettingActivity.this);
                     dbHandler.insertNotificationDetails(packagename, tickertext, time, title, text);
                     Toast.makeText(getApplicationContext(), "Details Inserted Successfully", Toast.LENGTH_SHORT).show();
                 }
@@ -133,7 +133,7 @@ public class NotificationSettingActivity extends Activity {
     }
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(NotificationSettingActivity.this, NewsAllActivity.class);
+        Intent intent = new Intent(TestNotificationSettingActivity.this, NewsAllActivity.class);
         startActivity(intent);
     }
 

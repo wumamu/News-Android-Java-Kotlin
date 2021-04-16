@@ -21,7 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 //import android.support.v7.app.AppCompatActivity ;
 
 
-public class ESMJsonViewActivity extends AppCompatActivity {
+public class TestESMJsonViewActivity extends AppCompatActivity {
 //    private TextView txtView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -166,7 +166,7 @@ public class ESMJsonViewActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                intent.setClass(ESMJsonViewActivity.this, ESMDbViewActivity.class);
+                intent.setClass(TestESMJsonViewActivity.this, TestESMDbViewActivity.class);
                 startActivity(intent);
             }
         });
@@ -174,12 +174,12 @@ public class ESMJsonViewActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 //                Intent intent = new Intent();
-//                intent.setClass(ESMJsonViewActivity.this, ESMDbViewActivity.class);
+//                intent.setClass(TestESMJsonViewActivity.this, TestESMDbViewActivity.class);
 //                startActivity(intent);
                 Date date = new Date(System.currentTimeMillis());
                 SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
                 String time_now = formatter.format(date);
-                ESMDbHelper dbHandler = new ESMDbHelper(ESMJsonViewActivity.this);
+                TestESMDbHelper dbHandler = new TestESMDbHelper(TestESMJsonViewActivity.this);
                 dbHandler.insertESMDetails(ESM_answer, time_now);
                 Toast.makeText(getApplicationContext(), "Details Inserted Successfully", Toast.LENGTH_SHORT).show();
             }
@@ -187,7 +187,7 @@ public class ESMJsonViewActivity extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(ESMJsonViewActivity.this, BasicActivity.class);
+        Intent intent = new Intent(TestESMJsonViewActivity.this, TestBasicActivity.class);
         startActivity(intent);
     }
 

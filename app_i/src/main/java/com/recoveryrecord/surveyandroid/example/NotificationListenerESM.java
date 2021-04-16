@@ -7,7 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import static com.recoveryrecord.surveyandroid.example.BasicActivity.NOTIFICATION_CHANNEL_ID;
+import static com.recoveryrecord.surveyandroid.example.TestBasicActivity.NOTIFICATION_CHANNEL_ID;
 
 public class NotificationListenerESM extends BroadcastReceiver {
     public static String NOTIFICATION_ID = "notification-id" ;
@@ -27,7 +27,7 @@ public class NotificationListenerESM extends BroadcastReceiver {
         notificationManager.notify((int) System.currentTimeMillis() , notification) ;
     }
 //    private Notification buildNotification(Context ctx) {
-//        Intent intent = new Intent(ctx, com.example.notificationscheduler.MainActivity.class);
+//        Intent intent = new Intent(ctx, com.example.notificationscheduler.TestActivityRecognitionActivity.class);
 //        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 //        PendingIntent pendingIntent = PendingIntent.getActivity(ctx, 0, intent, 0);
 //

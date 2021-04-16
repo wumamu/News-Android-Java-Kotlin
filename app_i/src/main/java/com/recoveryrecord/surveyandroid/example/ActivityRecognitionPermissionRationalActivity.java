@@ -35,10 +35,10 @@ import androidx.core.app.ActivityCompat;
  * the permission. After permission is accepted, finishes the activity so main activity can
  * show transitions.
  */
-public class PermissionRationalActivity extends AppCompatActivity implements
+public class ActivityRecognitionPermissionRationalActivity extends AppCompatActivity implements
         ActivityCompat.OnRequestPermissionsResultCallback {
 
-    private static final String TAG = "PermissionRationalActivity";
+    private static final String TAG = "ActivityRecognitionPermissionRationalActivity";
 
     /* Id to identify Activity Recognition permission request. */
     private static final int PERMISSION_REQUEST_ACTIVITY_RECOGNITION = 45;
