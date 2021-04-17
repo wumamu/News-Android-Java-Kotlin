@@ -83,7 +83,7 @@ public class Storm3Fragment extends Fragment {
         db.collection("medias")
                 .document("storm")
                 .collection("news")
-                .whereEqualTo("category", "政治")
+                .whereArrayContains("category", "政治")
                 .orderBy("pubdate", Query.Direction.DESCENDING)
                 .limit(50)
                 .get()
