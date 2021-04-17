@@ -87,6 +87,7 @@
             android:theme="@style/AppThemeActionBar"/>
         <activity android:name=".ActivityRecognitionPermissionRationalActivity"/>
         <activity android:name=".TestActivityRecognitionActivity"/>
+        <activity android:name=".MainActivity"/>
 
         <!--        <activity android:name=".TestESMDbViewActivity"-->
         <!--            android:theme="@style/AppThemeActionBar"/>-->

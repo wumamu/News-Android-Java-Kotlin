@@ -172,7 +172,7 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
 
         setTitle("即時新聞");
 
-
+        //check notification service running
         mYourService = new NewsNotificationService();
 //        mServiceIntent = new Intent(this, mYourService.getClass());
         mServiceIntent = new Intent(this, NewsNotificationService.class);
@@ -200,14 +200,14 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
             edit.putStringSet("media_rank", set);
             edit.apply();
             Toast.makeText(this, "趕快去設定調整首頁app排序八~", Toast.LENGTH_LONG).show();
-            mPages.add(new Pagers(this, (1), "中時", "chinatimes"));
-            mPages.add(new Pagers(this, (1), "中央社", "cna"));
-            mPages.add(new Pagers(this, (1), "華視", "cts"));//cts
-            mPages.add(new Pagers(this, (1), "東森", "ebc"));
-            mPages.add(new Pagers(this, (1), "自由時報", "ltn"));
-            mPages.add(new Pagers(this, (1), "風傳媒", "storm"));
-            mPages.add(new Pagers(this, (1), "聯合", "udn"));
-            mPages.add(new Pagers(this, (1), "ettoday", "ettoday"));
+            mPages.add(new Pagers(this, (1), "中時", "chinatimes", "生活"));
+            mPages.add(new Pagers(this, (1), "中央社", "cna", "生活"));
+            mPages.add(new Pagers(this, (1), "華視", "cts", "生活"));//cts
+            mPages.add(new Pagers(this, (1), "東森", "ebc", "生活"));
+            mPages.add(new Pagers(this, (1), "自由時報", "ltn", "生活"));
+            mPages.add(new Pagers(this, (1), "風傳媒", "storm", "生活"));
+            mPages.add(new Pagers(this, (1), "聯合", "udn", "生活"));
+            mPages.add(new Pagers(this, (1), "ettoday", "ettoday", "生活"));
         } else {
 //            String[] ranking_result = ranking.toArray(new String[] {});
             Log.d("lognewsselect", Arrays.toString(new Set[]{ranking}));
@@ -219,7 +219,7 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
 //                    Log.d("lognewsselect", out.get(0));
 //                    Log.d("lognewsselect", String.valueOf(Integer.parseInt(out.get(1))));
 //                i++;
-                        mPages.add(new Pagers(this, (1), out.get(0), media_hash.get(out.get(0))));
+                        mPages.add(new Pagers(this, (1), out.get(0), media_hash.get(out.get(0)), "生活"));
                         continue;
                     }
                 }
@@ -228,10 +228,10 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
 
         ViewPager viewPager = findViewById(R.id.mViewPager);
         TabLayout tab = findViewById(R.id.tab);
-        NewsPagerAdapter newsPagerAdapter = new NewsPagerAdapter(mPages, this);
+        NewsMediaPagerAdapter newsMediaPagerAdapter = new NewsMediaPagerAdapter(mPages, this);
 
         tab.setupWithViewPager(viewPager);
-        viewPager.setAdapter(newsPagerAdapter);
+        viewPager.setAdapter(newsMediaPagerAdapter);
         viewPager.setCurrentItem(0);//指定跳到某頁，一定得設置在setAdapter後面
 
 
@@ -279,9 +279,9 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
             case R.id.nav_contact :
                 Log.d("log: navigation", "nav_contact " + item.getItemId());
                 Toast.makeText(this, "目前什麼都沒有拉~", Toast.LENGTH_LONG).show();
-//                Intent intent_ems = new Intent(NewsAllActivity.this, ESMActivity.class);
-//                startActivity(intent_ems);
-//                drawerLayout.closeDrawer(GravityCompat.START);
+                Intent intent_ems = new Intent(NewsAllActivity.this, MainActivity.class);
+                startActivity(intent_ems);
+                drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             default :
                 return false;

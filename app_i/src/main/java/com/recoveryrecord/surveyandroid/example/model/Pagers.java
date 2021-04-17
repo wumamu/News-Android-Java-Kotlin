@@ -34,7 +34,7 @@ public class Pagers extends RelativeLayout {
 //    private TextView errorTitle, errorMessage;
 //    private Button btnRetry;
     private FirebaseFirestore db;
-    public Pagers(final Context context, int pageNumber, String pageTag, String media_name) {
+    public Pagers(final Context context, int pageNumber, String pageTag, String media_name, String category) {
         super(context);
 
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -70,85 +70,97 @@ public class Pagers extends RelativeLayout {
         // setting adapter to our recycler view.
         courseRV.setAdapter(dataRVAdapter);
 
-        loadrecyclerViewData(media_name, context);
+        loadrecyclerViewData(media_name, context, category);
 //        Log.d("log: pager", "news id");
 
         //remember!!!!!!!!!!!!!!!!!
         addView(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
     }
-    private void loadrecyclerViewData(final String media_nn, final Context cc) {
-//        errorLayout.setVisibility(View.GONE);
-        Log.d("log: pager", media_nn);
-        db.collection("medias")
-                .document(media_nn)
-                .collection("news")////
-                .orderBy("pubdate", Query.Direction.DESCENDING)//           .orderBy("pubdate", Query.Direction.DESCENDING)
-                .limit(50)
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        // after getting the data we are calling on success method
-                        // and inside this method we are checking if the received
-                        // query snapshot is empty or not.
-                        if (!queryDocumentSnapshots.isEmpty()) {
-                            // if the snapshot is not empty we are hiding our
-                            // progress bar and adding our data in a list.
-                            List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
-                            for (DocumentSnapshot d : list) {
-                                // after getting this list we are passing that
-                                // list to our object class.
-                                NewsModel dataModal = d.toObject(NewsModel.class);
-                                // and we will pass this object class
-                                // inside our arraylist which we have
-                                // created for recycler view.
-                                dataModalArrayList.add(dataModal);
+    private void loadrecyclerViewData(final String media_nn, final Context cc, final String cat) {
+        if(media_nn.equals("chinatimes")){
+            Log.d("logpager", media_nn + " " + cat);
+            //neet to
+            String tmp_cat = cat;//"政治";
+            db.collection("medias")
+                    .document(media_nn)
+                    .collection("news")
+//                    .whereEqualTo("category", "體育")
+                    .orderBy("pubdate", Query.Direction.DESCENDING)//           .orderBy("pubdate", Query.Direction.DESCENDING)
+                    .limit(50)
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            if (!queryDocumentSnapshots.isEmpty()) {
+                                List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
+                                for (DocumentSnapshot d : list) {
+                                    NewsModel dataModal = d.toObject(NewsModel.class);
+                                    dataModalArrayList.add(dataModal);
+                                }
+                                dataRVAdapter.notifyDataSetChanged();
+                            } else {
+                                Log.d("logpager", "No data found " + media_nn);
                             }
-                            // after adding the data to recycler view.
-                            // we are calling recycler view notifyDataSetChanged
-                            // method to notify that data has been changed in recycler view.
-                            dataRVAdapter.notifyDataSetChanged();
-                        } else {
-                            // if the snapshot is empty we are
-                            // displaying a toast message.
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d("logpager", "Fail to get the data." + media_nn);
+                }
+            });
+        } else {
+            Log.d("logpager", media_nn);
+            db.collection("medias")
+                    .document(media_nn)
+                    .collection("news")////
+                    .orderBy("pubdate", Query.Direction.DESCENDING)//           .orderBy("pubdate", Query.Direction.DESCENDING)
+                    .limit(50)
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            // after getting the data we are calling on success method
+                            // and inside this method we are checking if the received
+                            // query snapshot is empty or not.
+                            if (!queryDocumentSnapshots.isEmpty()) {
+                                // if the snapshot is not empty we are hiding our
+                                // progress bar and adding our data in a list.
+                                List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
+                                for (DocumentSnapshot d : list) {
+                                    // after getting this list we are passing that
+                                    // list to our object class.
+                                    NewsModel dataModal = d.toObject(NewsModel.class);
+                                    // and we will pass this object class
+                                    // inside our arraylist which we have
+                                    // created for recycler view.
+                                    dataModalArrayList.add(dataModal);
+                                }
+                                // after adding the data to recycler view.
+                                // we are calling recycler view notifyDataSetChanged
+                                // method to notify that data has been changed in recycler view.
+                                dataRVAdapter.notifyDataSetChanged();
+                            } else {
+                                // if the snapshot is empty we are
+                                // displaying a toast message.
 //                            TextView myTextViewsEmpty = new TextView(cc);
 //                            myTextViewsEmpty.setText("no result");
-                            Log.d("log: pager", "No data found " + media_nn);
+                                Log.d("logpager", "No data found " + media_nn);
 //                            vv.addView(myTextViewsEmpty);
 //                            Toast.makeText(cc, "No data found in Database", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                // if we do not get any data or any error we are displaying
-                // a toast message that we do not get any data
-                Log.d("log: pager", "Fail to get the data." + media_nn);
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    // if we do not get any data or any error we are displaying
+                    // a toast message that we do not get any data
+                    Log.d("logpager", "Fail to get the data." + media_nn);
 //                Toast.makeText(cc, "Fail to get the data." + media_nn, Toast.LENGTH_SHORT).show();
 //                showErrorMessage("Oops..", "Network failure, Please Try Again\n", media_nn, cc);
-            }
-        });
+                }
+            });
+        }
+
     }
-
-//    private void showErrorMessage(int imageView, String title, String message, final String media_nn, final Context cc){
-//    private void showErrorMessage(String title, String message, final String media_nn, final Context cc){
-//
-//        if (errorLayout.getVisibility() == View.GONE) {
-//            errorLayout.setVisibility(View.VISIBLE);
-//        }
-//
-////        errorImage.setImageResource(imageView);
-//        errorTitle.setText(title);
-//        errorMessage.setText(message);
-//
-//        btnRetry.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                loadrecyclerViewData(media_nn, cc);
-//            }
-//        });
-//
-//    }
-
 }
