@@ -1,4 +1,4 @@
- package com.recoveryrecord.surveyandroid.example;
+package com.recoveryrecord.surveyandroid.example;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
@@ -28,16 +28,19 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-//import com.google.firebase.messaging.FirebaseMessaging;
-import com.recoveryrecord.surveyandroid.example.model.Pagers;
+import com.recoveryrecord.surveyandroid.example.chinatimes.ChinatimesMainFragment;
+import com.recoveryrecord.surveyandroid.example.cna.CnaMainFragment;
+import com.recoveryrecord.surveyandroid.example.cts.CtsMainFragment;
+import com.recoveryrecord.surveyandroid.example.ebc.EbcMainFragment;
+import com.recoveryrecord.surveyandroid.example.ettoday.EttodayMainFragment;
+import com.recoveryrecord.surveyandroid.example.ltn.LtnMainFragment;
+import com.recoveryrecord.surveyandroid.example.storm.StormMainFragment;
+import com.recoveryrecord.surveyandroid.example.udn.UdnMainFragment;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
@@ -50,32 +53,32 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.preference.PreferenceManager;
 import androidx.viewpager.widget.ViewPager;
 
-//import com.google.firebase.FirebaseApp;
-
-public class NewsAllActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
-
-    //temp for notification
+public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     public static final String NOTIFICATION_CHANNEL_ID = "10001" ;
     private final static String default_notification_channel_id = "default" ;
     private static final String TAG = "NewsAllActivity";
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DocumentReference noteRef = db.document("server_push_notifications/start");
     private CollectionReference noteRefqq = db.collection("server_push_notifications");
-    boolean doubleBackToExitPressedOnce = false;
 
     private Toolbar toolbar;
-
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
 
+    private SectionsPagerAdapter mSectionsPagerAdapter;
+    private ViewPager mViewPager;
+
+    boolean doubleBackToExitPressedOnce = false;
     private TextView user_phone, user_id, user_name;
 
     Intent mServiceIntent;
     private NewsNotificationService mYourService;
-
 
     private static final HashMap<String, String> media_hash = new HashMap<String, String>();
     static{
@@ -89,11 +92,10 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
         media_hash.put("ettoday", "ettoday");
     }
 
-    @SuppressLint("HardwareIds")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setContentView(R.layout.activity_news_hybrid);
         //initial value for collection
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         final String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -131,31 +133,11 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
 //            String[] selected = selections.toArray(new String[] {});
             Log.d("lognewsselect", Arrays.toString(new Set[]{selections}));
         }
-        //some initial
-        //FirebaseApp.initializeApp();
-        setContentView(R.layout.activity_all_news);
         //navi
-        toolbar = findViewById(R.id.main_toolbar);
+        toolbar = findViewById(R.id.main_toolbar_hy);
         setSupportActionBar(toolbar);
-
-        drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
-
-
-        View header = navigationView.getHeaderView(0);
-        user_phone = (TextView) header.findViewById(R.id.textView_user_phone);
-        user_phone.setText(Build.MODEL);
-        user_id = (TextView) header.findViewById(R.id.textView_user_id);
-        user_id.setText(Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID));
-        user_name = (TextView) header.findViewById(R.id.textView_user_name);
-        String signature = sharedPrefs.getString("signature", null);
-        if (signature==null){
-//            Toast.makeText(this, "趕快去設定選擇想要的媒體吧~", Toast.LENGTH_LONG).show();
-            user_name.setText("使用者名稱");
-        } else {
-            user_name.setText(signature);
-        }
-
+        drawerLayout = findViewById(R.id.drawer_layout_hy);
+        navigationView = findViewById(R.id.nav_view_hy);
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
                 this,
                 drawerLayout,
@@ -163,7 +145,7 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
                 R.string.openNavDrawer,
                 R.string.closeNavDrawer
         );
-
+        View header = navigationView.getHeaderView(0);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
@@ -180,64 +162,13 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
         } else {
             Toast.makeText(this, "service running", Toast.LENGTH_LONG).show();
         }
-        ArrayList<View> mPages = new ArrayList<>();
-        //notification media_rank
-        Set<String> ranking = sharedPrefs.getStringSet("media_rank", null);
-        if (ranking==null){
-            Set<String> set = new HashSet<String>();
-            set.add("中時 1");
-            set.add("中央社 2");
-            set.add("華視 3");
-            set.add("東森 4");
-            set.add("自由時報 5");
-            set.add("風傳媒 6");
-            set.add("聯合 7");
-            set.add("ettoday 8");
-            SharedPreferences.Editor edit = sharedPrefs.edit();
-            edit.clear();
-            edit.putStringSet("media_rank", set);
-            edit.apply();
-            Toast.makeText(this, "趕快去設定調整首頁app排序八~", Toast.LENGTH_LONG).show();
-            mPages.add(new Pagers(this, (1), "中時", "chinatimes", "生活"));
-            mPages.add(new Pagers(this, (1), "中央社", "cna", "生活"));
-            mPages.add(new Pagers(this, (1), "華視", "cts", "生活"));//cts
-            mPages.add(new Pagers(this, (1), "東森", "ebc", "生活"));
-            mPages.add(new Pagers(this, (1), "自由時報", "ltn", "生活"));
-            mPages.add(new Pagers(this, (1), "風傳媒", "storm", "生活"));
-            mPages.add(new Pagers(this, (1), "聯合", "udn", "生活"));
-            mPages.add(new Pagers(this, (1), "ettoday", "ettoday", "生活"));
-        } else {
-//            String[] ranking_result = ranking.toArray(new String[] {});
-            Log.d("lognewsselect", Arrays.toString(new Set[]{ranking}));
-            for (int i = 1; i<=8; i++){
-                for (String r : ranking){
-                    List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
-//            Log.d("lognewsselect", out.get(0));
-                    if(Integer.parseInt(out.get(1))==i){
-//                    Log.d("lognewsselect", out.get(0));
-//                    Log.d("lognewsselect", String.valueOf(Integer.parseInt(out.get(1))));
-//                i++;
-                        mPages.add(new Pagers(this, (1), out.get(0), media_hash.get(out.get(0)), "生活"));
-                        continue;
-                    }
-                }
-            }
-        }
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mViewPager = (ViewPager) findViewById(R.id.container_hy);
+        mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        ViewPager viewPager = findViewById(R.id.mViewPager);
-        TabLayout tab = findViewById(R.id.tab);
-        NewsMediaPagerAdapter newsMediaPagerAdapter = new NewsMediaPagerAdapter(mPages, this);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs_hy);
+        tabLayout.setupWithViewPager(mViewPager);
 
-        tab.setupWithViewPager(viewPager);
-        viewPager.setAdapter(newsMediaPagerAdapter);
-        viewPager.setCurrentItem(0);//指定跳到某頁，一定得設置在setAdapter後面
-
-
-
-    }
-    @Override
-    protected void onStart() {
-        super.onStart();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -247,27 +178,25 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
         switch (item.getItemId()) {
             case R.id.nav_setting :
                 Log.d("log: navigation", "nav_setting " + item.getItemId());
-                Intent intent_setting = new Intent(NewsAllActivity.this, SettingsActivity.class);
+                Intent intent_setting = new Intent(NewsHybridActivity.this, SettingsActivity.class);
                 startActivity(intent_setting);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             case R.id.nav_progressing :
                 Log.d("log: navigation", "nav_progressing " + item.getItemId());
-                Intent intent_db = new Intent(NewsAllActivity.this, SurveyProgressActivity.class);
+                Intent intent_db = new Intent(NewsHybridActivity.this, SurveyProgressActivity.class);
                 startActivity(intent_db);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             case R.id.nav_history :
                 Log.d("log: navigation", "nav_history " + item.getItemId());
-                Intent intent_noti = new Intent(NewsAllActivity.this, ReadHistoryActivity.class);
+                Intent intent_noti = new Intent(NewsHybridActivity.this, ReadHistoryActivity.class);
                 startActivity(intent_noti);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             case R.id.nav_reschedule :
                 Log.d("log: navigation", "nav_reschedule " + item.getItemId());
                 scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 1000 );
-//                scheduleNotification(getNotification("0143b739b1c33d46cd18b6af12b2d5b2", "ettoday", "wa_title" ), 5000 );
-//                scheduleNotification_repeat(getNotification_esm("time"));
 //                Toast.makeText(this, "開始每小時固定發送esm~", Toast.LENGTH_LONG).show();
                 Toast.makeText(this, "發送esm~", Toast.LENGTH_LONG).show();
 //                Intent intent_base = new Intent(NewsAllActivity.this, TestBasicActivity.class);
@@ -277,9 +206,9 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
             case R.id.nav_contact :
                 Log.d("log: navigation", "nav_contact " + item.getItemId());
                 Toast.makeText(this, "目前什麼都沒有拉~", Toast.LENGTH_LONG).show();
-                Intent intent_ems = new Intent(NewsAllActivity.this, NewsHybridActivity.class);
-                startActivity(intent_ems);
-                drawerLayout.closeDrawer(GravityCompat.START);
+//                Intent intent_ems = new Intent(NewsHybridActivity.this, NewsHybridActivity.class);
+//                startActivity(intent_ems);
+//                drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             default :
                 return false;
@@ -287,7 +216,6 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
 
 //        return false;
     }
-
     private boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -299,12 +227,6 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
         Log.d ("Servicestatus", "Not running");
         return false;
     }
-
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
-
-    }
-
     @Override
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)){
@@ -324,95 +246,7 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
                 }
             }, 2000);
         }
-
     }
-
-//
-//    @Override
-//    public boolean onCreateOptionsMenu (Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_main_news, menu);
-//        //getMenuInflater().inflate(R.menu.menu, menu);
-//        return true;
-//    }
-//    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-//    @Override
-//    public boolean onOptionsItemSelected (MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.action_5 :
-//                scheduleNotification(getNotification("0143b739b1c33d46cd18b6af12b2d5b2", "ettoday", "wa_title" ), 5000 );
-//                scheduleNotification_repeat(getNotification_esm("time"));
-//                return true;
-//            case R.id.action_10 :
-//                Intent intent_ems = new Intent(NewsAllActivity.this, ESMActivity.class);
-//                startActivity(intent_ems);
-//                return true;
-//            case R.id.action_30 :
-//                Intent intent_noti_db = new Intent(NewsAllActivity.this, NotificationDbViewActivity.class);
-//                startActivity(intent_noti_db);
-////                scheduleNotification(getNotification("news (30 second delay)" ), 30000 );
-////                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
-//                return true;
-//            default :
-//                return super.onOptionsItemSelected(item);
-//        }
-//    }
-//    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-//    private void scheduleNotification (Notification notification, int delay) {
-////        int nid = (int) System.currentTimeMillis();
-////        Log.d("log: notification", "news id" + nid);
-//        Intent notificationIntent = new Intent(this, NotificationListenerNews.class);
-//        notificationIntent.putExtra(NotificationListenerNews.NOTIFICATION_ID, 1 ) ;
-//        notificationIntent.putExtra(NotificationListenerNews.NOTIFICATION, notification) ;
-//        int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast( this, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-//        long futureInMillis = SystemClock.elapsedRealtime() + delay;
-//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//        assert alarmManager != null;
-//        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
-//    }
-//    private Notification getNotification (String news_id, String media, String title) {
-//        int nid = (int) System.currentTimeMillis();
-//        Log.d("log: notification", "news id" + nid);
-//        Intent intent_news = new Intent();
-//        intent_news.setClass(NewsAllActivity.this, NewsModuleActivity.class);
-//        intent_news.putExtra("trigger_from", "Notification");
-//        intent_news.putExtra("news_id", news_id);
-//        intent_news.putExtra("media", media);
-////        intent_news.putExtra("media", "Notification");
-//        PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_news, 0);
-//        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);
-//        builder.setContentTitle(title);
-//        builder.setContentText(media);
-//        builder.setSmallIcon(R.drawable.ic_launcher_foreground);
-//        builder.setContentIntent(pendingIntent);
-//        builder.setAutoCancel(true);
-//        builder.setChannelId(NOTIFICATION_CHANNEL_ID);
-//        return builder.build() ;
-//    }
-//
-//    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-//    private void scheduleNotification_repeat (Notification notification) {
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.setTimeInMillis(System.currentTimeMillis());
-//        calendar.set(Calendar.HOUR_OF_DAY, 0);
-//        calendar.set(Calendar.MINUTE, 1);
-//        int nid = (int) System.currentTimeMillis();
-//        Log.d("logesm", "news id" + nid);
-//        Intent notificationIntent = new Intent(this, NotificationListenerNews.class);
-//        notificationIntent.putExtra(NotificationListenerESM.NOTIFICATION_ID, 1 ) ;
-//        notificationIntent.putExtra(NotificationListenerESM.NOTIFICATION, notification) ;
-////        notificationIntent.putExtra("noti_time", nid) ;
-//        int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast( this, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-////        long futureInMillis = SystemClock.elapsedRealtime() + delay;
-//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//        assert alarmManager != null;
-////        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
-////        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000 * 3600, pendingIntent);
-//        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000 * 60 * 60, pendingIntent);//60 min
-////        alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 1000 * 20, 1000 * 20, pendingIntent);
-//    }
     private Notification getNotification_esm (String content) {
         //replace content with time
         Date date = new Date(System.currentTimeMillis());
@@ -424,7 +258,7 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
         int nid = (int) System.currentTimeMillis();
         Log.d("logesm", "esm id " + nid + " " + Timestamp.now());
         Intent intent_esm = new Intent();
-        intent_esm.setClass(NewsAllActivity.this, ESMActivity.class);
+        intent_esm.setClass(NewsHybridActivity.this, ESMActivity.class);
         intent_esm.putExtra("trigger_from", "Notification");
         intent_esm.putExtra("esm_id", esm_id);
         intent_esm.putExtra("noti_timestamp", Timestamp.now());
@@ -461,6 +295,67 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         assert alarmManager != null;
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+    }
+
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+
+        public SectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+
+            switch (position) {
+                case 0:
+                    return new ChinatimesMainFragment();
+                case 1:
+                    return new CnaMainFragment();
+                case 2:
+                    return new CtsMainFragment();
+                case 3:
+                    return new EbcMainFragment();
+                case 4:
+                    return new EttodayMainFragment();
+                case 5:
+                    return new UdnMainFragment();
+                case 6:
+                    return new LtnMainFragment();
+                case 7:
+                    return new StormMainFragment();
+                default:
+                    return Tab3Fragment.newInstance();
+            }
+        }
+
+        @Override
+        public int getCount() {
+            // Show 3 total pages.
+            return 8;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0:
+                    return "中時";
+                case 1:
+                    return "中央社";
+                case 2:
+                    return "華視";
+                case 3:
+                    return "東森";
+                case 4:
+                    return "ettoday";
+                case 5:
+                    return "聯合";
+                case 6:
+                    return "自由";
+                case 7:
+                    return "風傳媒";
+            }
+            return null;
+        }
     }
 
 }

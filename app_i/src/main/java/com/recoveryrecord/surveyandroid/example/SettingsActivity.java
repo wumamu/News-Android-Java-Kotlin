@@ -61,7 +61,7 @@ public class SettingsActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 //do whatever
-                Intent intent_back = new Intent(SettingsActivity.this, NewsAllActivity.class);
+                Intent intent_back = new Intent(SettingsActivity.this, NewsHybridActivity.class);
                 startActivity(intent_back);
                 return true;
             default:

@@ -21,7 +21,6 @@
             android:background="#bfc8d1"
             app:tabMaxWidth="55dp"
             app:tabMode="scrollable"
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

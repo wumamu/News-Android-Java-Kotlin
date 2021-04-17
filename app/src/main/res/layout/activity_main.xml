@@ -7,7 +7,7 @@
     android:background="#F3F3F3"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".com.recoveryrecord.surveyandroid.example.NewHybridActivity">
+    tools:context=".com.recoveryrecord.surveyandroid.example.NewsHybridActivity">
 
     <Button
         android:id="@+id/btn_to_news"
