@@ -85,7 +85,7 @@ public class Pagers extends RelativeLayout {
             db.collection("medias")
                     .document(media_nn)
                     .collection("news")
-//                    .whereEqualTo("category", "體育")
+                    .whereEqualTo("category", "體育")
                     .orderBy("pubdate", Query.Direction.DESCENDING)//           .orderBy("pubdate", Query.Direction.DESCENDING)
                     .limit(50)
                     .get()
@@ -107,6 +107,7 @@ public class Pagers extends RelativeLayout {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     Log.d("logpager", "Fail to get the data." + media_nn);
+                    Log.d("logpager", e.toString());
                 }
             });
         } else {

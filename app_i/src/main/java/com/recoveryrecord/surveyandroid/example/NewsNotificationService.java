@@ -28,7 +28,9 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -82,8 +84,8 @@ public class NewsNotificationService extends Service {
 //        // returns the status
 //        // of the program
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        final Set<String> selections = sharedPrefs.getStringSet("media_select", null);
-        if (selections.isEmpty()){
+        final Set<String> selections = sharedPrefs.getStringSet("media_select", new HashSet<String>());
+        if (selections==null || selections.isEmpty()){
             selections.add("中時");
             selections.add("中央社");
             selections.add("華視");

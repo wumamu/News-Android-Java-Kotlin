@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="false"
-    tools:context=".Tab2Fragment">
+    tools:context=".chinatimes.ChinatimesMainFragment">
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/container_main"
@@ -18,7 +18,10 @@
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs2"
-            android:background="@color/colorPrimary"
+            android:background="#bfc8d1"
+            app:tabMaxWidth="55dp"
+            app:tabMode="scrollable"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

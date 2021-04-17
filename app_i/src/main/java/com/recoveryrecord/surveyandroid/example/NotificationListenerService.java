@@ -142,7 +142,7 @@ public class NotificationListenerService extends android.service.notification.No
             case "com.ebc.news":
             case "cc.nexdoor.stormmedia":
                 receieve_to_firestore = true;
-                document_name = "receieve_notificaions";
+                document_name = "receieve_notifications";
                 break;
             default:
                 receieve_to_firestore = false;

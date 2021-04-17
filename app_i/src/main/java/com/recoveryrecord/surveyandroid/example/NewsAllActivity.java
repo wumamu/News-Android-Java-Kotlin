@@ -279,7 +279,7 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
             case R.id.nav_contact :
                 Log.d("log: navigation", "nav_contact " + item.getItemId());
                 Toast.makeText(this, "目前什麼都沒有拉~", Toast.LENGTH_LONG).show();
-                Intent intent_ems = new Intent(NewsAllActivity.this, MainActivity.class);
+                Intent intent_ems = new Intent(NewsAllActivity.this, NewHybridActivity.class);
                 startActivity(intent_ems);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;

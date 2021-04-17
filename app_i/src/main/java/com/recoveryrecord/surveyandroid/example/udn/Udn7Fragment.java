@@ -1,10 +1,9 @@
-package com.recoveryrecord.surveyandroid.example;
+package com.recoveryrecord.surveyandroid.example.udn;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -12,6 +11,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.recoveryrecord.surveyandroid.example.NewsRecycleViewAdapter;
+import com.recoveryrecord.surveyandroid.example.R;
 import com.recoveryrecord.surveyandroid.example.model.NewsModel;
 
 import java.util.ArrayList;
@@ -22,13 +23,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class Nest1Fragment extends Fragment {
+public class Udn7Fragment extends Fragment {
     private RecyclerView courseRV;
     private ArrayList<NewsModel> dataModalArrayList;
     private NewsRecycleViewAdapter dataRVAdapter;
     private FirebaseFirestore db;
-    public static Nest1Fragment newInstance(int position) {
-        Nest1Fragment fragment = new Nest1Fragment();
+    public static Udn7Fragment newInstance(int position) {
+        Udn7Fragment fragment = new Udn7Fragment();
         Bundle args = new Bundle();
         args.putInt("position", position);
         fragment.setArguments(args);
@@ -36,7 +37,7 @@ public class Nest1Fragment extends Fragment {
         return fragment;
     }
 
-    public Nest1Fragment() {
+    public Udn7Fragment() {
 
     }
 
@@ -51,7 +52,7 @@ public class Nest1Fragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_nest1, container, false);
+        View view = inflater.inflate(R.layout.fragment_nest1_category, container, false);
         // initializing our variables.
         courseRV = view.findViewById(R.id.idRVItems);
 
@@ -80,10 +81,10 @@ public class Nest1Fragment extends Fragment {
     private void loadrecyclerViewData() {
 //.orderBy("name").limit(3)//                db.collectionGroup("news") //
         db.collection("medias")
-                .document("chinatimes")
+                .document("udn")
                 .collection("news")
-                .whereEqualTo("category", "體育")
-//                .orderBy("pubdate", Query.Direction.DESCENDING)
+                .whereEqualTo("category", "全球")
+                .orderBy("pubdate", Query.Direction.DESCENDING)
                 .limit(50)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {

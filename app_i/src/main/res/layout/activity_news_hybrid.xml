@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".MainActivity">
+    tools:context=".NewHybridActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
@@ -17,8 +17,14 @@
         android:theme="@style/AppTheme.AppBarOverlay">
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"
+            app:tabIndicatorColor="#1e3348"
+            app:tabTextColor="#95a4b3"
+            app:tabIndicatorHeight="0dp"
+            app:tabSelectedTextColor = "#162434"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            app:tabMode="scrollable"
+            app:tabTextAppearance="@style/TabLayoutTextStyle"/>
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.viewpager.widget.ViewPager

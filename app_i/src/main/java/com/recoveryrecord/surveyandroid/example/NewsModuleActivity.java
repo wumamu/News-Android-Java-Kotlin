@@ -462,6 +462,11 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                             c_list.set(i, c_list.get(i).trim().replaceAll("\n", ""));
                             Log.d("log: firebase", "DocumentSnapshot content: " + c_list.get(i));
                         }
+                        if(c_list.size()==0){
+                            //no content
+                            c_list.add(0, "內容載入失敗，不好意思~");
+                            c_list.add(1, "有空麻煩請向我們回報是哪一篇(截圖即可)");
+                        }
                         Log.d("log: firebase", "DocumentSnapshot content: end");
                         List<String> divList = new ArrayList<>();
 //                        int cut_size = (int) (dpWidth / 26);
