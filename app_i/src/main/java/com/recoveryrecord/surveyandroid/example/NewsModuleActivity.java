@@ -1054,7 +1054,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         super.onBackPressed();
 //        supportFinishAfterTransition();
         if (!self_trigger){
-            Intent intent = new Intent(NewsModuleActivity.this, NewsAllActivity.class);
+            Intent intent = new Intent(NewsModuleActivity.this, NewsHybridActivity.class);
             startActivity(intent);
         }
 

@@ -20,7 +20,7 @@
         <SwitchPreferenceCompat
             app:key="news_notification"
             app:defaultValue="false"
-            app:summaryOff="記得開喔"
+            app:summaryOff="請先不要碰"
             app:summaryOn="不要關掉喔"
             app:title="新聞通知推播" />
 

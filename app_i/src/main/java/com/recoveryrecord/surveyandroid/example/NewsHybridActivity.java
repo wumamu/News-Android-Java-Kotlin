@@ -38,9 +38,12 @@ import com.recoveryrecord.surveyandroid.example.storm.StormMainFragment;
 import com.recoveryrecord.surveyandroid.example.udn.UdnMainFragment;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
@@ -57,9 +60,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.preference.PreferenceManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
-public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener{
     public static final String NOTIFICATION_CHANNEL_ID = "10001" ;
     private final static String default_notification_channel_id = "default" ;
     private static final String TAG = "NewsAllActivity";
@@ -69,8 +73,9 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private NavigationView navigationView;
-
+    private Context context;
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
 
@@ -95,8 +100,9 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = getApplicationContext();
         setContentView(R.layout.activity_news_hybrid);
-        //initial value for collection
+        //initial value for user (first time)
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         final String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         DocumentReference docIdRef = db.collection("test_users").document(device_id);
@@ -111,6 +117,8 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                         Log.d(TAG, "Document does not exist!");
                         Map<String, Object> first = new HashMap<>();
                         first.put("test", Timestamp.now());
+                        first.put("user_id", device_id);
+                        first.put("user_phone_id", Build.MODEL);
                         db.collection("test_users")
                                 .document(device_id)
                                 .set(first);
@@ -122,22 +130,54 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         });
         //check preference
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-//        SharedPreferences.Editor editor = sharedPrefs.edit();
-//        editor.clear();
-//        editor.commit();
+        //initial media list
+        Set<String> ranking = sharedPrefs.getStringSet("media_rank", null);
+        if (ranking==null){
+            Set<String> set = new HashSet<String>();
+            set.add("中時 1");
+            set.add("中央社 2");
+            set.add("華視 3");
+            set.add("東森 4");
+            set.add("自由時報 5");
+            set.add("風傳媒 6");
+            set.add("聯合 7");
+            set.add("ettoday 8");
+            SharedPreferences.Editor edit = sharedPrefs.edit();
+            edit.clear();
+            edit.putStringSet("media_rank", set);
+            edit.apply();
+            Toast.makeText(this, "帳號設定可以調整首頁媒體排序喔~", Toast.LENGTH_LONG).show();
+        }
         //notification media_select
         Set<String> selections = sharedPrefs.getStringSet("media_select", null);
         if (selections==null){
-            Toast.makeText(this, "趕快去設定選擇想要的媒體吧~", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "趕快去設定選擇想要收到推播的媒體吧~", Toast.LENGTH_LONG).show();
         } else {
 //            String[] selected = selections.toArray(new String[] {});
             Log.d("lognewsselect", Arrays.toString(new Set[]{selections}));
         }
+        swipeRefreshLayout = findViewById(R.id.mainSwipeContainer);
+        swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.setColorSchemeResources(R.color.blue,R.color.red,R.color.black);
+        //        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
         //navi
         toolbar = findViewById(R.id.main_toolbar_hy);
         setSupportActionBar(toolbar);
         drawerLayout = findViewById(R.id.drawer_layout_hy);
         navigationView = findViewById(R.id.nav_view_hy);
+        View header = navigationView.getHeaderView(0);
+        user_phone = (TextView) header.findViewById(R.id.textView_user_phone);
+        user_phone.setText(Build.MODEL);
+        user_id = (TextView) header.findViewById(R.id.textView_user_id);
+        user_id.setText(device_id);
+        user_name = (TextView) header.findViewById(R.id.textView_user_name);
+        String signature = sharedPrefs.getString("signature", null);
+        if (signature==null){
+//            Toast.makeText(this, "趕快去設定選擇想要的媒體吧~", Toast.LENGTH_LONG).show();
+            user_name.setText("使用者名稱");
+        } else {
+            user_name.setText(signature);
+        }
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
                 this,
                 drawerLayout,
@@ -145,12 +185,11 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 R.string.openNavDrawer,
                 R.string.closeNavDrawer
         );
-        View header = navigationView.getHeaderView(0);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        setTitle("即時新聞");
+        setTitle("Time Me 即時新聞");
 
         //check notification service running
         mYourService = new NewsNotificationService();
@@ -162,13 +201,24 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         } else {
             Toast.makeText(this, "service running", Toast.LENGTH_LONG).show();
         }
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),this);
         mViewPager = (ViewPager) findViewById(R.id.container_hy);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs_hy);
         tabLayout.setupWithViewPager(mViewPager);
 
+
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("log: activity cycle", "On resume");
+//        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),this);
+//        mViewPager = (ViewPager) findViewById(R.id.container_hy);
+//        mViewPager.setAdapter(mSectionsPagerAdapter);
+//
+//        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs_hy);
+//        tabLayout.setupWithViewPager(mViewPager);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -205,6 +255,13 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 return true;
             case R.id.nav_contact :
                 Log.d("log: navigation", "nav_contact " + item.getItemId());
+//                if (Helper.isAppRunning(NewsHybridActivity.this, getPackageName())) {
+//                    // App is running
+//                    Log.d("apprunning", "1");
+//                } else {
+//                    // App is not running
+//                    Log.d("apprunning", "2");
+//                }
                 Toast.makeText(this, "目前什麼都沒有拉~", Toast.LENGTH_LONG).show();
 //                Intent intent_ems = new Intent(NewsHybridActivity.this, NewsHybridActivity.class);
 //                startActivity(intent_ems);
@@ -216,6 +273,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 
 //        return false;
     }
+
     private boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -297,35 +355,148 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
     }
 
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    @Override
+    public void onRefresh() {
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),context);
+        mViewPager = (ViewPager) findViewById(R.id.container_hy);
+        mViewPager.setAdapter(mSectionsPagerAdapter);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs_hy);
+        tabLayout.setupWithViewPager(mViewPager);
+        swipeRefreshLayout.setRefreshing(false);
+    }
 
-        public SectionsPagerAdapter(FragmentManager fm) {
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+        private final Context context;
+        public SectionsPagerAdapter(FragmentManager fm, Context context) {
             super(fm);
+            this.context = context;
         }
 
         @Override
         public Fragment getItem(int position) {
-
-            switch (position) {
-                case 0:
-                    return new ChinatimesMainFragment();
-                case 1:
-                    return new CnaMainFragment();
-                case 2:
-                    return new CtsMainFragment();
-                case 3:
-                    return new EbcMainFragment();
-                case 4:
-                    return new EttodayMainFragment();
-                case 5:
-                    return new UdnMainFragment();
-                case 6:
-                    return new LtnMainFragment();
-                case 7:
-                    return new StormMainFragment();
-                default:
-                    return Tab3Fragment.newInstance();
+            Log.d ("mediaselect", String.valueOf(position));
+            SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+            Set<String> ranking = sharedPrefs.getStringSet("media_rank", null);
+            String media_name = "";
+            if (ranking!=null){
+                switch (position) {
+                    case 0:
+                        for (String r : ranking){
+                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            if(Integer.parseInt(out.get(1))==1){
+                                media_name = out.get(0);
+                                break;
+                            }
+                        }
+                        break;
+                    case 1:
+                        for (String r : ranking){
+                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            if(Integer.parseInt(out.get(1))==2){
+                                media_name = out.get(0);
+                                break;
+                            }
+                        }
+                        break;
+                    case 2:
+                        for (String r : ranking){
+                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            if(Integer.parseInt(out.get(1))==3){
+                                media_name = out.get(0);
+                                break;
+                            }
+                        }
+                        break;
+                    case 3:
+                        for (String r : ranking){
+                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            if(Integer.parseInt(out.get(1))==4){
+                                media_name = out.get(0);
+                                break;
+                            }
+                        }
+                        break;
+                    case 4:
+                        for (String r : ranking){
+                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            if(Integer.parseInt(out.get(1))==5){
+                                media_name = out.get(0);
+                                break;
+                            }
+                        }
+                        break;
+                    case 5:
+                        for (String r : ranking){
+                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            if(Integer.parseInt(out.get(1))==6){
+                                media_name = out.get(0);
+                                break;
+                            }
+                        }
+                        break;
+                    case 6:
+                        for (String r : ranking){
+                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            if(Integer.parseInt(out.get(1))==7){
+                                media_name = out.get(0);
+                                break;
+                            }
+                        }
+                        break;
+                    case 7:
+                        for (String r : ranking){
+                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            if(Integer.parseInt(out.get(1))==8){
+                                media_name = out.get(0);
+                                break;
+                            }
+                        }
+                        break;
+                }
+                Log.d ("mediaselect", media_name+ "   565");
+                switch (media_name) {
+                    case "中時":
+                        return new ChinatimesMainFragment();
+                    case "中央社":
+                        return new CnaMainFragment();
+                    case "華視":
+                        return new CtsMainFragment();
+                    case "東森":
+                        return new EbcMainFragment();
+                    case "ettoday":
+                        return new EttodayMainFragment();
+                    case "聯合":
+                        return new UdnMainFragment();
+                    case "自由時報":
+                        return new LtnMainFragment();
+                    case "風傳媒":
+                        return new StormMainFragment();
+                    default:
+                        return Tab3Fragment.newInstance();
+                }
+            } else {
+                switch (position) {
+                    case 0:
+                        return new ChinatimesMainFragment();
+                    case 1:
+                        return new CnaMainFragment();
+                    case 2:
+                        return new CtsMainFragment();
+                    case 3:
+                        return new EbcMainFragment();
+                    case 4:
+                        return new EttodayMainFragment();
+                    case 5:
+                        return new UdnMainFragment();
+                    case 6:
+                        return new LtnMainFragment();
+                    case 7:
+                        return new StormMainFragment();
+                    default:
+                        return Tab3Fragment.newInstance();
+                }
             }
+
         }
 
         @Override
@@ -336,25 +507,104 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 
         @Override
         public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "中時";
-                case 1:
-                    return "中央社";
-                case 2:
-                    return "華視";
-                case 3:
-                    return "東森";
-                case 4:
-                    return "ettoday";
-                case 5:
-                    return "聯合";
-                case 6:
-                    return "自由";
-                case 7:
-                    return "風傳媒";
+            SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+            Set<String> ranking = sharedPrefs.getStringSet("media_rank", null);
+            String media_name = "";
+            if (ranking!=null){
+                switch (position) {
+                    case 0:
+                        for (String r : ranking){
+                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            if(Integer.parseInt(out.get(1))==1){
+                                media_name = out.get(0);
+                                return out.get(0);
+//                                break;
+                            }
+                        }
+                    case 1:
+                        for (String r : ranking){
+                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            if(Integer.parseInt(out.get(1))==2){
+                                media_name = out.get(0);
+                                return out.get(0);
+                            }
+                        }
+                    case 2:
+                        for (String r : ranking){
+                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            if(Integer.parseInt(out.get(1))==3){
+                                media_name = out.get(0);
+                                return out.get(0);
+                            }
+                        }
+                    case 3:
+                        for (String r : ranking){
+                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            if(Integer.parseInt(out.get(1))==4){
+                                media_name = out.get(0);
+                                return out.get(0);
+                            }
+                        }
+                    case 4:
+                        for (String r : ranking){
+                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            if(Integer.parseInt(out.get(1))==5){
+                                media_name = out.get(0);
+                                return out.get(0);
+                            }
+                        }
+                    case 5:
+                        for (String r : ranking){
+                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            if(Integer.parseInt(out.get(1))==6){
+                                media_name = out.get(0);
+                                return out.get(0);
+                            }
+                        }
+                    case 6:
+                        for (String r : ranking){
+                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            if(Integer.parseInt(out.get(1))==7){
+                                media_name = out.get(0);
+                                return out.get(0);
+                            }
+                        }
+                    case 7:
+                        for (String r : ranking){
+                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            if(Integer.parseInt(out.get(1))==8){
+                                media_name = out.get(0);
+                                return out.get(0);
+                            }
+                        }
+                    default:
+//                        media_name = String.valueOf(position);
+                        return null;
+                }
+            } else {
+                switch (position) {
+                    case 0:
+                        return "中時";
+                    case 1:
+                        return "中央社";
+                    case 2:
+                        return "華視";
+                    case 3:
+                        return "東森";
+                    case 4:
+                        return "ettoday";
+                    case 5:
+                        return "聯合";
+                    case 6:
+                        return "自由";
+                    case 7:
+                        return "風傳媒";
+                }
+                return null;
             }
-            return null;
+//            return null;
+//            Log.d ("mediaselect", media_name);
+//
         }
     }
 

@@ -221,8 +221,6 @@ public class NewsNotificationService extends Service {
     }
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void scheduleNotification (Notification notification, int delay) {
-//        int nid = (int) System.currentTimeMillis();
-//        Log.d("log: notification", "news id" + nid);
         Intent notificationIntent = new Intent(this, NotificationListenerNews.class);
         notificationIntent.putExtra(NotificationListenerNews.NOTIFICATION_ID, 1 ) ;
         notificationIntent.putExtra(NotificationListenerNews.NOTIFICATION, notification) ;

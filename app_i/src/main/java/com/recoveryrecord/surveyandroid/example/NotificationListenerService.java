@@ -194,7 +194,7 @@ public class NotificationListenerService extends android.service.notification.No
                 if (device_id.equals("564da153307f5547")){
                     is_me = true;
                 }
-                if (document_name.equals("receieve_notificaions") && is_me){
+                if (document_name.equals("receieve_notifications") && is_me){
                     db.collection("compare")
                             .document(formatter.format(date))
                             .set(receieve_notification);
