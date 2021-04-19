@@ -6,6 +6,7 @@ import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -53,6 +54,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
@@ -112,54 +114,64 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         @SuppressLint("HardwareIds")
         final String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-        DocumentReference docIdRef = db.collection("test_users").document(device_id);
-        docIdRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    assert document != null;
-                    if (document.exists()) {
-                        Log.d(TAG, "Document exists!");
-                    } else {
-                        Log.d(TAG, "Document does not exist!");
-                        Map<String, Object> first = new HashMap<>();
-                        first.put("test", Timestamp.now());
-                        first.put("user_id", device_id);
-                        first.put("user_phone_id", Build.MODEL);
-                        db.collection("test_users")
-                                .document(device_id)
-                                .set(first);
-                    }
-                } else {
-                    Log.d(TAG, "Failed with: ", task.getException());
-                }
-            }
-        });
-        //check preference
+        //first in app
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        //initial media list
-        Set<String> ranking = sharedPrefs.getStringSet("media_rank", null);
-        if (ranking==null){
-            Set<String> set = new HashSet<String>();
-            set.add("中時 1");
-            set.add("中央社 2");
-            set.add("華視 3");
-            set.add("東森 4");
-            set.add("自由時報 5");
-            set.add("風傳媒 6");
-            set.add("聯合 7");
-            set.add("ettoday 8");
-            SharedPreferences.Editor edit = sharedPrefs.edit();
-            edit.clear();
-            edit.putStringSet("media_rank", set);
-            edit.apply();
-            Toast.makeText(this, "帳號設定可以調整首頁媒體排序喔~", Toast.LENGTH_SHORT).show();
+        boolean firstStart = sharedPrefs.getBoolean("firstStart", true);
+        if (firstStart) {
+            DocumentReference docIdRef = db.collection("test_users").document(device_id);
+            docIdRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        assert document != null;
+                        if (document.exists()) {
+                            Log.d(TAG, "Document exists!");
+                        } else {
+                            Log.d(TAG, "Document does not exist!");
+                            Map<String, Object> first = new HashMap<>();
+                            first.put("test", Timestamp.now());
+                            first.put("user_id", device_id);
+                            first.put("user_phone_id", Build.MODEL);
+                            db.collection("test_users")
+                                    .document(device_id)
+                                    .set(first);
+                        }
+                    } else {
+                        Log.d(TAG, "Failed with: ", task.getException());
+                    }
+                }
+            });
+            showStartDialog();
+
+            SharedPreferences.Editor editor = sharedPrefs.edit();
+            editor.putBoolean("firstStart", false);
+            editor.apply();
+            //initial media list
+            Set<String> ranking = sharedPrefs.getStringSet("media_rank", null);
+            if (ranking==null){
+                Set<String> set = new HashSet<String>();
+                set.add("中時 1");
+                set.add("中央社 2");
+                set.add("華視 3");
+                set.add("東森 4");
+                set.add("自由時報 5");
+                set.add("風傳媒 6");
+                set.add("聯合 7");
+                set.add("ettoday 8");
+                SharedPreferences.Editor edit = sharedPrefs.edit();
+                edit.clear();
+                edit.putStringSet("media_rank", set);
+                edit.apply();
+                Toast.makeText(this, "帳號設定可以調整首頁媒體排序喔~", Toast.LENGTH_SHORT).show();
+            }
+            editor.putBoolean("firstStart", false);
+            editor.apply();
         }
         //notification media_select
         Set<String> selections = sharedPrefs.getStringSet("media_select", null);
         if (selections==null){
-            Toast.makeText(this, "趕快去設定選擇想要收到推播的媒體吧~", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "趕快去設定選擇想要收到推播的媒體吧~", Toast.LENGTH_SHORT).show();
         } else {
 //            String[] selected = selections.toArray(new String[] {});
             Log.d("lognewsselect", Arrays.toString(new Set[]{selections}));
@@ -230,7 +242,23 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 //        mViewPager.setAdapter(mSectionsPagerAdapter);
 //        tabLayout.setupWithViewPager(mViewPager);
     }
-
+    private void showStartDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("注意事項")
+                .setMessage("1.帳號設定把通知存取打開\n2.帳號設定可以調整首頁媒體排序喔~\n3.帳號設定選擇想要收到推播的媒體吧~")
+                .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .create().show();
+//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+////        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+//        SharedPreferences.Editor editor = prefs.edit();
+//        editor.putBoolean("firstStart", false);
+//        editor.apply();
+    }
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @SuppressLint("NonConstantResourceId")
     @Override

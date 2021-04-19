@@ -1015,6 +1015,8 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
             drag_str+="(" + drag_x_1 + "," + drag_y_1 + ")/";
             drag_str+="(" + drag_x_2 + "," + drag_y_2 + ")/";
             String direction = "";
+            double velocity_x = (Math.abs(drag_x_1-drag_x_2) / duration), velocity_y = (Math.abs(drag_y_1-drag_y_2) / duration);
+            drag_str+= velocity_x + "/" + velocity_y + "/";
             direction += drag_y_1 < drag_y_2 ? "N" : drag_y_1 > drag_y_2 ? "S" : "";
             direction += drag_x_1 < drag_x_2 ? "E" : drag_x_1 > drag_x_2 ? "W" : "";
             drag_str+=direction + "#";
