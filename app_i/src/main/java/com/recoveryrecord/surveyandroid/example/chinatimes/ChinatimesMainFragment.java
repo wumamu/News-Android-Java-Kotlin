@@ -33,7 +33,10 @@ public class ChinatimesMainFragment extends Fragment {
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
-
+//        @Override
+//        public void destroyItem(ViewGroup container, int position, Object object) {
+//            //super.destroyItem(container, position, object);
+//        }
         @Override
         public Fragment getItem(int position) {
             switch (position) {

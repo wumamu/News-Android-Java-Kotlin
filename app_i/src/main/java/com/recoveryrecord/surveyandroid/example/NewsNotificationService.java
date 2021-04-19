@@ -85,16 +85,17 @@ public class NewsNotificationService extends Service {
 //        // of the program
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         final Set<String> selections = sharedPrefs.getStringSet("media_select", new HashSet<String>());
-        if (selections==null || selections.isEmpty()){
-            selections.add("中時");
-            selections.add("中央社");
-            selections.add("華視");
-            selections.add("東森");
-            selections.add("自由時報");
-            selections.add("風傳媒");
-            selections.add("聯合");
-            selections.add("ettoday");
-        }
+        Log.d("lognewsselect_", "ss " + Arrays.toString(new Set[]{selections}));
+//        if (selections==null || selections.isEmpty()){
+//            selections.add("中時");
+//            selections.add("中央社");
+//            selections.add("華視");
+//            selections.add("東森");
+//            selections.add("自由時報");
+//            selections.add("風傳媒");
+//            selections.add("聯合");
+//            selections.add("ettoday");
+//        }
         db.collection("test_users")
                 .document(device_id)
                 .collection("compare_result")

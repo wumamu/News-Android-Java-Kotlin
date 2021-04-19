@@ -107,6 +107,7 @@
         <service android:name=".NewsNotificationService"/>
         <activity android:name=".TestServiceActivity"
             android:theme="@style/AppThemeActionBar"/>
+        <activity android:name=".MainActivity" />
 
 
 

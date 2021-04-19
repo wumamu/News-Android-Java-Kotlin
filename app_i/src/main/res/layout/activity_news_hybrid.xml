@@ -7,8 +7,11 @@
     android:layout_height="match_parent"
     tools:context=".NewsHybridActivity"
     android:id="@+id/drawer_layout_hy">
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+<!--    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout-->
+    <com.recoveryrecord.surveyandroid.example.MySwipeRefreshLayout
+
         android:id="@+id/mainSwipeContainer"
+        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -28,8 +31,10 @@
                 android:id="@+id/tabs_hy"
                 app:tabIndicatorColor="#1e3348"
                 app:tabTextColor="#95a4b3"
-                app:tabIndicatorHeight="0dp"
-                app:tabSelectedTextColor = "#162434"
+                app:tabIndicatorFullWidth="false"
+                app:tabPaddingStart="15dp"
+                app:tabPaddingEnd="15dp"
+                app:tabSelectedTextColor = "#111416"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:tabMode="scrollable"
@@ -43,7 +48,6 @@
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <!--<android.support.design.widget.FloatingActionButton-->
-    <!--    android:id="@+id/fab"-->
     <!--    android:layout_width="wrap_content"-->
     <!--    android:layout_height="wrap_content"-->
     <!--    android:layout_gravity="end|bottom"-->
@@ -51,7 +55,8 @@
     <!--    app:srcCompat="@android:drawable/ic_dialog_email" />-->
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+<!--    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
+    </com.recoveryrecord.surveyandroid.example.MySwipeRefreshLayout>
     <com.google.android.material.navigation.NavigationView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

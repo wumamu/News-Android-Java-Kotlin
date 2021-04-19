@@ -1291,6 +1291,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         readingBehavior.put("drag_num", myReadingBehavior.getKEY_DRAG_NUM());
         readingBehavior.put("drag_record", Arrays.asList("NA"));
         readingBehavior.put("share", Arrays.asList("NA"));
+        readingBehavior.put("news_title","NA");
 //        readingBehavior.put("share_via", "none");
         readingBehavior.put("time_series(s)", Arrays.asList("NA"));
         readingBehavior.put("byte_per_line", "NA");
@@ -1368,6 +1369,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                 "out_timestamp", Timestamp.now(),
                 "out_time", out_tt.get(2),
                 "out_date", out_tt.get(0),
+                "news_title", mTitle,
                 "time_series(s)", time_series_list,//auto
                 "viewport_record", viewport_record_list)//auto
                 .addOnSuccessListener(new OnSuccessListener<Void>() {

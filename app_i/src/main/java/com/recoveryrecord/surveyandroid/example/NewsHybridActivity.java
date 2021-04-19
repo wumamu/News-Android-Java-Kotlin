@@ -15,7 +15,9 @@ import android.os.SystemClock;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,6 +57,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
 import androidx.core.view.GravityCompat;
+import androidx.core.view.MotionEventCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -63,6 +66,7 @@ import androidx.preference.PreferenceManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
+//public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener{
     public static final String NOTIFICATION_CHANNEL_ID = "10001" ;
     private final static String default_notification_channel_id = "default" ;
@@ -73,11 +77,13 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
-    private SwipeRefreshLayout swipeRefreshLayout;
+//    private SwipeRefreshLayout swipeRefreshLayout;
+    private MySwipeRefreshLayout swipeRefreshLayout;
     private NavigationView navigationView;
     private Context context;
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
+    private TabLayout tabLayout;
 
     boolean doubleBackToExitPressedOnce = false;
     private TextView user_phone, user_id, user_name;
@@ -104,6 +110,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         setContentView(R.layout.activity_news_hybrid);
         //initial value for user (first time)
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
+        @SuppressLint("HardwareIds")
         final String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         DocumentReference docIdRef = db.collection("test_users").document(device_id);
         docIdRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -111,6 +118,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
+                    assert document != null;
                     if (document.exists()) {
                         Log.d(TAG, "Document exists!");
                     } else {
@@ -146,20 +154,21 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
             edit.clear();
             edit.putStringSet("media_rank", set);
             edit.apply();
-            Toast.makeText(this, "帳號設定可以調整首頁媒體排序喔~", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "帳號設定可以調整首頁媒體排序喔~", Toast.LENGTH_SHORT).show();
         }
         //notification media_select
         Set<String> selections = sharedPrefs.getStringSet("media_select", null);
         if (selections==null){
-            Toast.makeText(this, "趕快去設定選擇想要收到推播的媒體吧~", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "趕快去設定選擇想要收到推播的媒體吧~", Toast.LENGTH_SHORT).show();
         } else {
 //            String[] selected = selections.toArray(new String[] {});
             Log.d("lognewsselect", Arrays.toString(new Set[]{selections}));
         }
-        swipeRefreshLayout = findViewById(R.id.mainSwipeContainer);
+        swipeRefreshLayout = (MySwipeRefreshLayout) findViewById(R.id.mainSwipeContainer);
+//        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.mainSwipeContainer);
         swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.setDistanceToTriggerSync(200);
         swipeRefreshLayout.setColorSchemeResources(R.color.blue,R.color.red,R.color.black);
-        //        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
         //navi
         toolbar = findViewById(R.id.main_toolbar_hy);
         setSupportActionBar(toolbar);
@@ -196,16 +205,18 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 //        mServiceIntent = new Intent(this, mYourService.getClass());
         mServiceIntent = new Intent(this, NewsNotificationService.class);
         if (!isMyServiceRunning(mYourService.getClass())) {
-            Toast.makeText(this, "service failed", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "service failed", Toast.LENGTH_SHORT).show();
             startService(mServiceIntent);
         } else {
-            Toast.makeText(this, "service running", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "service running", Toast.LENGTH_SHORT).show();
         }
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),this);
         mViewPager = (ViewPager) findViewById(R.id.container_hy);
+        tabLayout = (TabLayout) findViewById(R.id.tabs_hy);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs_hy);
         tabLayout.setupWithViewPager(mViewPager);
+
+
 
 
     }
@@ -213,11 +224,10 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     protected void onResume() {
         super.onResume();
         Log.d("log: activity cycle", "On resume");
-//        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),this);
 //        mViewPager = (ViewPager) findViewById(R.id.container_hy);
+//        tabLayout = (TabLayout) findViewById(R.id.tabs_hy);
+//        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),this);
 //        mViewPager.setAdapter(mSectionsPagerAdapter);
-//
-//        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs_hy);
 //        tabLayout.setupWithViewPager(mViewPager);
     }
 
@@ -248,7 +258,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 Log.d("log: navigation", "nav_reschedule " + item.getItemId());
                 scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 1000 );
 //                Toast.makeText(this, "開始每小時固定發送esm~", Toast.LENGTH_LONG).show();
-                Toast.makeText(this, "發送esm~", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "發送esm~", Toast.LENGTH_SHORT).show();
 //                Intent intent_base = new Intent(NewsAllActivity.this, TestBasicActivity.class);
 //                startActivity(intent_base);
                 drawerLayout.closeDrawer(GravityCompat.START);
@@ -262,10 +272,10 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 //                    // App is not running
 //                    Log.d("apprunning", "2");
 //                }
-                Toast.makeText(this, "目前什麼都沒有拉~", Toast.LENGTH_LONG).show();
-//                Intent intent_ems = new Intent(NewsHybridActivity.this, NewsHybridActivity.class);
-//                startActivity(intent_ems);
-//                drawerLayout.closeDrawer(GravityCompat.START);
+                Toast.makeText(this, "目前什麼都沒有拉~", Toast.LENGTH_SHORT).show();
+                Intent intent_ems = new Intent(NewsHybridActivity.this, MainActivity.class);
+                startActivity(intent_ems);
+                drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             default :
                 return false;
@@ -291,8 +301,11 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             if (doubleBackToExitPressedOnce) {
-                super.onBackPressed();
-                return;
+//                super.onBackPressed();
+                Intent a = new Intent(Intent.ACTION_MAIN);
+                a.addCategory(Intent.CATEGORY_HOME);
+                a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(a);
             }
             this.doubleBackToExitPressedOnce = true;
             Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
@@ -358,9 +371,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     @Override
     public void onRefresh() {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),context);
-        mViewPager = (ViewPager) findViewById(R.id.container_hy);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs_hy);
         tabLayout.setupWithViewPager(mViewPager);
         swipeRefreshLayout.setRefreshing(false);
     }
@@ -371,6 +382,10 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
             super(fm);
             this.context = context;
         }
+//        @Override
+//        public void destroyItem(ViewGroup container, int position, Object object) {
+//            //super.destroyItem(container, position, object);
+//        }
 
         @Override
         public Fragment getItem(int position) {
