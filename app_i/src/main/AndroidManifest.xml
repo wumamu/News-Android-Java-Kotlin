@@ -20,6 +20,8 @@
     <!-- permission required to automatically restart a repeating alarm if the user reboots the device -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
     <application
         android:name="androidx.multidex.MultiDexApplication"
         android:allowBackup="true"
@@ -131,6 +133,7 @@
         </receiver>
         <!-- Mention the service name here -->
         <service android:name=".NewsNotificationService"
+            android:stopWithTask="false"
             android:enabled="true"/>
         <activity android:name=".TestServiceActivity"
             android:theme="@style/AppThemeActionBar"/>

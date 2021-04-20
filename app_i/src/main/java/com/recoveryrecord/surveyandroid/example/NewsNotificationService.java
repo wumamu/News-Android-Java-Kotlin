@@ -3,13 +3,17 @@ package com.recoveryrecord.surveyandroid.example;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.provider.Settings;
@@ -34,6 +38,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ThreadLocalRandom;
 
 import androidx.annotation.NonNull;
@@ -48,27 +54,53 @@ public class NewsNotificationService extends Service {
     private final static String default_notification_channel_id = "default" ;
     // declaring object of MediaPlayer
     private MediaPlayer player;
-
+    public int counter=0;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final DocumentReference noteRef = db.document("server_push_notifications/start");
 //    private CollectionReference noteRefqq = db.collection("test_users/" + device_id + "/compare_result");
 
 //    private FirebaseFirestore firestore;
-//    @Override
-//    public void onCreate(){
+    @Override
+    public void onCreate(){
+        super.onCreate();
+        Log.d("lognewsselect", "onCreate");
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O)
+            startMyOwnForeground();
+        else
+            startForeground(1, new Notification());
 //        FirebaseApp.initializeApp(this);
 //        this.firestore = FirebaseFirestore.getInstance();
 ////        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
 ////                .setTimestampsInSnapshotsEnabled(true)
 ////                .build();
 ////        firestore.setFirestoreSettings(settings);
-//    }
-    @Override
+    }
+    @RequiresApi(Build.VERSION_CODES.O)
+    private void startMyOwnForeground() {
+        Log.d("lognewsselect", "startMyOwnForeground");
+        String NOTIFICATION_CHANNEL_ID = "example.permanence";
+        String channelName = "Background Service";
+        NotificationChannel chan = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_NONE);
+        chan.setLightColor(Color.BLUE);
+        chan.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
 
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        assert manager != null;
+        manager.createNotificationChannel(chan);
+
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
+        Notification notification = notificationBuilder.setOngoing(true)
+                .setContentTitle("App is running in background")
+                .setPriority(NotificationManager.IMPORTANCE_MIN)
+                .setCategory(Notification.CATEGORY_SERVICE)
+                .build();
+        startForeground(2, notification);
+    }
+    @Override
     // execution of service will start
     // on calling this method
     public int onStartCommand(Intent intent, int flags, int startId) {
-        @SuppressLint("HardwareIds")
+        Log.d("lognewsselect", "onStartCommand");
         final String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 //        // creating a media player which
 //        // will play the audio of Default
@@ -218,12 +250,23 @@ public class NewsNotificationService extends Service {
         return START_STICKY;
     }
 
+    @SuppressLint("HardwareIds")
     @Override
     // execution of the service will
     // stop on calling this method
     public void onDestroy() {
         super.onDestroy();
-
+        Log.d("lognewsselect", "onDestroy service");
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Map<String, Object> log_service = new HashMap<>();
+        log_service.put("noti_timestamp", Timestamp.now());
+        log_service.put("cycle", "destroy(service)");
+        log_service.put("status", "failed");
+        db.collection("test_users")
+                .document(Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID))
+                .collection("notification_service")
+                .document(String.valueOf(Timestamp.now()))
+                .set(log_service);
         // stopping the process
 //        player.stop();
         Intent broadcastIntent = new Intent();
@@ -231,34 +274,31 @@ public class NewsNotificationService extends Service {
         broadcastIntent.setClass(this, NewsNotificationRestarter.class);
         this.sendBroadcast(broadcastIntent);
     }
-
-//    void detachListener() {
-//        // [START detach_errors]
-//        // [START firestore_listen_detach]
-//        Query query = db.collection("cities");
-//        ListenerRegistration registration = query.addSnapshotListener(
-//                new EventListener<QuerySnapshot>() {
-//                    // [START_EXCLUDE]
-//                    @Override
-//                    public void onEvent(@Nullable QuerySnapshot snapshots,
-//                                        @Nullable FirestoreException e) {
-//
-//                    }
-//                    // [END_EXCLUDE]
-//                });
-//
-//        // ...
-//
-//        // Stop listening to changes
-//        registration.remove();
-//        // [END firestore_listen_detach]
-//        // [END detach_errors]
+//    private Timer timer;
+//    private TimerTask timerTask;
+//    public void startTimer() {
+//        timer = new Timer();
+//        timerTask = new TimerTask() {
+//            public void run() {
+//                Log.i("Count", "=========  "+ (counter++));
+//            }
+//        };
+//        timer.schedule(timerTask, 1000, 1000); //
 //    }
+//
+//    public void stoptimertask() {
+//        if (timer != null) {
+//            timer.cancel();
+//            timer = null;
+//        }
+//    }
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void scheduleNotification (Notification notification, int delay) {
         Intent notificationIntent = new Intent(this, NotificationListenerNews.class);

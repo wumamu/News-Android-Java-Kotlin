@@ -1,6 +1,7 @@
 package com.recoveryrecord.surveyandroid.example;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -20,6 +21,7 @@ public class NewsNotificationRestarter extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d("Broadcast Listened", "Service tried to stop");
+        Log.d("lognewsselect", "onReceive");
         Toast.makeText(context, "Service restarted", Toast.LENGTH_SHORT).show();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

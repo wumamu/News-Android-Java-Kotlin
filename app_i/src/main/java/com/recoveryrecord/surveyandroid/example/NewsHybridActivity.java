@@ -271,10 +271,11 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     @Override
     protected void onDestroy() {
         //stopService(mServiceIntent);
-        Intent broadcastIntent = new Intent();
-        broadcastIntent.setAction("restartservice");
-        broadcastIntent.setClass(this, NewsNotificationRestarter.class);
-        this.sendBroadcast(broadcastIntent);
+//        Log.d("lognewsselect", "onDestroy activity");
+//        Intent broadcastIntent = new Intent();
+//        broadcastIntent.setAction("restartservice");
+//        broadcastIntent.setClass(this, NewsNotificationRestarter.class);
+//        this.sendBroadcast(broadcastIntent);
         super.onDestroy();
     }
     private void showStartDialog() {
