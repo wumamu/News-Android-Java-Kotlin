@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.recoveryrecord.surveyandroid.example.Nest2Fragment;
+import com.recoveryrecord.surveyandroid.example.TestNest2Fragment;
 import com.recoveryrecord.surveyandroid.example.R;
 
 import androidx.fragment.app.Fragment;
@@ -61,7 +61,7 @@ public class ChinatimesMainFragment extends Fragment {
                 case 9:
                     return Chinatimes10Fragment.newInstance(10);
                 default:
-                    return Nest2Fragment.newInstance(2);
+                    return TestNest2Fragment.newInstance(2);
             }
 
         }

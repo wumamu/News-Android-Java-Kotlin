@@ -5,18 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.recoveryrecord.surveyandroid.example.Nest2Fragment;
+import com.recoveryrecord.surveyandroid.example.TestNest2Fragment;
 import com.recoveryrecord.surveyandroid.example.R;
-import com.recoveryrecord.surveyandroid.example.ebc.Ebc10Fragment;
-import com.recoveryrecord.surveyandroid.example.ebc.Ebc1Fragment;
-import com.recoveryrecord.surveyandroid.example.ebc.Ebc2Fragment;
-import com.recoveryrecord.surveyandroid.example.ebc.Ebc3Fragment;
-import com.recoveryrecord.surveyandroid.example.ebc.Ebc4Fragment;
-import com.recoveryrecord.surveyandroid.example.ebc.Ebc5Fragment;
-import com.recoveryrecord.surveyandroid.example.ebc.Ebc6Fragment;
-import com.recoveryrecord.surveyandroid.example.ebc.Ebc7Fragment;
-import com.recoveryrecord.surveyandroid.example.ebc.Ebc8Fragment;
-import com.recoveryrecord.surveyandroid.example.ebc.Ebc9Fragment;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -71,7 +61,7 @@ public class EbcMainFragment extends Fragment {
                 case 9:
                     return Ebc10Fragment.newInstance(10);
                 default:
-                    return Nest2Fragment.newInstance(2);
+                    return TestNest2Fragment.newInstance(2);
             }
 
         }

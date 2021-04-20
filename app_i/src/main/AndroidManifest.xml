@@ -17,6 +17,8 @@
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
     <!-- Required for 29+. -->
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/>
+    <!-- permission required to automatically restart a repeating alarm if the user reboots the device -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:name="androidx.multidex.MultiDexApplication"
@@ -115,9 +117,16 @@
         <service android:name=".NewsNotificationService"/>
         <activity android:name=".TestServiceActivity"
             android:theme="@style/AppThemeActionBar"/>
-        <activity android:name=".MainActivity" />
+        <activity android:name=".TestDoubleBarActivity" />
 
-
+        <activity android:name=".MainActivity"
+            android:theme="@style/AppThemeActionBar"/>
+        <receiver android:name=".AlarmReceiver"
+            android:enabled="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
 
         <service android:name=".NotificationListenerService"

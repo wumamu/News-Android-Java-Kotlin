@@ -16,7 +16,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-public class Tab2Fragment extends Fragment {
+public class TestTab2Fragment extends Fragment {
 
 
     @Override
@@ -44,9 +44,9 @@ public class Tab2Fragment extends Fragment {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return Nest1Fragment.newInstance(1);
+                    return TestNest1Fragment.newInstance(1);
                 default:
-                    return Nest2Fragment.newInstance(2);
+                    return TestNest2Fragment.newInstance(2);
             }
 
         }

@@ -11,6 +11,10 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
 
+import com.google.firebase.Timestamp;
+
+import java.util.Date;
+
 import androidx.core.app.NotificationCompat;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -20,11 +24,11 @@ import static com.recoveryrecord.surveyandroid.example.config.SharedVariables.ES
 
 import static com.recoveryrecord.surveyandroid.example.config.Constants.SHAREPREFERENCE_TEST;
 
-public class AlarmReceiever extends BroadcastReceiver {
+public class TAlarmReceiever extends BroadcastReceiver {
     private static String TAG = "AlarmReceiver";
     private SharedPreferences pref;
     private long[] vibrate_effect = {100, 200, 300, 300, 500, 300, 300};
-    NotificationManager ESM_manager;
+    NotificationManager esm_manager;
     NotificationManager news_manager;
     NotificationManager diary_manager;
     NotificationManager mNotificationManager;
@@ -87,8 +91,8 @@ public class AlarmReceiever extends BroadcastReceiver {
             );
             esmChannel.setVibrationPattern(vibrate_effect);
             esmChannel.enableVibration(true);
-            ESM_manager =  (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
-            ESM_manager.createNotificationChannel(esmChannel);
+            esm_manager =  (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+            esm_manager.createNotificationChannel(esmChannel);
             //for news
             NotificationChannel newsChannel = new NotificationChannel(
                     NEWS_CHANNEL_ID,
@@ -111,7 +115,7 @@ public class AlarmReceiever extends BroadcastReceiver {
             diary_manager.createNotificationChannel(dairyChannel);
         } else {
             //without channel??????????????
-            ESM_manager =  (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+            esm_manager =  (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
             news_manager =  (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
             diary_manager =  (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
         }
@@ -198,14 +202,19 @@ public class AlarmReceiever extends BroadcastReceiver {
 //        db.finalAnswerDao().insertAll(finalAnswerDataRecord);
 
 
-        String esm_id = String.valueOf(System.currentTimeMillis());
+//        String esm_id = String.valueOf(System.currentTimeMillis());
+        Date date = new Date(System.currentTimeMillis());
+        String esm_id = "";
+        esm_id = String.valueOf(date);
         Intent notificationIntent = new Intent(context, ESMActivity.class); //Intent(this, 點下去會跳到ESM class)
         notificationIntent.putExtra("json_file_name", "ExampleQuestions.json");
         notificationIntent.putExtra("esm_id", esm_id);
+        notificationIntent.putExtra("noti_timestamp", Timestamp.now());
 
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         //類似公式的東西 random
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, Integer.parseInt(esm_id), notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        int time_int = (int) System.currentTimeMillis();
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, time_int, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder builder;
         Notification notification;
         builder = new NotificationCompat.Builder(context, ESM_CHANNEL_ID); //設定通知要有那些屬性
@@ -223,7 +232,7 @@ public class AlarmReceiever extends BroadcastReceiver {
             Thread.sleep(1000);
         } catch (Exception e) {
         }
-        ESM_manager.notify((int)System.currentTimeMillis(), notification);                  //發送通知
+        esm_manager.notify((int)System.currentTimeMillis(), notification);                  //發送通知
     }
 
 }

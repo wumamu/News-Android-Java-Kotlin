@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.recoveryrecord.surveyandroid.example.Nest2Fragment;
+import com.recoveryrecord.surveyandroid.example.TestNest2Fragment;
 import com.recoveryrecord.surveyandroid.example.R;
 
 
@@ -62,7 +62,7 @@ public class StormMainFragment extends Fragment {
                 case 9:
                     return Storm10Fragment.newInstance(10);
                 default:
-                    return Nest2Fragment.newInstance(2);
+                    return TestNest2Fragment.newInstance(2);
             }
 
         }

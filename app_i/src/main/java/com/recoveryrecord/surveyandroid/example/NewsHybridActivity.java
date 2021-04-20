@@ -16,9 +16,7 @@ import android.os.SystemClock;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,7 +57,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
 import androidx.core.view.GravityCompat;
-import androidx.core.view.MotionEventCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -163,7 +160,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 edit.clear();
                 edit.putStringSet("media_rank", set);
                 edit.apply();
-                Toast.makeText(this, "帳號設定可以調整首頁媒體排序喔~", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, "帳號設定可以調整首頁媒體排序喔~", Toast.LENGTH_SHORT).show();
             }
             editor.putBoolean("firstStart", false);
             editor.apply();
@@ -359,6 +356,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         Intent intent_esm = new Intent();
         intent_esm.setClass(NewsHybridActivity.this, ESMActivity.class);
         intent_esm.putExtra("trigger_from", "Notification");
+        intent_esm.putExtra("status", "foreground");
         intent_esm.putExtra("esm_id", esm_id);
         intent_esm.putExtra("noti_timestamp", Timestamp.now());
         PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_esm, 0);
@@ -515,7 +513,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                     case "風傳媒":
                         return new StormMainFragment();
                     default:
-                        return Tab3Fragment.newInstance();
+                        return TestTab3Fragment.newInstance();
                 }
             } else {
                 switch (position) {
@@ -536,7 +534,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                     case 7:
                         return new StormMainFragment();
                     default:
-                        return Tab3Fragment.newInstance();
+                        return TestTab3Fragment.newInstance();
                 }
             }
 

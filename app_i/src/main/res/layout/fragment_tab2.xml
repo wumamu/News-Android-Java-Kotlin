@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="false"
-    tools:context=".Tab2Fragment">
+    tools:context=".TestTab2Fragment">
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/container_main"

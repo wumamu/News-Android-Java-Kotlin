@@ -30,7 +30,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -115,17 +117,61 @@ public class NewsNotificationService extends Service {
                     count++;
                     switch (dc.getType()) {
                         case ADDED:
-                            if(count<20 && selections.contains(dc.getDocument().getString("media"))){
-//                                if(selections.contains(dc.getDocument().getString("media")))
-//                                {
+                            //add record
+                            Map<String, Object> record_noti = new HashMap<>();
+                            String news_id = "", media = "", title = "", doc_id = "";
+//                            if(count<20 && selections.contains(dc.getDocument().getString("media"))){
+                            if(count<20){
+                                if(selections.contains(dc.getDocument().getString("media"))){
                                     Log.d("lognewsselect", "New doc: " + dc.getDocument().getData());
-                                    String news_id = dc.getDocument().getString("id");
-                                    String media  = dc.getDocument().getString("media");
-                                    String title = dc.getDocument().getString("news_title");
-                                    String doc_id = dc.getDocument().getId();
+                                    news_id = dc.getDocument().getString("id");
+                                    media  = dc.getDocument().getString("media");
+                                    title = dc.getDocument().getString("news_title");
+                                    doc_id = dc.getDocument().getId();
                                     scheduleNotification(getNotification(news_id, media, title), 1000 );
                                     Log.d("lognewsselect", "doc id" + doc_id);
-//                                }
+                                    record_noti.put("type", "add success");
+                                } else {
+                                    record_noti.put("type", "not select");
+                                }
+                            } else {
+                                record_noti.put("type", "too much");
+                            }
+                            record_noti.put("media", dc.getDocument().getString("media"));
+                            record_noti.put("news_title", dc.getDocument().getString("news_title"));
+                            record_noti.put("doc_id", dc.getDocument().getString("id"));
+                            record_noti.put("timestamp", Timestamp.now());
+                            record_noti.put("selections", Arrays.toString(new Set[]{selections}));
+
+                            db.collection("test_users")
+                                    .document(device_id)
+                                    .collection("push_noti_backup")
+                                    .document(String.valueOf(Timestamp.now()))
+                                    .set(record_noti);
+                            //before delete
+                            db.collection("test_users").document(device_id).collection("compare_result").document(dc.getDocument().getId())
+                                    .delete()
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.d("lognewsselect", "DocumentSnapshot successfully deleted!");
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.d("lognewsselect", "Error deleting document", e);
+                                        }
+                                    });
+                            break;
+                        case MODIFIED:
+                            if(count<20 && selections.contains(dc.getDocument().getString("media"))){
+                                Log.d("lognewsselect", "Modified doc: " + dc.getDocument().getData());
+                                String news_id_m = dc.getDocument().getString("id");
+                                String media_m  = dc.getDocument().getString("media");
+                                String title_m = dc.getDocument().getString("news_title");
+                                title_m = "新! " + title_m;
+                                scheduleNotification(getNotification(news_id_m, media_m, title_m), 1000 );
                             }
                             db.collection("test_users").document(device_id).collection("compare_result").document(dc.getDocument().getId())
                                     .delete()
@@ -141,15 +187,6 @@ public class NewsNotificationService extends Service {
                                             Log.d("lognewsselect", "Error deleting document", e);
                                         }
                                     });
-//                            scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
-                            break;
-                        case MODIFIED:
-                            Log.d("lognewsselect", "Modified doc: " + dc.getDocument().getData());
-                            String news_id_m = dc.getDocument().getString("id");
-                            String media_m  = dc.getDocument().getString("media");
-                            String title_m = dc.getDocument().getString("news_title");
-                            title_m = "新! " + title_m;
-                            scheduleNotification(getNotification(news_id_m, media_m, title_m), 1000 );
                             break;
                         case REMOVED:
                             Log.d("lognewsselect", "Removed doc: " + dc.getDocument().getData());

@@ -7,10 +7,10 @@ import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 
-public class Nest1Fragment extends Fragment {
+public class TestNest2Fragment extends Fragment {
 
-    public static Nest1Fragment newInstance(int position) {
-        Nest1Fragment fragment = new Nest1Fragment();
+    public static TestNest2Fragment newInstance(int position) {
+        TestNest2Fragment fragment = new TestNest2Fragment();
         Bundle args = new Bundle();
         args.putInt("position", position);
         fragment.setArguments(args);
@@ -18,7 +18,7 @@ public class Nest1Fragment extends Fragment {
         return fragment;
     }
 
-    public Nest1Fragment() {
+    public TestNest2Fragment() {
 
     }
 
@@ -31,9 +31,8 @@ public class Nest1Fragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_nest1, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_nest2, container, false);
 
 
         return view;

@@ -1,14 +1,17 @@
 package com.recoveryrecord.surveyandroid.example;
 
+
 import android.os.Bundle;
+//import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 
-public class Tab1Fragment extends Fragment {
-
+public class TestTab3Fragment extends Fragment {
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -17,14 +20,14 @@ public class Tab1Fragment extends Fragment {
     private String mParam2;
 
 
-    public Tab1Fragment() {
+    public TestTab3Fragment() {
         // Required empty public constructor
     }
 
 
     // TODO: Rename and change types and number of parameters
-    public static Tab1Fragment newInstance() {
-        Tab1Fragment fragment = new Tab1Fragment();
+    public static TestTab3Fragment newInstance() {
+        TestTab3Fragment fragment = new TestTab3Fragment();
 
         return fragment;
     }
@@ -39,9 +42,10 @@ public class Tab1Fragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_tab1, container, false);
+        return inflater.inflate(R.layout.fragment_tab3, container, false);
     }
 
 }
