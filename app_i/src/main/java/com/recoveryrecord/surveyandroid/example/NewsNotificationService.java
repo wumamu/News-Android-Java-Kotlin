@@ -85,9 +85,9 @@ public class NewsNotificationService extends Service {
 //
 //        // returns the status
 //        // of the program
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        final Set<String> selections = sharedPrefs.getStringSet("media_select", new HashSet<String>());
-        Log.d("lognewsselect_", "ss " + Arrays.toString(new Set[]{selections}));
+        final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+//        final Set<String> selections = sharedPrefs.getStringSet("media_select", new HashSet<String>());
+//        Log.d("lognewsselect_", "ss " + Arrays.toString(new Set[]{selections}));
 //        if (selections==null || selections.isEmpty()){
 //            selections.add("中時");
 //            selections.add("中央社");
@@ -111,6 +111,8 @@ public class NewsNotificationService extends Service {
                     return;
                 }
                 Timestamp right_now = Timestamp.now();
+                Set<String> selections = sharedPrefs.getStringSet("media_select", new HashSet<String>());
+                Log.d("lognewsselect_", "ss " + Arrays.toString(new Set[]{selections}));
                 int count = 0;
                 for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
                     DocumentSnapshot documentSnapshot = dc.getDocument();

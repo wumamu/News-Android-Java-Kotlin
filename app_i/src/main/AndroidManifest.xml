@@ -96,6 +96,9 @@
         <activity android:name=".ActivityRecognitionPermissionRationalActivity"/>
         <activity android:name=".TestActivityRecognitionActivity"/>
         <activity android:name=".NewsAllActivity"/>
+        <activity android:name=".MainActivity"
+            android:theme="@style/AppThemeActionBar"/>
+
 
         <!--        <activity android:name=".TestESMDbViewActivity"-->
         <!--            android:theme="@style/AppThemeActionBar"/>-->
@@ -112,23 +115,26 @@
                     tools:ignore="BatteryLife" />
             </intent-filter>
         </receiver>
-
-        <!-- Mention the service name here -->
-        <service android:name=".NewsNotificationService"/>
-        <activity android:name=".TestServiceActivity"
-            android:theme="@style/AppThemeActionBar"/>
-        <activity android:name=".TestDoubleBarActivity" />
-
-        <activity android:name=".MainActivity"
-            android:theme="@style/AppThemeActionBar"/>
+        <receiver
+            android:name=".NewsNotificationRestarter"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="restartservice" />
+            </intent-filter>
+        </receiver>
         <receiver android:name=".AlarmReceiver"
             android:enabled="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
-
+        <!-- Mention the service name here -->
+        <service android:name=".NewsNotificationService"
+            android:enabled="true"/>
+        <activity android:name=".TestServiceActivity"
+            android:theme="@style/AppThemeActionBar"/>
+        <activity android:name=".TestDoubleBarActivity" />
         <service android:name=".NotificationListenerService"
             android:label="@string/app_name"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">

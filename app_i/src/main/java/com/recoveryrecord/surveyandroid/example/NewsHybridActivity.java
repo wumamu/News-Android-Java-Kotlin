@@ -90,6 +90,8 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     Intent mServiceIntent;
     private NewsNotificationService mYourService;
 
+    String device_id = "";
+
     private static final HashMap<String, String> media_hash = new HashMap<String, String>();
     static{
         media_hash.put("中時", "chinatimes");
@@ -102,6 +104,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         media_hash.put("ettoday", "ettoday");
     }
 
+    @SuppressLint("HardwareIds")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,8 +112,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         setContentView(R.layout.activity_news_hybrid);
         //initial value for user (first time)
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
-        @SuppressLint("HardwareIds")
-        final String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         //first in app
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         boolean firstStart = sharedPrefs.getBoolean("firstStart", true);
@@ -213,12 +215,22 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         mYourService = new NewsNotificationService();
 //        mServiceIntent = new Intent(this, mYourService.getClass());
         mServiceIntent = new Intent(this, NewsNotificationService.class);
+        Map<String, Object> log_service = new HashMap<>();
+        log_service.put("noti_timestamp", Timestamp.now());
+        log_service.put("cycle", "start");
         if (!isMyServiceRunning(mYourService.getClass())) {
+            log_service.put("status", "failed(start)");
             Toast.makeText(this, "service failed", Toast.LENGTH_SHORT).show();
             startService(mServiceIntent);
         } else {
+            log_service.put("status", "running");
             Toast.makeText(this, "service running", Toast.LENGTH_SHORT).show();
         }
+        db.collection("test_users")
+                .document(device_id)
+                .collection("notification_service")
+                .document(String.valueOf(Timestamp.now()))
+                .set(log_service);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),this);
         mViewPager = (ViewPager) findViewById(R.id.container_hy);
         tabLayout = (TabLayout) findViewById(R.id.tabs_hy);
@@ -233,17 +245,37 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     protected void onResume() {
         super.onResume();
         Log.d("log: activity cycle", "On resume");
+        Map<String, Object> log_service = new HashMap<>();
+        log_service.put("noti_timestamp", Timestamp.now());
+        log_service.put("cycle", "resume");
         if (!isMyServiceRunning(mYourService.getClass())) {
+            log_service.put("status", "failed");
             Toast.makeText(this, "service failed", Toast.LENGTH_SHORT).show();
             startService(mServiceIntent);
         } else {
+            log_service.put("status", "running");
             Toast.makeText(this, "service running", Toast.LENGTH_SHORT).show();
         }
-//        mViewPager = (ViewPager) findViewById(R.id.container_hy);
-//        tabLayout = (TabLayout) findViewById(R.id.tabs_hy);
-//        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),this);
-//        mViewPager.setAdapter(mSectionsPagerAdapter);
-//        tabLayout.setupWithViewPager(mViewPager);
+        db.collection("test_users")
+                .document(device_id)
+                .collection("notification_service")
+                .document(String.valueOf(Timestamp.now()))
+                .set(log_service);
+//        if (!isMyServiceRunning(mYourService.getClass())) {
+//            Toast.makeText(this, "service failed", Toast.LENGTH_SHORT).show();
+//            startService(mServiceIntent);
+//        } else {
+//            Toast.makeText(this, "service running", Toast.LENGTH_SHORT).show();
+//        }
+    }
+    @Override
+    protected void onDestroy() {
+        //stopService(mServiceIntent);
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction("restartservice");
+        broadcastIntent.setClass(this, NewsNotificationRestarter.class);
+        this.sendBroadcast(broadcastIntent);
+        super.onDestroy();
     }
     private void showStartDialog() {
         new AlertDialog.Builder(this)
