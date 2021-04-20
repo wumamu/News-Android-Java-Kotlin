@@ -233,6 +233,12 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     protected void onResume() {
         super.onResume();
         Log.d("log: activity cycle", "On resume");
+        if (!isMyServiceRunning(mYourService.getClass())) {
+            Toast.makeText(this, "service failed", Toast.LENGTH_SHORT).show();
+            startService(mServiceIntent);
+        } else {
+            Toast.makeText(this, "service running", Toast.LENGTH_SHORT).show();
+        }
 //        mViewPager = (ViewPager) findViewById(R.id.container_hy);
 //        tabLayout = (TabLayout) findViewById(R.id.tabs_hy);
 //        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),this);
