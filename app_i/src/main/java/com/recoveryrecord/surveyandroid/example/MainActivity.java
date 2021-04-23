@@ -3,6 +3,7 @@ package com.recoveryrecord.surveyandroid.example;
 import android.annotation.TargetApi;
 import android.app.TimePickerDialog;
 import android.content.ClipboardManager;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 //import android.support.v7.app.AppCompatActivity;
@@ -152,5 +153,11 @@ public class MainActivity extends AppCompatActivity {
             //noinspection deprecation
             return getResources().getConfiguration().locale;
         }
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(MainActivity.this, NewsHybridActivity.class);
+        startActivity(intent);
     }
 }

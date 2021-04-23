@@ -301,6 +301,7 @@ public class NewsNotificationService extends Service {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void scheduleNotification (Notification notification, int delay) {
+//        Intent notificationIntent = new Intent(this, NotificationListenerNews.class);
         Intent notificationIntent = new Intent(this, NotificationListenerNews.class);
         notificationIntent.putExtra(NotificationListenerNews.NOTIFICATION_ID, 1 ) ;
         notificationIntent.putExtra(NotificationListenerNews.NOTIFICATION, notification) ;
@@ -314,8 +315,11 @@ public class NewsNotificationService extends Service {
     private Notification getNotification (String news_id, String media, String title) {
         int nid = (int) System.currentTimeMillis();
         Log.d("log: notification", "news id" + nid);
+//        Intent mainIntent = new Intent(context, MainActivity.class);
+
         Intent intent_news = new Intent();
-        intent_news.setClass(NewsNotificationService.this, NewsModuleActivity.class);
+        intent_news.setClass(this, NewsModuleActivity.class);
+        intent_news.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent_news.putExtra("trigger_from", "Notification");
         intent_news.putExtra("news_id", news_id);
         intent_news.putExtra("media", media);

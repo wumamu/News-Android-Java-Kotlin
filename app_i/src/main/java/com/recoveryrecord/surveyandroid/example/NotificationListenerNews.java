@@ -17,14 +17,14 @@ public class NotificationListenerNews extends BroadcastReceiver {
 //    public static String NOTIFICATION_s = "notification_s" ;
     public void onReceive (Context context , Intent intent) {
 //        //判断app进程是否存活
-//        if (Helper.isAppRunning(context, context.getPackageName())) {
-//            // App is running
-//            Log.d("apprunning", "1");
-//
-//        } else {
-//            // App is not running
-//            Log.d("apprunning", "2");
-//        }
+        if (Helper.isAppRunning(context, context.getPackageName())) {
+            // App is running
+            Log.d("apprunning", "1");
+
+        } else {
+            // App is not running
+            Log.d("apprunning", "2");
+        }
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context. NOTIFICATION_SERVICE ) ;
         Notification notification = intent.getParcelableExtra( NOTIFICATION ) ;
         if (android.os.Build.VERSION. SDK_INT >= android.os.Build.VERSION_CODES. O ) {

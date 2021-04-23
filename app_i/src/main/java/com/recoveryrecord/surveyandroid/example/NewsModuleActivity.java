@@ -152,6 +152,9 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         ch_except.add('／');
         ch_except.add('～');
         ch_except.add('＋');
+        ch_except.add('＋');
+        ch_except.add('★');
+        ch_except.add('﹔');
     }
 
     static {
@@ -814,9 +817,11 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                                 return executor.submit(new Callable<Integer>() {
                                     float count_running = 0;
                                     int[] count = new int[N];
+                                    int[] count_top = new int[3];
                                     boolean[] old_flag = new boolean[N];
                                     boolean[] new_flag = new boolean[N];
-
+                                    boolean[] old_flag_top = new boolean[3];
+                                    boolean[] new_flag_top = new boolean[3];
                                     @Override
                                     public Integer call() throws Exception {
                                         Arrays.fill(old_flag, Boolean.FALSE);
@@ -829,15 +834,14 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                                             if (activityStopped && !activityEnd) {
                                                 Log.d("log: MyScrollView", "Stop");
                                                 tmp_record = "";
+                                                tmp_record+=count_top[0] / 10 + "/";
+                                                tmp_record+=count_top[1] / 10 + "/";
+                                                tmp_record+=count_top[2] / 10 + "#";
                                                 for (int i = 0; i < N; i++) {
-//                                    Log.d("log: MyScrollView", i + " count: " + count[i] / 10);
-//                                                    tmp_record+=i+1 + ": " + count[i] / 10 + "\n";
                                                     tmp_record+=count[i] / 10 + "#";
                                                 }
                                                 myReadingBehavior.setKEY_VIEW_PORT_RECORD(tmp_record);
                                                 Log.d("log: view_port_record", myReadingBehavior.getKEY_VIEW_PORT_RECORD());
-//                                                myReadingBehavior.setKEY_TIME_ON_PAGE(count_running / 10);
-//                                                Log.d("log: time_on_page", String.valueOf(myReadingBehavior.getKEY_TIME_ON_PAGE()));
                                                 while (activityStopped) {
                                                     Thread.sleep(100);
                                                 }
@@ -845,14 +849,81 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                                             }
                                             Rect scrollBounds = new Rect();
 //                        mScrollView.getHitRect(scrollBounds);
-                                            int first_view = -1, last_view = -1;
+                                            int first_view = -100, last_view = -100;//initial -1
+                                            //for title
+                                            if (!myTextViewsTitle.getLocalVisibleRect(scrollBounds)) {
+                                                Log.d("MyScrollView", "1");
+                                                new_flag_top[0] = false;
+                                            } else {
+                                                Log.d("MyScrollView", "2");
+                                                new_flag_top[0] = true;
+                                                if(first_view==-100){//-1
+                                                    first_view = -3;
+                                                } else {
+                                                    last_view = -3;
+                                                }
+                                            }
+                                            if (old_flag_top[0] && new_flag_top[0]) {
+                                                count_top[0]++;
+                                            } else if (old_flag_top[0] && !new_flag_top[0]) {
+                                                old_flag_top[0] = new_flag_top[0];
+                                            } else if (!old_flag_top[0] && new_flag_top[0]) {
+                                                count_top[0]++;
+                                                old_flag_top[0] = new_flag_top[0];
+                                            } else {
+                                            }
+                                            //time
+                                            if (!myTextViewsDate.getLocalVisibleRect(scrollBounds)) {
+                                                Log.d("MyScrollView", "1");
+                                                new_flag_top[1] = false;
+                                            } else {
+                                                Log.d("MyScrollView", "2");
+                                                new_flag_top[1] = true;
+                                                if(first_view==-100){//-1
+                                                    first_view = -2;
+                                                } else {
+                                                    last_view = -2;
+                                                }
+                                            }
+                                            if (old_flag_top[1] && new_flag_top[1]) {
+                                                count_top[1]++;
+                                            } else if (old_flag_top[1] && !new_flag_top[1]) {
+                                                old_flag_top[1] = new_flag_top[1];
+                                            } else if (!old_flag_top[1] && new_flag_top[1]) {
+                                                count_top[1]++;
+                                                old_flag_top[1] = new_flag_top[1];
+                                            } else {
+                                            }
+                                            // media
+                                            if (!myTextViewsSrc.getLocalVisibleRect(scrollBounds)) {
+                                                Log.d("MyScrollView", "1");
+                                                new_flag_top[2] = false;
+                                            } else {
+                                                Log.d("MyScrollView", "2");
+                                                new_flag_top[2] = true;
+                                                if(first_view==-100){//-1
+                                                    first_view = -1;
+                                                } else {
+                                                    last_view = -1;
+                                                }
+                                            }
+                                            if (old_flag_top[2] && new_flag_top[2]) {
+                                                count_top[2]++;
+                                            } else if (old_flag_top[2] && !new_flag_top[2]) {
+                                                old_flag_top[2] = new_flag_top[2];
+                                            } else if (!old_flag_top[2] && new_flag_top[2]) {
+                                                count_top[2]++;
+                                                old_flag_top[2] = new_flag_top[2];
+                                            } else {
+                                            }
+                                            //content
                                             for (int i = 0; i < N; i++) {
                                                 if (!myTextViews[i].getLocalVisibleRect(scrollBounds)) {
                                                     new_flag[i] = false;
 //                                Log.d(TAG, i + " false");
                                                 } else {
                                                     new_flag[i] = true;
-                                                    if(first_view==-1){
+                                                    if(first_view==-100){
                                                         first_view = i;
                                                     } else {
                                                         last_view = i;
@@ -882,6 +953,9 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                                             String output_string = temp + "," + (first_view+1) + "," + (last_view+1) + "#";
                                             time_ss+=output_string;
                                             tmp_record = "";
+                                            tmp_record+=count_top[0] / 10 + "/";
+                                            tmp_record+=count_top[1] / 10 + "/";
+                                            tmp_record+=count_top[2] / 10 + "#";
                                             for (int i = 0; i < N; i++) {
 //                                                tmp_record+=i+1 + ": " + count[i] / 10 + "\n";
                                                 tmp_record+=count[i] / 10 + "#";
@@ -889,14 +963,21 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                                             myReadingBehavior.setKEY_VIEW_PORT_RECORD(tmp_record);
                                         }
                                         Log.d("log: MyScrollView", "Finish");
+                                        Log.d("log: MyScrollView", "can not reach!!!!!!!!!!!!!!");
                                         String finish_record = "";
+//                                        finish_record+=i+1 + ": " + count_top[0] / 10 + "\n";
+//                                        finish_record+=count_top[0] / 10 + "#";
+//                                        finish_record+=i+1 + ": " + count_top[1] / 10 + "\n";
+//                                        finish_record+=count_top[1] / 10 + "#";
+//                                        finish_record+=i+1 + ": " + count_top[2] / 10 + "\n";
+//                                        finish_record+=count_top[2] / 10 + "#";
                                         for (int i = 0; i < N; i++) {
 //                            Log.d("log: MyScrollView", i + " count: " + count[i] / 10);
-                                            finish_record+=i+1 + ": " + count[i] / 10 + "\n";
+//                                            finish_record+=i+1 + ": " + count[i] / 10 + "\n";
                                             finish_record+=count[i] / 10 + "#";
                                         }
                                         myReadingBehavior.setKEY_VIEW_PORT_RECORD(finish_record);
-                                        Log.d("log: view_port_record", myReadingBehavior.getKEY_VIEW_PORT_RECORD());
+                                        Log.d("log: view_port_record55", myReadingBehavior.getKEY_VIEW_PORT_RECORD());
 //                                        myReadingBehavior.setKEY_TIME_ON_PAGE(count_running / 10);
 //                                        Log.d("log: time_on_page", String.valueOf(myReadingBehavior.getKEY_TIME_ON_PAGE()));
 //                        Log.d("log: MyScrollView", "time_on_page: " + count_running / 10);
@@ -1057,7 +1138,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-//        supportFinishAfterTransition();
+        supportFinishAfterTransition();
         if (!self_trigger){
             Intent intent = new Intent(NewsModuleActivity.this, NewsHybridActivity.class);
             startActivity(intent);
@@ -1121,7 +1202,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
 
         int id = item.getItemId();
 
-        if  (id == R.id.share){
+        if (id == R.id.share){
             Toast.makeText(this, "share is being clicked", Toast.LENGTH_LONG).show();
             String share_field = "";
 //            final DocumentReference rbRef = db.collection(Build.ID).document(String.valueOf(l_date)).collection("reading_behaviors").document(myReadingBehavior.getKEY_TIME_IN());
@@ -1223,6 +1304,9 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
             }catch (Exception e){
                 Toast.makeText(this, "Hmm.. Sorry, \nCannot be share", Toast.LENGTH_SHORT).show();
             }
+        } else if (id == android.R.id.home){
+            Intent intent_back = new Intent(NewsModuleActivity.this, NewsHybridActivity.class);
+            startActivity(intent_back);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -1346,9 +1430,9 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         List<String> viewport_record_list = new ArrayList<String>(Arrays.asList(myReadingBehavior.getKEY_VIEW_PORT_RECORD().split("#")));
         List<String> drag_record_list = new ArrayList<String>(Arrays.asList(myReadingBehavior.getKEY_DRAG_RECORD().split("#")));
         List<String> fling_record_list = new ArrayList<String>(Arrays.asList(myReadingBehavior.getKEY_FLING_RECORD().split("#")));
-        for (int i = 0; i < fling_record_list.size(); i++) {
+        for (int i = 0; i < viewport_record_list.size(); i++) {
 //            System.out.println(time_series_list.get(i));
-            Log.d("log: firebase", fling_record_list.get(i));
+            Log.d("log: firebase", viewport_record_list.get(i));
         }
 //        for (int i = 0; i < drag_record_list.size(); i++) {
 ////            System.out.println(time_series_list.get(i));

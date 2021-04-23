@@ -109,6 +109,12 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = getApplicationContext();
+//        Log.d(TAG, "on create");
+//        if (getIntent().getExtras() != null) {
+//            for (String key : getIntent().getExtras().keySet()){
+//                String value = getIntent().getExtras().getString(key);
+//                Log.d(TAG, "Key: " + key + " Value: " + value);
+//            }}
         setContentView(R.layout.activity_news_hybrid);
         //initial value for user (first time)
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -244,6 +250,12 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     @Override
     protected void onResume() {
         super.onResume();
+//        Log.d(TAG, "on resume");
+//        if (getIntent().getExtras() != null) {
+//            for (String key : getIntent().getExtras().keySet()){
+//                String value = getIntent().getExtras().getString(key);
+//                Log.d(TAG, "Key: " + key + " Value: " + value);
+//            }}
         Log.d("log: activity cycle", "On resume");
         Map<String, Object> log_service = new HashMap<>();
         log_service.put("noti_timestamp", Timestamp.now());

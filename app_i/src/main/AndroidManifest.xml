@@ -84,9 +84,18 @@
             </intent-filter>
         </activity>
         <activity android:name=".NewsModuleActivity"
-            android:theme="@style/AppThemeActionBar"/>
+            android:parentActivityName=".NewsHybridActivity"
+            android:theme="@style/AppThemeActionBar"
+            tools:targetApi="jelly_bean">
+            <intent-filter>
+                <action android:name="com.recoveryrecord.surveyandroid.example.NewsModuleActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name=".TestNewsOneActivity" />
         <activity android:name=".ESMActivity"
+            android:launchMode="singleTask"
+            android:excludeFromRecents="true"
             android:theme="@style/Widget.SurveyAndroid"/>
 <!--        <activity android:name=".NetworkCheckerActivity" />-->
         <activity android:name=".TestNotificationSettingActivity"
