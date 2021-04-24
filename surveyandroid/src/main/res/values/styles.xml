@@ -13,6 +13,7 @@
         <item name="segmentTextColor">@color/selectable_rb_text_color</item>
         <item name="paddingSmall">5dp</item>
         <item name="paddingLarge">10dp</item>
+
     </style>
 
     <style name="Widget.SurveyAndroid.RecyclerView">

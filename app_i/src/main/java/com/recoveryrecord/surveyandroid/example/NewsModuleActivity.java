@@ -74,7 +74,7 @@ import androidx.appcompat.app.AppCompatActivity;
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class NewsModuleActivity extends AppCompatActivity implements GestureListener.SimpleGestureListener {
     //    String TagCycle = "my activity cycle";
-//    String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+    String device_id = "";
 
     volatile boolean activityStopped = false;
     volatile boolean activityEnd = false;
@@ -84,12 +84,13 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
     private ScreenStateReceiver mReceiver;//screen on or off
     boolean first_in = true;
     int char_num_total = 0;
-    Timestamp enter_timestamp;
+    Timestamp enter_timestamp, mPubdate;
 
     String time_ss = "";//time series
     String tmp_record = "";//viewport
     String news_id = "";
-    String media_name = "";
+    String media_name = "", media = "";
+
     private String mUrl, mImg, mTitle, mDate, mSource;
 
     private static final String DEBUG_TAG = "Gestures";
@@ -312,12 +313,12 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         return full_en.contains(c);
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint({"ClickableViewAccessibility", "HardwareIds"})
     @RequiresApi(api = Build.VERSION_CODES.O)
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("log: activity cycle", "On create");
+        Log.d("log: activity cycle", "NewsModuleActivity On create");
         super.onCreate(savedInstanceState);
-
+        device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 //        getSupportActionBar().hide();
         setContentView(R.layout.activity_news_module);
 //        toolbar = (Toolbar) findViewById(R.id.main_toolbar);
@@ -336,6 +337,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
             }
             if (b.getString("media")!= null){
                 media_name = b.getString("media");
+                media = media_name;
             }
 
         }
@@ -450,7 +452,8 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                         mImg = "";
 //                        mImg = "https://cc.tvbs.com.tw/img/upload/2021/02/05/20210205183845-85cd46f0.jpg";
                         mTitle = document.getString("title");
-                        Date my_date = document.getTimestamp("pubdate").toDate();
+                        mPubdate = document.getTimestamp("pubdate");
+                        Date my_date = mPubdate.toDate();
                         @SuppressLint("SimpleDateFormat")
                         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
                         List<String> my_tt = new ArrayList<String>(Arrays.asList(formatter.format(my_date).split(" ")));
@@ -1004,14 +1007,14 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
             addReadingBehavior();
             first_in = false;
         }
-        Log.d("log: activity cycle", "On start");
+        Log.d("log: activity cycle", "NewsModuleActivity On start");
         activityStopped = false;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("log: activity cycle", "On resume");
+        Log.d("log: activity cycle", "NewsModuleActivity On resume");
         activityStopped = false;
         //isScreenOn(R.layout.activity_news_detail);
         in_time = System.currentTimeMillis();
@@ -1020,7 +1023,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d("log: activity cycle", "On pause");
+        Log.d("log: activity cycle", "NewsModuleActivity On pause");
         activityStopped = true;
         myReadingBehavior.setKEY_PAUSE_ON_PAGE(myReadingBehavior.getKEY_PAUSE_ON_PAGE()+1);
         long tmp = myReadingBehavior.getKEY_TIME_ON_PAGE() + (System.currentTimeMillis()-in_time)/1000;
@@ -1114,7 +1117,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
     @Override
     protected void onStop() {
         super.onStop();
-        Log.d("log: activity cycle", "On stop");
+        Log.d("log: activity cycle", "NewsModuleActivity On stop");
         activityStopped = true;
 
     }
@@ -1122,7 +1125,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
     @Override
     protected void onRestart() {
         super.onRestart();
-        Log.d("log: activity cycle", "On restart");
+        Log.d("log: activity cycle", "NewsModuleActivity On restart");
         activityStopped = false;
 //        in_time = System.currentTimeMillis();
     }
@@ -1130,9 +1133,18 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onDestroy() {
+//        Map<String, Object> readingBehavior_result = new HashMap<>();
+//        readingBehavior_result.put("timestamp",  Timestamp.now());
+//        readingBehavior_result.put("news_id",  news_id);
+//        db.collection("test_users")
+//                .document(device_id)
+//                .collection("reading_behaviors_result")
+//                .document(String.valueOf(Timestamp.now()))
+//                .set(readingBehavior_result);
         super.onDestroy();
-        Log.d("log: activity cycle", "On destroy");
+        Log.d("log: activity cycle", "NewsModuleActivity On destroy");
         activityEnd = true;
+
     }
 
     @Override
@@ -1206,7 +1218,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
             Toast.makeText(this, "share is being clicked", Toast.LENGTH_LONG).show();
             String share_field = "";
 //            final DocumentReference rbRef = db.collection(Build.ID).document(String.valueOf(l_date)).collection("reading_behaviors").document(myReadingBehavior.getKEY_TIME_IN());
-            String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+//            String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
             final DocumentReference rbRef = db.collection("test_users").document(device_id).collection("reading_behaviors").document(myReadingBehavior.getKEY_TIME_IN());
             if(share_clicked){
 //                Date date = new Date(System.currentTimeMillis());
@@ -1359,7 +1371,9 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         // [START add_ada_lovelace]
         // Create a new user with a first and last name
         Map<String, Object> readingBehavior = new HashMap<>();
-        readingBehavior.put("news_id",  "NA");
+        readingBehavior.put("id",  "NA");
+        readingBehavior.put("pubdate",  "NA");
+        readingBehavior.put("media",  "NA");
         readingBehavior.put("trigger_by", myReadingBehavior.getKEY_TRIGGER_BY());
 //        readingBehavior.put("time_in", myReadingBehavior.getKEY_TIME_IN());
         readingBehavior.put("in_timestamp", enter_timestamp);
@@ -1380,7 +1394,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         readingBehavior.put("drag_num", myReadingBehavior.getKEY_DRAG_NUM());
         readingBehavior.put("drag_record", Arrays.asList("NA"));
         readingBehavior.put("share", Arrays.asList("NA"));
-        readingBehavior.put("news_title","NA");
+        readingBehavior.put("title","NA");
 //        readingBehavior.put("share_via", "none");
         readingBehavior.put("time_series(s)", Arrays.asList("NA"));
         readingBehavior.put("byte_per_line", "NA");
@@ -1389,7 +1403,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
 //        Log.d("log: view_port_num!", String.valueOf(myReadingBehavior.getKEY_VIEW_PORT_NUM()));
 
         // Add a new document with my id ///////////////////////a generated ID
-        String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+//        String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 //        Log.d("log: device_id", device_id);
         db.collection("test_users")
                 .document(device_id)
@@ -1423,7 +1437,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 //        DocumentReference rbRef = db.collection(Build.ID).document(String.valueOf(l_date)).collection("reading_behaviors").document(myReadingBehavior.getKEY_TIME_IN());
         @SuppressLint("MissingPermission")
-        String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+//        String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         DocumentReference rbRef = db.collection("test_users").document(device_id).collection("reading_behaviors").document(myReadingBehavior.getKEY_TIME_IN());
 
         List<String> time_series_list = new ArrayList<String>(Arrays.asList(myReadingBehavior.getKEY_TIME_SERIES().split("#")));
@@ -1443,7 +1457,9 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         rbRef.update("content_length(dp)", myReadingBehavior.getKEY_CONTENT_LENGTH(),
                 "byte_per_line", myReadingBehavior.getKEY_BYTE_PER_LINE(),
                 "char_num_total", myReadingBehavior.getKEY_CHAR_NUM_TOTAL(),
-                "news_id",  myReadingBehavior.getKEY_NEWS_ID(),
+                "id",  myReadingBehavior.getKEY_NEWS_ID(),
+                "media",media,
+                "pubdate",mPubdate,
                 "row_spacing(dp)", myReadingBehavior.getKEY_ROW_SPACING(),
                 "viewport_num", myReadingBehavior.getKEY_VIEW_PORT_NUM(),
                 "drag_num", myReadingBehavior.getKEY_DRAG_NUM(),
@@ -1458,7 +1474,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                 "out_timestamp", Timestamp.now(),
                 "out_time", out_tt.get(2),
                 "out_date", out_tt.get(0),
-                "news_title", mTitle,
+                "title", mTitle,
                 "time_series(s)", time_series_list,//auto
                 "viewport_record", viewport_record_list)//auto
                 .addOnSuccessListener(new OnSuccessListener<Void>() {

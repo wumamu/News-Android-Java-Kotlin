@@ -222,8 +222,9 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 //        mServiceIntent = new Intent(this, mYourService.getClass());
         mServiceIntent = new Intent(this, NewsNotificationService.class);
         Map<String, Object> log_service = new HashMap<>();
-        log_service.put("noti_timestamp", Timestamp.now());
-        log_service.put("cycle", "start");
+        log_service.put("service_timestamp", Timestamp.now());
+        log_service.put("cycle", "create");
+        Log.d("log: activity cycle", "NewsHybridActivity On create");
         if (!isMyServiceRunning(mYourService.getClass())) {
             log_service.put("status", "failed(start)");
             Toast.makeText(this, "service failed", Toast.LENGTH_SHORT).show();
@@ -256,9 +257,9 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 //                String value = getIntent().getExtras().getString(key);
 //                Log.d(TAG, "Key: " + key + " Value: " + value);
 //            }}
-        Log.d("log: activity cycle", "On resume");
+        Log.d("log: activity cycle", "NewsHybridActivity On resume");
         Map<String, Object> log_service = new HashMap<>();
-        log_service.put("noti_timestamp", Timestamp.now());
+        log_service.put("service_timestamp", Timestamp.now());
         log_service.put("cycle", "resume");
         if (!isMyServiceRunning(mYourService.getClass())) {
             log_service.put("status", "failed");
@@ -280,14 +281,66 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 //            Toast.makeText(this, "service running", Toast.LENGTH_SHORT).show();
 //        }
     }
+
+    @Override
+    protected void onStart() {
+        Log.d("log: activity cycle", "NewsHybridActivity On Start");
+        super.onStart();
+    }
+
+    @Override
+    protected void onPause() {
+        Log.d("log: activity cycle", "NewsHybridActivity On Pause");
+        super.onPause();
+    }
+
+    @Override
+    protected void onRestart() {
+        Log.d("log: activity cycle", "NewsHybridActivity On Restart");
+        super.onRestart();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.d("log: activity cycle", "NewsHybridActivity On stop");
+        Map<String, Object> log_service = new HashMap<>();
+        log_service.put("service_timestamp", Timestamp.now());
+        log_service.put("cycle", "stop");
+        if (!isMyServiceRunning(mYourService.getClass())) {
+            log_service.put("status", "failed");
+            Toast.makeText(this, "service failed", Toast.LENGTH_SHORT).show();
+            startService(mServiceIntent);
+        } else {
+            log_service.put("status", "running");
+            Toast.makeText(this, "service running", Toast.LENGTH_SHORT).show();
+        }
+        db.collection("test_users")
+                .document(device_id)
+                .collection("notification_service")
+                .document(String.valueOf(Timestamp.now()))
+                .set(log_service);
+        super.onStop();
+    }
+
     @Override
     protected void onDestroy() {
-        //stopService(mServiceIntent);
-//        Log.d("lognewsselect", "onDestroy activity");
-//        Intent broadcastIntent = new Intent();
-//        broadcastIntent.setAction("restartservice");
-//        broadcastIntent.setClass(this, NewsNotificationRestarter.class);
-//        this.sendBroadcast(broadcastIntent);
+        Log.d("log: activity cycle", "NewsHybridActivity On destroy");
+        Map<String, Object> log_service = new HashMap<>();
+        log_service.put("service_timestamp", Timestamp.now());
+        log_service.put("cycle", "destroy");
+        if (!isMyServiceRunning(mYourService.getClass())) {
+            log_service.put("status", "failed");
+            Toast.makeText(this, "service failed", Toast.LENGTH_SHORT).show();
+            startService(mServiceIntent);
+        } else {
+            log_service.put("status", "running");
+            Toast.makeText(this, "service running", Toast.LENGTH_SHORT).show();
+        }
+        db.collection("test_users")
+                .document(device_id)
+                .collection("notification_service")
+                .document(String.valueOf(Timestamp.now()))
+                .set(log_service);
         super.onDestroy();
     }
     private void showStartDialog() {
@@ -326,31 +379,36 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 return true;
             case R.id.nav_history :
                 Log.d("log: navigation", "nav_history " + item.getItemId());
-                Intent intent_noti = new Intent(NewsHybridActivity.this, ReadHistoryActivity.class);
-                startActivity(intent_noti);
+                Intent intent_rbh = new Intent(NewsHybridActivity.this, ReadHistoryActivity.class);
+                startActivity(intent_rbh);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             case R.id.nav_reschedule :
                 Log.d("log: navigation", "nav_reschedule " + item.getItemId());
-                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 1000 );
-//                Toast.makeText(this, "開始每小時固定發送esm~", Toast.LENGTH_LONG).show();
-                Toast.makeText(this, "發送esm~", Toast.LENGTH_SHORT).show();
-//                Intent intent_base = new Intent(NewsAllActivity.this, TestBasicActivity.class);
-//                startActivity(intent_base);
+                Intent intent_notih = new Intent(NewsHybridActivity.this, PushHistoryActivity.class);
+                startActivity(intent_notih);
                 drawerLayout.closeDrawer(GravityCompat.START);
+//                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 1000 );
+////                Toast.makeText(this, "開始每小時固定發送esm~", Toast.LENGTH_LONG).show();
+//                Toast.makeText(this, "發送esm~", Toast.LENGTH_SHORT).show();
+////                Intent intent_base = new Intent(NewsAllActivity.this, TestBasicActivity.class);
+////                startActivity(intent_base);
+//                drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             case R.id.nav_contact :
-                Log.d("log: navigation", "nav_contact " + item.getItemId());
-//                if (Helper.isAppRunning(NewsHybridActivity.this, getPackageName())) {
-//                    // App is running
-//                    Log.d("apprunning", "1");
-//                } else {
-//                    // App is not running
-//                    Log.d("apprunning", "2");
-//                }
-                Toast.makeText(this, "目前什麼都沒有拉~", Toast.LENGTH_SHORT).show();
-                Intent intent_ems = new Intent(NewsHybridActivity.this, MainActivity.class);
-                startActivity(intent_ems);
+                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 1000 );
+                Toast.makeText(this, "發送esm~", Toast.LENGTH_SHORT).show();
+//                Log.d("log: navigation", "nav_contact " + item.getItemId());
+////                if (Helper.isAppRunning(NewsHybridActivity.this, getPackageName())) {
+////                    // App is running
+////                    Log.d("apprunning", "1");
+////                } else {
+////                    // App is not running
+////                    Log.d("apprunning", "2");
+////                }
+//                Toast.makeText(this, "目前什麼都沒有拉~", Toast.LENGTH_SHORT).show();
+//                Intent intent_ems = new Intent(NewsHybridActivity.this, MainActivity.class);
+//                startActivity(intent_ems);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             default :

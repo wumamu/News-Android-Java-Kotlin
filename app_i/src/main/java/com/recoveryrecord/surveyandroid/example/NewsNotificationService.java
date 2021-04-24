@@ -13,7 +13,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Build;
-import android.os.Handler;
+import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.provider.Settings;
@@ -33,13 +33,12 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ThreadLocalRandom;
 
 import androidx.annotation.NonNull;
@@ -57,23 +56,24 @@ public class NewsNotificationService extends Service {
     public int counter=0;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final DocumentReference noteRef = db.document("server_push_notifications/start");
-//    private CollectionReference noteRefqq = db.collection("test_users/" + device_id + "/compare_result");
+    String device_id = "";
 
-//    private FirebaseFirestore firestore;
+    //timer count down
+    private static final long START_TIME_IN_MILLIS = 30 * 60 * 1000;//one min
+    private CountDownTimer mCountDownTimer;
+    private boolean mTimerRunning;
+    private long mTimeLeftInMillis = START_TIME_IN_MILLIS;
+
+    @SuppressLint("HardwareIds")
     @Override
     public void onCreate(){
         super.onCreate();
+        device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         Log.d("lognewsselect", "onCreate");
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O)
             startMyOwnForeground();
         else
             startForeground(1, new Notification());
-//        FirebaseApp.initializeApp(this);
-//        this.firestore = FirebaseFirestore.getInstance();
-////        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-////                .setTimestampsInSnapshotsEnabled(true)
-////                .build();
-////        firestore.setFirestoreSettings(settings);
     }
     @RequiresApi(Build.VERSION_CODES.O)
     private void startMyOwnForeground() {
@@ -101,135 +101,86 @@ public class NewsNotificationService extends Service {
     // on calling this method
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d("lognewsselect", "onStartCommand");
-        final String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-//        // creating a media player which
-//        // will play the audio of Default
-//        // ringtone in android device
-//        player = MediaPlayer.create( this, Settings.System.DEFAULT_RINGTONE_URI );
-//
-//        // providing the boolean
-//        // value as true to play
-//        // the audio on loop
-//        player.setLooping( true );
-//
-//        // starting the process
-//        player.start();
-//
-//        // returns the status
-//        // of the program
+//        final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        listen_compare_result();
+        listen_activity_cycle();
+//        listen_reading_behavior_result();
+//        listen_doc();
+        return START_STICKY;
+    }
+
+    private void listen_activity_cycle() {
         final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-//        final Set<String> selections = sharedPrefs.getStringSet("media_select", new HashSet<String>());
-//        Log.d("lognewsselect_", "ss " + Arrays.toString(new Set[]{selections}));
-//        if (selections==null || selections.isEmpty()){
-//            selections.add("中時");
-//            selections.add("中央社");
-//            selections.add("華視");
-//            selections.add("東森");
-//            selections.add("自由時報");
-//            selections.add("風傳媒");
-//            selections.add("聯合");
-//            selections.add("ettoday");
-//        }
+        long LastAppStopOrDestroyTime = sharedPrefs.getLong("LastAppStopOrDestroyTime", 0L);
         db.collection("test_users")
                 .document(device_id)
-                .collection("compare_result")
-                .orderBy("pubdate", Query.Direction.DESCENDING)
+                .collection("notification_service")
+                .orderBy("service_timestamp", Query.Direction.DESCENDING)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    Log.d("lognewsselect", "listen:error", e);
-                    return;
-                }
-                Timestamp right_now = Timestamp.now();
-                Set<String> selections = sharedPrefs.getStringSet("media_select", new HashSet<String>());
-                Log.d("lognewsselect_", "ss " + Arrays.toString(new Set[]{selections}));
-                int count = 0;
-                for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
-                    DocumentSnapshot documentSnapshot = dc.getDocument();
-                    count++;
-                    switch (dc.getType()) {
-                        case ADDED:
-                            //add record
-                            Map<String, Object> record_noti = new HashMap<>();
-                            String news_id = "", media = "", title = "", doc_id = "";
-//                            if(count<20 && selections.contains(dc.getDocument().getString("media"))){
-                            if(count<20){
-                                if(selections.contains(dc.getDocument().getString("media"))){
-                                    Log.d("lognewsselect", "New doc: " + dc.getDocument().getData());
-                                    news_id = dc.getDocument().getString("id");
-                                    media  = dc.getDocument().getString("media");
-                                    title = dc.getDocument().getString("news_title");
-                                    doc_id = dc.getDocument().getId();
-                                    scheduleNotification(getNotification(news_id, media, title), 1000 );
-                                    Log.d("lognewsselect", "doc id" + doc_id);
-                                    record_noti.put("type", "add success");
-                                } else {
-                                    record_noti.put("type", "not select");
-                                }
-                            } else {
-                                record_noti.put("type", "too much");
-                            }
-                            record_noti.put("media", dc.getDocument().getString("media"));
-                            record_noti.put("news_title", dc.getDocument().getString("news_title"));
-                            record_noti.put("doc_id", dc.getDocument().getString("id"));
-                            record_noti.put("timestamp", Timestamp.now());
-                            record_noti.put("selections", Arrays.toString(new Set[]{selections}));
+                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+//                            Log.d("lognewsselect", "listen:error", e);
+                            return;
+                        }
+                        Timestamp right_now = Timestamp.now();
+                        int count = 0;
+                        for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
+                            DocumentSnapshot documentSnapshot = dc.getDocument();
+                            count++;
+                            switch (dc.getType()) {
+                                case ADDED:
+                                    if(count<=1){
+                                        Log.d("lognewsselect", dc.getDocument().getString("cycle"));
+                                        if((dc.getDocument().getString("cycle").equals("stop")) || (dc.getDocument().getString("cycle").equals("destroy"))){
 
-                            db.collection("test_users")
-                                    .document(device_id)
-                                    .collection("push_noti_backup")
-                                    .document(String.valueOf(Timestamp.now()))
-                                    .set(record_noti);
-                            //before delete
-                            db.collection("test_users").document(device_id).collection("compare_result").document(dc.getDocument().getId())
-                                    .delete()
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            Log.d("lognewsselect", "DocumentSnapshot successfully deleted!");
+                                            SharedPreferences.Editor editor = sharedPrefs.edit();
+                                            editor.putLong("LastAppStopOrDestroyTime", dc.getDocument().getTimestamp("service_timestamp").getSeconds());
+                                            editor.apply();
+                                            if (mTimerRunning) {
+                                                resetTimer();
+                                            } else {
+                                                startTimer();
+                                            }
+                                        } else {
+                                            if (mTimerRunning) {
+                                                pauseTimer();
+                                            } else {
+//                                                startTimer();
+                                            }
                                         }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Log.d("lognewsselect", "Error deleting document", e);
-                                        }
-                                    });
-                            break;
-                        case MODIFIED:
-                            if(count<20 && selections.contains(dc.getDocument().getString("media"))){
-                                Log.d("lognewsselect", "Modified doc: " + dc.getDocument().getData());
-                                String news_id_m = dc.getDocument().getString("id");
-                                String media_m  = dc.getDocument().getString("media");
-                                String title_m = dc.getDocument().getString("news_title");
-                                title_m = "新! " + title_m;
-                                scheduleNotification(getNotification(news_id_m, media_m, title_m), 1000 );
+                                    }
+
+                                    //before delete
+                                    db.collection("test_users").document(device_id).collection("notification_service").document(dc.getDocument().getId())
+                                            .delete()
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("lognewsselect", "DocumentSnapshot successfully deleted!");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.d("lognewsselect", "Error deleting document", e);
+                                                }
+                                            });
+                                    break;
+                                case MODIFIED:
+                                    break;
+                                case REMOVED:
+                                    Log.d("lognewsselect", "Removed doc: " + dc.getDocument().getData());
+                                    break;
                             }
-                            db.collection("test_users").document(device_id).collection("compare_result").document(dc.getDocument().getId())
-                                    .delete()
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            Log.d("lognewsselect", "DocumentSnapshot successfully deleted!");
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Log.d("lognewsselect", "Error deleting document", e);
-                                        }
-                                    });
-                            break;
-                        case REMOVED:
-                            Log.d("lognewsselect", "Removed doc: " + dc.getDocument().getData());
-                            break;
+                        }
                     }
-                }
-            }
-        });
-//        noteRef.addSnapshotListener((Executor) this, new EventListener<DocumentSnapshot>() {
+                });
+    }
+
+    private void listen_doc() {
+        //        noteRef.addSnapshotListener((Executor) this, new EventListener<DocumentSnapshot>() {
 //            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 //            @Override
 //            public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
@@ -247,7 +198,170 @@ public class NewsNotificationService extends Service {
 //                }
 //            }
 //        });
-        return START_STICKY;
+    }
+
+    private void listen_compare_result() {
+        final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        db.collection("test_users")
+                .document(device_id)
+                .collection("compare_result")
+                .orderBy("pubdate", Query.Direction.DESCENDING)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.d("lognewsselect", "listen:error", e);
+                            return;
+                        }
+                        Timestamp right_now = Timestamp.now();
+                        Set<String> selections = sharedPrefs.getStringSet("media_select", new HashSet<String>());
+                        Log.d("lognewsselect_", "ss " + Arrays.toString(new Set[]{selections}));
+                        int count = 0;
+                        for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
+                            DocumentSnapshot documentSnapshot = dc.getDocument();
+                            count++;
+                            switch (dc.getType()) {
+                                case ADDED:
+                                    //add record
+                                    Map<String, Object> record_noti = new HashMap<>();
+                                    String news_id = "", media = "", title = "", doc_id = "";
+//                            if(count<20 && selections.contains(dc.getDocument().getString("media"))){
+                                    if(count<20){
+                                        if(selections.contains(dc.getDocument().getString("media"))){
+                                            Log.d("lognewsselect", "New doc: " + dc.getDocument().getData());
+                                            news_id = dc.getDocument().getString("id");
+                                            media  = dc.getDocument().getString("media");
+                                            title = dc.getDocument().getString("news_title");
+                                            doc_id = dc.getDocument().getId();
+                                            scheduleNotification(getNotification(news_id, media, title), 1000 );
+                                            Log.d("lognewsselect", "doc id" + doc_id);
+                                            record_noti.put("type", "add success");
+                                        } else {
+                                            record_noti.put("type", "not select");
+                                        }
+                                    } else {
+                                        record_noti.put("type", "too much");
+                                    }
+                                    record_noti.put("media", dc.getDocument().getString("media"));
+                                    record_noti.put("title", dc.getDocument().getString("news_title"));
+                                    record_noti.put("id", dc.getDocument().getString("id"));
+                                    record_noti.put("pubdate", dc.getDocument().getTimestamp("pubdate"));
+                                    record_noti.put("noti_timestamp", Timestamp.now());
+                                    record_noti.put("selections", Arrays.toString(new Set[]{selections}));
+
+                                    db.collection("test_users")
+                                            .document(device_id)
+                                            .collection("push_news")
+                                            .document(String.valueOf(Timestamp.now()))
+                                            .set(record_noti);
+                                    //before delete
+                                    db.collection("test_users").document(device_id).collection("compare_result").document(dc.getDocument().getId())
+                                            .delete()
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("lognewsselect", "DocumentSnapshot successfully deleted!");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.d("lognewsselect", "Error deleting document", e);
+                                                }
+                                            });
+                                    break;
+                                case MODIFIED:
+                                    if(count<20 && selections.contains(dc.getDocument().getString("media"))){
+                                        Log.d("lognewsselect", "Modified doc: " + dc.getDocument().getData());
+                                        String news_id_m = dc.getDocument().getString("id");
+                                        String media_m  = dc.getDocument().getString("media");
+                                        String title_m = dc.getDocument().getString("news_title");
+                                        title_m = "新! " + title_m;
+                                        scheduleNotification(getNotification(news_id_m, media_m, title_m), 1000 );
+                                    }
+                                    db.collection("test_users").document(device_id).collection("compare_result").document(dc.getDocument().getId())
+                                            .delete()
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("lognewsselect", "DocumentSnapshot successfully deleted!");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.d("lognewsselect", "Error deleting document", e);
+                                                }
+                                            });
+                                    break;
+                                case REMOVED:
+                                    Log.d("lognewsselect", "Removed doc: " + dc.getDocument().getData());
+                                    break;
+                            }
+                        }
+                    }
+                });
+    }
+
+    private void listen_reading_behavior_result() {
+        db.collection("test_users")
+                .document(device_id)
+                .collection("reading_behaviors_result")
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+//                            Log.d("lognewsselect", "listen:error", e);
+                            return;
+                        }
+                        Timestamp right_now = Timestamp.now();
+                        int count = 0;
+                        for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
+                            DocumentSnapshot documentSnapshot = dc.getDocument();
+                            count++;
+                            switch (dc.getType()) {
+                                case ADDED:
+//                                    check_time_range(dc.getDocument().getTimestamp("timestamp"));
+//                                    Timestamp my_timestamp = dc.getDocument().getTimestamp("timestamp");
+                                    if(count<=1){
+                                        if(check_daily_time_range()){
+                                            scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 1000 );
+                                        } else {
+                                            Log.d("lognewsselect", "check_daily_time_range failed");
+
+                                        }
+
+                                    } else {
+//                                        record_noti.put("type", "too much");
+                                    }
+                                    //before delete
+                                    db.collection("test_users").document(device_id).collection("reading_behaviors_result").document(dc.getDocument().getId())
+                                            .delete()
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("lognewsselect", "DocumentSnapshot successfully deleted!");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.d("lognewsselect", "Error deleting document", e);
+                                                }
+                                            });
+                                    break;
+                                case MODIFIED:
+                                    break;
+                                case REMOVED:
+                                    Log.d("lognewsselect", "Removed doc: " + dc.getDocument().getData());
+                                    break;
+                            }
+                        }
+                    }
+                });
     }
 
     @SuppressLint("HardwareIds")
@@ -264,7 +378,7 @@ public class NewsNotificationService extends Service {
         log_service.put("status", "failed");
         db.collection("test_users")
                 .document(Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID))
-                .collection("notification_service")
+                .collection("notification_service_dead")
                 .document(String.valueOf(Timestamp.now()))
                 .set(log_service);
         // stopping the process
@@ -274,24 +388,6 @@ public class NewsNotificationService extends Service {
         broadcastIntent.setClass(this, NewsNotificationRestarter.class);
         this.sendBroadcast(broadcastIntent);
     }
-//    private Timer timer;
-//    private TimerTask timerTask;
-//    public void startTimer() {
-//        timer = new Timer();
-//        timerTask = new TimerTask() {
-//            public void run() {
-//                Log.i("Count", "=========  "+ (counter++));
-//            }
-//        };
-//        timer.schedule(timerTask, 1000, 1000); //
-//    }
-//
-//    public void stoptimertask() {
-//        if (timer != null) {
-//            timer.cancel();
-//            timer = null;
-//        }
-//    }
 
     @Nullable
     @Override
@@ -335,40 +431,126 @@ public class NewsNotificationService extends Service {
         return builder.build() ;
     }
 
-//    private Notification getNotification_esm (String content) {
-//        //replace content with time
-//        Date date = new Date(System.currentTimeMillis());
-//        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-//        String time_noti = formatter.format(date);
-//
-//        int nid = (int) System.currentTimeMillis();
-//        Log.d("log: notification", "esm id" + nid);
-//        Intent intent_esm = new Intent();
-//        intent_esm.setClass(NewsNotificationService.this, ESMActivity.class);
-//        intent_esm.putExtra("trigger_from", "Notification");
-//        intent_esm.putExtra("esm_id", System.currentTimeMillis());
-//        PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_esm, 0);
-//        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);
-//        builder.setContentTitle("ESM");
-//        builder.setContentText("是時候填寫問卷咯~");
-//        builder.setSmallIcon(R.drawable.ic_launcher_foreground);
-//        builder.setContentIntent(pendingIntent);
-//        builder.setAutoCancel(true);
-//        builder.setChannelId(NOTIFICATION_CHANNEL_ID);
-//        return builder.build() ;
-//    }
-//    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-//    private void scheduleNotification_esm (Notification notification, int delay) {
-////        int nid = (int) System.currentTimeMillis();
-////        Log.d("log: notification", "news id" + nid);
-//        Intent notificationIntent = new Intent(this, NotificationListenerNews.class);
-//        notificationIntent.putExtra(NotificationListenerESM.NOTIFICATION_ID, 1 ) ;
-//        notificationIntent.putExtra(NotificationListenerESM.NOTIFICATION, notification) ;
-//        int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast( this, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-//        long futureInMillis = SystemClock.elapsedRealtime() + delay;
-//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//        assert alarmManager != null;
-//        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
-//    }
+    private Notification getNotification_esm (String content) {
+        //replace content with time
+        Date date = new Date(System.currentTimeMillis());
+        String esm_id = "";
+        esm_id = String.valueOf(date);
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+        String time_now = formatter.format(date);
+
+        int nid = (int) System.currentTimeMillis();
+        Log.d("logesm", "esm id " + nid + " " + Timestamp.now());
+        Intent intent_esm = new Intent();
+        intent_esm.setClass(this, ESMActivity.class);
+        intent_esm.putExtra("trigger_from", "Notification");
+        intent_esm.putExtra("status", "foreground");
+        intent_esm.putExtra("esm_id", esm_id);
+        intent_esm.putExtra("noti_timestamp", Timestamp.now());
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_esm, 0);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);
+        builder.setContentTitle("ESM");
+        builder.setContentText("是時候填寫問卷咯~");
+        builder.setSmallIcon(R.drawable.ic_launcher_foreground);
+        builder.setContentIntent(pendingIntent);
+        builder.setAutoCancel(true);
+        builder.setChannelId(NOTIFICATION_CHANNEL_ID);
+
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        Map<String, Object> esm = new HashMap<>();
+        esm.put("noti_time", time_now);
+        esm.put("noti_timestamp", Timestamp.now());
+        db.collection("test_users")
+                .document(device_id)
+                .collection("esms")
+                .document(esm_id)
+                .set(esm);
+        return builder.build() ;
+    }
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void scheduleNotification_esm (Notification notification, int delay) {
+        Intent notificationIntent = new Intent(this,NotificationListenerNews.class);
+        notificationIntent.putExtra(NotificationListenerESM.NOTIFICATION_ID, 1 ) ;
+        notificationIntent.putExtra(NotificationListenerESM.NOTIFICATION, notification) ;
+        int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast( this, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        assert alarmManager != null;
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+    }
+
+    private boolean check_daily_time_range(){
+        Long now = System.currentTimeMillis();
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(now);
+        int MinHour = 9;//09:00:00
+        int MaxHour = 23;//23:00:00
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        long LastEsmTime = sharedPrefs.getLong("LastEsmTime", 0L);
+//        Log.d("lognewsselect", String.valueOf(c.get(Calendar.HOUR_OF_DAY)));
+        if(c.get(Calendar.HOUR_OF_DAY) >= MinHour && c.get(Calendar.HOUR_OF_DAY) < MaxHour) {
+            Log.d("lognewsselect", "in interval");
+//            return true;
+            if(now - LastEsmTime > 60* 60 * 1000){
+                Log.d("lognewsselect", "in hour interval");
+                SharedPreferences.Editor editor = sharedPrefs.edit();
+                editor.putLong("LastEsmTime", now);
+                editor.apply();
+                return true;
+            } else {
+                Log.d("lognewsselect", "not in hour interval");
+                return false;
+            }
+        } else {
+            Log.d("lognewsselect", "not in interval");
+            return false;
+        }
+    }
+
+    private void startTimer() {
+        Log.d("lognewsselect", "startTimer");
+        mCountDownTimer = new CountDownTimer(mTimeLeftInMillis, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                mTimeLeftInMillis = millisUntilFinished;
+//                updateCountDownText();
+            }
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onFinish() {
+                Log.d("lognewsselect", "onFinish");
+                mTimerRunning = false;
+                if(check_daily_time_range()){
+                    scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 1000 );
+                } else {
+                    Log.d("lognewsselect", "check_daily_time_range failed");
+
+                }
+//                mButtonStartPause.setText("Start");
+//                mButtonStartPause.setVisibility(View.INVISIBLE);
+//                mButtonReset.setVisibility(View.VISIBLE);
+            }
+        }.start();
+        mTimerRunning = true;
+//        mButtonStartPause.setText("pause");
+//        mButtonReset.setVisibility(View.INVISIBLE);
+    }
+    private void pauseTimer() {
+        Log.d("lognewsselect", "pauseTimer");
+        mCountDownTimer.cancel();
+        mTimerRunning = false;
+//        mButtonStartPause.setText("Start");
+//        mButtonReset.setVisibility(View.VISIBLE);
+    }
+    private void resetTimer() {
+        Log.d("lognewsselect", "resetTimer");
+        mTimeLeftInMillis = START_TIME_IN_MILLIS;
+//        updateCountDownText();
+//        mButtonReset.setVisibility(View.INVISIBLE);
+//        mButtonStartPause.setVisibility(View.VISIBLE);
+    }
 }

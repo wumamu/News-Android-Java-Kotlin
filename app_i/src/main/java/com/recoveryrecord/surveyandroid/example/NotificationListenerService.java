@@ -166,7 +166,7 @@ public class NotificationListenerService extends android.service.notification.No
                     receieve_notification.put("title", Objects.requireNonNull(extras.getString("android.title")));
                     //check if is news or esm
                     if(extras.getString("android.title").equals("ESM")){
-                        document_name = "esms";
+                        document_name = "receieve_notifications_esm";
                     }
                     check_title = true;
                 } else {

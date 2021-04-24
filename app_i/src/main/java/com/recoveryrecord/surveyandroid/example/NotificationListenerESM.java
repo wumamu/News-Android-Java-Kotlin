@@ -30,33 +30,6 @@ public class NotificationListenerESM extends BroadcastReceiver {
 //        int id = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
         assert notificationManager != null;
         notificationManager.notify((int) System.currentTimeMillis() , notification) ;
-
-//        Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage("com.recoveryrecord.surveyandroid");
-//        launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-//        Bundle args = new Bundle();
-//        args.putString("intent", "esm");
-//        args.putExtra("trigger_from", "Notification");
-//        args.putExtra("status", "foreground");
-//        Date date = new Date(System.currentTimeMillis());
-//        String esm_id = "";
-//        esm_id = String.valueOf(date);
-//        args.putExtra("esm_id", esm_id);
-//        args.putExtra("noti_timestamp", Timestamp.now());
-//        args.putAll(notification);
     }
-//    private Notification buildNotification(Context ctx) {
-//        Intent intent = new Intent(ctx, com.example.notificationscheduler.TestActivityRecognitionActivity.class);
-//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//        PendingIntent pendingIntent = PendingIntent.getActivity(ctx, 0, intent, 0);
-//
-//        NotificationCompat.Builder builder = new NotificationCompat.Builder(ctx, CHANNEL_ID)
-//                .setSmallIcon(R.drawable.ic_launcher_foreground)
-//                .setContentTitle("Hello I'm a notification!")
-//                .setContentText("Well look at that, it's content")
-//                .setContentIntent(pendingIntent)
-//                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-//                .setAutoCancel(true);
-//
-//        return builder.build();
-//    }
+
 }

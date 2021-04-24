@@ -10,7 +10,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-public class ReadHistoryActivity extends AppCompatActivity {
+public class PushHistoryActivity extends AppCompatActivity {
 
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
@@ -19,8 +19,8 @@ public class ReadHistoryActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_reading_history);
-        setTitle("歷史閱讀紀錄");
+        setContentView(R.layout.activity_push_history);
+        setTitle("歷史推播紀錄");
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -42,7 +42,7 @@ public class ReadHistoryActivity extends AppCompatActivity {
 
             switch (position) {
                 case 0:
-                    return ReadingHistoryFragment.newInstance();
+                    return PushHistoryFragment.newInstance();
                 case 1:
                     return TestTab1Fragment.newInstance();
                 default:

@@ -69,6 +69,13 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity android:name=".PushHistoryActivity"
+            android:theme="@style/AppThemeActionBar">
+            <intent-filter>
+                <action android:name="com.recoveryrecord.surveyandroid.example.PushHistoryActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name=".NotificationRangeActivity"
             android:theme="@style/AppThemeActionBar">
             <intent-filter>
@@ -109,7 +116,9 @@
         <activity android:name=".NewsAllActivity"/>
         <activity android:name=".MainActivity"
             android:theme="@style/AppThemeActionBar"/>
-
+        <activity android:name=".TestServiceActivity"
+            android:theme="@style/AppThemeActionBar"/>
+        <activity android:name=".TestDoubleBarActivity" />
 
         <!--        <activity android:name=".TestESMDbViewActivity"-->
         <!--            android:theme="@style/AppThemeActionBar"/>-->
@@ -134,8 +143,12 @@
                 <action android:name="restartservice" />
             </intent-filter>
         </receiver>
+        <receiver android:name=".TAlarmReceiever"
+            android:enabled="true"
+            android:exported="true">
+        </receiver>
         <receiver android:name=".AlarmReceiver"
-            android:enabled="false">
+            android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
@@ -143,10 +156,8 @@
         <!-- Mention the service name here -->
         <service android:name=".NewsNotificationService"
             android:stopWithTask="false"
-            android:enabled="true"/>
-        <activity android:name=".TestServiceActivity"
-            android:theme="@style/AppThemeActionBar"/>
-        <activity android:name=".TestDoubleBarActivity" />
+            android:enabled="true">
+        </service>
         <service android:name=".NotificationListenerService"
             android:label="@string/app_name"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
@@ -154,7 +165,11 @@
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
-
+        <service
+            android:name=".MyPushNotificationService"
+            android:stopWithTask="false"
+            android:enabled="true">
+        </service>
     </application>
 
 </manifest>

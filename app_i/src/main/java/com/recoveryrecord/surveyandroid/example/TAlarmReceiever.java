@@ -81,6 +81,7 @@ public class TAlarmReceiever extends BroadcastReceiver {
 //        }
     }
     private void createNotificationChannel(Context context) {
+        //do NotificationListenerNews
         Log.d(TAG, "createNotificationChannel");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             //for esm
@@ -121,88 +122,7 @@ public class TAlarmReceiever extends BroadcastReceiver {
         }
     }
     public void SendESMnoti(Context context) {
-//        timeForQ = getReadableTime(System.currentTimeMillis());
-//        CanFillEsm = true;
-//        Log.d(TAG, "Send ESM");
-//        String ESMtime = getReadableTime(System.currentTimeMillis());//2020-04-11 14:29:35
-//        CSVHelper.storeToCSV("AlarmCreate.csv", "send ESM time: " + ESMtime);
-//        Log.d(TAG, "TTime" + ESMtime);
-////        pref.edit().putLong("Now_Esm_Time", System.currentTimeMillis()).apply();
-//        pref.edit().putLong("ESM_send", System.currentTimeMillis()).apply();
-////        if(pref.getBoolean("IsDestroy", true) || isFinish.equals("1")){
-////            pref.edit().putLong("ESM_SendDestroy", System.currentTimeMillis()).apply();
-////        }
-//        pref.edit().putString("ESMtime", ESMtime).apply();//14:29:35
-//        pref.edit().putBoolean("NewEsm", true).apply();
-//
-//        int EsmNum = 0;
-//        int questionnaireID = 0;
-//        String TodayResponseSet = "";
-//        String[] TodayResponse = {};
-//        String[] TotalEsmResponse = {};
-//        if(userRecord != null){
-//            long _id = userRecord.get_id();
-//            String Tesm_str = userRecord.getTotal_ESM_number();
-//            TodayResponseSet = userRecord.getESM_number();
-//            TodayResponse = TodayResponseSet.split(",");
-//            TotalEsmResponse = Tesm_str.split(",");
-//            EsmNum = Integer.parseInt(TotalEsmResponse[TotalEsmResponse.length - 1]);
-//            questionnaireID = userRecord.getquestionnaireID();
-//            Log.d("QuestionActivity","questionnaireID: " + questionnaireID);
-//            db.userDataRecordDao().updateQuestionnaireID(_id, questionnaireID + 1);
-//            pref.edit().putInt("ESMID", questionnaireID + 1).apply();
-//        }
-//        Log.d(TAG, "ESM number = " + EsmNum + " ESM response size = " + TotalEsmResponse.length);
-////        int EsmNum = pref.getInt("Esm_Num", 0);//今天有發幾封
-//        EsmNum++;
-//
-//        if(userRecord != null){
-//            String update_esm = "";
-//            TotalEsmResponse[TotalEsmResponse.length - 1] = String.valueOf(EsmNum);
-//            for(int i = 0; i < TotalEsmResponse.length; i++){
-//                if(!TotalEsmResponse[i].equals("")){
-//                    update_esm = update_esm + TotalEsmResponse[i] + ",";
-//                }
-//            }
-//            long _id = userRecord.get_id();
-//            db.userDataRecordDao().updateTotalESM(_id, update_esm);
-//            Log.d(TAG, "ESM number = " + update_esm);
-//        }
-////        pref.edit().putInt("Esm_Num", EsmNum).apply();
-//
-//        // 12/16紀錄ESM的第三種狀態(沒回答消失)
-//        int esmNum = 0;
-//        for(int i = 0; i < TodayResponse.length; i++){
-//            esmNum += Integer.parseInt(TodayResponse[i]);
-//        }
-//
-//        int Total_ESM = 0;
-//        for(int i = 0; i < TotalEsmResponse.length; i++){
-//            Total_ESM += Integer.parseInt(TotalEsmResponse[i]);
-//        }
-//
-//        int ESMID = pref.getInt("ESMID", 0);
-//        FinalAnswerDataRecord finalAnswerDataRecord = new FinalAnswerDataRecord();
-//        finalAnswerDataRecord.setGenerateTime(pref.getLong("ESM_send", 0));
-//        finalAnswerDataRecord.setRespondTime(0L); //點進問卷的時間
-//        finalAnswerDataRecord.setSubmitTime(0L);// onDestroy時間
-//        finalAnswerDataRecord.setisFinish("0");
-//        finalAnswerDataRecord.setQuesType("ESM");
-//        finalAnswerDataRecord.setreplyCount(String.valueOf(esmNum));
-//        finalAnswerDataRecord.settotalCount(String.valueOf(Total_ESM));
-//        finalAnswerDataRecord.setAnswerChoicePos("0");
-//        finalAnswerDataRecord.setAnswerChoiceState("1");
-//        finalAnswerDataRecord.setanswerId(String.valueOf(0));
-//        finalAnswerDataRecord.setdetectedTime(getReadableTime(System.currentTimeMillis()));
-//        finalAnswerDataRecord.setQuestionId("0");
-//        finalAnswerDataRecord.setsyncStatus(0);
-//        finalAnswerDataRecord.setRelatedId(ESMID);
-//        finalAnswerDataRecord.setAnswerChoice("");
-//        finalAnswerDataRecord.setcreationIme(new Date().getTime());
-//        db.finalAnswerDao().insertAll(finalAnswerDataRecord);
-
-
-//        String esm_id = String.valueOf(System.currentTimeMillis());
+        //do getNotification scheduleNotification
         Date date = new Date(System.currentTimeMillis());
         String esm_id = "";
         esm_id = String.valueOf(date);
@@ -218,7 +138,7 @@ public class TAlarmReceiever extends BroadcastReceiver {
         NotificationCompat.Builder builder;
         Notification notification;
         builder = new NotificationCompat.Builder(context, ESM_CHANNEL_ID); //設定通知要有那些屬性
-        builder.setContentTitle("YOUR ESM") // 通知的Title
+        builder.setContentTitle("ESM") // 通知的Title
                 .setContentText("Please fill out the questionnaire\n"+ esm_id)                        //通知的內容
                 .setSmallIcon(R.drawable.ic_launcher_foreground)            //通知的icon
                 .setContentIntent(pendingIntent)               //點下去會跳到ESM class

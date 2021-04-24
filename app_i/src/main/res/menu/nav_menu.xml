@@ -10,7 +10,7 @@
         android:title="閱讀紀錄"
         android:icon="@drawable/ic_baseline_history_24"/>
     <item android:id="@+id/nav_reschedule"
-        android:title="點我觸發ESM"
+        android:title="推播紀錄"
         android:icon="@drawable/ic_baseline_edit_notifications_24"/>
     <item android:id="@+id/nav_contact"
         android:title="ESM頁面"
