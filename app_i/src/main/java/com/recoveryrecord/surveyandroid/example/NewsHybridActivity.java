@@ -224,6 +224,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         Map<String, Object> log_service = new HashMap<>();
         log_service.put("service_timestamp", Timestamp.now());
         log_service.put("cycle", "create");
+        log_service.put("activity", "NewsHybridActivity");
         Log.d("log: activity cycle", "NewsHybridActivity On create");
         if (!isMyServiceRunning(mYourService.getClass())) {
             log_service.put("status", "failed(start)");
@@ -261,6 +262,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         Map<String, Object> log_service = new HashMap<>();
         log_service.put("service_timestamp", Timestamp.now());
         log_service.put("cycle", "resume");
+        log_service.put("activity", "NewsHybridActivity");
         if (!isMyServiceRunning(mYourService.getClass())) {
             log_service.put("status", "failed");
             Toast.makeText(this, "service failed", Toast.LENGTH_SHORT).show();
@@ -306,6 +308,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         Map<String, Object> log_service = new HashMap<>();
         log_service.put("service_timestamp", Timestamp.now());
         log_service.put("cycle", "stop");
+        log_service.put("activity", "NewsHybridActivity");
         if (!isMyServiceRunning(mYourService.getClass())) {
             log_service.put("status", "failed");
             Toast.makeText(this, "service failed", Toast.LENGTH_SHORT).show();
@@ -328,6 +331,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         Map<String, Object> log_service = new HashMap<>();
         log_service.put("service_timestamp", Timestamp.now());
         log_service.put("cycle", "destroy");
+        log_service.put("activity", "NewsHybridActivity");
         if (!isMyServiceRunning(mYourService.getClass())) {
             log_service.put("status", "failed");
             Toast.makeText(this, "service failed", Toast.LENGTH_SHORT).show();

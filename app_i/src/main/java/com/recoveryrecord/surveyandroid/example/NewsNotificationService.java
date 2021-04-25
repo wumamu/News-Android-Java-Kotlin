@@ -30,14 +30,18 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.recoveryrecord.surveyandroid.example.model.NewsModel;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -131,10 +135,11 @@ public class NewsNotificationService extends Service {
                             count++;
                             switch (dc.getType()) {
                                 case ADDED:
+//                                    Log.d("lognewsselect", "11111111111111111111");
+
                                     if(count<=1){
                                         Log.d("lognewsselect", dc.getDocument().getString("cycle"));
                                         if((dc.getDocument().getString("cycle").equals("stop")) || (dc.getDocument().getString("cycle").equals("destroy"))){
-
                                             SharedPreferences.Editor editor = sharedPrefs.edit();
                                             editor.putLong("LastAppStopOrDestroyTime", dc.getDocument().getTimestamp("service_timestamp").getSeconds());
                                             editor.apply();
@@ -433,6 +438,7 @@ public class NewsNotificationService extends Service {
 
     private Notification getNotification_esm (String content) {
         //replace content with time
+        String news_title = select_news();
         Date date = new Date(System.currentTimeMillis());
         String esm_id = "";
         esm_id = String.valueOf(date);
@@ -470,6 +476,77 @@ public class NewsNotificationService extends Service {
                 .set(esm);
         return builder.build() ;
     }
+
+    private String select_news() {
+        Log.d("lognewsselect", "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        Long LastSelectedNewsTime = sharedPrefs.getLong("LastSelectedNewsTime", 0L);
+        final String[] SelectedNewsTitle = {""};
+//        final List<String> news_title_array = new ArrayList<>();
+        db.collection("test_users")
+                .document(device_id)
+                .collection("reading_behaviors")
+                .whereEqualTo("select", false)
+//                .whereEqualTo("category", "體育")
+//                .whereArrayContains("category", "社會")
+                .orderBy("out_timestamp", Query.Direction.DESCENDING)
+//                .limit(20)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        List<String> news_title_array = new ArrayList<>();
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
+                            for (DocumentSnapshot d : list) {
+                                if(!d.getString("title").equals("NA")){
+//                                    news_title_array.add(d.getString("title"));
+                                }
+                                Log.d("lognewsselect", "title " + d.getString("title"));
+                                db.collection("test_users")
+                                        .document(device_id)
+                                        .collection("reading_behaviors")
+                                        .document(d.getId())
+                                        .update("select", true)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Log.d("lognewsselect", "DocumentSnapshot successfully updated!");
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.w("lognewsselect", "Error updating document", e);
+                                            }
+                                        });
+                            }
+                        } else {
+                        }
+                        if(news_title_array.size()!=0){
+                            Random r=new Random();
+                            int randomNumber=r.nextInt(news_title_array.size());
+                            SelectedNewsTitle[0] = news_title_array.get(randomNumber);
+//                            Log.d("lognewsselect", "~~~~~~~~~~" + SelectedNewsTitle[0]);
+//                            Log.d("lognewsselect", "~~~~~~~!!!!!~~~" + randomNumber);
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("lognewsselect", String.valueOf(e));
+                // if we do not get any data or any error we are displaying
+                // a toast message that we do not get any data
+//                Toast.makeText(TestNewsOneActivity.this, "Fail to get the data.", Toast.LENGTH_SHORT).show();
+            }
+        });
+        Log.d("lognewsselect", "select news " + SelectedNewsTitle[0]);
+//        Log.d("lognewsselect", String.valueOf(news_title_array.size()));
+
+
+        return SelectedNewsTitle[0];
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void scheduleNotification_esm (Notification notification, int delay) {
         Intent notificationIntent = new Intent(this,NotificationListenerNews.class);
@@ -525,6 +602,7 @@ public class NewsNotificationService extends Service {
                 Log.d("lognewsselect", "onFinish");
                 mTimerRunning = false;
                 if(check_daily_time_range()){
+//                    select_news();
                     scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 1000 );
                 } else {
                     Log.d("lognewsselect", "check_daily_time_range failed");

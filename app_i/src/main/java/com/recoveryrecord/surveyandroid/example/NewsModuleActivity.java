@@ -1133,14 +1133,16 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onDestroy() {
-//        Map<String, Object> readingBehavior_result = new HashMap<>();
-//        readingBehavior_result.put("timestamp",  Timestamp.now());
-//        readingBehavior_result.put("news_id",  news_id);
-//        db.collection("test_users")
-//                .document(device_id)
-//                .collection("reading_behaviors_result")
-//                .document(String.valueOf(Timestamp.now()))
-//                .set(readingBehavior_result);
+//        Log.d("log: activity cycle", "NewsHybridActivity On destroy");
+        Map<String, Object> log_service = new HashMap<>();
+        log_service.put("service_timestamp", Timestamp.now());
+        log_service.put("cycle", "destroy");
+        log_service.put("activity", "NewsModuleActivity");
+        db.collection("test_users")
+                .document(device_id)
+                .collection("notification_service")
+                .document(String.valueOf(Timestamp.now()))
+                .set(log_service);
         super.onDestroy();
         Log.d("log: activity cycle", "NewsModuleActivity On destroy");
         activityEnd = true;
@@ -1372,14 +1374,15 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         // Create a new user with a first and last name
         Map<String, Object> readingBehavior = new HashMap<>();
         readingBehavior.put("id",  "NA");
-        readingBehavior.put("pubdate",  "NA");
+        readingBehavior.put("pubdate",  Timestamp.now());
         readingBehavior.put("media",  "NA");
         readingBehavior.put("trigger_by", myReadingBehavior.getKEY_TRIGGER_BY());
+        readingBehavior.put("select", false);
 //        readingBehavior.put("time_in", myReadingBehavior.getKEY_TIME_IN());
         readingBehavior.put("in_timestamp", enter_timestamp);
         readingBehavior.put("in_date", in_tt.get(0));
         readingBehavior.put("in_time", in_tt.get(2));
-        readingBehavior.put("out_timestamp", "NA");
+        readingBehavior.put("out_timestamp", Timestamp.now());
         readingBehavior.put("out_date", "NA");
         readingBehavior.put("out_time", "NA");
         readingBehavior.put("content_length(dp)", "NA");
