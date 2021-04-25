@@ -1,5 +1,6 @@
 package com.recoveryrecord.surveyandroid;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.util.Log;
@@ -11,8 +12,11 @@ import com.recoveryrecord.surveyandroid.question.Question;
 import com.recoveryrecord.surveyandroid.question.QuestionsWrapper;
 import com.recoveryrecord.surveyandroid.question.QuestionsWrapper.SubmitData;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class SurveyQuestions {
@@ -34,7 +38,18 @@ public class SurveyQuestions {
                 .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
                 .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         try {
-            InputStream inputStream = assetManager.open(jsonFileName);
+            InputStream inputStream;
+            if(jsonFileName.equals("ESM.json")){
+                inputStream = assetManager.open(jsonFileName);//asset
+            } else {
+                @SuppressLint("SdCardPath")
+//                File initialFile = new File("/data/user/0/com.recoveryrecord.surveyandroid/files/test.json");
+                File initialFile = new File(jsonFileName);
+                inputStream = new FileInputStream(initialFile);
+            }
+//            InputStream inputStream = context.getResources().openRawResource(R.raw.t123);
+
+
             QuestionsWrapper wrapper = mapper.readValue(inputStream, new TypeReference<QuestionsWrapper>(){});
             if (wrapper.questions != null) {
                 questions = wrapper.questions;

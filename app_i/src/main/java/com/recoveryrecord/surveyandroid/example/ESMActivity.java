@@ -119,10 +119,12 @@ public class ESMActivity extends com.recoveryrecord.surveyandroid.SurveyActivity
 
     @Override
     protected String getJsonFilename() {
-//        if (getIntent().getExtras() != null) {
-//            Bundle b = getIntent().getExtras();
-//            return b.getString("json_file_name");
-//        }
+        if (getIntent().getExtras() != null) {
+            Bundle b = getIntent().getExtras();
+            Log.d("lognewsselect", "getJsonFilename() " + b.getString("json_file_name"));
+            return b.getString("json_file_name");
+        }
+//        File file = new File(a);
 //        return "ExampleQuestions.json";
         return "ESM.json";
     }
