@@ -400,8 +400,8 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 //                drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             case R.id.nav_contact :
-                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 1000 );
-                Toast.makeText(this, "發送esm~", Toast.LENGTH_SHORT).show();
+//                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 1000 );
+//                Toast.makeText(this, "發送esm~", Toast.LENGTH_SHORT).show();
 //                Log.d("log: navigation", "nav_contact " + item.getItemId());
 ////                if (Helper.isAppRunning(NewsHybridActivity.this, getPackageName())) {
 ////                    // App is running
@@ -410,7 +410,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 ////                    // App is not running
 ////                    Log.d("apprunning", "2");
 ////                }
-//                Toast.makeText(this, "目前什麼都沒有拉~", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "目前什麼都沒有拉~", Toast.LENGTH_SHORT).show();
 //                Intent intent_ems = new Intent(NewsHybridActivity.this, MainActivity.class);
 //                startActivity(intent_ems);
                 drawerLayout.closeDrawer(GravityCompat.START);

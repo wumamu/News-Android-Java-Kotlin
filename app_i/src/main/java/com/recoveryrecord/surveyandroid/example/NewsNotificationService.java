@@ -89,6 +89,8 @@ public class NewsNotificationService extends Service {
     String device_id = "";
 
     //timer count down
+//    private static final long START_TIME_IN_MILLIS = 1000;//30 * 60 * 1000;//20 min
+//    private static final long INTERVAL = 60 * 1000;//30 * 60 * 1000;//one hour
     private static final long START_TIME_IN_MILLIS = 20 * 60 * 1000;//30 * 60 * 1000;//20 min
     private static final long INTERVAL = 60 * 60 * 1000;//30 * 60 * 1000;//one hour
     private CountDownTimer mCountDownTimer;
@@ -477,11 +479,12 @@ public class NewsNotificationService extends Service {
         }
         Date date = new Date(System.currentTimeMillis());
         String esm_id = "";
-        esm_id = String.valueOf(date);
+//        esm_id = String.valueOf(date);
+//        long esm_id = Timestamp.now().getSeconds();
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         String time_now = formatter.format(date);
-
+        esm_id = time_now;
         int nid = (int) System.currentTimeMillis();
         Log.d("logesm", "esm id " + nid + " " + Timestamp.now());
         Intent intent_esm = new Intent();

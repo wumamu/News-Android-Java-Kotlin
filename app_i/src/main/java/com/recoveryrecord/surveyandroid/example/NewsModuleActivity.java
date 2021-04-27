@@ -103,6 +103,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
 //    private Toolbar toolbar;
 
     boolean self_trigger = false;
+    boolean has_img = false;
 
     private static final HashSet<Character> ch_except = new HashSet<Character>();
     private static final HashSet<Character> full_num = new HashSet<Character>();
@@ -448,31 +449,50 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                     if (document.exists()) {
                         Log.d("log: firebase", "Success");
                         Log.d("log: firebase", "DocumentSnapshot data: " + document.getData());
-                        mUrl = document.getString("url");
-                        mImg = "";
-//                        mImg = "https://cc.tvbs.com.tw/img/upload/2021/02/05/20210205183845-85cd46f0.jpg";
-                        mTitle = document.getString("title");
-                        mPubdate = document.getTimestamp("pubdate");
+                        mUrl = "";
+                        if(document.getString("url")!=null){
+                            mUrl = document.getString("url");
+                        }
+                        mTitle = "";
+                        if(document.getString("title")!=null){
+                            mTitle = document.getString("title");
+                        }
+                        mImg = "NA";
+                        if(document.getString("media").equals("聯合")){
+                            if(document.getString("image")!=null){
+                                mImg = document.getString("image");
+                            }
+                        }
+                        mPubdate = Timestamp.now();
+                        if(document.getTimestamp("pubdate")!=null){
+                            mPubdate = document.getTimestamp("pubdate");
+                        }
+
                         Date my_date = mPubdate.toDate();
                         @SuppressLint("SimpleDateFormat")
                         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
                         List<String> my_tt = new ArrayList<String>(Arrays.asList(formatter.format(my_date).split(" ")));
                         mDate = String.format("%s %s", my_tt.get(0), my_tt.get(2));
-//                        mDate = "123";
                         mSource = document.getString("media");
-//                        mAuthor = "孟心怡";
                         myReadingBehavior.setKEY_NEWS_ID(document.getString("id"));
 //                        ArrayList<String> c_list = null;
-                        ArrayList<String> c_list = (ArrayList<String>) document.get("content");
-                        for (int i = 0; i < c_list.size(); i++) {
-                            c_list.set(i, c_list.get(i).trim().replaceAll("\n", ""));
-                            Log.d("log: firebase", "DocumentSnapshot content: " + c_list.get(i));
-                        }
-                        if(c_list.size()==0){
-                            //no content
+                        ArrayList<String> c_list = new ArrayList<>();
+                        if(document.get("content")!=null){
+                            c_list = (ArrayList<String>) document.get("content");
+                            for (int i = 0; i < c_list.size(); i++) {
+                                c_list.set(i, c_list.get(i).trim().replaceAll("\n", ""));
+                                Log.d("log: firebase", "DocumentSnapshot content: " + c_list.get(i));
+                            }
+                            if(c_list.size()==0){
+                                //no content
+                                c_list.add(0, "內容載入失敗，不好意思~");
+                                c_list.add(1, "有空麻煩請向我們回報是哪一篇(截圖即可)");
+                            }
+                        } else {
                             c_list.add(0, "內容載入失敗，不好意思~");
                             c_list.add(1, "有空麻煩請向我們回報是哪一篇(截圖即可)");
                         }
+
                         Log.d("log: firebase", "DocumentSnapshot content: end");
                         List<String> divList = new ArrayList<>();
 //                        int cut_size = (int) (dpWidth / 26);
@@ -495,21 +515,8 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                             String str = c_list.get(i).replaceAll("　", " ");
                             int front = 0, iter_char_para = 0, para_count = 0;
                             boolean last_line_in_p = false;
-//                            str = "我午我我我午我我我午我我我午我我我午我我我午我我我午我我我午我我我午我我我午我我我午我我我午我我我午我我我午我我我午我我我午我我";
-//                            str = "This is a message that needs to be split over multiple lines because it is too long. The result must be a list of strings with a maximum length provided as input. Will this procedure work? I hope so!";
-//                            str = "Ｔｈｉｓ　ｉｓ　ａ　ｍｅｓｓａｇｅ　ｔｈａｔ　ｎｅｅｄｓ　ｔｏ　ｂｅ　ｓｐｌｉｔ　ｏｖｅｒ　ｍｕｌｔｉｐｌｅ　ｌｉｎｅｓ　ｂｅｃａｕｓｅ　ｉｔ　ｉｓ　ｔｏｏ　ｌｏｎｇ．　Ｔｈｅ　ｒｅｓｕｌｔ　ｍｕｓｔ　ｂｅ　ａ　ｌｉｓｔ　ｏｆ　ｓｔｒｉｎｇｓ　ｗｉｔｈ　ａ　ｍａｘｉｍｕｍ　ｌｅｎｇｔｈ　ｐｒｏｖｉｄｅｄ　ａｓ　ｉｎｐｕｔ．　Ｗｉｌｌ　ｔｈｉｓ　ｐｒｏｃｅｄｕｒｅ　ｗｏｒｋ？　Ｉ　ｈｏｐｅ　ｓｏ！";
-//                            str = "１２３４５６１我我午我我我午我我我午我我我我午我我我午我我我午我我２３４５６７８９０";
                             str = str.replaceAll("　", " ");
                             char[] para = str.toCharArray();
-                            //conerter
-//                            for (int itt=0; itt< para.length; itt++){
-//                                if (para[itt] > '\uFF00' && para[itt] < '\uFF5F') {
-//                                    Log.d("log: firebase", "detect" + para[itt]);
-//                                    para[itt] = (char) (para[itt] - 65248);
-//                                    Log.d("log: firebase", "detect" + para[itt]);
-//                                }
-//                            }
-//                            char_num_total+=para.length;
                             //one paragraph split to line
                             while (!last_line_in_p){
                                 para_count++;
@@ -723,7 +730,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                         }
                         myReadingBehavior.setKEY_CHAR_NUM_TOTAL(char_num_total);
                         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                        params.setMargins(40, 10, 40, 10);
+                        params.setMargins(80, 10, 80, 10);
                         //set viewport number ######################################################
                         int textview_num = divList.size();
                         myReadingBehavior.setKEY_VIEW_PORT_NUM(textview_num);
@@ -752,7 +759,8 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                         ((LinearLayout) findViewById(R.id.layout_inside)).addView(myTextViewsTitle);
                         ((LinearLayout) findViewById(R.id.layout_inside)).addView(myTextViewsDate);
                         ((LinearLayout) findViewById(R.id.layout_inside)).addView(myTextViewsSrc);
-                        if(mImg!=""){
+                        if(!mImg.equals("NA") ){
+//                        if(has_img){
                             ImageView imageView = new ImageView(NewsModuleActivity.this);
                             new DownloadImageTask(imageView).execute(mImg);
                             ((LinearLayout) findViewById(R.id.layout_inside)).addView(imageView);
