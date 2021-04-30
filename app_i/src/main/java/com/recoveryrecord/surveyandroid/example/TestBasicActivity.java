@@ -76,7 +76,7 @@ public class TestBasicActivity extends AppCompatActivity {
         myAudioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
         //network checker###########################################################################
         mNetworkReceiver = new NetworkChangeReceiver();
-        registerNetworkBroadcastForNougat();//register
+        //registerNetworkBroadcastForNougat();//register
         mContext = TestBasicActivity.this;
         btn_to_news.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -338,22 +338,22 @@ public class TestBasicActivity extends AppCompatActivity {
   }
 
 
-    private void registerNetworkBroadcastForNougat() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            registerReceiver(mNetworkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            registerReceiver(mNetworkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-        }
-    }
+//    private void registerNetworkBroadcastForNougat() {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//            registerReceiver(mNetworkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+//        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            registerReceiver(mNetworkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+//        }
+//    }
 
-    protected void unregisterNetworkChanges() {
-        try {
-            unregisterReceiver(mNetworkReceiver);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        }
-    }
+//    protected void unregisterNetworkChanges() {
+//        try {
+//            unregisterReceiver(mNetworkReceiver);
+//        } catch (IllegalArgumentException e) {
+//            e.printStackTrace();
+//        }
+//    }
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -385,8 +385,8 @@ public class TestBasicActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unregisterNetworkChanges();
-        unregisterReceiver(mBluetoothReceiver);
+        //unregisterNetworkChanges();
+        //unregisterReceiver(mBluetoothReceiver);
         unregisterReceiver(receiver);
     }
 

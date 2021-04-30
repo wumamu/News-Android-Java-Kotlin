@@ -1,5 +1,6 @@
 package com.recoveryrecord.surveyandroid.example;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
@@ -9,6 +10,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,6 +23,11 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.ActivityRecognition;
+import com.google.android.gms.location.ActivityRecognitionClient;
+import com.google.android.gms.location.ActivityTransition;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
@@ -35,6 +43,10 @@ import com.recoveryrecord.surveyandroid.example.cts.CtsMainFragment;
 import com.recoveryrecord.surveyandroid.example.ebc.EbcMainFragment;
 import com.recoveryrecord.surveyandroid.example.ettoday.EttodayMainFragment;
 import com.recoveryrecord.surveyandroid.example.ltn.LtnMainFragment;
+import com.recoveryrecord.surveyandroid.example.receiever.ActivityRecognitionReceiver;
+import com.recoveryrecord.surveyandroid.example.receiever.BlueToothReceiver;
+import com.recoveryrecord.surveyandroid.example.receiever.NetworkChangeReceiver;
+import com.recoveryrecord.surveyandroid.example.receiever.ScreenStateReceiver;
 import com.recoveryrecord.surveyandroid.example.storm.StormMainFragment;
 import com.recoveryrecord.surveyandroid.example.udn.UdnMainFragment;
 
@@ -65,8 +77,10 @@ import androidx.preference.PreferenceManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
+import javax.annotation.Nullable;
+
 //public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
-public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener{
+public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener , GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
     public static final String NOTIFICATION_CHANNEL_ID = "10001" ;
     private final static String default_notification_channel_id = "default" ;
     private static final String TAG = "NewsAllActivity";
@@ -103,7 +117,17 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         media_hash.put("聯合", "udn");
         media_hash.put("ettoday", "ettoday");
     }
-
+    //sensor part
+    BlueToothReceiver _BluetoothReceiver;
+    //    RingModeReceiver _RingModeReceiver;
+    private AudioManager myAudioManager;
+    private boolean activityTrackingEnabled;
+    private List<ActivityTransition> activityTransitionList;
+    //DETECTED ACTIVITY
+    public GoogleApiClient mApiClient;
+    public ActivityRecognitionClient mActivityRecognitionClient;
+    NetworkChangeReceiver _NetworkChangeReceiver;
+    ScreenStateReceiver _ScreenStateReceiver;
     @SuppressLint("HardwareIds")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -246,6 +270,43 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         mViewPager.setAdapter(mSectionsPagerAdapter);
         tabLayout.setupWithViewPager(mViewPager);
 
+        //sensor
+        //BLUETOOTH
+        _BluetoothReceiver = new BlueToothReceiver();
+        _BluetoothReceiver.registerBluetoothReceiver(this);
+        //BLUETOOTH--要偵測附近裝置需要啟動位置權限
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.M){
+            //Android M Permission check
+            if(this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
+                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("This app needs location access");
+                builder.setMessage("Please grant location access so this app can detect beacons.");
+                builder.setPositiveButton(android.R.string.ok, null);
+                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialogInterface) {
+                        requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+                    }
+                });
+                builder.show();
+            }
+        }
+        //DETECTED ACTIVITY
+
+        mApiClient = new GoogleApiClient.Builder(this)
+                .addApi(ActivityRecognition.API)
+                .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
+                .addOnConnectionFailedListener((GoogleApiClient.OnConnectionFailedListener) this)
+                .build();
+        mApiClient.connect();
+
+        //Network
+        _NetworkChangeReceiver = new NetworkChangeReceiver();
+        _NetworkChangeReceiver.registerNetworkReceiver(this);
+
+        //Screen
+        _ScreenStateReceiver = new ScreenStateReceiver();
+        _ScreenStateReceiver.registerScreenStateReceiver(this);
 
 
 
@@ -349,6 +410,9 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 .collection("notification_service")
                 .document(String.valueOf(Timestamp.now()))
                 .set(log_service);
+        _BluetoothReceiver.unregisterBluetoothReceiver(this);
+        _NetworkChangeReceiver.unregisterNetworkReceiver(this);
+        _ScreenStateReceiver.unregisterScreenStateReceiver(this);
         super.onDestroy();
     }
     private void showStartDialog() {
@@ -765,5 +829,21 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 //
         }
     }
+    //sensor
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        Log.e(TAG, "DetectedActivityConnected");
+        Intent intent = new Intent( this, ActivityRecognitionReceiver.class );
+        PendingIntent pendingIntent = PendingIntent.getService( this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT );
+        Task<Void> task = ActivityRecognition.getClient(this).requestActivityUpdates(30000, pendingIntent);
+        //mApiClient.disconnect();
+    }
+    @Override
+    public void onConnectionSuspended(int i) {
+    }
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+    }
+
 
 }
