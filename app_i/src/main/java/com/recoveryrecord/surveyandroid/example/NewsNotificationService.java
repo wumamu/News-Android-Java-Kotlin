@@ -91,8 +91,8 @@ public class NewsNotificationService extends Service {
     //timer count down
 //    private static final long START_TIME_IN_MILLIS = 1000;//30 * 60 * 1000;//20 min
 //    private static final long INTERVAL = 60 * 1000;//30 * 60 * 1000;//one hour
-    private static final long START_TIME_IN_MILLIS = 3 * 60 * 1000;//30 * 60 * 1000;//20 min
-    private static final long INTERVAL =  60 * 60 * 1000;//30 * 60 * 1000;//one hour
+    private static final long START_TIME_IN_MILLIS = 3 * 60 * 1000;//3 * 60 * 1000;//3 min
+    private static final long INTERVAL = 60 * 60 * 1000;//60 * 60 * 1000;//one hour
     private CountDownTimer mCountDownTimer;
     private boolean mTimerRunning;
     private long mTimeLeftInMillis = START_TIME_IN_MILLIS;
@@ -849,9 +849,17 @@ public class NewsNotificationService extends Service {
                 "      \"question\": \"請選擇最符合您閱讀當下所處地點\",\n" +
                 "      \"question_type\": \"single_select\",\n" +
                 "      \"options\": [\n" +
-                "        \"工作或學習場所\",\n" +
                 "        \"家裡\",\n" +
-                "        \"移動中(如：在交通工具上)\"\n" +
+                "        \"與家人、朋友、另一半一起\",\n" +
+                "        \"運動場所\",\n" +
+                "        \"用餐地點(如：咖啡廳、餐廳)\",\n" +
+                "        \"工作學校場所\",\n" +
+                "        \"公眾場所(如：電影院、大賣場)\",\n" +
+                "        \"移動中\",\n" +
+                "        {\n" +
+                "          \"title\": \"其他\",\n" +
+                "          \"type\": \"freeform\"\n" +
+                "        }\n" +
                 "      ],\n" +
                 "      \"show_if\": {\n" +
                 "        \"operation\": \"and\",\n" +
@@ -1154,9 +1162,17 @@ public class NewsNotificationService extends Service {
                 "      \"question\": \"請選擇最符合您閱讀當下所處地點\",\n" +
                 "      \"question_type\": \"single_select\",\n" +
                 "      \"options\": [\n" +
-                "        \"工作或學習場所\",\n" +
                 "        \"家裡\",\n" +
-                "        \"移動中(如：在交通工具上)\"\n" +
+                "        \"與家人、朋友、另一半一起\",\n" +
+                "        \"運動場所\",\n" +
+                "        \"用餐地點(如：咖啡廳、餐廳)\",\n" +
+                "        \"工作學校場所\",\n" +
+                "        \"公眾場所(如：電影院、大賣場)\",\n" +
+                "        \"移動中\",\n" +
+                "        {\n" +
+                "          \"title\": \"其他\",\n" +
+                "          \"type\": \"freeform\"\n" +
+                "        }\n" +
                 "      ],\n" +
                 "      \"show_if\": {\n" +
                 "        \"operation\": \"and\",\n" +
@@ -1198,6 +1214,289 @@ public class NewsNotificationService extends Service {
                 "          },\n" +
                 "          {\n" +
                 "            \"id\": \"read_title_6\",\n" +
+                "            \"operation\": \"not equals\",\n" +
+                "            \"value\": \"***\"\n" +
+                "          }\n" +
+                "        ]\n" +
+                "      }\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"id\": \"read_title_8\",\n" +
+                "      \"header\": \"Question read_title_8\",\n" +
+                "      \"question\": \"關於這篇新聞，您是否有分享給其他人？\",\n" +
+                "      \"question_type\": \"single_select\",\n" +
+                "      \"options\": [\n" +
+                "        \"有\",\n" +
+                "        \"沒有\"\n" +
+                "      ],\n" +
+                "      \"show_if\": {\n" +
+                "        \"operation\": \"and\",\n" +
+                "        \"subconditions\": [\n" +
+                "          {\n" +
+                "            \"id\": \"base_1\",\n" +
+                "            \"operation\": \"equals\",\n" +
+                "            \"value\": \"沒有\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"not_read_1\",\n" +
+                "            \"operation\": \"equals\",\n" +
+                "            \"value\": \"有\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"read_title_1\",\n" +
+                "            \"operation\": \"not equals\",\n" +
+                "            \"value\": \"***\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"read_title_2\",\n" +
+                "            \"operation\": \"not equals\",\n" +
+                "            \"value\": \"***\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"read_title_3\",\n" +
+                "            \"operation\": \"not equals\",\n" +
+                "            \"value\": \"***\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"read_title_4\",\n" +
+                "            \"operation\": \"not equals\",\n" +
+                "            \"value\": \"***\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"read_title_5\",\n" +
+                "            \"operation\": \"not equals\",\n" +
+                "            \"value\": \"***\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"read_title_6\",\n" +
+                "            \"operation\": \"not equals\",\n" +
+                "            \"value\": \"***\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"read_title_7\",\n" +
+                "            \"operation\": \"not equals\",\n" +
+                "            \"value\": \"***\"\n" +
+                "          }\n" +
+                "        ]\n" +
+                "      }\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"id\": \"read_title_not_share_1\",\n" +
+                "      \"header\": \"Question read_title_not_share_1\",\n" +
+                "      \"question\": \"不分享此則新聞原因為何？\",\n" +
+                "      \"question_type\": \"single_select\",\n" +
+                "      \"options\": [\n" +
+                "        \"看起來不太可信\",\n" +
+                "        \"無聊\",\n" +
+                "        \"不重要\",\n" +
+                "        \"跟我無關\",\n" +
+                "        \"已過時\",\n" +
+                "        \"不想表達立場\",\n" +
+                "        {\n" +
+                "          \"title\": \"其他\",\n" +
+                "          \"type\": \"freeform\"\n" +
+                "        }\n" +
+                "      ],\n" +
+                "      \"show_if\": {\n" +
+                "        \"operation\": \"and\",\n" +
+                "        \"subconditions\": [\n" +
+                "          {\n" +
+                "            \"id\": \"base_1\",\n" +
+                "            \"operation\": \"equals\",\n" +
+                "            \"value\": \"沒有\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"not_read_1\",\n" +
+                "            \"operation\": \"equals\",\n" +
+                "            \"value\": \"有\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"read_title_1\",\n" +
+                "            \"operation\": \"not equals\",\n" +
+                "            \"value\": \"***\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"read_title_2\",\n" +
+                "            \"operation\": \"not equals\",\n" +
+                "            \"value\": \"***\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"read_title_3\",\n" +
+                "            \"operation\": \"not equals\",\n" +
+                "            \"value\": \"***\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"read_title_4\",\n" +
+                "            \"operation\": \"not equals\",\n" +
+                "            \"value\": \"***\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"read_title_5\",\n" +
+                "            \"operation\": \"not equals\",\n" +
+                "            \"value\": \"***\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"read_title_6\",\n" +
+                "            \"operation\": \"not equals\",\n" +
+                "            \"value\": \"***\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"read_title_7\",\n" +
+                "            \"operation\": \"not equals\",\n" +
+                "            \"value\": \"***\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"read_title_8\",\n" +
+                "            \"operation\": \"equals\",\n" +
+                "            \"value\": \"沒有\"\n" +
+                "          }\n" +
+                "        ]\n" +
+                "      }\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"id\": \"read_title_share_1\",\n" +
+                "      \"header\": \"Question read_title_share_1\",\n" +
+                "      \"question\": \"您分享方式為何？\",\n" +
+                "      \"question_type\": \"multi_select\",\n" +
+                "      \"options\": [\n" +
+                "        \"社群軟體(如fb,ig)貼文\",\n" +
+                "        \"通訊軟體(如line, whatsapp)貼文\",\n" +
+                "        \"私人訊息給單一好友\",\n" +
+                "        \"私人訊息給多人群組\",\n" +
+                "        \"實體聊天時口述\",\n" +
+                "        \"截圖\",\n" +
+                "        {\n" +
+                "          \"title\": \"其他\",\n" +
+                "          \"type\": \"freeform\"\n" +
+                "        }\n" +
+                "      ],\n" +
+                "      \"show_if\": {\n" +
+                "        \"operation\": \"and\",\n" +
+                "        \"subconditions\": [\n" +
+                "          {\n" +
+                "            \"id\": \"base_1\",\n" +
+                "            \"operation\": \"equals\",\n" +
+                "            \"value\": \"沒有\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"not_read_1\",\n" +
+                "            \"operation\": \"equals\",\n" +
+                "            \"value\": \"有\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"read_title_1\",\n" +
+                "            \"operation\": \"not equals\",\n" +
+                "            \"value\": \"***\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"read_title_2\",\n" +
+                "            \"operation\": \"not equals\",\n" +
+                "            \"value\": \"***\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"read_title_3\",\n" +
+                "            \"operation\": \"not equals\",\n" +
+                "            \"value\": \"***\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"read_title_4\",\n" +
+                "            \"operation\": \"not equals\",\n" +
+                "            \"value\": \"***\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"read_title_5\",\n" +
+                "            \"operation\": \"not equals\",\n" +
+                "            \"value\": \"***\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"read_title_6\",\n" +
+                "            \"operation\": \"not equals\",\n" +
+                "            \"value\": \"***\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"read_title_7\",\n" +
+                "            \"operation\": \"not equals\",\n" +
+                "            \"value\": \"***\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"read_title_8\",\n" +
+                "            \"operation\": \"equals\",\n" +
+                "            \"value\": \"有\"\n" +
+                "          }\n" +
+                "        ]\n" +
+                "      }\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"id\": \"read_title_share_2\",\n" +
+                "      \"header\": \"Question read_title_share_2\",\n" +
+                "      \"question\": \"分享此則新聞原因為何？\",\n" +
+                "      \"question_type\": \"single_select\",\n" +
+                "      \"options\": [\n" +
+                "        \"這則新聞很重要\",\n" +
+                "        \"覺得有趣\",\n" +
+                "        \"嘲諷此則新聞立場\",\n" +
+                "        \"此則新聞含有錯誤資訊，需澄清\",\n" +
+                "        \"倡議某議題\",\n" +
+                "        {\n" +
+                "          \"title\": \"其他\",\n" +
+                "          \"type\": \"freeform\"\n" +
+                "        }\n" +
+                "      ],\n" +
+                "      \"show_if\": {\n" +
+                "        \"operation\": \"and\",\n" +
+                "        \"subconditions\": [\n" +
+                "          {\n" +
+                "            \"id\": \"base_1\",\n" +
+                "            \"operation\": \"equals\",\n" +
+                "            \"value\": \"沒有\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"not_read_1\",\n" +
+                "            \"operation\": \"equals\",\n" +
+                "            \"value\": \"有\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"read_title_1\",\n" +
+                "            \"operation\": \"not equals\",\n" +
+                "            \"value\": \"***\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"read_title_2\",\n" +
+                "            \"operation\": \"not equals\",\n" +
+                "            \"value\": \"***\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"read_title_3\",\n" +
+                "            \"operation\": \"not equals\",\n" +
+                "            \"value\": \"***\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"read_title_4\",\n" +
+                "            \"operation\": \"not equals\",\n" +
+                "            \"value\": \"***\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"read_title_5\",\n" +
+                "            \"operation\": \"not equals\",\n" +
+                "            \"value\": \"***\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"read_title_6\",\n" +
+                "            \"operation\": \"not equals\",\n" +
+                "            \"value\": \"***\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"read_title_7\",\n" +
+                "            \"operation\": \"not equals\",\n" +
+                "            \"value\": \"***\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"read_title_8\",\n" +
+                "            \"operation\": \"equals\",\n" +
+                "            \"value\": \"有\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"id\": \"read_title_share_1\",\n" +
                 "            \"operation\": \"not equals\",\n" +
                 "            \"value\": \"***\"\n" +
                 "          }\n" +
@@ -2315,9 +2614,17 @@ public class NewsNotificationService extends Service {
                 "      \"question\": \"請選擇最符合您閱讀當下所處地點\",\n" +
                 "      \"question_type\": \"single_select\",\n" +
                 "      \"options\": [\n" +
-                "        \"工作或學習場所\",\n" +
                 "        \"家裡\",\n" +
-                "        \"移動中(如：在交通工具上)\"\n" +
+                "        \"與家人、朋友、另一半一起\",\n" +
+                "        \"運動場所\",\n" +
+                "        \"用餐地點(如：咖啡廳、餐廳)\",\n" +
+                "        \"工作學校場所\",\n" +
+                "        \"公眾場所(如：電影院、大賣場)\",\n" +
+                "        \"移動中\",\n" +
+                "        {\n" +
+                "          \"title\": \"其他\",\n" +
+                "          \"type\": \"freeform\"\n" +
+                "        }\n" +
                 "      ],\n" +
                 "      \"show_if\": {\n" +
                 "        \"operation\": \"and\",\n" +
@@ -2651,6 +2958,7 @@ public class NewsNotificationService extends Service {
                 "        \"不重要\",\n" +
                 "        \"跟我無關\",\n" +
                 "        \"已過時\",\n" +
+                "        \"不想表達立場\",\n" +
                 "        {\n" +
                 "          \"title\": \"其他\",\n" +
                 "          \"type\": \"freeform\"\n" +

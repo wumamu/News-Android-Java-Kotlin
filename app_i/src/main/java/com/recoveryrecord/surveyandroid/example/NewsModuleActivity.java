@@ -731,7 +731,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                         }
                         myReadingBehavior.setKEY_CHAR_NUM_TOTAL(char_num_total);
                         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                        params.setMargins(30, 10, 0, 10);
+                        params.setMargins(30, 10, 10, 10);
                         //set viewport number ######################################################
                         int textview_num = divList.size();
                         myReadingBehavior.setKEY_VIEW_PORT_NUM(textview_num);

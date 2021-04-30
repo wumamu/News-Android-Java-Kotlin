@@ -137,9 +137,17 @@
       "question": "請選擇最符合您閱讀當下所處地點",
       "question_type": "single_select",
       "options": [
-        "工作或學習場所",
         "家裡",
-        "移動中(如：在交通工具上)"
+        "與家人、朋友、另一半一起",
+        "運動場所",
+        "用餐地點(如：咖啡廳、餐廳)",
+        "工作學校場所",
+        "公眾場所(如：電影院、大賣場)",
+        "移動中",
+        {
+          "title": "其他",
+          "type": "freeform"
+        }
       ],
       "show_if": {
         "operation": "and",
@@ -442,9 +450,17 @@
       "question": "請選擇最符合您閱讀當下所處地點",
       "question_type": "single_select",
       "options": [
-        "工作或學習場所",
         "家裡",
-        "移動中(如：在交通工具上)"
+        "與家人、朋友、另一半一起",
+        "運動場所",
+        "用餐地點(如：咖啡廳、餐廳)",
+        "工作學校場所",
+        "公眾場所(如：電影院、大賣場)",
+        "移動中",
+        {
+          "title": "其他",
+          "type": "freeform"
+        }
       ],
       "show_if": {
         "operation": "and",
@@ -486,6 +502,289 @@
           },
           {
             "id": "read_title_6",
+            "operation": "not equals",
+            "value": "***"
+          }
+        ]
+      }
+    },
+    {
+      "id": "read_title_8",
+      "header": "Question read_title_8",
+      "question": "關於這篇新聞，您是否有分享給其他人？",
+      "question_type": "single_select",
+      "options": [
+        "有",
+        "沒有"
+      ],
+      "show_if": {
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "base_1",
+            "operation": "equals",
+            "value": "沒有"
+          },
+          {
+            "id": "not_read_1",
+            "operation": "equals",
+            "value": "有"
+          },
+          {
+            "id": "read_title_1",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_title_2",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_title_3",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_title_4",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_title_5",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_title_6",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_title_7",
+            "operation": "not equals",
+            "value": "***"
+          }
+        ]
+      }
+    },
+    {
+      "id": "read_title_not_share_1",
+      "header": "Question read_title_not_share_1",
+      "question": "不分享此則新聞原因為何？",
+      "question_type": "single_select",
+      "options": [
+        "看起來不太可信",
+        "無聊",
+        "不重要",
+        "跟我無關",
+        "已過時",
+        "不想表達立場",
+        {
+          "title": "其他",
+          "type": "freeform"
+        }
+      ],
+      "show_if": {
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "base_1",
+            "operation": "equals",
+            "value": "沒有"
+          },
+          {
+            "id": "not_read_1",
+            "operation": "equals",
+            "value": "有"
+          },
+          {
+            "id": "read_title_1",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_title_2",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_title_3",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_title_4",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_title_5",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_title_6",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_title_7",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_title_8",
+            "operation": "equals",
+            "value": "沒有"
+          }
+        ]
+      }
+    },
+    {
+      "id": "read_title_share_1",
+      "header": "Question read_title_share_1",
+      "question": "您分享方式為何？",
+      "question_type": "multi_select",
+      "options": [
+        "社群軟體(如fb,ig)貼文",
+        "通訊軟體(如line, whatsapp)貼文",
+        "私人訊息給單一好友",
+        "私人訊息給多人群組",
+        "實體聊天時口述",
+        "截圖",
+        {
+          "title": "其他",
+          "type": "freeform"
+        }
+      ],
+      "show_if": {
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "base_1",
+            "operation": "equals",
+            "value": "沒有"
+          },
+          {
+            "id": "not_read_1",
+            "operation": "equals",
+            "value": "有"
+          },
+          {
+            "id": "read_title_1",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_title_2",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_title_3",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_title_4",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_title_5",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_title_6",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_title_7",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_title_8",
+            "operation": "equals",
+            "value": "有"
+          }
+        ]
+      }
+    },
+    {
+      "id": "read_title_share_2",
+      "header": "Question read_title_share_2",
+      "question": "分享此則新聞原因為何？",
+      "question_type": "single_select",
+      "options": [
+        "這則新聞很重要",
+        "覺得有趣",
+        "嘲諷此則新聞立場",
+        "此則新聞含有錯誤資訊，需澄清",
+        "倡議某議題",
+        {
+          "title": "其他",
+          "type": "freeform"
+        }
+      ],
+      "show_if": {
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "base_1",
+            "operation": "equals",
+            "value": "沒有"
+          },
+          {
+            "id": "not_read_1",
+            "operation": "equals",
+            "value": "有"
+          },
+          {
+            "id": "read_title_1",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_title_2",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_title_3",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_title_4",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_title_5",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_title_6",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_title_7",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_title_8",
+            "operation": "equals",
+            "value": "有"
+          },
+          {
+            "id": "read_title_share_1",
             "operation": "not equals",
             "value": "***"
           }
@@ -1603,9 +1902,17 @@
       "question": "請選擇最符合您閱讀當下所處地點",
       "question_type": "single_select",
       "options": [
-        "工作或學習場所",
         "家裡",
-        "移動中(如：在交通工具上)"
+        "與家人、朋友、另一半一起",
+        "運動場所",
+        "用餐地點(如：咖啡廳、餐廳)",
+        "工作學校場所",
+        "公眾場所(如：電影院、大賣場)",
+        "移動中",
+        {
+          "title": "其他",
+          "type": "freeform"
+        }
       ],
       "show_if": {
         "operation": "and",
@@ -1939,6 +2246,7 @@
         "不重要",
         "跟我無關",
         "已過時",
+        "不想表達立場",
         {
           "title": "其他",
           "type": "freeform"
