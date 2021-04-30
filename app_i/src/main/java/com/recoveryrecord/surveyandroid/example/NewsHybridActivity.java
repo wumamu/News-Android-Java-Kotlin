@@ -222,6 +222,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 //        mServiceIntent = new Intent(this, mYourService.getClass());
         mServiceIntent = new Intent(this, NewsNotificationService.class);
         Map<String, Object> log_service = new HashMap<>();
+        log_service.put("flag", true);
         log_service.put("service_timestamp", Timestamp.now());
         log_service.put("cycle", "create");
         log_service.put("activity", "NewsHybridActivity");
@@ -260,6 +261,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 //            }}
         Log.d("log: activity cycle", "NewsHybridActivity On resume");
         Map<String, Object> log_service = new HashMap<>();
+        log_service.put("flag", true);
         log_service.put("service_timestamp", Timestamp.now());
         log_service.put("cycle", "resume");
         log_service.put("activity", "NewsHybridActivity");
@@ -308,6 +310,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         Map<String, Object> log_service = new HashMap<>();
         log_service.put("service_timestamp", Timestamp.now());
         log_service.put("cycle", "stop");
+        log_service.put("flag", false);
         log_service.put("activity", "NewsHybridActivity");
         if (!isMyServiceRunning(mYourService.getClass())) {
             log_service.put("status", "failed");
@@ -331,6 +334,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         Map<String, Object> log_service = new HashMap<>();
         log_service.put("service_timestamp", Timestamp.now());
         log_service.put("cycle", "destroy");
+        log_service.put("flag", false);
         log_service.put("activity", "NewsHybridActivity");
         if (!isMyServiceRunning(mYourService.getClass())) {
             log_service.put("status", "failed");
