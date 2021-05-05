@@ -91,8 +91,8 @@ public class NewsNotificationService extends Service {
     //timer count down
 //    private static final long START_TIME_IN_MILLIS = 1000;//30 * 60 * 1000;//20 min
 //    private static final long INTERVAL = 60 * 1000;//30 * 60 * 1000;//one hour
-    private static final long START_TIME_IN_MILLIS = 20 * 60 * 1000;//30 * 60 * 1000;//20 min
-    private static final long INTERVAL = 60 * 60 * 1000;//30 * 60 * 1000;//one hour
+    private static final long START_TIME_IN_MILLIS = 3 * 60 * 1000;//30 * 60 * 1000;//20 min
+    private static final long INTERVAL =  60 * 60 * 1000;//30 * 60 * 1000;//one hour
     private CountDownTimer mCountDownTimer;
     private boolean mTimerRunning;
     private long mTimeLeftInMillis = START_TIME_IN_MILLIS;
@@ -135,8 +135,8 @@ public class NewsNotificationService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d("lognewsselect", "onStartCommand");
 //        final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        listen_compare_result();
-        listen_activity_cycle();
+        listen_compare_result();//news
+        listen_activity_cycle();//esm
 //        listen_reading_behavior_result();
 //        listen_doc();
         return START_STICKY;
@@ -166,22 +166,30 @@ public class NewsNotificationService extends Service {
                                 case ADDED:
                                     if(count<=1){
                                         Log.d("lognewsselect", dc.getDocument().getString("cycle"));
+//                                        if (mTimerRunning) {
+//                                            resetTimer();
+//                                            startTimer();
+//                                        } else {
+//                                            startTimer();
+//                                        }
                                         if((dc.getDocument().getString("cycle").equals("stop")) || (dc.getDocument().getString("cycle").equals("destroy"))){
                                             SharedPreferences.Editor editor = sharedPrefs.edit();
                                             editor.putLong("LastAppStopOrDestroyTime", dc.getDocument().getTimestamp("service_timestamp").getSeconds());
                                             editor.apply();
                                             if (mTimerRunning) {
                                                 resetTimer();
+//                                                startTimer();
                                             } else {
                                                 startTimer();
                                             }
-                                        } else {
-                                            if (mTimerRunning) {
-                                                pauseTimer();
-                                            } else {
-//                                                startTimer();
-                                            }
                                         }
+//                                        else {
+//                                            if (mTimerRunning) {
+//                                                pauseTimer();
+//                                            } else {
+////                                                startTimer();
+//                                            }
+//                                        }
                                     }
 
                                     //before delete
@@ -555,9 +563,12 @@ public class NewsNotificationService extends Service {
                         if (!queryDocumentSnapshots.isEmpty()) {
                             List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
                             for (DocumentSnapshot d : list) {
-                                if(!d.getString("title").equals("NA")){
-                                    news_title_array.add(d.getString("title"));
+                                if(!(d.getString("title") ==null)){
+                                    if(!d.getString("title").equals("NA")){
+                                        news_title_array.add(d.getString("title"));
+                                    }
                                 }
+
                                 Log.d("lognewsselect", "title " + d.getString("title"));
                                 //mark as check
                                 db.collection("test_users")
