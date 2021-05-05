@@ -46,6 +46,7 @@ import com.recoveryrecord.surveyandroid.example.ltn.LtnMainFragment;
 import com.recoveryrecord.surveyandroid.example.receiever.ActivityRecognitionReceiver;
 import com.recoveryrecord.surveyandroid.example.receiever.BlueToothReceiver;
 import com.recoveryrecord.surveyandroid.example.receiever.NetworkChangeReceiver;
+import com.recoveryrecord.surveyandroid.example.receiever.RingModeReceiver;
 import com.recoveryrecord.surveyandroid.example.receiever.ScreenStateReceiver;
 import com.recoveryrecord.surveyandroid.example.storm.StormMainFragment;
 import com.recoveryrecord.surveyandroid.example.udn.UdnMainFragment;
@@ -128,6 +129,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     public ActivityRecognitionClient mActivityRecognitionClient;
     NetworkChangeReceiver _NetworkChangeReceiver;
     ScreenStateReceiver _ScreenStateReceiver;
+    RingModeReceiver _RingModeReceiver;
     @SuppressLint("HardwareIds")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -290,7 +292,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 builder.show();
             }
         }
-        //DETECTED ACTIVITY
+        //Detected Activity
 
         mApiClient = new GoogleApiClient.Builder(this)
                 .addApi(ActivityRecognition.API)
@@ -307,6 +309,28 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         _ScreenStateReceiver = new ScreenStateReceiver();
         _ScreenStateReceiver.registerScreenStateReceiver(this);
 
+        //RingMode
+        _RingModeReceiver = new RingModeReceiver();
+        _RingModeReceiver.registerRingModeReceiver(this);
+
+        //ActivityRecognition
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.Q){
+            //Android Q Permission check
+            if(this.checkSelfPermission(Manifest.permission.ACTIVITY_RECOGNITION)!= PackageManager.PERMISSION_GRANTED){
+                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("This app needs activity recognition access");
+                builder.setMessage("Please grant activity recognition access so this app can detect physical activity.");
+                builder.setPositiveButton(android.R.string.ok, null);
+                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialogInterface) {
+                        requestPermissions(new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 1);
+                    }
+                });
+                builder.show();
+            }
+        }
+        //TopTask
 
 
     }
@@ -316,7 +340,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 //        Log.d(TAG, "on resume");
 //        if (getIntent().getExtras() != null) {
 //            for (String key : getIntent().getExtras().keySet()){
-//                String value = getIntent().getExtras().getString(key);
+//            String value = getIntent().getExtras().getString(key);
 //                Log.d(TAG, "Key: " + key + " Value: " + value);
 //            }}
         Log.d("log: activity cycle", "NewsHybridActivity On resume");
@@ -343,6 +367,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 //        } else {
 //            Toast.makeText(this, "service running", Toast.LENGTH_SHORT).show();
 //        }
+
     }
 
     @Override
@@ -409,6 +434,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         _BluetoothReceiver.unregisterBluetoothReceiver(this);
         _NetworkChangeReceiver.unregisterNetworkReceiver(this);
         _ScreenStateReceiver.unregisterScreenStateReceiver(this);
+        _RingModeReceiver.unregisterBluetoothReceiver(this);
         super.onDestroy();
     }
     private void showStartDialog() {
@@ -831,7 +857,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         Log.e(TAG, "DetectedActivityConnected");
         Intent intent = new Intent( this, ActivityRecognitionReceiver.class );
         PendingIntent pendingIntent = PendingIntent.getService( this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT );
-        Task<Void> task = ActivityRecognition.getClient(this).requestActivityUpdates(30000, pendingIntent);
+        Task<Void> task = ActivityRecognition.getClient(this).requestActivityUpdates(300000, pendingIntent);
         //mApiClient.disconnect();
     }
     @Override
