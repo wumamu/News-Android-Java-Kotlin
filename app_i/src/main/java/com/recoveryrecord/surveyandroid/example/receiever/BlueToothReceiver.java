@@ -79,7 +79,7 @@ public class BlueToothReceiver{
                 //discovery finishes, dismis progress dialog
                 Log.e("log: bluetooth device", "ACTION_DISCOVERY_FINISHED");
 //                Toast.makeText(context, "結束偵測藍芽", Toast.LENGTH_LONG).show();
-                sensordb.put("BlueTooth", "Stop Detect BlueTooth");
+                sensordb.put("BlueTooth", "Stop Detec                                          xxxxxxxt BlueTooth");
             } else if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 //bluetooth device found
                 Log.e("log: bluetooth device", "ACTION_FOUND");
