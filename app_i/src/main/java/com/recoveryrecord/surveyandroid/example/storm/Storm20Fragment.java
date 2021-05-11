@@ -1,6 +1,7 @@
 package com.recoveryrecord.surveyandroid.example.storm;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,13 +26,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_LIMIT_PER_PAGE;
 
-public class Storm8Fragment extends Fragment {
+public class Storm20Fragment extends Fragment {
     private RecyclerView courseRV;
     private ArrayList<NewsModel> dataModalArrayList;
     private NewsRecycleViewAdapter dataRVAdapter;
     private FirebaseFirestore db;
-    public static Storm8Fragment newInstance(int position) {
-        Storm8Fragment fragment = new Storm8Fragment();
+    public static Storm20Fragment newInstance(int position) {
+        Storm20Fragment fragment = new Storm20Fragment();
         Bundle args = new Bundle();
         args.putInt("position", position);
         fragment.setArguments(args);
@@ -39,7 +40,7 @@ public class Storm8Fragment extends Fragment {
         return fragment;
     }
 
-    public Storm8Fragment() {
+    public Storm20Fragment() {
 
     }
 
@@ -85,13 +86,14 @@ public class Storm8Fragment extends Fragment {
         db.collection("medias")
                 .document("storm")
                 .collection("news")
-                .whereArrayContains("category", "中港澳")
+                .whereArrayContains("category", "旅遊")
                 .orderBy("pubdate", Query.Direction.DESCENDING)
                 .limit(NEWS_LIMIT_PER_PAGE)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        Log.d("logpager", "sss");
                         // after getting the data we are calling on success method
                         // and inside this method we are checking if the received
                         // query snapshot is empty or not.
@@ -122,6 +124,7 @@ public class Storm8Fragment extends Fragment {
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                Log.d("logpager", "Fail to get the data." + e);
                 // if we do not get any data or any error we are displaying
                 // a toast message that we do not get any data
 //                Toast.makeText(TestNewsOneActivity.this, "Fail to get the data.", Toast.LENGTH_SHORT).show();

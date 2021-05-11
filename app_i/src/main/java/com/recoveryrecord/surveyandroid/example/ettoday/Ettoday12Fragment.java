@@ -1,4 +1,4 @@
-package com.recoveryrecord.surveyandroid.example.storm;
+package com.recoveryrecord.surveyandroid.example.ettoday;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -25,13 +25,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_LIMIT_PER_PAGE;
 
-public class Storm8Fragment extends Fragment {
+public class Ettoday12Fragment extends Fragment {
     private RecyclerView courseRV;
     private ArrayList<NewsModel> dataModalArrayList;
     private NewsRecycleViewAdapter dataRVAdapter;
     private FirebaseFirestore db;
-    public static Storm8Fragment newInstance(int position) {
-        Storm8Fragment fragment = new Storm8Fragment();
+    public static Ettoday12Fragment newInstance(int position) {
+        Ettoday12Fragment fragment = new Ettoday12Fragment();
         Bundle args = new Bundle();
         args.putInt("position", position);
         fragment.setArguments(args);
@@ -39,7 +39,7 @@ public class Storm8Fragment extends Fragment {
         return fragment;
     }
 
-    public Storm8Fragment() {
+    public Ettoday12Fragment() {
 
     }
 
@@ -83,9 +83,9 @@ public class Storm8Fragment extends Fragment {
     private void loadrecyclerViewData() {
 //.orderBy("name").limit(3)//                db.collectionGroup("news") //
         db.collection("medias")
-                .document("storm")
+                .document("ettoday")
                 .collection("news")
-                .whereArrayContains("category", "中港澳")
+                .whereEqualTo("category", "旅遊")
                 .orderBy("pubdate", Query.Direction.DESCENDING)
                 .limit(NEWS_LIMIT_PER_PAGE)
                 .get()
