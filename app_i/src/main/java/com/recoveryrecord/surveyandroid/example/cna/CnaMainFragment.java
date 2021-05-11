@@ -60,6 +60,12 @@ public class CnaMainFragment extends Fragment {
                     return Cna9Fragment.newInstance(9);
                 case 9:
                     return Cna10Fragment.newInstance(10);
+                case 10:
+                    return Cna11Fragment.newInstance(11);
+                case 11:
+                    return Cna12Fragment.newInstance(12);
+//                case 12:
+//                    return Cna13Fragment.newInstance(13);
                 default:
                     return TestNest2Fragment.newInstance(2);
             }
@@ -69,7 +75,7 @@ public class CnaMainFragment extends Fragment {
         @Override
         public int getCount() {
             // Show 4 total pages.
-            return 10;
+            return 12;
         }
 
         @Override
@@ -77,25 +83,31 @@ public class CnaMainFragment extends Fragment {
 
             switch (position) {
                 case 0:
-                    return "證券";
+                    return "政治";
                 case 1:
                     return "國際";
                 case 2:
-                    return "新聞專題";
-                case 3:
-                    return "社會";
-                case 4:
-                    return "重點新聞";
-                case 5:
-                    return "地方";
-                case 6:
-                    return "政治";
-                case 7:
                     return "兩岸";
-                case 8:
-                    return "生活";
-                case 9:
+                case 3:
                     return "產經";
+                case 4:
+                    return "證券";
+                case 5:
+                    return "科技";
+                case 6:
+                    return "生活";
+                case 7:
+                    return "社會";
+                case 8:
+                    return "地方";
+                case 9:
+                    return "文化";
+                case 10:
+                    return "運動";
+                case 11:
+                    return "娛樂";
+//                case 12:
+//                    return "影音";
                 default:
                     return "Nested 2";
             }

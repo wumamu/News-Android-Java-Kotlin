@@ -61,6 +61,13 @@ public class LtnMainFragment extends Fragment {
                     return Ltn9Fragment.newInstance(9);
                 case 9:
                     return Ltn10Fragment.newInstance(10);
+                case 10:
+                    return Ltn11Fragment.newInstance(11);
+                case 11:
+                    return Ltn12Fragment.newInstance(12);
+                case 12:
+                    return Ltn13Fragment.newInstance(13);
+
                 default:
                     return TestNest2Fragment.newInstance(2);
             }
@@ -70,33 +77,43 @@ public class LtnMainFragment extends Fragment {
         @Override
         public int getCount() {
             // Show 4 total pages.
-            return 10;
+            return 13;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
 
             switch (position) {
+//                case 0:
+//                    return "焦點";
                 case 0:
-                    return "生活";
-                case 1:
-                    return "財經";
-                case 2:
-                    return "體育";
-                case 3:
                     return "政治";
-                case 4:
-                    return "娛樂";
-                case 5:
+                case 1:
                     return "社會";
-                case 6:
+                case 2:
+                    return "生活";
+                case 3:
                     return "國際";
+                case 4:
+                    return "財經";
+//                case 6:
+//                    return "言論";
+                case 5:
+                    return "體育";
+                case 6:
+                    return "娛樂";
                 case 7:
-                    return "3C科技";
+                    return "3C";
                 case 8:
-                    return "健康";
+                    return "汽車";
                 case 9:
+                    return "時尚";
+                case 10:
                     return "蒐奇";
+                case 11:
+                    return "健康";
+                case 12:
+                    return "玩咖";
                 default:
                     return "Nested 2";
             }

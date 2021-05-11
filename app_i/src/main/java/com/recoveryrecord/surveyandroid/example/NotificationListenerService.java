@@ -64,6 +64,7 @@ public class NotificationListenerService extends android.service.notification.No
             case "com.news.ctsapp":
             case "com.ebc.news":
             case "cc.nexdoor.stormmedia":
+            case "com.set.newsapp":
                 is_target = true;
                 break;
             default:
@@ -141,6 +142,7 @@ public class NotificationListenerService extends android.service.notification.No
             case "com.news.ctsapp":
             case "com.ebc.news":
             case "cc.nexdoor.stormmedia":
+            case "com.set.newsapp":
                 receieve_to_firestore = true;
                 document_name = "receieve_notifications";
                 break;

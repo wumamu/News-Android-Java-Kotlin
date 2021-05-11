@@ -138,7 +138,6 @@
       "question_type": "single_select",
       "options": [
         "家裡",
-        "與家人、朋友、另一半一起",
         "運動場所",
         "用餐地點(如：咖啡廳、餐廳)",
         "工作學校場所",
@@ -451,7 +450,6 @@
       "question_type": "single_select",
       "options": [
         "家裡",
-        "與家人、朋友、另一半一起",
         "運動場所",
         "用餐地點(如：咖啡廳、餐廳)",
         "工作學校場所",
@@ -797,8 +795,8 @@
       "question": "請問您此次新聞閱讀，透過甚麼方式進到新聞文章頁面？",
       "question_type": "single_select",
       "options": [
-        "看到「Time_Me新聞通知」點入閱讀",
-        "點開「Time_Me」進行新聞閱讀"
+        "點擊通知",
+        "點開app"
       ],
       "show_if": {
         "id": "base_1",
@@ -1424,8 +1422,8 @@
       "question": "關於這次的新聞閱讀的時段，對您來說屬於何種性質的閱讀？",
       "question_type": "single_select",
       "options": [
-        "預期中的閱讀活動(我平時就計畫/習慣在於此時刻閱讀)",
-        "未預期、意外地閱讀活動(我未規劃/沒有習慣於此時刻閱讀)",
+        "固定規律的閱讀活動(通常一天很可能在這個時機閱讀)",
+        "未預期、意外地閱讀活動(沒有規律於此時刻閱讀)",
         {
           "title": "其他",
           "type": "freeform"
@@ -1598,7 +1596,7 @@
       "id": "read_15",
       "header": "Question read_15",
       "question": "承上題，甚麼因素讓你採取此閱讀方式(策略)？",
-      "question_type": "single_select",
+      "question_type": "multi_select",
       "options": [
         "當下可花費時間多寡",
         "內容吸引我程度",
@@ -1903,7 +1901,6 @@
       "question_type": "single_select",
       "options": [
         "家裡",
-        "與家人、朋友、另一半一起",
         "運動場所",
         "用餐地點(如：咖啡廳、餐廳)",
         "工作學校場所",

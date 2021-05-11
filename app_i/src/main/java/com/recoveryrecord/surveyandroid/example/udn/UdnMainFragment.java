@@ -61,6 +61,14 @@ public class UdnMainFragment extends Fragment {
                     return Udn9Fragment.newInstance(9);
                 case 9:
                     return Udn10Fragment.newInstance(10);
+                case 10:
+                    return Udn11Fragment.newInstance(11);
+                case 11:
+                    return Udn12Fragment.newInstance(12);
+                case 12:
+                    return Udn13Fragment.newInstance(13);
+                case 13:
+                    return Udn14Fragment.newInstance(14);
                 default:
                     return TestNest2Fragment.newInstance(2);
             }
@@ -70,7 +78,7 @@ public class UdnMainFragment extends Fragment {
         @Override
         public int getCount() {
             // Show 4 total pages.
-            return 10;
+            return 14;
         }
 
         @Override
@@ -78,25 +86,33 @@ public class UdnMainFragment extends Fragment {
 
             switch (position) {
                 case 0:
-                    return "地方";
-                case 1:
                     return "要聞";
-                case 2:
-                    return "社會";
-                case 3:
+                case 1:
                     return "運動";
+                case 2:
+                    return "全球";
+                case 3:
+                    return "社會";
                 case 4:
                     return "產經";
                 case 5:
-                    return "生活";
-                case 6:
-                    return "全球";
-                case 7:
                     return "股市";
-                case 8:
-                    return "兩岸";
-                case 9:
+                case 6:
+                    return "生活";
+                case 7:
                     return "文教";
+                case 8:
+                    return "評論";
+                case 9:
+                    return "地方";
+                case 10:
+                    return "兩岸";
+                case 11:
+                    return "數位";
+                case 12:
+                    return "Oops";
+                case 13:
+                    return "閱讀";
                 default:
                     return "Nested 2";
             }

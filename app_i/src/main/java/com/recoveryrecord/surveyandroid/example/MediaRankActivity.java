@@ -76,7 +76,7 @@ public class MediaRankActivity extends AppCompatActivity{
 
     private void loadrecyclerViewData() {
         Set<String> ranking = mSharedPreferences.getStringSet("media_rank", null);
-        for (int i = 1; i<=8; i++){
+        for (int i = 1; i<=9; i++){
             for (String r : ranking){
                 List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
                 if(Integer.parseInt(out.get(1))==i){

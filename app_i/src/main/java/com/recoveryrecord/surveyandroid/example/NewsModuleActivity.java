@@ -371,6 +371,9 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
             case "ettoday":
                 media_name = "ettoday";
                 break;
+            case "三立":
+                media_name = "setn";
+                break;
             default:
                 media_name = "";
                 break;

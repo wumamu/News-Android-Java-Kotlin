@@ -88,6 +88,10 @@ public class MediaRankRecycleViewAdapter extends RecyclerView.Adapter<MediaRankR
                 dr = context.getResources().getDrawable(R.drawable.ettoday);
 //                holder.media_icon.setImageResource(R.drawable.swap_vert);
                 break;
+            case "三立":
+                dr = context.getResources().getDrawable(R.drawable.setn);
+//                holder.media_icon.setImageResource(R.drawable.swap_vert);
+                break;
             default:
 //                holder.media_icon.setImageResource(R.drawable.swap_vert);
                 break;

@@ -47,6 +47,7 @@ import com.recoveryrecord.surveyandroid.example.receiever.ActivityRecognitionRec
 import com.recoveryrecord.surveyandroid.example.receiever.BlueToothReceiver;
 import com.recoveryrecord.surveyandroid.example.receiever.NetworkChangeReceiver;
 import com.recoveryrecord.surveyandroid.example.receiever.ScreenStateReceiver;
+import com.recoveryrecord.surveyandroid.example.setn.SetnMainFragment;
 import com.recoveryrecord.surveyandroid.example.storm.StormMainFragment;
 import com.recoveryrecord.surveyandroid.example.udn.UdnMainFragment;
 
@@ -116,6 +117,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         media_hash.put("風傳媒", "storm");
         media_hash.put("聯合", "udn");
         media_hash.put("ettoday", "ettoday");
+        media_hash.put("三立", "setn");
     }
     //sensor part
     BlueToothReceiver _BluetoothReceiver;
@@ -188,6 +190,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 set.add("風傳媒 6");
                 set.add("聯合 7");
                 set.add("ettoday 8");
+                set.add("三立 9");
                 SharedPreferences.Editor edit = sharedPrefs.edit();
                 edit.clear();
                 edit.putStringSet("media_rank", set);
@@ -468,7 +471,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 //                drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             case R.id.nav_contact :
-                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 1000 );
+//                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 1000 );
 //                Toast.makeText(this, "發送esm~", Toast.LENGTH_SHORT).show();
 //                Log.d("log: navigation", "nav_contact " + item.getItemId());
 ////                if (Helper.isAppRunning(NewsHybridActivity.this, getPackageName())) {
@@ -674,6 +677,15 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                             }
                         }
                         break;
+                    case 8:
+                        for (String r : ranking){
+                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            if(Integer.parseInt(out.get(1))==9){
+                                media_name = out.get(0);
+                                break;
+                            }
+                        }
+                        break;
                 }
                 Log.d ("mediaselect", media_name+ "   565");
                 switch (media_name) {
@@ -693,6 +705,8 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                         return new LtnMainFragment();
                     case "風傳媒":
                         return new StormMainFragment();
+                    case "三立":
+                        return new SetnMainFragment();
                     default:
                         return TestTab3Fragment.newInstance();
                 }
@@ -714,6 +728,8 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                         return new LtnMainFragment();
                     case 7:
                         return new StormMainFragment();
+                    case 8:
+                        return new SetnMainFragment();
                     default:
                         return TestTab3Fragment.newInstance();
                 }
@@ -724,7 +740,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 8;
+            return 9;
         }
 
         @Override
@@ -799,6 +815,14 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                                 return out.get(0);
                             }
                         }
+                    case 8:
+                        for (String r : ranking){
+                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            if(Integer.parseInt(out.get(1))==9){
+                                media_name = out.get(0);
+                                return out.get(0);
+                            }
+                        }
                     default:
 //                        media_name = String.valueOf(position);
                         return null;
@@ -821,6 +845,8 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                         return "自由";
                     case 7:
                         return "風傳媒";
+                    case 8:
+                        return "三立";
                 }
                 return null;
             }

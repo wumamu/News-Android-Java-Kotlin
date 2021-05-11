@@ -92,7 +92,7 @@ public class NewsNotificationService extends Service {
 //    private static final long START_TIME_IN_MILLIS = 1000;//30 * 60 * 1000;//20 min
 //    private static final long INTERVAL = 60 * 1000;//30 * 60 * 1000;//one hour
     private static final long START_TIME_IN_MILLIS = 3 * 60 * 1000;//3 * 60 * 1000;//3 min
-    private static final long INTERVAL = 60 * 60 * 1000;//60 * 60 * 1000;//one hour
+    private static final long INTERVAL =  60 * 60 * 1000;//60 * 60 * 1000;//one hour
     private CountDownTimer mCountDownTimer;
     private boolean mTimerRunning;
     private long mTimeLeftInMillis = START_TIME_IN_MILLIS;
@@ -850,7 +850,6 @@ public class NewsNotificationService extends Service {
                 "      \"question_type\": \"single_select\",\n" +
                 "      \"options\": [\n" +
                 "        \"家裡\",\n" +
-                "        \"與家人、朋友、另一半一起\",\n" +
                 "        \"運動場所\",\n" +
                 "        \"用餐地點(如：咖啡廳、餐廳)\",\n" +
                 "        \"工作學校場所\",\n" +
@@ -1163,7 +1162,6 @@ public class NewsNotificationService extends Service {
                 "      \"question_type\": \"single_select\",\n" +
                 "      \"options\": [\n" +
                 "        \"家裡\",\n" +
-                "        \"與家人、朋友、另一半一起\",\n" +
                 "        \"運動場所\",\n" +
                 "        \"用餐地點(如：咖啡廳、餐廳)\",\n" +
                 "        \"工作學校場所\",\n" +
@@ -1509,8 +1507,8 @@ public class NewsNotificationService extends Service {
                 "      \"question\": \"請問您此次新聞閱讀，透過甚麼方式進到新聞文章頁面？\",\n" +
                 "      \"question_type\": \"single_select\",\n" +
                 "      \"options\": [\n" +
-                "        \"看到「Time_Me新聞通知」點入閱讀\",\n" +
-                "        \"點開「Time_Me」進行新聞閱讀\"\n" +
+                "        \"點擊通知\",\n" +
+                "        \"點開app\"\n" +
                 "      ],\n" +
                 "      \"show_if\": {\n" +
                 "        \"id\": \"base_1\",\n" +
@@ -2136,8 +2134,8 @@ public class NewsNotificationService extends Service {
                 "      \"question\": \"關於這次的新聞閱讀的時段，對您來說屬於何種性質的閱讀？\",\n" +
                 "      \"question_type\": \"single_select\",\n" +
                 "      \"options\": [\n" +
-                "        \"預期中的閱讀活動(我平時就計畫/習慣在於此時刻閱讀)\",\n" +
-                "        \"未預期、意外地閱讀活動(我未規劃/沒有習慣於此時刻閱讀)\",\n" +
+                "        \"固定規律的閱讀活動(通常一天很可能在這個時機閱讀)\",\n" +
+                "        \"未預期、意外地閱讀活動(沒有規律於此時刻閱讀)\",\n" +
                 "        {\n" +
                 "          \"title\": \"其他\",\n" +
                 "          \"type\": \"freeform\"\n" +
@@ -2310,7 +2308,7 @@ public class NewsNotificationService extends Service {
                 "      \"id\": \"read_15\",\n" +
                 "      \"header\": \"Question read_15\",\n" +
                 "      \"question\": \"承上題，甚麼因素讓你採取此閱讀方式(策略)？\",\n" +
-                "      \"question_type\": \"single_select\",\n" +
+                "      \"question_type\": \"multi_select\",\n" +
                 "      \"options\": [\n" +
                 "        \"當下可花費時間多寡\",\n" +
                 "        \"內容吸引我程度\",\n" +
@@ -2615,7 +2613,6 @@ public class NewsNotificationService extends Service {
                 "      \"question_type\": \"single_select\",\n" +
                 "      \"options\": [\n" +
                 "        \"家裡\",\n" +
-                "        \"與家人、朋友、另一半一起\",\n" +
                 "        \"運動場所\",\n" +
                 "        \"用餐地點(如：咖啡廳、餐廳)\",\n" +
                 "        \"工作學校場所\",\n" +
