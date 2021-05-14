@@ -12,7 +12,7 @@ import com.recoveryrecord.surveyandroid.example.activity.NotificationDbViewActiv
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class AddNotificationActivity extends AppCompatActivity {
+public class TestAddNotificationActivity extends AppCompatActivity {
     EditText packagename, time, tickertext, title, text;
     Button saveBtn, listBtn, deleteBtn;
     Intent intent;
@@ -56,7 +56,7 @@ public class AddNotificationActivity extends AppCompatActivity {
                     text.setError("Please enter text!");
                     text.requestFocus();
                 } else {
-                    TestNotificationDbHelper dbHandler = new TestNotificationDbHelper(AddNotificationActivity.this);
+                    TestNotificationDbHelper dbHandler = new TestNotificationDbHelper(TestAddNotificationActivity.this);
                     dbHandler.insertNotificationDetails(pn, t, tt, ti, te);
 //                    intent = new Intent(TestActivityRecognitionActivity.this, DetailsActivity.class);
 //                    startActivity(intent);
@@ -73,7 +73,7 @@ public class AddNotificationActivity extends AppCompatActivity {
         listBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                intent = new Intent(AddNotificationActivity.this, NotificationDbViewActivity.class);
+                intent = new Intent(TestAddNotificationActivity.this, NotificationDbViewActivity.class);
                 startActivity(intent);
             }
         });
@@ -81,7 +81,7 @@ public class AddNotificationActivity extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
-        intent = new Intent(AddNotificationActivity.this, TestNotificationSettingActivity.class);
+        intent = new Intent(TestAddNotificationActivity.this, TestNotificationSettingActivity.class);
         startActivity(intent);
     }
 }

@@ -97,6 +97,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
     private static final String DEBUG_TAG = "Gestures";
     private GestureListener detector;
     List<DragObj> dragObjArrayListArray = new ArrayList<>();//drag gesture
+    List<String> categoryArray = new ArrayList<>();//cat
 
     ReadingBehavior myReadingBehavior = new ReadingBehavior();//sqlite
     TestReadingBehaviorDbHelper dbHandler;
@@ -471,6 +472,19 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                         if(document.getTimestamp("pubdate")!=null){
                             mPubdate = document.getTimestamp("pubdate");
                         }
+                        if(document.get("category")!=null){
+                            if(media_name.equals("storm")){
+                                categoryArray =  (List<String>) document.get("category");
+//                                document.get("category")
+                                Log.d("log: firebase", String.valueOf(categoryArray));
+                            } else {
+                                categoryArray.add(document.getString("category"));
+                                Log.d("log: firebase", categoryArray.get(0));
+                            }
+                        } else {
+                            Log.d("log: firebase", "123");
+                        }
+
 
                         Date my_date = mPubdate.toDate();
                         @SuppressLint("SimpleDateFormat")
@@ -1501,6 +1515,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         readingBehavior.put("drag_record", Arrays.asList("NA"));
         readingBehavior.put("share", Arrays.asList("NA"));
         readingBehavior.put("title","NA");
+        readingBehavior.put("category",categoryArray);
 //        readingBehavior.put("share_via", "none");
         readingBehavior.put("time_series(s)", Arrays.asList("NA"));
         readingBehavior.put("byte_per_line", "NA");
@@ -1562,6 +1577,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         // Set the "isCapital" field of the city 'DC'
         rbRef.update("content_length(dp)", myReadingBehavior.getKEY_CONTENT_LENGTH(),
                 "byte_per_line", myReadingBehavior.getKEY_BYTE_PER_LINE(),
+                "category", categoryArray,
                 "has_img", has_img,
                 "char_num_total", myReadingBehavior.getKEY_CHAR_NUM_TOTAL(),
                 "id",  myReadingBehavior.getKEY_NEWS_ID(),

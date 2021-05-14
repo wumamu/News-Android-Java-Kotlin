@@ -497,7 +497,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 //                drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             case R.id.nav_contact :
-//                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 1000 );
+                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 1000 );
 //                Toast.makeText(this, "發送esm~", Toast.LENGTH_SHORT).show();
 //                Log.d("log: navigation", "nav_contact " + item.getItemId());
 ////                if (Helper.isAppRunning(NewsHybridActivity.this, getPackageName())) {
@@ -569,6 +569,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         intent_esm.putExtra("status", "foreground");
         intent_esm.putExtra("esm_id", esm_id);
         intent_esm.putExtra("noti_timestamp", Timestamp.now());
+        intent_esm.putExtra("type", "esm");
         PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_esm, 0);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);
         builder.setContentTitle("ESM");

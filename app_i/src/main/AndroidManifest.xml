@@ -112,23 +112,19 @@
 <!--        <activity android:name=".NetworkCheckerActivity" />-->
         <activity android:name=".TestNotificationSettingActivity"
             android:theme="@style/AppThemeActionBar"/>
-        <activity android:name=".AddNotificationActivity"
+        <activity android:name=".TestAddNotificationActivity"
             android:theme="@style/AppThemeActionBar"/>
         <activity android:name=".activity.NotificationDbViewActivity"
             android:theme="@style/AppThemeActionBar"/>
         <activity android:name=".ActivityRecognitionPermissionRationalActivity"/>
         <activity android:name=".TestActivityRecognitionActivity"/>
         <activity android:name=".NewsAllActivity"/>
-        <activity android:name=".MainActivity"
-            android:theme="@style/AppThemeActionBar"/>
+
         <activity android:name=".TestServiceActivity"
             android:theme="@style/AppThemeActionBar"/>
         <activity android:name=".TestDoubleBarActivity" />
 
-        <!--        <activity android:name=".TestESMDbViewActivity"-->
-        <!--            android:theme="@style/AppThemeActionBar"/>-->
-        <!--        <activity android:name=".TestESMJsonViewActivity"-->
-        <!--            android:theme="@style/AppThemeActionBar"/>-->
+
 
         <receiver android:name=".receiever.ApplicationSelectorReceiver" />
         <receiver android:name=".receiever.ScreenStateReceiver"
@@ -151,16 +147,20 @@
                 <action android:name="restartservice" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".TAlarmReceiever"
+        <receiver android:name=".AlarmReceiver"
             android:enabled="true"
             android:exported="true">
         </receiver>
-        <receiver android:name=".AlarmReceiver"
-            android:enabled="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
+<!--        <receiver android:name=".TAlarmReceiver"-->
+<!--            android:enabled="true"-->
+<!--            android:exported="true">-->
+<!--        </receiver>-->
+<!--        <receiver android:name=".TAlarmReceiver"-->
+<!--            android:enabled="true">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.BOOT_COMPLETED" />-->
+<!--            </intent-filter>-->
+<!--        </receiver>-->
         <!-- Mention the service name here -->
         <service android:name=".NewsNotificationService"
             android:stopWithTask="false"
