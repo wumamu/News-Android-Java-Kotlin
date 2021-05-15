@@ -95,7 +95,7 @@ public class NewsRecycleViewAdapter extends RecyclerView.Adapter<NewsRecycleView
                     NewsModel model = dataModelArrayList.get(getAdapterPosition());
                     Intent intent = new Intent();
                     intent.setClass(context, NewsModuleActivity.class);
-                    intent.putExtra("trigger_from", "self_trigger");
+                    intent.putExtra("trigger_by", "self_trigger");
                     intent.putExtra("news_id", model.getId());
                     intent.putExtra("media", model.getMedia());
 

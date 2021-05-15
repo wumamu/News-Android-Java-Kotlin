@@ -81,6 +81,9 @@ import androidx.viewpager.widget.ViewPager;
 
 import javax.annotation.Nullable;
 
+import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_CHANNEL_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_CHANNEL_ID;
+
 //public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener , GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
     public static final String NOTIFICATION_CHANNEL_ID = "10001" ;
@@ -266,7 +269,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         }
         db.collection("test_users")
                 .document(device_id)
-                .collection("notification_service")
+                .collection("test_service")
                 .document(String.valueOf(Timestamp.now()))
                 .set(log_service);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),this);
@@ -363,7 +366,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         }
         db.collection("test_users")
                 .document(device_id)
-                .collection("notification_service")
+                .collection("test_service")
                 .document(String.valueOf(Timestamp.now()))
                 .set(log_service);
 //        if (!isMyServiceRunning(mYourService.getClass())) {
@@ -411,7 +414,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         }
         db.collection("test_users")
                 .document(device_id)
-                .collection("notification_service")
+                .collection("test_service")
                 .document(String.valueOf(Timestamp.now()))
                 .set(log_service);
         super.onStop();
@@ -435,7 +438,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         }
         db.collection("test_users")
                 .document(device_id)
-                .collection("notification_service")
+                .collection("test_service")
                 .document(String.valueOf(Timestamp.now()))
                 .set(log_service);
         _BluetoothReceiver.unregisterBluetoothReceiver(this);
@@ -498,18 +501,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 return true;
             case R.id.nav_contact :
                 scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 1000 );
-//                Toast.makeText(this, "發送esm~", Toast.LENGTH_SHORT).show();
-//                Log.d("log: navigation", "nav_contact " + item.getItemId());
-////                if (Helper.isAppRunning(NewsHybridActivity.this, getPackageName())) {
-////                    // App is running
-////                    Log.d("apprunning", "1");
-////                } else {
-////                    // App is not running
-////                    Log.d("apprunning", "2");
-////                }
-                Toast.makeText(this, "目前什麼都沒有拉~", Toast.LENGTH_SHORT).show();
-//                Intent intent_ems = new Intent(NewsHybridActivity.this, MainActivity.class);
-//                startActivity(intent_ems);
+                Toast.makeText(this, "發送esm~", Toast.LENGTH_SHORT).show();;
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             default :
@@ -554,43 +546,38 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         }
     }
     private Notification getNotification_esm (String content) {
-        //replace content with time
         Date date = new Date(System.currentTimeMillis());
         String esm_id = "";
-        esm_id = String.valueOf(date);
+        @SuppressLint("SimpleDateFormat")
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         String time_now = formatter.format(date);
+        esm_id = time_now;
 
-        int nid = (int) System.currentTimeMillis();
-        Log.d("logesm", "esm id " + nid + " " + Timestamp.now());
         Intent intent_esm = new Intent();
-        intent_esm.setClass(NewsHybridActivity.this, ESMActivity.class);
-        intent_esm.putExtra("trigger_from", "Notification");
-        intent_esm.putExtra("status", "foreground");
+//        intent_esm.setClass(NewsHybridActivity.this, ESMActivity.class);
+        intent_esm.setClass(NewsHybridActivity.this, LoadingPageActivity.class);
         intent_esm.putExtra("esm_id", esm_id);
-        intent_esm.putExtra("noti_timestamp", Timestamp.now());
-        intent_esm.putExtra("type", "esm");
+        int nid = (int) System.currentTimeMillis();
         PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_esm, 0);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, DEFAULT_ESM_CHANNEL_ID);
         builder.setContentTitle("ESM");
         builder.setContentText("是時候填寫問卷咯~");
         builder.setSmallIcon(R.drawable.ic_launcher_foreground);
         builder.setContentIntent(pendingIntent);
         builder.setAutoCancel(true);
-        builder.setChannelId(NOTIFICATION_CHANNEL_ID);
-
+        builder.setChannelId(ESM_CHANNEL_ID);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        @SuppressLint("HardwareIds")
         String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         Map<String, Object> esm = new HashMap<>();
-        esm.put("noti_time", time_now);
         esm.put("noti_timestamp", Timestamp.now());
         db.collection("test_users")
                 .document(device_id)
-                .collection("esms")
+                .collection("push_esm")
                 .document(esm_id)
                 .set(esm);
-        return builder.build() ;
+        return builder.build();
     }
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void scheduleNotification_esm (Notification notification, int delay) {

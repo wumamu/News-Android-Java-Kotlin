@@ -123,6 +123,7 @@
         <activity android:name=".TestServiceActivity"
             android:theme="@style/AppThemeActionBar"/>
         <activity android:name=".TestDoubleBarActivity" />
+        <activity android:name=".LoadingPageActivity" />
 
 
 

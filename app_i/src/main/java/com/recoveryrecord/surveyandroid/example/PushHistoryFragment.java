@@ -107,7 +107,7 @@ public class PushHistoryFragment extends Fragment {
                         if (!queryDocumentSnapshots.isEmpty()) {
                             List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
                             for (DocumentSnapshot d : list) {
-                                if(d.getString("type").equals("add success")){
+                                if(d.getString("type").equals("target add")){
                                     NewsModel dataModal = d.toObject(NewsModel.class);
                                     dataModalArrayList.add(dataModal);
 //                                    Log.d("lognewsselect", "D!!!!!!!!!!!!!!!!!!!!!!!");

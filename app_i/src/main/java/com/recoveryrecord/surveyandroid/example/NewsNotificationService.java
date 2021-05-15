@@ -236,15 +236,14 @@ public class NewsNotificationService extends Service {
                         int count = 0;
                         for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
                             DocumentSnapshot documentSnapshot = dc.getDocument();
-                            count++;
                             switch (dc.getType()) {
                                 case ADDED:
                                     //add record
                                     Map<String, Object> record_noti = new HashMap<>();
                                     String news_id = "", media = "", title = "", doc_id = "";
 //                            if(count<20 && selections.contains(dc.getDocument().getString("media"))){
-                                    if(count<20){
-                                        if(selections.contains(dc.getDocument().getString("media"))){
+                                    if(selections.contains(dc.getDocument().getString("media"))){
+                                        if(count<20){
                                             Log.d("lognewsselect", "New doc: " + dc.getDocument().getData());
                                             news_id = dc.getDocument().getString("id");
                                             media  = dc.getDocument().getString("media");
@@ -252,12 +251,16 @@ public class NewsNotificationService extends Service {
                                             doc_id = dc.getDocument().getId();
                                             scheduleNotification(getNotification(news_id, media, title), 1000 );
                                             Log.d("lognewsselect", "doc id" + doc_id);
-                                            record_noti.put("type", "add success");
+                                            record_noti.put("type", "target add");
+                                            record_noti.put("click", 0);
+                                            count++;
                                         } else {
-                                            record_noti.put("type", "not select");
+                                            record_noti.put("type", "target too much");
+                                            record_noti.put("click", 2);
                                         }
                                     } else {
-                                        record_noti.put("type", "too much");
+                                        record_noti.put("type", "not target");
+                                        record_noti.put("click", 3);
                                     }
                                     record_noti.put("media", dc.getDocument().getString("media"));
                                     record_noti.put("title", dc.getDocument().getString("news_title"));
@@ -265,12 +268,12 @@ public class NewsNotificationService extends Service {
                                     record_noti.put("pubdate", dc.getDocument().getTimestamp("pubdate"));
                                     record_noti.put("noti_timestamp", Timestamp.now());
                                     record_noti.put("selections", Arrays.toString(new Set[]{selections}));
-                                    record_noti.put("click", false);
+
 
                                     db.collection("test_users")
                                             .document(device_id)
                                             .collection("push_news")
-                                            .document(String.valueOf(Timestamp.now()))
+                                            .document(news_id)
                                             .set(record_noti);
                                     //before delete
                                     db.collection("test_users").document(device_id).collection("compare_result").document(dc.getDocument().getId())
@@ -437,7 +440,7 @@ public class NewsNotificationService extends Service {
         Intent intent_news = new Intent();
         intent_news.setClass(this, NewsModuleActivity.class);
         intent_news.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent_news.putExtra("trigger_from", "Notification");
+        intent_news.putExtra("trigger_by", "Notification");
         intent_news.putExtra("news_id", news_id);
         intent_news.putExtra("media", media);
 //        intent_news.putExtra("media", "Notification");

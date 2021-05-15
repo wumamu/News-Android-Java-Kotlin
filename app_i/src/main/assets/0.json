@@ -2,7 +2,7 @@
   "questions": [
     {
       "id": "base_1",
-      "header": "Question base_1(1)(>1閱讀紀錄)",
+      "header": "Question base_1(1)(無閱讀紀錄)",
       "question": "請問您最近30分鐘內有印象在Time_Me上閱讀新聞嗎？",
       "question_type": "single_select",
       "options": [
@@ -1159,8 +1159,8 @@
       }
     },
     {
-      "id": "add_0",
-      "header": "Question add_0(2_1)",
+      "id": "base_2_1",
+      "header": "Question base_2_1(2_1)",
       "question": "您對於「某某news title」這篇新聞，是否曾有印象閱讀過，且未看過其它媒體或平台「引用相同新聞稿，闡述字句幾乎相同」的新聞？",
       "question_type": "single_select",
       "options": [
@@ -1171,31 +1171,6 @@
         "id": "base_1",
         "operation": "equals",
         "value": "有"
-      }
-    },
-    {
-      "id": "add_1",
-      "header": "Question add_1(2_2)",
-      "question": "您對於「某某news title」這篇新聞，是否曾有印象閱讀過，且未看過其它媒體或平台「引用相同新聞稿，闡述字句幾乎相同」的新聞？",
-      "question_type": "single_select",
-      "options": [
-        "有印象，且沒看過相同的新聞",
-        "沒有印象或有看過相同的新聞"
-      ],
-      "show_if": {
-        "operation": "and",
-        "subconditions": [
-          {
-            "id": "add_0",
-            "operation": "equals",
-            "value": "沒有印象或有看過相同的新聞"
-          },
-          {
-            "id": "base_1",
-            "operation": "equals",
-            "value": "有"
-          }
-        ]
       }
     },
     {
@@ -1215,12 +1190,7 @@
             "value": "有"
           },
           {
-            "id": "add_0",
-            "operation": "equals",
-            "value": "沒有印象或有看過相同的新聞"
-          },
-          {
-            "id": "add_1",
+            "id": "base_2_1",
             "operation": "equals",
             "value": "沒有印象或有看過相同的新聞"
           }
@@ -2499,15 +2469,15 @@
         "確定"
       ],
       "show_if": {
-        "operation": "or",
+        "operation": "and",
         "subconditions": [
           {
-            "id": "add_0",
+            "id": "base_1",
             "operation": "equals",
-            "value": "有印象，且沒看過相同的新聞"
+            "value": "有"
           },
           {
-            "id": "add_1",
+            "id": "base_2_1",
             "operation": "equals",
             "value": "有印象，且沒看過相同的新聞"
           }

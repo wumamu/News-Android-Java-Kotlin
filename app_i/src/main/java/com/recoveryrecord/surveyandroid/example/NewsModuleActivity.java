@@ -331,10 +331,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         //check trigger from #######################################################################
         if (getIntent().getExtras() != null) {
             Bundle b = getIntent().getExtras();
-            myReadingBehavior.setKEY_TRIGGER_BY(b.getString("trigger_from"));
-            if(myReadingBehavior.getKEY_TRIGGER_BY().equals("self_trigger")){
-                self_trigger = true;
-            }
+
             if (b.getString("news_id")!= null){
                 news_id = b.getString("news_id");
             }
@@ -342,7 +339,31 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                 media_name = b.getString("media");
                 media = media_name;
             }
-
+            if(b.getString("trigger_by")!=null){
+                myReadingBehavior.setKEY_TRIGGER_BY(b.getString("trigger_by"));
+            }
+            if(myReadingBehavior.getKEY_TRIGGER_BY().equals("self_trigger")){
+                self_trigger = true;
+            } else {
+                //mark as click (push news)
+                db.collection("test_users")
+                        .document(device_id)
+                        .collection("push_news")
+                        .document(news_id)
+                        .update("click", 1)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d("lognewsselect", "mark as click successfully updated!");
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w("lognewsselect", "mark as click Error updating document", e);
+                            }
+                        });
+            }
         }
         Log.d("log: trigger_by", myReadingBehavior.getKEY_TRIGGER_BY());
         Log.d("log: news_id", news_id);

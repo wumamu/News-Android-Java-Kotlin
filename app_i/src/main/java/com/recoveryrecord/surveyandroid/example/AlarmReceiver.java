@@ -99,34 +99,18 @@ public class AlarmReceiver extends BroadcastReceiver {
     @SuppressLint("HardwareIds")
     private Notification getNotification_esm(Context context, String content) throws JSONException {
 
-        //replace content with time
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-        String LastSelectedNewsTitle = sharedPrefs.getString("LastSelectedNewsTitle", "");
-//        String LastSelectedNewsTitle = select_news();
-        Log.d("lognewsselect", "getNotification_esm() " + LastSelectedNewsTitle);
-        String json_file_name = "3.json";
-//        if (!LastSelectedNewsTitle.equals("zero_result")){
-//            json_file_name = createEsmJson(LastSelectedNewsTitle);
-//        }
         Date date = new Date(System.currentTimeMillis());
         String esm_id = "";
-//        esm_id = String.valueOf(date);
-//        long esm_id = Timestamp.now().getSeconds();
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         String time_now = formatter.format(date);
         esm_id = time_now;
-        int nid = (int) System.currentTimeMillis();
-        Log.d("logesm", "esm id " + nid + " " + Timestamp.now());
+
         Intent intent_esm = new Intent();
-        intent_esm.setClass(context, ESMActivity.class);
-        intent_esm.putExtra("trigger_from", "Notification");
-        intent_esm.putExtra("status", "foreground");
+//        intent_esm.setClass(NewsHybridActivity.this, ESMActivity.class);
+        intent_esm.setClass(context, LoadingPageActivity.class);
         intent_esm.putExtra("esm_id", esm_id);
-        intent_esm.putExtra("type", "esm");
-//        intent_esm.putExtra("json_file_name", "t123.json");
-        intent_esm.putExtra("json_file_name", json_file_name);
-        intent_esm.putExtra("noti_timestamp", Timestamp.now());
+        int nid = (int) System.currentTimeMillis();
         PendingIntent pendingIntent = PendingIntent.getActivity(context, nid, intent_esm, 0);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, DEFAULT_ESM_CHANNEL_ID);
         builder.setContentTitle("ESM");
@@ -136,18 +120,16 @@ public class AlarmReceiver extends BroadcastReceiver {
         builder.setAutoCancel(true);
         builder.setChannelId(ESM_CHANNEL_ID);
 
-        device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
         Map<String, Object> esm = new HashMap<>();
-        esm.put("noti_time", time_now);
-        esm.put("target_news", LastSelectedNewsTitle);
         esm.put("noti_timestamp", Timestamp.now());
         db.collection("test_users")
                 .document(device_id)
-                .collection("esms")
+                .collection("push_esm")
                 .document(esm_id)
                 .set(esm);
-        return builder.build() ;
+        return builder.build();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
