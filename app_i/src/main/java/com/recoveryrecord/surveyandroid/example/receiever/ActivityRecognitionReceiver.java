@@ -60,12 +60,12 @@ final Timestamp current_end = Timestamp.now();
     final String time_now = formatter.format(date);
     @Override
     protected void onHandleIntent(Intent intent) {
-        Handler handler = new Handler(Looper.getMainLooper());
-        handler.post(new Runnable(){
-            public void run(){
+//        Handler handler = new Handler(Looper.getMainLooper());
+//        handler.post(new Runnable(){
+//            public void run(){
 //                Toast.makeText(getApplicationContext(), "OnHandleIntent", Toast.LENGTH_LONG).show();
-            }
-        });
+//            }
+//        });
         device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
         Map<String, Object> sensordb = new HashMap<>();
@@ -96,7 +96,7 @@ final Timestamp current_end = Timestamp.now();
         for (final DetectedActivity activity : probableActivities) {
             handler.post(new Runnable(){
                 public void run(){
-                    Toast.makeText(getApplicationContext(), "開始偵測", Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getApplicationContext(), "開始偵測", Toast.LENGTH_LONG).show();
                 }
             });
             switch (activity.getType()) {
@@ -106,7 +106,7 @@ final Timestamp current_end = Timestamp.now();
                     ref.update("Activity Recognition 1", "In Vehicle: " + activity.getConfidence());
                     handler.post(new Runnable(){
                         public void run(){
-                            Toast.makeText(getApplicationContext(), "在坐車啦" + activity.getConfidence(), Toast.LENGTH_LONG).show();
+//                            Toast.makeText(getApplicationContext(), "在坐車啦" + activity.getConfidence(), Toast.LENGTH_LONG).show();
                         }
                     });
                     break;
@@ -117,7 +117,7 @@ final Timestamp current_end = Timestamp.now();
 //                    sensordb.put("ActivityRecognition", "On Bicycle: " + activity.getConfidence());
                     handler.post(new Runnable(){
                         public void run(){
-                            Toast.makeText(getApplicationContext(), "騎腳踏車啦" + activity.getConfidence(), Toast.LENGTH_LONG).show();
+//                            Toast.makeText(getApplicationContext(), "騎腳踏車啦" + activity.getConfidence(), Toast.LENGTH_LONG).show();
                         }
                     });
                     break;
@@ -128,7 +128,7 @@ final Timestamp current_end = Timestamp.now();
 //                    sensordb.put("ActivityRecognition", "On Foot: " + activity.getConfidence());
                     handler.post(new Runnable(){
                         public void run(){
-                            Toast.makeText(getApplicationContext(), "走路啦" + activity.getConfidence(), Toast.LENGTH_LONG).show();
+//                            Toast.makeText(getApplicationContext(), "走路啦" + activity.getConfidence(), Toast.LENGTH_LONG).show();
                         }
                     });
                     break;
@@ -139,7 +139,7 @@ final Timestamp current_end = Timestamp.now();
 //                    sensordb.put("ActivityRecognition", "Running: " + activity.getConfidence());
                     handler.post(new Runnable(){
                         public void run(){
-                            Toast.makeText(getApplicationContext(), "跑步啦" + activity.getConfidence(), Toast.LENGTH_LONG).show();
+//                            Toast.makeText(getApplicationContext(), "跑步啦" + activity.getConfidence(), Toast.LENGTH_LONG).show();
                         }
                     });
                     break;
@@ -151,7 +151,7 @@ final Timestamp current_end = Timestamp.now();
 //                    sensordb.put("ActivityRecognition", "Still: " + activity.getConfidence());
                     handler.post(new Runnable(){
                         public void run(){
-                            Toast.makeText(getApplicationContext(), "靜止不動啦" + activity.getConfidence(), Toast.LENGTH_LONG).show();
+//                            Toast.makeText(getApplicationContext(), "靜止不動啦" + activity.getConfidence(), Toast.LENGTH_LONG).show();
                         }
                     });
                     NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
@@ -168,7 +168,7 @@ final Timestamp current_end = Timestamp.now();
 //                    sensordb.put("ActivityRecognition", "Tilting: " + activity.getConfidence());
                     handler.post(new Runnable(){
                         public void run(){
-                            Toast.makeText(getApplicationContext(), "傾斜的啦" + activity.getConfidence(), Toast.LENGTH_LONG).show();
+//                            Toast.makeText(getApplicationContext(), "傾斜的啦" + activity.getConfidence(), Toast.LENGTH_LONG).show();
                         }
                     });
                     break;
@@ -179,7 +179,7 @@ final Timestamp current_end = Timestamp.now();
 //                    sensordb.put("ActivityRecognition", "Walking: " + activity.getConfidence());
                     handler.post(new Runnable(){
                         public void run(){
-                            Toast.makeText(getApplicationContext(), "又是走路啦" + activity.getConfidence(), Toast.LENGTH_LONG).show();
+//                            Toast.makeText(getApplicationContext(), "又是走路啦" + activity.getConfidence(), Toast.LENGTH_LONG).show();
                         }
                     });
                     break;
@@ -190,7 +190,7 @@ final Timestamp current_end = Timestamp.now();
 //                    sensordb.put("ActivityRecognition", "Unknown: " + activity.getConfidence());
                     handler.post(new Runnable(){
                         public void run(){
-                            Toast.makeText(getApplicationContext(), "不知道啦" + activity.getConfidence(), Toast.LENGTH_LONG).show();
+//                            Toast.makeText(getApplicationContext(), "不知道啦" + activity.getConfidence(), Toast.LENGTH_LONG).show();
                         }
                     });
                     break;

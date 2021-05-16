@@ -55,17 +55,17 @@ public class RingModeReceiver {
                 int mod = myAudioManager.getRingerMode();
                 if(mod == AudioManager.RINGER_MODE_NORMAL){
                     Log.e("log: Ring Mode", "NORMAL");
-                    Toast.makeText(context, "Ring Mode = NORMAL", Toast.LENGTH_LONG).show();
+//                    Toast.makeText(context, "Ring Mode = NORMAL", Toast.LENGTH_LONG).show();
                     sensordb.put("RingMode", "NORMAL");
                 }
                 else if(mod == AudioManager.RINGER_MODE_SILENT){
                     Log.e("log: Ring Mode", "SILENT");
-                    Toast.makeText(context, "Ring Mode = SILENT", Toast.LENGTH_LONG).show();
+//                    Toast.makeText(context, "Ring Mode = SILENT", Toast.LENGTH_LONG).show();
                     sensordb.put("RingMode", "SILENT");
                 }
                 else if(mod == AudioManager.RINGER_MODE_VIBRATE){
                     Log.e("log: Ring Mode", "VIBRATE");
-                    Toast.makeText(context, "Ring Mode = VIBRATE", Toast.LENGTH_LONG).show();
+//                    Toast.makeText(context, "Ring Mode = VIBRATE", Toast.LENGTH_LONG).show();
                     sensordb.put("RingMode", "VIBRATE");
                 }
                 db.collection("test_users")
