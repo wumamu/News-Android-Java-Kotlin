@@ -407,153 +407,6 @@ public class ESMActivity extends com.recoveryrecord.surveyandroid.SurveyActivity
         Log.d("lognewsselect", "select news finish################################# ");
     }
 
-//    public void foo(final Callback callback) {
-//        // make your method, which was previously returning something, return void, and add in the new callback interface.
-//        final FirebaseFirestore db = FirebaseFirestore.getInstance();
-//        @SuppressLint("HardwareIds")
-//        final String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-//        final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-//        final String[] SelectedNewsTitle = {""};
-//        final Long now = System.currentTimeMillis();
-//        final Calendar c = Calendar.getInstance();
-//        c.setTimeInMillis(now);
-//        task =     db.collection("test_users")
-//                .document(device_id)
-//                .collection("reading_behaviors")
-//                .whereEqualTo("select", false)
-//                .orderBy("out_timestamp", Query.Direction.DESCENDING)
-//                .get();
-//        task2 =     db.collection("test_users")
-//                .document(device_id)
-//                .collection("push_news")
-//                .whereEqualTo("click", 0)
-//                .orderBy("noti_timestamp", Query.Direction.DESCENDING)
-//                .get();
-////        db.collection("test_users")
-////                .document(device_id)
-////                .collection("reading_behaviors")
-////                .whereEqualTo("select", false)
-//////                .whereGreaterThanOrEqualTo("time_on_page(s)", 5)
-////                .orderBy("out_timestamp", Query.Direction.DESCENDING)
-////                .get()
-//        task.addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-//            @Override
-//            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-////                        List<String> news_title_array_add = new ArrayList<>();
-//                if (!queryDocumentSnapshots.isEmpty()) {
-//                    List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
-//                    for (DocumentSnapshot d : list) {
-//                        if(!(d.getString("title") ==null) && !d.getString("title").equals("NA")){
-//                            if (d.getDouble("time_on_page(s)")>=5) {
-//                                if (Math.abs(now/1000 - d.getTimestamp("in_timestamp").getSeconds()) <= ESM_TARGET_RANGE) {
-//                                    news_title_target_array.add(d.getString("title"));
-//                                    Log.d("lognewsselect", "task1 " + d.getString("title"));
-//                                }
-//                            }
-//                        }
-//
-//                        //mark as check
-//                        db.collection("test_users")
-//                                .document(device_id)
-//                                .collection("reading_behaviors")
-//                                .document(d.getId())
-//                                .update("select", true)
-//                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                    @Override
-//                                    public void onSuccess(Void aVoid) {
-//                                        Log.d("lognewsselect", "DocumentSnapshot successfully updated!");
-//                                    }
-//                                })
-//                                .addOnFailureListener(new OnFailureListener() {
-//                                    @Override
-//                                    public void onFailure(@NonNull Exception e) {
-//                                        Log.w("lognewsselect", "Error updating document", e);
-//                                    }
-//                                });
-//                    }
-//                }
-//                if(news_title_target_array.size()!=0){
-//                    String title_array = "";
-//                    for(int i = 0; i< news_title_target_array.size(); i++){
-//                        title_array+= news_title_target_array.get(i) + "#";
-//                    }
-////                            Random r=new Random();
-////                            int randomNumber=r.nextInt(news_title_array.size());
-////                            SelectedNewsTitle[0] = news_title_array.get(randomNumber);
-//                    SharedPreferences.Editor editor = sharedPrefs.edit();
-//                    editor.putString(READ_HISTORY_CANDIDATE, title_array);
-//                    editor.apply();
-//                    Log.d("lognewsselect", "@@@@@@@@@@@@@");
-//                } else {
-//                    SharedPreferences.Editor editor = sharedPrefs.edit();
-//                    editor.putString(READ_HISTORY_CANDIDATE, "zero_result");
-//                    editor.apply();
-//                }
-//            }
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//                Log.d("lognewsselect", String.valueOf(e));
-//                // if we do not get any data or any error we are displaying
-//                // a toast message that we do not get any data
-////                Toast.makeText(TestNewsOneActivity.this, "Fail to get the data.", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//
-//        task2.addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-//            @Override
-//            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-//                if (!queryDocumentSnapshots.isEmpty()) {
-//                    List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
-//                    for (DocumentSnapshot d : list) {
-//                        if (Math.abs(now/1000 - d.getTimestamp("noti_timestamp").getSeconds()) <= NOTIFICATION_TARGET_RANGE) {
-//                            notification_unclick_array.add(d.getString("title"));
-//                            Log.d("lognewsselect", "task2 " + d.getString("title"));
-//                        }
-//                        //mark as check
-//                        db.collection("test_users")
-//                                .document(device_id)
-//                                .collection("push_news")
-//                                .document(d.getId())
-//                                .update("click", 4)
-//                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                    @Override
-//                                    public void onSuccess(Void aVoid) {
-//                                        Log.d("lognewsselect", "DocumentSnapshot successfully updated!");
-//                                    }
-//                                })
-//                                .addOnFailureListener(new OnFailureListener() {
-//                                    @Override
-//                                    public void onFailure(@NonNull Exception e) {
-//                                        Log.w("lognewsselect", "Error updating document", e);
-//                                    }
-//                                });
-//                    }
-//                    if(notification_unclick_array.size()!=0){
-//                        String notification_unclick_string = "";
-//                        for(int i = 0; i< notification_unclick_array.size(); i++){
-//                            notification_unclick_string+= notification_unclick_array.get(i) + "#";
-//                        }
-//                        SharedPreferences.Editor editor = sharedPrefs.edit();
-//                        editor.putString(NOTIFICATION_UNCLICKED_CANDIDATE, notification_unclick_string);
-//                        editor.apply();
-//                    } else {
-//                        SharedPreferences.Editor editor = sharedPrefs.edit();
-//                        editor.putString(NOTIFICATION_UNCLICKED_CANDIDATE, "zero_result");
-//                        editor.apply();
-//                    }
-//                    callback.myResponseCallback("bar");
-//
-//                }
-//            }
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//                Log.d("lognewsselect", String.valueOf(e));
-//            }
-//        });
-//        Log.d("lognewsselect", "select news finish################################# ");
-//     }
 
     private String generate_esm_json(String read_news_title_array_string, String noti_news_title_array_string, String file_name) throws JSONException, InterruptedException {
         Log.d("lognewsselect", "generate_json START %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
@@ -613,11 +466,6 @@ public class ESMActivity extends com.recoveryrecord.surveyandroid.SurveyActivity
         } else {
             List<String> read_news_title_array_json = new ArrayList<String>(Arrays.asList(read_news_title_array_string.split("#")));
             List<String> noti_news_title_array_json = new ArrayList<String>(Arrays.asList(noti_news_title_array_string.split("#")));
-//            Log.d("lognewsselect", "news_title_array " + news_title_array_json);
-//            Log.d("lognewsselect", "news_title_array size " + news_title_array_json.size());
-//            Log.d("lognewsselect", "notification_unclick_array " + news_title_array_json);
-//            Log.d("lognewsselect", "notification_unclick_array size " + notification_unclick_array.size());
-
             JSONArray notifications_arr = new JSONArray();
             for (int x = 0; x< noti_news_title_array_json.size(); x++){
                 if(noti_news_title_array_json.get(0).equals("zero_result")){
@@ -800,13 +648,13 @@ public class ESMActivity extends com.recoveryrecord.surveyandroid.SurveyActivity
                     continue;
                 }
             }
-            Log.d("lognewsselect", "jsonRootObject" + jsonRootObject.toString());
-            Map<String, Object> record_noti = new HashMap<>();
-            record_noti.put("click", jsonRootObject.toString());
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            db.collection("123")
-                    .document(String.valueOf(Timestamp.now()))
-                    .set(record_noti);
+//            Log.d("lognewsselect", "jsonRootObject" + jsonRootObject.toString());
+//            Map<String, Object> record_noti = new HashMap<>();
+//            record_noti.put("click", jsonRootObject.toString());
+//            FirebaseFirestore db = FirebaseFirestore.getInstance();
+//            db.collection("123")
+//                    .document(String.valueOf(Timestamp.now()))
+//                    .set(record_noti);
             File file;
             file = new File(getFilesDir(),"test.json");
 //            file = new File(getFilesDir(),"test.json");

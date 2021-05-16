@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -83,6 +84,8 @@ import javax.annotation.Nullable;
 
 import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_CHANNEL_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_CHANNEL_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TIME_OUT;
+import static com.recoveryrecord.surveyandroid.example.Constants.VIBRATE_EFFECT;
 
 //public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener , GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
@@ -492,12 +495,6 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 Intent intent_notih = new Intent(NewsHybridActivity.this, PushHistoryActivity.class);
                 startActivity(intent_notih);
                 drawerLayout.closeDrawer(GravityCompat.START);
-//                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 1000 );
-////                Toast.makeText(this, "開始每小時固定發送esm~", Toast.LENGTH_LONG).show();
-//                Toast.makeText(this, "發送esm~", Toast.LENGTH_SHORT).show();
-////                Intent intent_base = new Intent(NewsAllActivity.this, TestBasicActivity.class);
-////                startActivity(intent_base);
-//                drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             case R.id.nav_contact :
                 scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 1000 );
@@ -545,6 +542,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
             }, 2000);
         }
     }
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private Notification getNotification_esm (String content) {
         Date date = new Date(System.currentTimeMillis());
         String esm_id = "";
@@ -566,12 +564,21 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         builder.setContentIntent(pendingIntent);
         builder.setAutoCancel(true);
         builder.setChannelId(ESM_CHANNEL_ID);
+        builder.setVibrate(VIBRATE_EFFECT);              //震動模式
+        builder.setTimeoutAfter(ESM_TIME_OUT);           //自動消失 15*60*1000
+        builder.setPriority(NotificationManager.IMPORTANCE_MAX);
+        builder.setCategory(Notification.CATEGORY_REMINDER);
+        Bundle extras = new Bundle();
+        extras.putString("id", esm_id);
+        extras.putString("type", "esm");
+        builder.setExtras(extras);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         @SuppressLint("HardwareIds")
         String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         Map<String, Object> esm = new HashMap<>();
         esm.put("noti_timestamp", Timestamp.now());
+        esm.put("sample", 0);
         db.collection("test_users")
                 .document(device_id)
                 .collection("push_esm")

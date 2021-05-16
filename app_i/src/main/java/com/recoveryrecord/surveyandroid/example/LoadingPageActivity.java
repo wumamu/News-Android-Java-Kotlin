@@ -15,19 +15,20 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.text.SimpleDateFormat;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -45,11 +46,15 @@ import static com.recoveryrecord.surveyandroid.example.Constants.READ_HISTORY_CA
 public class LoadingPageActivity extends AppCompatActivity {
     private Button button;
     String output_file_name = "2.json";
-    Task task, task2;
+    Task task, task2, task3;
     Boolean finish = false;
     String esm_id = "";
     List<String> news_title_target_array = new ArrayList<>();
     List<String> notification_unclick_array = new ArrayList<>();
+    String result_json = "";
+    String sample_title = "";
+    String target_read_title = "NA";
+    List<String> sample_read_Array = new ArrayList<>();
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +74,7 @@ public class LoadingPageActivity extends AppCompatActivity {
         });
     }
 
+
     public void openESM() {
         Intent intent_esm = new Intent();
         intent_esm.setClass(this, ESMActivity.class);
@@ -83,6 +89,7 @@ public class LoadingPageActivity extends AppCompatActivity {
         String NotiNewTitle = sharedPrefs.getString(NOTIFICATION_UNCLICKED_CANDIDATE, "zero_result");
         final List<String> noti_news_title_array_json = new ArrayList<String>(Arrays.asList(NotiNewTitle.split("#")));
         final List<String> read_news_title_array_json = new ArrayList<String>(Arrays.asList(ReadNewsTitle.split("#")));
+
         @SuppressLint("HardwareIds")
         String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         if (!esm_id.equals("")){
@@ -94,7 +101,12 @@ public class LoadingPageActivity extends AppCompatActivity {
                         DocumentSnapshot document = task.getResult();
                         assert document != null;
                         if (document.exists()) {
-                            rbRef.update( "ReadNewsTitle", read_news_title_array_json, "NotiNewTitle", noti_news_title_array_json)//another field
+//                            int sample = 0;
+//                            if(!read_news_title_array_json.get(0).equals("zero_result")){
+//                                sample = 1;
+//                            }
+                            rbRef.update("ReadNewsTitle", read_news_title_array_json,
+                                    "NotiNewTitle", noti_news_title_array_json)//another field
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
@@ -125,17 +137,16 @@ public class LoadingPageActivity extends AppCompatActivity {
         @SuppressLint("HardwareIds")
         final String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        final String[] SelectedNewsTitle = {""};
         final Long now = System.currentTimeMillis();
         final Calendar c = Calendar.getInstance();
         c.setTimeInMillis(now);
-        task =     db.collection("test_users")
+        task =   db.collection("test_users")
                 .document(device_id)
                 .collection("reading_behaviors")
                 .whereEqualTo("select", false)
                 .orderBy("out_timestamp", Query.Direction.DESCENDING)
                 .get();
-        task2 =     db.collection("test_users")
+        task2 =  db.collection("test_users")
                 .document(device_id)
                 .collection("push_news")
                 .whereEqualTo("click", 0)

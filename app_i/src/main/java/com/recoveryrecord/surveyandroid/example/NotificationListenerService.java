@@ -12,6 +12,12 @@ import android.service.notification.StatusBarNotification;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import com.google.firebase.Timestamp;
@@ -24,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
@@ -200,24 +207,77 @@ public class NotificationListenerService extends android.service.notification.No
                     db.collection("compare")
                             .document(formatter.format(date))
                             .set(receieve_notification);
-                    Toast.makeText(getApplicationContext(), "compare Inserted Successfully", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getApplicationContext(), "compare Inserted Successfully", Toast.LENGTH_SHORT).show();
                 }
                 db.collection("test_users")
                         .document(device_id)
                         .collection(document_name)
                         .document(formatter.format(date))
                         .set(receieve_notification);
-                Toast.makeText(getApplicationContext(), "firebase Inserted Successfully", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "firebase Inserted Successfully", Toast.LENGTH_SHORT).show();
 //                Log.d("checking", "55");
             }
 
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
         Log.i(TAG,"********** onNOtificationRemoved");
         Log.i(TAG, java.text.DateFormat.getDateTimeInstance().format(new Date()) + "\t" + "\t" + sbn.getPackageName());
+        final Timestamp current_now = Timestamp.now();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        @SuppressLint("HardwareIds")
+        String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        if(sbn.getPackageName().equals("com.recoveryrecord.surveyandroid")){
+            Bundle extras = sbn.getNotification().extras;
+            String type = Objects.requireNonNull(extras.getString("type"));
+            String doc_id = Objects.requireNonNull(extras.getString("id"));
+            String collection_id = "";
+            if(type.equals("esm")){
+                collection_id = "push_esm";
+            } else if(type.equals("news")){
+                collection_id = "push_diary";
+            } else if(type.equals("diary")){
+                collection_id = "push_news";
+            }
+
+            if(!collection_id.equals("")){
+                final DocumentReference rbRef = db.collection("test_users").document(device_id).collection("push_esm").document(doc_id);
+                rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            assert document != null;
+                            if (document.exists()) {
+                                rbRef.update( "remove_timestamp", current_now)//another field
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Log.d("lognewsselect", "DocumentSnapshot successfully updated!");
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.w("lognewsselect", "Error updating document", e);
+                                            }
+                                        });
+                            } else {
+                                Log.d("lognewsselect", "No such document");
+                            }
+                        } else {
+                            Log.d("lognewsselect", "get failed with ", task.getException());
+                        }
+                    }
+                });
+            }
+
+
+        }
+
     }
 
     class NotificationListenerServiceReceiver extends BroadcastReceiver{

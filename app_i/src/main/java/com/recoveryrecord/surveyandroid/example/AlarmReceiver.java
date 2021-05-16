@@ -3,12 +3,14 @@ package com.recoveryrecord.surveyandroid.example;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.util.Log;
@@ -32,6 +34,8 @@ import androidx.preference.PreferenceManager;
 import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_CHANNEL_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_CHANNEL_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_INTERVAL;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TIME_OUT;
+import static com.recoveryrecord.surveyandroid.example.Constants.VIBRATE_EFFECT;
 
 public class AlarmReceiver extends BroadcastReceiver {
     //temp for notification
@@ -96,6 +100,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @SuppressLint("HardwareIds")
     private Notification getNotification_esm(Context context, String content) throws JSONException {
 
@@ -119,11 +124,20 @@ public class AlarmReceiver extends BroadcastReceiver {
         builder.setContentIntent(pendingIntent);
         builder.setAutoCancel(true);
         builder.setChannelId(ESM_CHANNEL_ID);
+        builder.setVibrate(VIBRATE_EFFECT);              //震動模式
+        builder.setTimeoutAfter(ESM_TIME_OUT);           //自動消失 15*60*1000
+        builder.setPriority(NotificationManager.IMPORTANCE_MAX);
+        builder.setCategory(Notification.CATEGORY_REMINDER);
+        Bundle extras = new Bundle();
+        extras.putString("id", esm_id);
+        extras.putString("type", "esm");
+        builder.setExtras(extras);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
         Map<String, Object> esm = new HashMap<>();
         esm.put("noti_timestamp", Timestamp.now());
+        esm.put("sample", 0);
         db.collection("test_users")
                 .document(device_id)
                 .collection("push_esm")

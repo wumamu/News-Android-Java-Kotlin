@@ -2,8 +2,10 @@ package com.recoveryrecord.surveyandroid.viewholder;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
@@ -27,16 +29,29 @@ import com.recoveryrecord.surveyandroid.R;
 import com.recoveryrecord.surveyandroid.SubmitSurveyHandler;
 import com.recoveryrecord.surveyandroid.question.QuestionsWrapper.SubmitData;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 public class SubmitViewHolder extends RecyclerView.ViewHolder {
 
     private Button submitButton;
+
+    String result_json = "";
+    String sample_title = "";
+    String target_read_title = "NA";
+    List<String> sample_read_Array = new ArrayList<>();
+
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     public SubmitViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -50,9 +65,6 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 submitSurveyHandler.submit(submitData.url, answerProvider.allAnswersJson());
-                // [START add_ada_lovelace]
-                final Timestamp current = Timestamp.now();
-
                 String device_id = Settings.Secure.getString(((Activity)v.getContext()).getContentResolver(), Settings.Secure.ANDROID_ID);
                 String esm_id = "";
                 if (((Activity)v.getContext()).getIntent().getExtras() != null) {
@@ -60,6 +72,58 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                     esm_id = Objects.requireNonNull(b.getString("esm_id"));
 //                    Log.d("logesm", String.valueOf(456));
                 }
+                result_json = answerProvider.allAnswersJson();
+                DocumentReference docRef = db.collection("test_users").document(device_id).collection("push_esm").document(esm_id);
+                docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>(){
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                if(document.get("ReadNewsTitle")!=null){
+                                    sample_read_Array = (List<String>) document.get("ReadNewsTitle");
+                                    if(!sample_read_Array.get(0).equals("zero_result")){
+                                        try {
+                                            assert result_json != null;
+                                            JSONObject jsonRootObject = new JSONObject(result_json);
+                                            JSONObject jsonAnswerObject = jsonRootObject.getJSONObject("answers");
+                                            Iterator<String> keys = jsonAnswerObject.keys();
+                                            while(keys.hasNext()) {
+                                                String key = keys.next();
+                                                try {
+                                                    if(jsonAnswerObject.get(key).equals("有印象，且沒看過相同的新聞")){
+                                                        List<String> add_what = new ArrayList<String>(Arrays.asList(key.split("_")));
+                                                        target_read_title = sample_read_Array.get(Integer.parseInt(add_what.get(1)));
+
+//                                                        SharedPreferences.Editor editor = sharedPrefs.edit();
+//                                                        editor.putString(TARGET_NEWS_TITLE, title_array);
+//                                                        editor.apply();
+                                                        break;
+                                                    }
+                                                } catch (JSONException e) {
+                                                    // Something went wrong!
+                                                }
+                                            }
+                                            Log.d("lognewsselect", "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$finish");
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    } else {
+                                        Log.d("lognewsselect", "document.get(\"ReadNewsTitle\")==zero_result");
+                                    }
+                                } else {
+                                    Log.d("lognewsselect", "document.get(\"ReadNewsTitle\")==null");
+                                }
+                            } else {
+                                Log.d("lognewsselect", "No such document");
+                            }
+                        } else {
+                            Log.d("lognewsselect", "get failed with ", task.getException());
+                        }
+                    }
+                });
+
+                final Timestamp current = Timestamp.now();
                 final DocumentReference rbRef = db.collection("test_users").document(device_id).collection("push_esm").document(esm_id);
                 rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -67,8 +131,14 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
                             if (document.exists()) {
-                                rbRef.update("submit_timestamp", current,
-                                        "result", answerProvider.allAnswersJson())//another field
+                                int sample = 1;
+                                if(!target_read_title.equals("NA")){
+                                    sample = 2;
+                                }
+                                rbRef.update("sample", sample,
+                                        "target_read_title", target_read_title,
+                                        "submit_timestamp", current,
+                                        "result", result_json)//another field
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
