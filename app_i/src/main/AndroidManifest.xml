@@ -21,10 +21,12 @@
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/>
     <!-- permission required to automatically restart a repeating alarm if the user reboots the device -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
+
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
 
 
     <application
@@ -179,6 +181,7 @@
             android:enabled="true">
         </service>
         <service android:name=".receiever.ActivityRecognitionReceiver"/>
+        <service android:name=".receiever.AppUsageReceiver" />
     </application>
 
 </manifest>

@@ -44,6 +44,7 @@ import com.recoveryrecord.surveyandroid.example.ebc.EbcMainFragment;
 import com.recoveryrecord.surveyandroid.example.ettoday.EttodayMainFragment;
 import com.recoveryrecord.surveyandroid.example.ltn.LtnMainFragment;
 import com.recoveryrecord.surveyandroid.example.receiever.ActivityRecognitionReceiver;
+import com.recoveryrecord.surveyandroid.example.receiever.AppUsageReceiver;
 import com.recoveryrecord.surveyandroid.example.receiever.BlueToothReceiver;
 import com.recoveryrecord.surveyandroid.example.receiever.NetworkChangeReceiver;
 import com.recoveryrecord.surveyandroid.example.receiever.RingModeReceiver;
@@ -61,6 +62,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -331,7 +333,9 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 builder.show();
             }
         }
-        //TopTask
+
+        //AppUsage
+        startService(new Intent(getApplicationContext(), AppUsageReceiver.class));
 
 
     }
