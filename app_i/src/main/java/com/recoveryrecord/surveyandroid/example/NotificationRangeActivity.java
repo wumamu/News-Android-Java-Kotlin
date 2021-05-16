@@ -73,9 +73,9 @@ import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 //import android.support.v7.app.AppCompatActivity;
@@ -84,11 +84,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 
 import java.text.SimpleDateFormat;
@@ -97,18 +95,28 @@ import java.util.Locale;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.preference.PreferenceManager;
+
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_END_TIME_HOUR;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_END_TIME_MIN;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_SET_ONCE;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_START_TIME_HOUR;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_START_TIME_MIN;
 
 public class NotificationRangeActivity extends AppCompatActivity {
 
     String TAG = "RemindMe";
     LocalData localData;
+    Boolean set_once = false;
 
     SwitchCompat reminderSwitch;
-    TextView tvTime;
+    TextView tvTime, ee_tvTime;
 
     LinearLayout ll_set_time, ll_terms;
+    LinearLayout ee_set_time, ee_terms;
 
-    int hour, min;
+    int s_hour, s_min;
+    int e_hour, e_min;
 
 //    ClipboardManager myClipboard;
 
@@ -117,34 +125,68 @@ public class NotificationRangeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification_range);
-
+        final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        set_once = sharedPrefs.getBoolean(ESM_SET_ONCE, false);
         localData = new LocalData(getApplicationContext());
         ll_set_time = (LinearLayout) findViewById(R.id.ll_set_time);
+        ee_set_time = (LinearLayout) findViewById(R.id.ee_set_time);
         tvTime = (TextView) findViewById(R.id.tv_reminder_time_desc);
-        Button button_s = (Button) findViewById(R.id.button_s);
+        ee_tvTime = (TextView) findViewById(R.id.ee_tv_reminder_time_desc);
+        final Button button_s = (Button) findViewById(R.id.button_s);
         button_s.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SharedPreferences.Editor editor = sharedPrefs.edit();
+                editor.putBoolean(ESM_SET_ONCE, true);
+                editor.apply();
                 AlarmManager alarmManager = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
                 Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
                 alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),10 * 60 * 1000, pendingIntent);
                 Log.d("lognewsselect", "onClick");
+                ll_set_time.setAlpha(1);
+                ee_set_time.setAlpha(1);
+                button_s.setEnabled(false);
             }
         });
-        hour = localData.get_hour();
-        min = localData.get_min();
+//        hour = localData.get_hour();
+//        min = localData.get_min();
 
-        tvTime.setText(getFormatedTime(hour, min));
-
-
-        if (!localData.getReminderStatus())
+        s_hour = sharedPrefs.getInt(ESM_START_TIME_HOUR, 9);
+        e_hour = sharedPrefs.getInt(ESM_END_TIME_HOUR, 21);
+        s_min = sharedPrefs.getInt(ESM_START_TIME_MIN, 0);
+        e_min = sharedPrefs.getInt(ESM_END_TIME_MIN, 0);
+        tvTime.setText(getFormatedTime(s_hour, s_min, true));
+        ee_tvTime.setText(getFormatedTime(e_hour, e_min, false));
+        if(!set_once){
+            //not set
             ll_set_time.setAlpha(0.4f);
+            ee_set_time.setAlpha(0.4f);
+        } else {
+            button_s.setEnabled(false);
+        }
+
+//        if (!localData.getReminderStatus()){
+
+//        }
+
 
         ll_set_time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showTimePickerDialog(localData.get_hour(), localData.get_min());
+                if(!set_once){
+                    showTimePickerDialog(localData.get_hour(), localData.get_min(), true);
+                    Log.d("lognewsselect", "onClick ");
+                }
+            }
+        });
+        ee_set_time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!set_once){
+                    showTimePickerDialog(localData.get_hour(), localData.get_min(), false);
+                    Log.d("lognewsselect", "onClick ");
+                }
             }
         });
 
@@ -153,7 +195,7 @@ public class NotificationRangeActivity extends AppCompatActivity {
     }
 
 
-    private void showTimePickerDialog(int h, int m) {
+    private void showTimePickerDialog(int h, int m, final boolean s_or_e) {
 
         LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.timepicker_header, null);
@@ -164,12 +206,13 @@ public class NotificationRangeActivity extends AppCompatActivity {
                     public void onTimeSet(TimePicker timePicker, int hour, int min) {
                         Log.d(TAG, "onTimeSet: hour " + hour);
                         Log.d(TAG, "onTimeSet: min " + min);
-                        localData.set_hour(hour);
-                        localData.set_min(min);
-                        tvTime.setText(getFormatedTime(hour, min));
-//                        NotificationScheduler.setReminder(NotificationRangeActivity.this, TAlarmReceiver.class, localData.get_hour(), localData.get_min());
-
-
+//                        localData.set_hour(hour);
+//                        localData.set_min(min);
+                        if(s_or_e){
+                            tvTime.setText(getFormatedTime(hour, min, s_or_e));
+                        } else {
+                            ee_tvTime.setText(getFormatedTime(hour, min, s_or_e));
+                        }
                     }
                 }, h, m, false);
 
@@ -178,7 +221,7 @@ public class NotificationRangeActivity extends AppCompatActivity {
 
     }
 
-    public String getFormatedTime(int h, int m) {
+    public String getFormatedTime(int h, int m, boolean s_e) {
         final String OLD_FORMAT = "HH:mm";
         final String NEW_FORMAT = "hh:mm a";
 
@@ -193,6 +236,17 @@ public class NotificationRangeActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        if(s_e){
+            editor.putInt(ESM_START_TIME_HOUR, h);
+            editor.putInt(ESM_START_TIME_MIN, m);
+        } else {
+            editor.putInt(ESM_END_TIME_HOUR, h);
+            editor.putInt(ESM_END_TIME_MIN, m);
+        }
+        editor.apply();
+
 
         return newDateString;
     }

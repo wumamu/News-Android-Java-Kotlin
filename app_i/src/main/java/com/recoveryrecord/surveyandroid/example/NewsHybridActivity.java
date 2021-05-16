@@ -456,8 +456,9 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     }
     private void showStartDialog() {
         new AlertDialog.Builder(this)
-                .setTitle("注意事項")
-                .setMessage("1.帳號設定把通知存取打開\n2.帳號設定可以調整首頁媒體排序喔~\n3.帳號設定選擇想要收到推播的媒體吧~")
+                .setTitle("注意事項(必做)")
+//                .setMessage("1.帳號設定把通知存取打開\n2.帳號設定可以調整首頁媒體排序喔~\n3.帳號設定選擇想要收到推播的媒體吧~")
+                .setMessage("去帳號設定\n1.把通知存取打開\n2.問卷推播時間設定並按儲存~")
                 .setPositiveButton("ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

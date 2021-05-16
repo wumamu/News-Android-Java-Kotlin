@@ -94,10 +94,6 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                                                     if(jsonAnswerObject.get(key).equals("有印象，且沒看過相同的新聞")){
                                                         List<String> add_what = new ArrayList<String>(Arrays.asList(key.split("_")));
                                                         target_read_title = sample_read_Array.get(Integer.parseInt(add_what.get(1)));
-
-//                                                        SharedPreferences.Editor editor = sharedPrefs.edit();
-//                                                        editor.putString(TARGET_NEWS_TITLE, title_array);
-//                                                        editor.apply();
                                                         break;
                                                     }
                                                 } catch (JSONException e) {

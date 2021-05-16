@@ -17,13 +17,17 @@
             app:summary="進入系統通知頁面打開">
             <intent android:action="android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"/>
         </Preference>
-        <SwitchPreferenceCompat
-            app:key="news_notification"
-            app:defaultValue="false"
-            app:summaryOff="請先不要碰"
-            app:summaryOn="不要關掉喔"
-            app:title="新聞通知推播" />
-
+<!--        <SwitchPreferenceCompat-->
+<!--            app:key="news_notification"-->
+<!--            app:defaultValue="false"-->
+<!--            app:summaryOff="請先不要碰"-->
+<!--            app:summaryOn="不要關掉喔"-->
+<!--            app:title="新聞通知推播" />-->
+        <PreferenceScreen
+            android:title="問卷推播時間設定"
+            app:summary="記得按下儲存">
+            <intent android:action="com.recoveryrecord.surveyandroid.example.NotificationRangeActivity"/>
+        </PreferenceScreen>
     <PreferenceCategory app:title="偏好">
         <MultiSelectListPreference
             app:key="media_select"
@@ -40,10 +44,7 @@
             android:title="首頁媒體排序">
             <intent android:action="com.recoveryrecord.surveyandroid.example.MediaRankActivity"/>
         </PreferenceScreen>
-        <PreferenceScreen
-            android:title="通知時間調整">
-            <intent android:action="com.recoveryrecord.surveyandroid.example.NotificationRangeActivity"/>
-        </PreferenceScreen>
+
         <Preference
             android:summary="to be continue"
             android:title="聯絡我們"/>

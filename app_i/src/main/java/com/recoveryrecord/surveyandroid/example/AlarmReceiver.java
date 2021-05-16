@@ -33,16 +33,15 @@ import androidx.preference.PreferenceManager;
 
 import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_CHANNEL_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_CHANNEL_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_END_TIME_HOUR;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_INTERVAL;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_START_TIME_HOUR;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TIME_OUT;
 import static com.recoveryrecord.surveyandroid.example.Constants.VIBRATE_EFFECT;
 
 public class AlarmReceiver extends BroadcastReceiver {
-    //temp for notification
-//    public static final String NOTIFICATION_CHANNEL_ID = "10001" ;
-//    private final static String default_notification_channel_id = "default" ;
     String device_id = "";
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onReceive(Context context, Intent intent) {
         //send esm
@@ -78,9 +77,11 @@ public class AlarmReceiver extends BroadcastReceiver {
         Long now = System.currentTimeMillis();
         Calendar c = Calendar.getInstance();
         c.setTimeInMillis(now);
-        int MinHour = 9;//09:00:00
-        int MaxHour = 22;//23:00:00
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+//        int MinHour = 9;//09:00:00
+//        int MaxHour = 22;//23:00:00
+        int MinHour = sharedPrefs.getInt(ESM_START_TIME_HOUR, 9);
+        int MaxHour = sharedPrefs.getInt(ESM_END_TIME_HOUR, 21);
         long LastEsmTime = sharedPrefs.getLong("LastEsmTime", 0L);
         if(c.get(Calendar.HOUR_OF_DAY) >= MinHour && c.get(Calendar.HOUR_OF_DAY) < MaxHour) {
             Log.d("lognewsselect", "in daily interval");

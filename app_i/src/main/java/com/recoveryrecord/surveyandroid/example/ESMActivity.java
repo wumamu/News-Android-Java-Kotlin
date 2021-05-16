@@ -29,6 +29,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.recoveryrecord.surveyandroid.Answer;
 import com.recoveryrecord.surveyandroid.R;
 import com.recoveryrecord.surveyandroid.condition.CustomConditionHandler;
+import com.recoveryrecord.surveyandroid.example.sqlite.DragObj;
+import com.recoveryrecord.surveyandroid.example.sqlite.NewsCompareObj;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,6 +45,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -53,6 +57,9 @@ import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TARGET_RANG
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TARGET_RANGE;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_UNCLICKED_CANDIDATE;
 import static com.recoveryrecord.surveyandroid.example.Constants.READ_HISTORY_CANDIDATE;
+import static com.recoveryrecord.surveyandroid.example.Constants.TARGET_NEWS_TITLE;
+import static com.recoveryrecord.surveyandroid.example.Constants.ZERO_RESULT_STRING;
+import static java.lang.Integer.parseInt;
 //import static com.recoveryrecord.surveyandroid.example.Constants.JSON_TEMPLATE;
 
 public class ESMActivity extends com.recoveryrecord.surveyandroid.SurveyActivity implements CustomConditionHandler, UserListCallback {
@@ -60,6 +67,9 @@ public class ESMActivity extends com.recoveryrecord.surveyandroid.SurveyActivity
     Task task, task2;
     List<String> news_title_target_array = new ArrayList<>();
     List<String> notification_unclick_array = new ArrayList<>();
+    List<String> final_news_title_array = new ArrayList<>();
+    List<NewsCompareObj> HistoryNewsTitleObjListArray = new ArrayList<>();
+    List<NewsCompareObj> MyNewsTitleObjListArray = new ArrayList<>();
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -408,10 +418,11 @@ public class ESMActivity extends com.recoveryrecord.surveyandroid.SurveyActivity
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private String generate_esm_json(String read_news_title_array_string, String noti_news_title_array_string, String file_name) throws JSONException, InterruptedException {
         Log.d("lognewsselect", "generate_json START %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-        Log.d("lognewsselect", "READ_HISTORY_CANDIDATE"+ news_title_target_array);
-        Log.d("lognewsselect", "NOTIFICATION_UNCLICKED_CANDIDATE"+ notification_unclick_array);
+//        Log.d("lognewsselect", "READ_HISTORY_CANDIDATE"+ news_title_target_array);
+//        Log.d("lognewsselect", "NOTIFICATION_UNCLICKED_CANDIDATE"+ notification_unclick_array);
 
         if(file_name.equals("0.json")){
             List<String> noti_news_title_array_json = new ArrayList<String>(Arrays.asList(noti_news_title_array_string.split("#")));
@@ -464,7 +475,39 @@ public class ESMActivity extends com.recoveryrecord.surveyandroid.SurveyActivity
             }
             return file.getAbsolutePath();
         } else {
-            List<String> read_news_title_array_json = new ArrayList<String>(Arrays.asList(read_news_title_array_string.split("#")));
+            //reorder_news_title
+            final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+            String target_history = sharedPrefs.getString(TARGET_NEWS_TITLE, "");
+            if(target_history.equals("")){
+                //no sample preference
+                final_news_title_array = new ArrayList<String>(Arrays.asList(read_news_title_array_string.split("#")));
+            } else {
+//                final_news_title_array = new ArrayList<String>(Arrays.asList(read_news_title_array_string.split("#")));
+                //old
+                List<String> history_list_title = new ArrayList<String>(Arrays.asList(target_history.split("#")));
+                for(int i = 0; i<history_list_title.size();i++){
+                    List<String> very_tmp = new ArrayList<String>(Arrays.asList(history_list_title.get(i).split("¢")));
+                    if(very_tmp.size()==4){
+                        HistoryNewsTitleObjListArray.add(new NewsCompareObj(parseInt(very_tmp.get(1)), parseInt(very_tmp.get(2)), very_tmp.get(3), i, history_list_title.get(i),0));
+                    } else {
+                        Log.d("lognewsselect", "======================OLD==================================very_tmp" + very_tmp.size());
+                    }
+                }
+                //new
+                List<String> read_news_title_array_json = new ArrayList<String>(Arrays.asList(read_news_title_array_string.split("#")));
+                if(read_news_title_array_json.size()>0 && !read_news_title_array_json.get(0).equals(ZERO_RESULT_STRING)){
+                    for(int i = 0; i<read_news_title_array_json.size();i++){
+                        List<String> very_tmp = new ArrayList<String>(Arrays.asList(read_news_title_array_json.get(i).split("¢")));
+                        if(very_tmp.size()==4){
+                            MyNewsTitleObjListArray.add(new NewsCompareObj(parseInt(very_tmp.get(1)), parseInt(very_tmp.get(2)), very_tmp.get(3), i, read_news_title_array_json.get(i),0));
+                        } else {
+                            Log.d("lognewsselect", "======================NEW=================================very_tmp" + very_tmp.size());
+                        }
+                    }
+                }
+                compare_and_reorder();
+            }
+
             List<String> noti_news_title_array_json = new ArrayList<String>(Arrays.asList(noti_news_title_array_string.split("#")));
             JSONArray notifications_arr = new JSONArray();
             for (int x = 0; x< noti_news_title_array_json.size(); x++){
@@ -475,8 +518,8 @@ public class ESMActivity extends com.recoveryrecord.surveyandroid.SurveyActivity
             }
             notifications_arr.put("沒有印象");
             String template_file_name = "1.json";
-            int title_count = read_news_title_array_json.size();
-            if (read_news_title_array_json.size()==1){
+            int title_count = final_news_title_array.size();
+            if (final_news_title_array.size()==1){
                 template_file_name = "1.json";
             } else {
                 template_file_name = "2.json";
@@ -515,11 +558,12 @@ public class ESMActivity extends com.recoveryrecord.surveyandroid.SurveyActivity
                 for(int i = 2; i<title_count ; i++){
                     JSONObject tmp_jsonObject = new JSONObject(strJsons);
                     tmp_jsonObject.putOpt("id", "add_" + i);
-                    tmp_jsonObject.putOpt("question", "您對於「" + read_news_title_array_json.get(i) + "」這篇新聞，是否曾有印象閱讀過，且未看過其它媒體或平台「引用相同新聞稿，闡述字句幾乎相同」的新聞？");
+                    List<String> tmp_array = new ArrayList<String>(Arrays.asList(final_news_title_array.get(i).split("¢")));
+                    tmp_jsonObject.putOpt("question", "您對於「" + tmp_array.get(0) + "」這篇新聞，是否曾有印象閱讀過，且未看過其它媒體或平台「引用相同新聞稿，闡述字句幾乎相同」的新聞？");
                     tmp_jsonObject.putOpt("header", "add_" + i);
                     JSONArray n_condi_for_ques = new JSONArray();
                     JSONObject n_condi_single = new JSONObject();
-                    for(int j=0; j<i-1;j++){
+                    for(int j=0; j<i;j++){
                         n_condi_single.putOpt("id", "add_" + j);
                         n_condi_single.putOpt("operation", "equals");
                         n_condi_single.putOpt("value", "沒有印象或有看過相同的新聞");
@@ -531,7 +575,7 @@ public class ESMActivity extends com.recoveryrecord.surveyandroid.SurveyActivity
                     n_condi_single.putOpt("value", "有");
                     n_condi_for_ques.put(n_condi_single);
                     tmp_jsonObject.optJSONObject("show_if").putOpt("subconditions", n_condi_for_ques);
-                    Log.d("lognewsselect", "new object " + i + " " + tmp_jsonObject);
+//                    Log.d("lognewsselect", "new object " + i + " " + tmp_jsonObject);
 
                     jsonQuestionObject.put(tmp_jsonObject);//origin
                     addedArray.put(tmp_jsonObject);//append
@@ -547,14 +591,16 @@ public class ESMActivity extends com.recoveryrecord.surveyandroid.SurveyActivity
                 //add0
                 if(title_count>=1 && one.optString("id").equals("add_0")){
                     one.putOpt("id", "add_0");
-                    one.putOpt("question", "您對於「"+ read_news_title_array_json.get(0) +"」這篇新聞，是否曾有印象閱讀過，且未看過其它媒體或平台「引用相同新聞稿，闡述字句幾乎相同」的新聞？");
+                    List<String> tmp_array = new ArrayList<String>(Arrays.asList(final_news_title_array.get(0).split("¢")));
+                    one.putOpt("question", "您對於「"+ tmp_array.get(0) +"」這篇新聞，是否曾有印象閱讀過，且未看過其它媒體或平台「引用相同新聞稿，闡述字句幾乎相同」的新聞？");
                     one.putOpt("header", "add_0");
                     continue;
                 }
                 //add1
                 if(title_count>=2 && one.optString("id").equals("add_1")){
                     one.putOpt("id", "add_1");
-                    one.putOpt("question", "您對於「"+ read_news_title_array_json.get(1) +"」這篇新聞，是否曾有印象閱讀過，且未看過其它媒體或平台「引用相同新聞稿，闡述字句幾乎相同」的新聞？");
+                    List<String> tmp_array = new ArrayList<String>(Arrays.asList(final_news_title_array.get(1).split("¢")));
+                    one.putOpt("question", "您對於「"+ tmp_array.get(0) +"」這篇新聞，是否曾有印象閱讀過，且未看過其它媒體或平台「引用相同新聞稿，闡述字句幾乎相同」的新聞？");
                     one.putOpt("header", "add_1");
 //                    Log.d("lognewsselect", "old for title add1" + one);
                     JSONArray condi_for_ques = new JSONArray();
@@ -672,6 +718,37 @@ public class ESMActivity extends com.recoveryrecord.surveyandroid.SurveyActivity
 //            finish = true;
             return file.getAbsolutePath();
 
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void compare_and_reorder() {
+        for(int i=0; i<MyNewsTitleObjListArray.size();i++){
+            int sum = 0;
+            int share = MyNewsTitleObjListArray.get(i).getShare_or_not();
+            int trigger = MyNewsTitleObjListArray.get(i).getTrigger_by();
+            String cat = MyNewsTitleObjListArray.get(i).getCategory();
+            for(int x = 0; x<HistoryNewsTitleObjListArray.size();x++){
+                if(HistoryNewsTitleObjListArray.get(x).getShare_or_not()!=share){
+                    sum++;
+//                    Log.d("lognewsselect", "-----share");
+                }
+                if(HistoryNewsTitleObjListArray.get(x).getTrigger_by()!=trigger){
+                    sum++;
+//                    Log.d("lognewsselect", "-----trigger");
+                }
+                if(!HistoryNewsTitleObjListArray.get(x).getCategory().equals(cat)){
+                    sum++;
+//                    Log.d("lognewsselect", "-----cat");
+                }
+            }
+            MyNewsTitleObjListArray.get(i).setSum(sum);
+        }
+        Collections.sort(MyNewsTitleObjListArray);
+        final_news_title_array.clear();
+        for(int i=MyNewsTitleObjListArray.size()-1; i>=0;i--){
+            Log.d("lognewsselect", "------------------------------------" + MyNewsTitleObjListArray.get(i).getSum());
+            final_news_title_array.add(MyNewsTitleObjListArray.get(i).getNews_title());
         }
     }
 
