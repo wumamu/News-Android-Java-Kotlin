@@ -97,6 +97,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
     private static final String DEBUG_TAG = "Gestures";
     private GestureListener detector;
     List<DragObj> dragObjArrayListArray = new ArrayList<>();//drag gesture
+    List<String> categoryArray = new ArrayList<>();//cat
 
     ReadingBehavior myReadingBehavior = new ReadingBehavior();//sqlite
     TestReadingBehaviorDbHelper dbHandler;
@@ -330,10 +331,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         //check trigger from #######################################################################
         if (getIntent().getExtras() != null) {
             Bundle b = getIntent().getExtras();
-            myReadingBehavior.setKEY_TRIGGER_BY(b.getString("trigger_from"));
-            if(myReadingBehavior.getKEY_TRIGGER_BY().equals("self_trigger")){
-                self_trigger = true;
-            }
+
             if (b.getString("news_id")!= null){
                 news_id = b.getString("news_id");
             }
@@ -341,7 +339,31 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                 media_name = b.getString("media");
                 media = media_name;
             }
-
+            if(b.getString("trigger_by")!=null){
+                myReadingBehavior.setKEY_TRIGGER_BY(b.getString("trigger_by"));
+            }
+            if(myReadingBehavior.getKEY_TRIGGER_BY().equals("self_trigger")){
+                self_trigger = true;
+            } else {
+                //mark as click (push news)
+                db.collection("test_users")
+                        .document(device_id)
+                        .collection("push_news")
+                        .document(news_id)
+                        .update("click", 1)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d("lognewsselect", "mark as click successfully updated!");
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w("lognewsselect", "mark as click Error updating document", e);
+                            }
+                        });
+            }
         }
         Log.d("log: trigger_by", myReadingBehavior.getKEY_TRIGGER_BY());
         Log.d("log: news_id", news_id);
@@ -370,6 +392,9 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                 break;
             case "ettoday":
                 media_name = "ettoday";
+                break;
+            case "三立":
+                media_name = "setn";
                 break;
             default:
                 media_name = "";
@@ -468,6 +493,19 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                         if(document.getTimestamp("pubdate")!=null){
                             mPubdate = document.getTimestamp("pubdate");
                         }
+                        if(document.get("category")!=null){
+                            if(media_name.equals("storm")){
+                                categoryArray =  (List<String>) document.get("category");
+//                                document.get("category")
+                                Log.d("log: firebase", String.valueOf(categoryArray));
+                            } else {
+                                categoryArray.add(document.getString("category"));
+                                Log.d("log: firebase", categoryArray.get(0));
+                            }
+                        } else {
+                            Log.d("log: firebase", "123");
+                        }
+
 
                         Date my_date = mPubdate.toDate();
                         @SuppressLint("SimpleDateFormat")
@@ -731,7 +769,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                         }
                         myReadingBehavior.setKEY_CHAR_NUM_TOTAL(char_num_total);
                         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                        params.setMargins(30, 10, 0, 10);
+                        params.setMargins(30, 10, 10, 10);
                         //set viewport number ######################################################
                         int textview_num = divList.size();
                         myReadingBehavior.setKEY_VIEW_PORT_NUM(textview_num);
@@ -1498,6 +1536,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         readingBehavior.put("drag_record", Arrays.asList("NA"));
         readingBehavior.put("share", Arrays.asList("NA"));
         readingBehavior.put("title","NA");
+        readingBehavior.put("category",categoryArray);
 //        readingBehavior.put("share_via", "none");
         readingBehavior.put("time_series(s)", Arrays.asList("NA"));
         readingBehavior.put("byte_per_line", "NA");
@@ -1559,6 +1598,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         // Set the "isCapital" field of the city 'DC'
         rbRef.update("content_length(dp)", myReadingBehavior.getKEY_CONTENT_LENGTH(),
                 "byte_per_line", myReadingBehavior.getKEY_BYTE_PER_LINE(),
+                "category", categoryArray,
                 "has_img", has_img,
                 "char_num_total", myReadingBehavior.getKEY_CHAR_NUM_TOTAL(),
                 "id",  myReadingBehavior.getKEY_NEWS_ID(),

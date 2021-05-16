@@ -23,6 +23,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_LIMIT_PER_PAGE;
+
 public class Cts10Fragment extends Fragment {
     private RecyclerView courseRV;
     private ArrayList<NewsModel> dataModalArrayList;
@@ -83,9 +85,9 @@ public class Cts10Fragment extends Fragment {
         db.collection("medias")
                 .document("cts")
                 .collection("news")
-                .whereEqualTo("category", "氣象")
+                .whereEqualTo("category", "藝文")
                 .orderBy("pubdate", Query.Direction.DESCENDING)
-                .limit(50)
+                .limit(NEWS_LIMIT_PER_PAGE)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override

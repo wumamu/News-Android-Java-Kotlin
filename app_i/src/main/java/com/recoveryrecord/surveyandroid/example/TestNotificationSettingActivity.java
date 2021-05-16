@@ -39,7 +39,7 @@ public class TestNotificationSettingActivity extends Activity {
         btnCreateNotify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(TestNotificationSettingActivity.this, AddNotificationActivity.class);
+                Intent intent = new Intent(TestNotificationSettingActivity.this, TestAddNotificationActivity.class);
                 startActivity(intent);
 //                NotificationManager nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 //                NotificationCompat.Builder ncomp = new NotificationCompat.Builder(this);

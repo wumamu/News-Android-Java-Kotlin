@@ -34,7 +34,6 @@ public abstract class SurveyActivity extends AppCompatActivity implements Failed
         getSurveyId();
         SurveyQuestions surveyQuestions = createSurveyQuestions();
         Log.d(TAG, "Questions = " + surveyQuestions);
-
         mState = createSurveyState(surveyQuestions);
         setupRecyclerView();
     }
@@ -44,6 +43,7 @@ public abstract class SurveyActivity extends AppCompatActivity implements Failed
     }
 
     protected SurveyQuestions createSurveyQuestions() {
+        Log.d("lognewsselect", "SurveyActivity createSurveyQuestions");
         return SurveyQuestions.load(this, getJsonFilename());
     }
 

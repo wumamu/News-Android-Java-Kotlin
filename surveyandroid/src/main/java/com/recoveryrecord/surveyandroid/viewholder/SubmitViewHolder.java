@@ -50,40 +50,24 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 submitSurveyHandler.submit(submitData.url, answerProvider.allAnswersJson());
-                Date date = new Date(System.currentTimeMillis());
-                SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-                final String time_now = formatter.format(date);
                 // [START add_ada_lovelace]
                 final Timestamp current = Timestamp.now();
-                // Create a new user with a first and last name
-//                Map<String, Object> esm = new HashMap<>();
-//                esm.put("submit_time", time_now);
-//                esm.put("submit_timestamp", current);
-//                esm.put("result",  answerProvider.allAnswersJson());
+
                 String device_id = Settings.Secure.getString(((Activity)v.getContext()).getContentResolver(), Settings.Secure.ANDROID_ID);
                 String esm_id = "";
-                esm_id = String.valueOf(date);
                 if (((Activity)v.getContext()).getIntent().getExtras() != null) {
                     Bundle b = ((Activity)v.getContext()).getIntent().getExtras();
                     esm_id = Objects.requireNonNull(b.getString("esm_id"));
-                    Log.d("logesm", String.valueOf(456));
+//                    Log.d("logesm", String.valueOf(456));
                 }
-                //new
-//                db.collection("test_users")
-//                        .document(device_id)
-//                        .collection("esms")
-//                        .document(esm_id)
-//                        .set(esm);
-                //update
-                final DocumentReference rbRef = db.collection("test_users").document(device_id).collection("esms").document(esm_id);
+                final DocumentReference rbRef = db.collection("test_users").document(device_id).collection("push_esm").document(esm_id);
                 rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
                             if (document.exists()) {
-                                rbRef.update("submit_time", time_now,
-                                        "submit_timestamp", current,
+                                rbRef.update("submit_timestamp", current,
                                         "result", answerProvider.allAnswersJson())//another field
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override

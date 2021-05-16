@@ -19,6 +19,7 @@
         <item>風傳媒</item>
         <item>聯合</item>
         <item>ETTODAY</item>
+        <item>三立</item>
     </string-array>
 
     <string-array name="media_select_values">
@@ -30,6 +31,7 @@
         <item>風傳媒</item>
         <item>聯合</item>
         <item>ettoday</item>
+        <item>三立</item>
 <!--        <item>cc.nexdoor.ct.activity</item>-->
 <!--        <item>m.cna.com.tw.App</item>-->
 <!--        <item>com.news.ctsapp</item>-->

@@ -61,6 +61,10 @@ public class CtsMainFragment extends Fragment {
                     return Cts9Fragment.newInstance(9);
                 case 9:
                     return Cts10Fragment.newInstance(10);
+                case 10:
+                    return Cts11Fragment.newInstance(11);
+                case 11:
+                    return Cts12Fragment.newInstance(12);
                 default:
                     return TestNest2Fragment.newInstance(2);
             }
@@ -70,7 +74,7 @@ public class CtsMainFragment extends Fragment {
         @Override
         public int getCount() {
             // Show 4 total pages.
-            return 10;
+            return 12;
         }
 
         @Override
@@ -78,25 +82,29 @@ public class CtsMainFragment extends Fragment {
 
             switch (position) {
                 case 0:
-                    return "政治";
+                    return "氣象";
                 case 1:
                     return "社會";
                 case 2:
-                    return "綜合";
+                    return "政治";
                 case 3:
-                    return "財經";
-                case 4:
-                    return "生活";
-                case 5:
-                    return "運動";
-                case 6:
-                    return "國際";
-                case 7:
-                    return "地方";
-                case 8:
                     return "娛樂";
+                case 4:
+                    return "國際";
+                case 5:
+                    return "生活";
+                case 6:
+                    return "運動";
+                case 7:
+                    return "財經";
+                case 8:
+                    return "地方";
                 case 9:
-                    return "氣象";
+                    return "藝文";
+                case 10:
+                    return "綜合";
+                case 11:
+                    return "校園";
                 default:
                     return "Nested 2";
             }

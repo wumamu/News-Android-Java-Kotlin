@@ -64,6 +64,7 @@ public class NotificationListenerService extends android.service.notification.No
             case "com.news.ctsapp":
             case "com.ebc.news":
             case "cc.nexdoor.stormmedia":
+            case "com.set.newsapp":
                 is_target = true;
                 break;
             default:
@@ -130,7 +131,7 @@ public class NotificationListenerService extends android.service.notification.No
         switch (sbn.getPackageName()) {
             case "com.recoveryrecord.surveyandroid":
                 receieve_to_firestore = true;
-                document_name = "send_notifications";
+                document_name = "notification_bar_service_check";
                 break;
 //            case "com.facebook.orca":
             case "cc.nexdoor.ct.activity":
@@ -141,8 +142,9 @@ public class NotificationListenerService extends android.service.notification.No
             case "com.news.ctsapp":
             case "com.ebc.news":
             case "cc.nexdoor.stormmedia":
+            case "com.set.newsapp":
                 receieve_to_firestore = true;
-                document_name = "receieve_notifications";
+                document_name = "notification_bar_news(not app)";
                 break;
             default:
                 receieve_to_firestore = false;
@@ -166,7 +168,7 @@ public class NotificationListenerService extends android.service.notification.No
                     receieve_notification.put("title", Objects.requireNonNull(extras.getString("android.title")));
                     //check if is news or esm
                     if(extras.getString("android.title").equals("ESM")){
-                        document_name = "receieve_notifications_esm";
+                        document_name = "notification_bar_esm";
                     }
                     check_title = true;
                 } else {
@@ -194,7 +196,7 @@ public class NotificationListenerService extends android.service.notification.No
                 if (device_id.equals("564da153307f5547")){
                     is_me = true;
                 }
-                if (document_name.equals("receieve_notifications") && is_me){
+                if (document_name.equals("notification_bar_news(not app)") && is_me){
                     db.collection("compare")
                             .document(formatter.format(date))
                             .set(receieve_notification);

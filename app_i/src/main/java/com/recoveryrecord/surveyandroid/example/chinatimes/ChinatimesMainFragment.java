@@ -60,6 +60,12 @@ public class ChinatimesMainFragment extends Fragment {
                     return Chinatimes9Fragment.newInstance(9);
                 case 9:
                     return Chinatimes10Fragment.newInstance(10);
+                case 10:
+                    return Chinatimes11Fragment.newInstance(11);
+                case 11:
+                    return Chinatimes12Fragment.newInstance(12);
+                case 12:
+                    return Chinatimes13Fragment.newInstance(13);
                 default:
                     return TestNest2Fragment.newInstance(2);
             }
@@ -69,7 +75,7 @@ public class ChinatimesMainFragment extends Fragment {
         @Override
         public int getCount() {
             // Show 4 total pages.
-            return 10;
+            return 13;
         }
 
         @Override
@@ -77,25 +83,31 @@ public class ChinatimesMainFragment extends Fragment {
 
             switch (position) {
                 case 0:
-                    return "社會";
-                case 1:
-                    return "財經";
-                case 2:
-                    return "生活";
-                case 3:
-                    return "寶島";
-                case 4:
-                    return "娛樂";
-                case 5:
-                    return "體育";
-                case 6:
                     return "政治";
-                case 7:
-                    return "兩岸";
-                case 8:
+                case 1:
+                    return "生活";
+                case 2:
+                    return "娛樂";
+                case 3:
+                    return "財經";
+                case 4:
                     return "國際";
+                case 5:
+                    return "兩岸";
+                case 6:
+                    return "社會";
+                case 7:
+                    return "軍事";
+                case 8:
+                    return "科技";
                 case 9:
+                    return "體育";
+                case 10:
                     return "健康";
+                case 11:
+                    return "運勢";
+                case 12:
+                    return "寶島";
                 default:
                     return "Nested 2";
             }
