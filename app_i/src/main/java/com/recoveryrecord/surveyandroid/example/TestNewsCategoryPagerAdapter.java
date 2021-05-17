@@ -16,11 +16,11 @@ import androidx.preference.PreferenceManager;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-public class NewsCategoryPagerAdapter extends PagerAdapter {
+public class TestNewsCategoryPagerAdapter extends PagerAdapter {
     private List<View> mPager;
     private int childCount = 0;
     private Context context;
-    public NewsCategoryPagerAdapter(List<View> mPager, Context context) {
+    public TestNewsCategoryPagerAdapter(List<View> mPager, Context context) {
         this.mPager = mPager;
         this.context = context;
     }

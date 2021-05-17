@@ -120,7 +120,7 @@
             android:theme="@style/AppThemeActionBar"/>
         <activity android:name=".ActivityRecognitionPermissionRationalActivity"/>
         <activity android:name=".TestActivityRecognitionActivity"/>
-        <activity android:name=".NewsAllActivity"/>
+        <activity android:name=".TestNewsAllActivity"/>
 
         <activity android:name=".TestServiceActivity"
             android:theme="@style/AppThemeActionBar"/>
@@ -176,11 +176,11 @@
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
-        <service
-            android:name=".MyPushNotificationService"
-            android:stopWithTask="false"
-            android:enabled="true">
-        </service>
+<!--        <service-->
+<!--            android:name=".MyPushNotificationService"-->
+<!--            android:stopWithTask="false"-->
+<!--            android:enabled="true">-->
+<!--        </service>-->
         <service android:name=".receiever.ActivityRecognitionReceiver"/>
         <service android:name=".receiever.AppUsageReceiver" />
     </application>

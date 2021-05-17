@@ -69,14 +69,17 @@ import androidx.viewpager.widget.ViewPager;
 
 import javax.annotation.Nullable;
 
+//import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_PARCELABLE;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_CHANNEL_ID;
+
 //import com.google.firebase.FirebaseApp;
 
-public class NewsAllActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
+public class TestNewsAllActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
     //temp for notification
     public static final String NOTIFICATION_CHANNEL_ID = "10001" ;
     private final static String default_notification_channel_id = "default" ;
-    private static final String TAG = "NewsAllActivity";
+    private static final String TAG = "TestNewsAllActivity";
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DocumentReference noteRef = db.document("server_push_notifications/start");
     private CollectionReference noteRefqq = db.collection("server_push_notifications");
@@ -309,37 +312,37 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
         switch (item.getItemId()) {
             case R.id.nav_setting :
                 Log.d("log: navigation", "nav_setting " + item.getItemId());
-                Intent intent_setting = new Intent(NewsAllActivity.this, SettingsActivity.class);
+                Intent intent_setting = new Intent(TestNewsAllActivity.this, SettingsActivity.class);
                 startActivity(intent_setting);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             case R.id.nav_progressing :
                 Log.d("log: navigation", "nav_progressing " + item.getItemId());
-                Intent intent_db = new Intent(NewsAllActivity.this, SurveyProgressActivity.class);
+                Intent intent_db = new Intent(TestNewsAllActivity.this, SurveyProgressActivity.class);
                 startActivity(intent_db);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             case R.id.nav_history :
                 Log.d("log: navigation", "nav_history " + item.getItemId());
-                Intent intent_noti = new Intent(NewsAllActivity.this, ReadHistoryActivity.class);
+                Intent intent_noti = new Intent(TestNewsAllActivity.this, ReadHistoryActivity.class);
                 startActivity(intent_noti);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             case R.id.nav_reschedule :
                 Log.d("log: navigation", "nav_reschedule " + item.getItemId());
-                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 1000 );
+//                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 1000 );
 //                scheduleNotification(getNotification("0143b739b1c33d46cd18b6af12b2d5b2", "ettoday", "wa_title" ), 5000 );
 //                scheduleNotification_repeat(getNotification_esm("time"));
 //                Toast.makeText(this, "開始每小時固定發送esm~", Toast.LENGTH_LONG).show();
                 Toast.makeText(this, "發送esm~", Toast.LENGTH_LONG).show();
-//                Intent intent_base = new Intent(NewsAllActivity.this, TestBasicActivity.class);
+//                Intent intent_base = new Intent(TestNewsAllActivity.this, TestBasicActivity.class);
 //                startActivity(intent_base);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             case R.id.nav_contact :
                 Log.d("log: navigation", "nav_contact " + item.getItemId());
                 Toast.makeText(this, "目前什麼都沒有拉~", Toast.LENGTH_LONG).show();
-                Intent intent_ems = new Intent(NewsAllActivity.this, NewsHybridActivity.class);
+                Intent intent_ems = new Intent(TestNewsAllActivity.this, NewsHybridActivity.class);
                 startActivity(intent_ems);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
@@ -406,11 +409,11 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
 //                scheduleNotification_repeat(getNotification_esm("time"));
 //                return true;
 //            case R.id.action_10 :
-//                Intent intent_ems = new Intent(NewsAllActivity.this, ESMActivity.class);
+//                Intent intent_ems = new Intent(TestNewsAllActivity.this, ESMActivity.class);
 //                startActivity(intent_ems);
 //                return true;
 //            case R.id.action_30 :
-//                Intent intent_noti_db = new Intent(NewsAllActivity.this, NotificationDbViewActivity.class);
+//                Intent intent_noti_db = new Intent(TestNewsAllActivity.this, NotificationDbViewActivity.class);
 //                startActivity(intent_noti_db);
 ////                scheduleNotification(getNotification("news (30 second delay)" ), 30000 );
 ////                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
@@ -437,7 +440,7 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
 //        int nid = (int) System.currentTimeMillis();
 //        Log.d("log: notification", "news id" + nid);
 //        Intent intent_news = new Intent();
-//        intent_news.setClass(NewsAllActivity.this, NewsModuleActivity.class);
+//        intent_news.setClass(TestNewsAllActivity.this, NewsModuleActivity.class);
 //        intent_news.putExtra("trigger_from", "Notification");
 //        intent_news.putExtra("news_id", news_id);
 //        intent_news.putExtra("media", media);
@@ -486,7 +489,7 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
         int nid = (int) System.currentTimeMillis();
         Log.d("logesm", "esm id " + nid + " " + Timestamp.now());
         Intent intent_esm = new Intent();
-        intent_esm.setClass(NewsAllActivity.this, ESMActivity.class);
+        intent_esm.setClass(TestNewsAllActivity.this, ESMActivity.class);
         intent_esm.putExtra("trigger_from", "Notification");
         intent_esm.putExtra("esm_id", esm_id);
         intent_esm.putExtra("noti_timestamp", Timestamp.now());
@@ -512,18 +515,18 @@ public class NewsAllActivity extends AppCompatActivity implements NavigationView
                 .set(esm);
         return builder.build() ;
     }
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void scheduleNotification_esm (Notification notification, int delay) {
-        Intent notificationIntent = new Intent(this, NotificationListenerNews.class);
-        notificationIntent.putExtra(NotificationListenerESM.NOTIFICATION_ID, 1 ) ;
-        notificationIntent.putExtra(NotificationListenerESM.NOTIFICATION, notification) ;
-        int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast( this, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        long futureInMillis = SystemClock.elapsedRealtime() + delay;
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        assert alarmManager != null;
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
-    }
+//    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+//    private void scheduleNotification_esm (Notification notification, int delay) {
+//        Intent notificationIntent = new Intent(this, NotificationListenerNews.class);
+//        notificationIntent.putExtra(ESM_CHANNEL_ID, 1 ) ;
+//        notificationIntent.putExtra(DEFAULT_ESM_PARCELABLE, notification) ;
+//        int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast( this, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//        assert alarmManager != null;
+//        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+//    }
     //sensor
     @Override
     public void onConnected(@Nullable Bundle bundle) {

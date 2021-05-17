@@ -53,11 +53,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TARGET_RANGE;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TARGET_RANGE;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_KEY;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_DIARY;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_ESM;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_UNCLICKED_CANDIDATE;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTI_UNCLICK_LAST_ONE;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOT_TARGET_READ_NEWS_TITLE_ANSWER;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_CLOSE_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_OPEN_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_CLICK;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_NOTI_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_OUT_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_SAMPLE_CHECK;
 import static com.recoveryrecord.surveyandroid.example.Constants.READ_HISTORY_CANDIDATE;
 import static com.recoveryrecord.surveyandroid.example.Constants.TARGET_NEWS_TITLE;
+import static com.recoveryrecord.surveyandroid.example.Constants.TARGET_READ_NEWS_TITLE_ANSWER;
+import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.ZERO_RESULT_STRING;
 import static java.lang.Integer.parseInt;
 //import static com.recoveryrecord.surveyandroid.example.Constants.JSON_TEMPLATE;
@@ -80,12 +97,12 @@ public class ESMActivity extends com.recoveryrecord.surveyandroid.SurveyActivity
         String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         if (getIntent().getExtras() != null) {
             Bundle b = getIntent().getExtras();
-            esm_id = Objects.requireNonNull(b.getString("esm_id"));
-            Log.d("lognewsselect", "onCreate" + esm_id);
+            esm_id = Objects.requireNonNull(b.getString(ESM_ID));
+//            Log.d("lognewsselect", "onCreate" + esm_id);
         }
         //temp
         if (!esm_id.equals("")){
-            final DocumentReference rbRef = db.collection("test_users").document(device_id).collection("push_esm").document(esm_id);
+            final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(PUSH_ESM_COLLECTION).document(esm_id);
             rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -93,7 +110,7 @@ public class ESMActivity extends com.recoveryrecord.surveyandroid.SurveyActivity
                         DocumentSnapshot document = task.getResult();
                         assert document != null;
                         if (document.exists()) {
-                            rbRef.update( "open_timestamp", current_now)//another field
+                            rbRef.update(PUSH_ESM_OPEN_TIME, current_now)//another field
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
@@ -135,15 +152,15 @@ public class ESMActivity extends com.recoveryrecord.surveyandroid.SurveyActivity
         String file_name = "1.json";
         if (getIntent().getExtras() != null) {
             Bundle b = getIntent().getExtras();
-            if (Objects.requireNonNull(b.getString("type")).equals("esm")){
+            if (Objects.requireNonNull(b.getString(NOTIFICATION_TYPE_KEY)).equals(NOTIFICATION_TYPE_VALUE_ESM)){
 //                select_news_title_candidate();
                 final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-                String ReadNewsTitle = sharedPrefs.getString(READ_HISTORY_CANDIDATE, "zero_result");
-                String NotiNewTitle = sharedPrefs.getString(NOTIFICATION_UNCLICKED_CANDIDATE, "zero_result");
+                String ReadNewsTitle = sharedPrefs.getString(READ_HISTORY_CANDIDATE, ZERO_RESULT_STRING);
+                String NotiNewTitle = sharedPrefs.getString(NOTIFICATION_UNCLICKED_CANDIDATE, ZERO_RESULT_STRING);
                 Log.d("lognewsselect", "~~~~~~~~~~~~~~~~~~~~~~~READ_HISTORY_CANDIDATE " + ReadNewsTitle);
                 Log.d("lognewsselect", "~~~~~~~~~~~~~~~~~~~~~~~NOTIFICATION_UNCLICKED_CANDIDATE " + NotiNewTitle);
 
-                if(!ReadNewsTitle.equals("zero_result")){
+                if(!ReadNewsTitle.equals(ZERO_RESULT_STRING)){
                     Log.d("lognewsselect", "exist rb");
                     try {
                         file_name = generate_esm_json(ReadNewsTitle, NotiNewTitle, "2.json");
@@ -161,14 +178,7 @@ public class ESMActivity extends com.recoveryrecord.surveyandroid.SurveyActivity
                     }
                     return file_name;
                 }
-            } else if (Objects.requireNonNull(b.getString("type")).equals("diary")){
-                try {
-                    file_name = generate_esm_json("ReadNewsTitle", "NotiNewTitle", "1.json");
-                } catch (JSONException | InterruptedException e) {
-                    e.printStackTrace();
-                }
-                return file_name;
-            } else {
+            } else if (Objects.requireNonNull(b.getString(NOTIFICATION_TYPE_KEY)).equals(NOTIFICATION_TYPE_VALUE_DIARY)){
                 try {
                     file_name = generate_esm_json("ReadNewsTitle", "NotiNewTitle", "1.json");
                 } catch (JSONException | InterruptedException e) {
@@ -236,9 +246,10 @@ public class ESMActivity extends com.recoveryrecord.surveyandroid.SurveyActivity
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final Timestamp current_end = Timestamp.now();
         if (!esm_id.equals("")) {
+
             @SuppressLint("HardwareIds")
             String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-            final DocumentReference rbRef = db.collection("test_users").document(device_id).collection("push_esm").document(esm_id);
+            final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(PUSH_ESM_COLLECTION).document(esm_id);
             rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -246,7 +257,7 @@ public class ESMActivity extends com.recoveryrecord.surveyandroid.SurveyActivity
                         DocumentSnapshot document = task.getResult();
                         assert document != null;
                         if (document.exists()) {
-                            rbRef.update("close_timestamp", current_end)//another field
+                            rbRef.update(PUSH_ESM_CLOSE_TIME, current_end)//another field
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
@@ -271,169 +282,18 @@ public class ESMActivity extends com.recoveryrecord.surveyandroid.SurveyActivity
 
     }
 
-    private void select_news_title_candidate(final UserListCallback myCallback) {
-        final FirebaseFirestore db = FirebaseFirestore.getInstance();
-        @SuppressLint("HardwareIds")
-        final String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-        final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        final String[] SelectedNewsTitle = {""};
-        final Long now = System.currentTimeMillis();
-        final Calendar c = Calendar.getInstance();
-        c.setTimeInMillis(now);
-        task =     db.collection("test_users")
-                .document(device_id)
-                .collection("reading_behaviors")
-                .whereEqualTo("select", false)
-                .orderBy("out_timestamp", Query.Direction.DESCENDING)
-                .get();
-        task2 =     db.collection("test_users")
-                .document(device_id)
-                .collection("push_news")
-                .whereEqualTo("click", 0)
-                .orderBy("noti_timestamp", Query.Direction.DESCENDING)
-                .get();
-//        db.collection("test_users")
-//                .document(device_id)
-//                .collection("reading_behaviors")
-//                .whereEqualTo("select", false)
-////                .whereGreaterThanOrEqualTo("time_on_page(s)", 5)
-//                .orderBy("out_timestamp", Query.Direction.DESCENDING)
-//                .get()
-        task.addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-//                        List<String> news_title_array_add = new ArrayList<>();
-                if (!queryDocumentSnapshots.isEmpty()) {
-                    List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
-                    for (DocumentSnapshot d : list) {
-                        if(!(d.getString("title") ==null) && !d.getString("title").equals("NA")){
-                            if (d.getDouble("time_on_page(s)")>=5) {
-                                if (Math.abs(now/1000 - d.getTimestamp("in_timestamp").getSeconds()) <= ESM_TARGET_RANGE) {
-                                    news_title_target_array.add(d.getString("title"));
-                                    Log.d("lognewsselect", "task1 " + d.getString("title"));
-                                }
-                            }
-                        }
-
-                        //mark as check
-                        db.collection("test_users")
-                                .document(device_id)
-                                .collection("reading_behaviors")
-                                .document(d.getId())
-                                .update("select", true)
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Log.d("lognewsselect", "DocumentSnapshot successfully updated!");
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.w("lognewsselect", "Error updating document", e);
-                                    }
-                                });
-                    }
-                }
-                if(news_title_target_array.size()!=0){
-                    String title_array = "";
-                    for(int i = 0; i< news_title_target_array.size(); i++){
-                        title_array+= news_title_target_array.get(i) + "#";
-                    }
-//                            Random r=new Random();
-//                            int randomNumber=r.nextInt(news_title_array.size());
-//                            SelectedNewsTitle[0] = news_title_array.get(randomNumber);
-                    SharedPreferences.Editor editor = sharedPrefs.edit();
-                    editor.putString(READ_HISTORY_CANDIDATE, title_array);
-                    editor.apply();
-                    Log.d("lognewsselect", "@@@@@@@@@@@@@");
-                } else {
-                    SharedPreferences.Editor editor = sharedPrefs.edit();
-                    editor.putString(READ_HISTORY_CANDIDATE, "zero_result");
-                    editor.apply();
-                }
-                myCallback.onCallback("123");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d("lognewsselect", String.valueOf(e));
-                // if we do not get any data or any error we are displaying
-                // a toast message that we do not get any data
-//                Toast.makeText(TestNewsOneActivity.this, "Fail to get the data.", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        task2.addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                if (!queryDocumentSnapshots.isEmpty()) {
-                    List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
-                    for (DocumentSnapshot d : list) {
-                        if (Math.abs(now/1000 - d.getTimestamp("noti_timestamp").getSeconds()) <= NOTIFICATION_TARGET_RANGE) {
-                            notification_unclick_array.add(d.getString("title"));
-                            Log.d("lognewsselect", "task2 " + d.getString("title"));
-                        }
-                        //mark as check
-                        db.collection("test_users")
-                                .document(device_id)
-                                .collection("push_news")
-                                .document(d.getId())
-                                .update("click", 4)
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Log.d("lognewsselect", "DocumentSnapshot successfully updated!");
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.w("lognewsselect", "Error updating document", e);
-                                    }
-                                });
-                    }
-                }
-                if(notification_unclick_array.size()!=0){
-                    String notification_unclick_string = "";
-                    for(int i = 0; i< notification_unclick_array.size(); i++){
-                        notification_unclick_string+= notification_unclick_array.get(i) + "#";
-                    }
-                    SharedPreferences.Editor editor = sharedPrefs.edit();
-                    editor.putString(NOTIFICATION_UNCLICKED_CANDIDATE, notification_unclick_string);
-                    editor.apply();
-                } else {
-                    SharedPreferences.Editor editor = sharedPrefs.edit();
-                    editor.putString(NOTIFICATION_UNCLICKED_CANDIDATE, "zero_result");
-                    editor.apply();
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d("lognewsselect", String.valueOf(e));
-            }
-        });
-        Log.d("lognewsselect", "select news finish################################# ");
-    }
-
-
     @RequiresApi(api = Build.VERSION_CODES.N)
     private String generate_esm_json(String read_news_title_array_string, String noti_news_title_array_string, String file_name) throws JSONException, InterruptedException {
-        Log.d("lognewsselect", "generate_json START %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-//        Log.d("lognewsselect", "READ_HISTORY_CANDIDATE"+ news_title_target_array);
-//        Log.d("lognewsselect", "NOTIFICATION_UNCLICKED_CANDIDATE"+ notification_unclick_array);
-
         if(file_name.equals("0.json")){
             List<String> noti_news_title_array_json = new ArrayList<String>(Arrays.asList(noti_news_title_array_string.split("#")));
             JSONArray notifications_arr = new JSONArray();
             for (int x = 0; x< noti_news_title_array_json.size(); x++){
-                if(noti_news_title_array_json.get(0).equals("zero_result")){
+                if(noti_news_title_array_json.get(0).equals(ZERO_RESULT_STRING)){
                     break;
                 }
                 notifications_arr.put(noti_news_title_array_json.get(x));
             }
-            notifications_arr.put("沒有印象");
+            notifications_arr.put(NOTI_UNCLICK_LAST_ONE);
             JSONObject jsonRootObject = new JSONObject(loadJSONFromAsset(file_name));
             JSONArray jsonQuestionObject = jsonRootObject.optJSONArray("questions");
             for (int i =0 ; i < jsonQuestionObject.length();i++){
@@ -516,7 +376,7 @@ public class ESMActivity extends com.recoveryrecord.surveyandroid.SurveyActivity
                 }
                 notifications_arr.put(noti_news_title_array_json.get(x));
             }
-            notifications_arr.put("沒有印象");
+            notifications_arr.put(NOTI_UNCLICK_LAST_ONE);
             String template_file_name = "1.json";
             int title_count = final_news_title_array.size();
             if (final_news_title_array.size()==1){
@@ -566,7 +426,7 @@ public class ESMActivity extends com.recoveryrecord.surveyandroid.SurveyActivity
                     for(int j=0; j<i;j++){
                         n_condi_single.putOpt("id", "add_" + j);
                         n_condi_single.putOpt("operation", "equals");
-                        n_condi_single.putOpt("value", "沒有印象或有看過相同的新聞");
+                        n_condi_single.putOpt("value", NOT_TARGET_READ_NEWS_TITLE_ANSWER);
                         n_condi_for_ques.put(n_condi_single);
                         n_condi_single = new JSONObject();
                     }
@@ -608,7 +468,7 @@ public class ESMActivity extends com.recoveryrecord.surveyandroid.SurveyActivity
                     for(int j=0; j<1;j++){
                         condi_single.putOpt("id", "add_" + j);
                         condi_single.putOpt("operation", "equals");
-                        condi_single.putOpt("value", "沒有印象或有看過相同的新聞");
+                        condi_single.putOpt("value", NOT_TARGET_READ_NEWS_TITLE_ANSWER);
                         condi_for_ques.put(condi_single);
                         condi_single = new JSONObject();
                     }
@@ -662,7 +522,7 @@ public class ESMActivity extends com.recoveryrecord.surveyandroid.SurveyActivity
                     for(int j=0; j<title_count;j++){
                         tt.putOpt("id", "add_" + j);
                         tt.putOpt("operation", "equals");
-                        tt.putOpt("value", "有印象，且沒看過相同的新聞");
+                        tt.putOpt("value", TARGET_READ_NEWS_TITLE_ANSWER);
                         my.put(tt);
                         tt = new JSONObject();
                     }
@@ -680,7 +540,7 @@ public class ESMActivity extends com.recoveryrecord.surveyandroid.SurveyActivity
                     for(int j=0; j<title_count;j++){
                         tt.putOpt("id", "add_" + j);
                         tt.putOpt("operation", "equals");
-                        tt.putOpt("value", "沒有印象或有看過相同的新聞");
+                        tt.putOpt("value", NOT_TARGET_READ_NEWS_TITLE_ANSWER);
                         my.put(tt);
                         tt = new JSONObject();
                     }

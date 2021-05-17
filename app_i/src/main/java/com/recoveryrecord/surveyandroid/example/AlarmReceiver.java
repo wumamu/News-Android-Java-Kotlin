@@ -32,11 +32,25 @@ import androidx.core.app.NotificationCompat;
 import androidx.preference.PreferenceManager;
 
 import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_CHANNEL_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_NOTIFICATION;
+import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_NOTIFICATION_ID;
+//import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_PARCELABLE;
+import static com.recoveryrecord.surveyandroid.example.Constants.DOC_ID_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_CHANNEL_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_END_TIME_HOUR;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_INTERVAL;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOTIFICATION_CONTENT_TEXT;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOTIFICATION_CONTENT_TITLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_START_TIME_HOUR;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TIME_OUT;
+import static com.recoveryrecord.surveyandroid.example.Constants.LAST_ESM_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_KEY;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_ESM;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_NOTI_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_SAMPLE;
+import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.VIBRATE_EFFECT;
 
 public class AlarmReceiver extends BroadcastReceiver {
@@ -82,13 +96,13 @@ public class AlarmReceiver extends BroadcastReceiver {
 //        int MaxHour = 22;//23:00:00
         int MinHour = sharedPrefs.getInt(ESM_START_TIME_HOUR, 9);
         int MaxHour = sharedPrefs.getInt(ESM_END_TIME_HOUR, 21);
-        long LastEsmTime = sharedPrefs.getLong("LastEsmTime", 0L);
+        long LastEsmTime = sharedPrefs.getLong(LAST_ESM_TIME, 0L);
         if(c.get(Calendar.HOUR_OF_DAY) >= MinHour && c.get(Calendar.HOUR_OF_DAY) < MaxHour) {
             Log.d("lognewsselect", "in daily interval");
             if(now - LastEsmTime > ESM_INTERVAL){
                 Log.d("lognewsselect", "in hour interval");
                 SharedPreferences.Editor editor = sharedPrefs.edit();
-                editor.putLong("LastEsmTime", now);
+                editor.putLong(LAST_ESM_TIME, now);
                 editor.apply();
                 return true;
             } else {
@@ -115,12 +129,13 @@ public class AlarmReceiver extends BroadcastReceiver {
         Intent intent_esm = new Intent();
 //        intent_esm.setClass(NewsHybridActivity.this, ESMActivity.class);
         intent_esm.setClass(context, LoadingPageActivity.class);
-        intent_esm.putExtra("esm_id", esm_id);
+        intent_esm.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent_esm.putExtra(ESM_ID, esm_id);
         int nid = (int) System.currentTimeMillis();
         PendingIntent pendingIntent = PendingIntent.getActivity(context, nid, intent_esm, 0);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, DEFAULT_ESM_CHANNEL_ID);
-        builder.setContentTitle("ESM");
-        builder.setContentText("是時候填寫問卷咯~");
+        builder.setContentTitle(ESM_NOTIFICATION_CONTENT_TITLE);
+        builder.setContentText(ESM_NOTIFICATION_CONTENT_TEXT);
         builder.setSmallIcon(R.drawable.ic_launcher_foreground);
         builder.setContentIntent(pendingIntent);
         builder.setAutoCancel(true);
@@ -130,18 +145,18 @@ public class AlarmReceiver extends BroadcastReceiver {
         builder.setPriority(NotificationManager.IMPORTANCE_MAX);
         builder.setCategory(Notification.CATEGORY_REMINDER);
         Bundle extras = new Bundle();
-        extras.putString("id", esm_id);
-        extras.putString("type", "esm");
+        extras.putString(DOC_ID_KEY, esm_id);
+        extras.putString(NOTIFICATION_TYPE_KEY, NOTIFICATION_TYPE_VALUE_ESM);
         builder.setExtras(extras);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
         Map<String, Object> esm = new HashMap<>();
-        esm.put("noti_timestamp", Timestamp.now());
-        esm.put("sample", 0);
-        db.collection("test_users")
+        esm.put(PUSH_ESM_NOTI_TIME, Timestamp.now());
+        esm.put(PUSH_ESM_SAMPLE, 0);
+        db.collection(TEST_USER_COLLECTION)
                 .document(device_id)
-                .collection("push_esm")
+                .collection(PUSH_ESM_COLLECTION)
                 .document(esm_id)
                 .set(esm);
         return builder.build();
@@ -150,8 +165,8 @@ public class AlarmReceiver extends BroadcastReceiver {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void scheduleNotification_esm (Context context, Notification notification, int delay) {
         Intent notificationIntent = new Intent(context, NotificationListenerNews.class);
-        notificationIntent.putExtra(NotificationListenerESM.NOTIFICATION_ID, 1 ) ;
-        notificationIntent.putExtra(NotificationListenerESM.NOTIFICATION, notification) ;
+        notificationIntent.putExtra(DEFAULT_ESM_NOTIFICATION_ID, 1 ) ;
+        notificationIntent.putExtra(DEFAULT_ESM_NOTIFICATION, notification) ;
         int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         long futureInMillis = SystemClock.elapsedRealtime() + delay;

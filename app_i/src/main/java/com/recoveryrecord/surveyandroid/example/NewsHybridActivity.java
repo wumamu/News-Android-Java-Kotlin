@@ -85,15 +85,18 @@ import androidx.viewpager.widget.ViewPager;
 import javax.annotation.Nullable;
 
 import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_CHANNEL_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_NOTIFICATION;
+import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_NOTIFICATION_ID;
+//import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_PARCELABLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_CHANNEL_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOTIFICATION_CONTENT_TEXT;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOTIFICATION_CONTENT_TITLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TIME_OUT;
 import static com.recoveryrecord.surveyandroid.example.Constants.VIBRATE_EFFECT;
 
 //public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener , GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
-    public static final String NOTIFICATION_CHANNEL_ID = "10001" ;
-    private final static String default_notification_channel_id = "default" ;
-    private static final String TAG = "NewsAllActivity";
+    private static final String TAG = "TestNewsAllActivity";
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DocumentReference noteRef = db.document("server_push_notifications/start");
     private CollectionReference noteRefqq = db.collection("server_push_notifications");
@@ -557,14 +560,14 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         esm_id = time_now;
 
         Intent intent_esm = new Intent();
-//        intent_esm.setClass(NewsHybridActivity.this, ESMActivity.class);
+        intent_esm.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent_esm.setClass(NewsHybridActivity.this, LoadingPageActivity.class);
         intent_esm.putExtra("esm_id", esm_id);
         int nid = (int) System.currentTimeMillis();
         PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_esm, 0);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, DEFAULT_ESM_CHANNEL_ID);
-        builder.setContentTitle("ESM");
-        builder.setContentText("是時候填寫問卷咯~");
+        builder.setContentTitle(ESM_NOTIFICATION_CONTENT_TITLE);
+        builder.setContentText(ESM_NOTIFICATION_CONTENT_TEXT);
         builder.setSmallIcon(R.drawable.ic_launcher_foreground);
         builder.setContentIntent(pendingIntent);
         builder.setAutoCancel(true);
@@ -594,8 +597,10 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void scheduleNotification_esm (Notification notification, int delay) {
         Intent notificationIntent = new Intent(this, NotificationListenerNews.class);
-        notificationIntent.putExtra(NotificationListenerESM.NOTIFICATION_ID, 1 ) ;
-        notificationIntent.putExtra(NotificationListenerESM.NOTIFICATION, notification) ;
+        notificationIntent.putExtra(DEFAULT_ESM_NOTIFICATION_ID, 1 ) ;
+        notificationIntent.putExtra(DEFAULT_ESM_NOTIFICATION, notification) ;
+//        notificationIntent.putExtra(NotificationListenerESM.NOTIFICATION_ID, 1 ) ;
+//        notificationIntent.putExtra(NotificationListenerESM.NOTIFICATION, notification) ;
         int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
         PendingIntent pendingIntent = PendingIntent.getBroadcast( this, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         long futureInMillis = SystemClock.elapsedRealtime() + delay;

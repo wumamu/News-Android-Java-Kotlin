@@ -63,7 +63,7 @@
     {
       "id": "not_read_title_2",
       "header": "Question not_read_title_2(39)",
-      "question": "承上題，該項您閱讀時或閱讀前從事的活動，對您來說，該活動的複雜程度為何？",
+      "question": "承上題，該項您閱讀時或閱讀前從事的活動，對您來說，該活動的複雜程度為何？\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)",
       "question_type": "segment_select",
       "low_tag": "非常不複雜",
       "high_tag": "非常複雜",
@@ -100,7 +100,7 @@
     {
       "id": "not_read_title_3",
       "header": "Question not_read_title_3(40)",
-      "question": "請選擇最符合您閱讀當下所處地點\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)",
+      "question": "請選擇最符合您閱讀當下所處地點",
       "question_type": "single_select",
       "options": [
         "住所",
@@ -1019,7 +1019,7 @@
     {
       "id": "not_read_title_forget_2",
       "header": "Question not_read_title_forget_2(42)",
-      "question": "承上題，該項您閱讀時或閱讀前從事的活動，對您來說，該活動的複雜程度為何？",
+      "question": "承上題，該項您閱讀時或閱讀前從事的活動，對您來說，該活動的複雜程度為何？\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)",
       "question_type": "segment_select",
       "low_tag": "非常不複雜",
       "high_tag": "非常複雜",
@@ -1061,7 +1061,7 @@
     {
       "id": "not_read_title_forget_3",
       "header": "Question not_read_title_forget_3(43)",
-      "question": "請選擇最符合您閱讀當下所處地點\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)",
+      "question": "請選擇最符合您閱讀當下所處地點",
       "question_type": "single_select",
       "options": [
         "住所",
@@ -1295,7 +1295,7 @@
     {
       "id": "60",
       "header": "Question not_read_title_2(60)",
-      "question": "承上題，該項您閱讀時或閱讀前從事的活動，對您來說，該活動的複雜程度為何？",
+      "question": "承上題，該項您閱讀時或閱讀前從事的活動，對您來說，該活動的複雜程度為何？\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)",
       "question_type": "segment_select",
       "low_tag": "非常不複雜",
       "high_tag": "非常複雜",
@@ -1337,7 +1337,7 @@
     {
       "id": "61",
       "header": "Question not_read_title_3(61)",
-      "question": "請選擇最符合您閱讀當下所處地點\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)",
+      "question": "請選擇最符合您閱讀當下所處地點",
       "question_type": "single_select",
       "options": [
         "住所",
@@ -2336,7 +2336,7 @@
     {
       "id": "64",
       "header": "Question not_read_title_forget_2(64)",
-      "question": "承上題，該項您閱讀時或閱讀前從事的活動，對您來說，該活動的複雜程度為何？",
+      "question": "承上題，該項您閱讀時或閱讀前從事的活動，對您來說，該活動的複雜程度為何？\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)",
       "question_type": "segment_select",
       "low_tag": "非常不複雜",
       "high_tag": "非常複雜",
@@ -2383,7 +2383,7 @@
     {
       "id": "65",
       "header": "Question not_read_title_forget_3(65)",
-      "question": "請選擇最符合您閱讀當下所處地點\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)",
+      "question": "請選擇最符合您閱讀當下所處地點",
       "question_type": "single_select",
       "options": [
         "住所",

@@ -36,11 +36,14 @@ import androidx.preference.PreferenceManager;
 
 //import static com.recoveryrecord.surveyandroid.example.Constants.CATEGORY_HASH_SET_PREFIX;
 //import static com.recoveryrecord.surveyandroid.example.Constants.CATEGORY_HASH_SET_SIZE;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TARGET_RANGE;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TIME_ON_PAGE_THRESHOLD;
 import static com.recoveryrecord.surveyandroid.example.Constants.NA_STRING;
 import static com.recoveryrecord.surveyandroid.example.Constants.NONE_STRING;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TARGET_RANGE;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_KEY;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_ESM;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_UNCLICKED_CANDIDATE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_SAMPLE;
@@ -86,7 +89,7 @@ public class LoadingPageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_loading_page);
         if (getIntent().getExtras() != null) {
             Bundle b = getIntent().getExtras();
-            esm_id = Objects.requireNonNull(b.getString("esm_id"));
+            esm_id = Objects.requireNonNull(b.getString(ESM_ID));
         }
         search_sample_history();
         select_news_title_candidate();
@@ -164,9 +167,9 @@ public class LoadingPageActivity extends AppCompatActivity {
 
         Intent intent_esm = new Intent();
         intent_esm.setClass(this, ESMActivity.class);
-        intent_esm.putExtra("esm_id", esm_id);//******************
-        intent_esm.putExtra("type", "esm");
-        Log.d("lognewsselect", "openESM" + esm_id);
+        intent_esm.putExtra(ESM_ID, esm_id);//******************
+        intent_esm.putExtra(NOTIFICATION_TYPE_KEY, NOTIFICATION_TYPE_VALUE_ESM);
+//        Log.d("lognewsselect", "openESM" + esm_id);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Map<String, Object> esm = new HashMap<>();

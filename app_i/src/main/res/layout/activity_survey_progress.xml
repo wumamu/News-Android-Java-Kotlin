@@ -4,13 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <TextView
+    <LinearLayout
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/layout_inside"
+        tools:context=".SurveyProgressActivity"
+        android:orientation="vertical"
+        android:gravity="center_horizontal|center_vertical"
+        android:layout_gravity="center_horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="問卷進度現在是空的喔"
-        android:gravity="left"
-        android:textSize="8dp"
-        android:id="@+id/tmp"
-        tools:ignore="MissingConstraints" />
+        android:layout_height="match_parent">
+    </LinearLayout>
+<!--    <TextView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:textAppearance="?android:attr/textAppearanceMedium"-->
+<!--        android:text="問卷進度現在是空的喔"-->
+<!--        android:gravity="left"-->
+<!--        android:textSize="8dp"-->
+<!--        android:id="@+id/tmp"-->
+<!--        tools:ignore="MissingConstraints" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>

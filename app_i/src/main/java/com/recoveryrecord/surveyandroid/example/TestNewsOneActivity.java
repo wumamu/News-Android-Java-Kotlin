@@ -32,6 +32,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+//import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_PARCELABLE;
+//import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_NEWS_PARCELABLE;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_CHANNEL_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_CHANNEL_ID;
+
 public class TestNewsOneActivity extends AppCompatActivity {
     private RecyclerView courseRV;
     private ArrayList<NewsModel> dataModalArrayList;
@@ -149,35 +154,35 @@ public class TestNewsOneActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected (MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_5 :
-                scheduleNotification(getNotification("news (5 second delay)" ), 5000 );
-                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
+//                scheduleNotification(getNotification("news (5 second delay)" ), 5000 );
+//                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
                 return true;
             case R.id.action_10 :
-                scheduleNotification(getNotification("news (10 second delay)" ), 10000 );
-                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
+//                scheduleNotification(getNotification("news (10 second delay)" ), 10000 );
+//                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
                 return true;
             case R.id.action_30 :
-                scheduleNotification(getNotification("news (30 second delay)" ), 30000 );
-                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
+//                scheduleNotification(getNotification("news (30 second delay)" ), 30000 );
+//                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 30000 );
                 return true;
             default :
                 return super.onOptionsItemSelected(item);
         }
     }
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void scheduleNotification (Notification notification, int delay) {
-//        int nid = (int) System.currentTimeMillis();
-//        Log.d("log: notification", "news id" + nid);
-        Intent notificationIntent = new Intent(this, NotificationListenerNews.class);
-        notificationIntent.putExtra(NotificationListenerNews.NOTIFICATION_ID, 1 ) ;
-        notificationIntent.putExtra(NotificationListenerNews.NOTIFICATION, notification) ;
-        int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast( this, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        long futureInMillis = SystemClock.elapsedRealtime() + delay;
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        assert alarmManager != null;
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
-    }
+//    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+//    private void scheduleNotification (Notification notification, int delay) {
+////        int nid = (int) System.currentTimeMillis();
+////        Log.d("log: notification", "news id" + nid);
+//        Intent notificationIntent = new Intent(this, NotificationListenerNews.class);
+//        notificationIntent.putExtra(NEWS_CHANNEL_ID, 1 ) ;
+//        notificationIntent.putExtra(DEFAULT_NEWS_PARCELABLE, notification) ;
+//        int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast( this, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//        assert alarmManager != null;
+//        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+//    }
     private Notification getNotification (String content) {
         int nid = (int) System.currentTimeMillis();
         Log.d("log: notification", "news id" + nid);
@@ -211,18 +216,18 @@ public class TestNewsOneActivity extends AppCompatActivity {
         builder.setChannelId(NOTIFICATION_CHANNEL_ID);
         return builder.build() ;
     }
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void scheduleNotification_esm (Notification notification, int delay) {
-//        int nid = (int) System.currentTimeMillis();
-//        Log.d("log: notification", "news id" + nid);
-        Intent notificationIntent = new Intent(this, NotificationListenerNews.class);
-        notificationIntent.putExtra(NotificationListenerESM.NOTIFICATION_ID, 1 ) ;
-        notificationIntent.putExtra(NotificationListenerESM.NOTIFICATION, notification) ;
-        int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast( this, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        long futureInMillis = SystemClock.elapsedRealtime() + delay;
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        assert alarmManager != null;
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
-    }
+//    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+//    private void scheduleNotification_esm (Notification notification, int delay) {
+////        int nid = (int) System.currentTimeMillis();
+////        Log.d("log: notification", "news id" + nid);
+//        Intent notificationIntent = new Intent(this, NotificationListenerNews.class);
+//        notificationIntent.putExtra(ESM_CHANNEL_ID, 1 ) ;
+//        notificationIntent.putExtra(DEFAULT_ESM_PARCELABLE, notification) ;
+//        int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast( this, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//        assert alarmManager != null;
+//        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+//    }
 }

@@ -133,7 +133,7 @@ public class TestNotificationSettingActivity extends Activity {
     }
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(TestNotificationSettingActivity.this, NewsAllActivity.class);
+        Intent intent = new Intent(TestNotificationSettingActivity.this, TestNewsAllActivity.class);
         startActivity(intent);
     }
 

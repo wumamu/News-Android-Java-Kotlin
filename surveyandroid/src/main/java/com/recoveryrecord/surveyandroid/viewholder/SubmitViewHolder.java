@@ -36,6 +36,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -72,6 +73,17 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                     esm_id = Objects.requireNonNull(b.getString("esm_id"));
 //                    Log.d("logesm", String.valueOf(456));
                 }
+                String ESM_DONE_TOTAL = "ESMDoneTotal";
+                String ESM_DAY_DONE_PREFIX = "ESMDayDone_";
+                SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences((Activity)v.getContext());
+                SharedPreferences.Editor editor = sharedPrefs.edit();
+                Calendar calendar = Calendar.getInstance();
+                int day_index = calendar.get(Calendar.DAY_OF_YEAR);
+                int esm_done = sharedPrefs.getInt(ESM_DONE_TOTAL, 0);
+                int esm_day_done = sharedPrefs.getInt(ESM_DAY_DONE_PREFIX+ day_index, 0);
+                editor.putInt(ESM_DONE_TOTAL, esm_done+1);
+                editor.putInt(ESM_DAY_DONE_PREFIX + day_index, esm_day_done+1);
+                editor.apply();
                 result_json = answerProvider.allAnswersJson();
                 DocumentReference docRef = db.collection("test_users").document(device_id).collection("push_esm").document(esm_id);
                 docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>(){

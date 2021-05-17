@@ -23,6 +23,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_OUT_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.READ_HISTORY_LIMIT_PER_PAGE;
+import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
+
 public class ReadingHistoryFragment extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
@@ -91,13 +96,11 @@ public class ReadingHistoryFragment extends Fragment {
     }
 
     private void loadrecyclerViewData() {
-//.orderBy("name").limit(3)//                db.collectionGroup("news") //
-        db.collection("test_users")
+        db.collection(TEST_USER_COLLECTION)
                 .document(device_id)
-                .collection("reading_behaviors")
-//                .whereArrayContains("category", "國際")
-                .orderBy("out_timestamp", Query.Direction.DESCENDING)
-                .limit(20)
+                .collection(READING_BEHAVIOR_COLLECTION)
+                .orderBy(READING_BEHAVIOR_OUT_TIME, Query.Direction.DESCENDING)
+                .limit(READ_HISTORY_LIMIT_PER_PAGE)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override

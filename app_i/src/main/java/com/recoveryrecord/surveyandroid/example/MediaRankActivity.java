@@ -19,18 +19,14 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static com.recoveryrecord.surveyandroid.example.Constants.MAIN_PAGE_MEDIA_ORDER;
+
 public class MediaRankActivity extends AppCompatActivity{
 
     private RecyclerView courseRV;
     private ArrayList<MediaModel> dataModalArrayList;
     private MediaRankRecycleViewAdapter dataRVAdapter;
     private FirebaseFirestore db;
-//    private OnCustomerListChangedListener mListChangedListener;
-
-    //temp for notification
-    public static final String NOTIFICATION_CHANNEL_ID = "10001" ;
-    private final static String default_notification_channel_id = "default" ;
-    boolean doubleBackToExitPressedOnce = false;
 
     private SharedPreferences mSharedPreferences;
     private SharedPreferences.Editor mEditor;
@@ -75,7 +71,7 @@ public class MediaRankActivity extends AppCompatActivity{
     }
 
     private void loadrecyclerViewData() {
-        Set<String> ranking = mSharedPreferences.getStringSet("media_rank", null);
+        Set<String> ranking = mSharedPreferences.getStringSet(MAIN_PAGE_MEDIA_ORDER, null);
         for (int i = 1; i<=9; i++){
             for (String r : ranking){
                 List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
@@ -116,7 +112,7 @@ public class MediaRankActivity extends AppCompatActivity{
         }
 
         //save to SharedPreference
-        mEditor.putStringSet("media_rank", new_set).commit();
+        mEditor.putStringSet(MAIN_PAGE_MEDIA_ORDER, new_set).commit();
         mEditor.commit();
         super.onStop();
     }

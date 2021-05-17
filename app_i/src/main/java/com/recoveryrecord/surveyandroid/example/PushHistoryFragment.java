@@ -24,6 +24,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_HISTORY_LIMIT_PER_PAGE;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_NOTI_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_TYPE;
+import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
+
 public class PushHistoryFragment extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
@@ -93,12 +99,11 @@ public class PushHistoryFragment extends Fragment {
 
     private void loadrecyclerViewData() {
 //.orderBy("name").limit(3)//                db.collectionGroup("news") //
-        db.collection("test_users")
+        db.collection(TEST_USER_COLLECTION)
                 .document(device_id)
-                .collection("push_news")
-//                .whereArrayContains("category", "國際")
-                .orderBy("noti_timestamp", Query.Direction.DESCENDING)
-                .limit(20)
+                .collection(PUSH_NEWS_COLLECTION)
+                .orderBy(PUSH_NEWS_NOTI_TIME, Query.Direction.DESCENDING)
+                .limit(PUSH_HISTORY_LIMIT_PER_PAGE)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
@@ -107,12 +112,9 @@ public class PushHistoryFragment extends Fragment {
                         if (!queryDocumentSnapshots.isEmpty()) {
                             List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
                             for (DocumentSnapshot d : list) {
-                                if(d.getString("type").equals("target add")){
+                                if(d.getString(PUSH_NEWS_TYPE).equals("target add")){
                                     NewsModel dataModal = d.toObject(NewsModel.class);
                                     dataModalArrayList.add(dataModal);
-//                                    Log.d("lognewsselect", "D!!!!!!!!!!!!!!!!!!!!!!!");
-                                } else {
-//                                    Log.d("lognewsselect", "D!fffffffffffff!!!!!!!!");
                                 }
                             }
                             dataRVAdapter.notifyDataSetChanged();
