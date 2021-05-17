@@ -107,7 +107,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".TestNewsOneActivity" />
-        <activity android:name=".ESMActivity"
+        <activity android:name=".SurveyActivity"
             android:launchMode="singleTask"
             android:excludeFromRecents="true"
             android:theme="@style/Widget.SurveyAndroid"/>
@@ -125,7 +125,7 @@
         <activity android:name=".TestServiceActivity"
             android:theme="@style/AppThemeActionBar"/>
         <activity android:name=".TestDoubleBarActivity" />
-        <activity android:name=".LoadingPageActivity" />
+        <activity android:name=".ESMLoadingPageActivity" />
 
 
 

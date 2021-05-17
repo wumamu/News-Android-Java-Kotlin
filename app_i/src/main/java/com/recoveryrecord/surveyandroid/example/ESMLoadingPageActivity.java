@@ -15,15 +15,18 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,8 +49,6 @@ import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TY
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_ESM;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_UNCLICKED_CANDIDATE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_SAMPLE;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TARGET_TITLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_CLICK;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_NOTI_TIME;
@@ -69,7 +70,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.TARGET_NEWS_TIT
 import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.ZERO_RESULT_STRING;
 
-public class LoadingPageActivity extends AppCompatActivity {
+public class ESMLoadingPageActivity extends AppCompatActivity {
     private Button button;
     String output_file_name = "2.json";
     Task task, task2, task3;
@@ -82,6 +83,8 @@ public class LoadingPageActivity extends AppCompatActivity {
     String target_read_title = "NA";
     List<String> tmp_share_Array = new ArrayList<>();
     List<String> tmp_category_Array = new ArrayList<>();
+//    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
+
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,9 +94,8 @@ public class LoadingPageActivity extends AppCompatActivity {
             Bundle b = getIntent().getExtras();
             esm_id = Objects.requireNonNull(b.getString(ESM_ID));
         }
-        search_sample_history();
+//        search_sample_history();
         select_news_title_candidate();
-//        sort_list();
         button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,70 +105,70 @@ public class LoadingPageActivity extends AppCompatActivity {
         });
     }
 
-    private void search_sample_history() {
-        final FirebaseFirestore db = FirebaseFirestore.getInstance();
-        final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        @SuppressLint("HardwareIds") final String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-        task3 =  db.collection(TEST_USER_COLLECTION)
-                .document(device_id)
-                .collection(PUSH_ESM_COLLECTION)
-                .whereEqualTo(PUSH_ESM_SAMPLE, 2)
-                .get();
-        task3.addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                if (!queryDocumentSnapshots.isEmpty()) {
-                    List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
-                    for (DocumentSnapshot d : list) {
-                        if (d.get(PUSH_ESM_TARGET_TITLE)!=null && !d.get(PUSH_ESM_TARGET_TITLE).equals("NA")){
-                            String target_read_title = sharedPrefs.getString(TARGET_NEWS_TITLE, "");
-                            SharedPreferences.Editor editor = sharedPrefs.edit();
-                            if(target_read_title.equals("")){//no history
-                                editor.putString(TARGET_NEWS_TITLE, d.getString(PUSH_ESM_TARGET_TITLE));
-                            } else {
-                                editor.putString(TARGET_NEWS_TITLE, target_read_title + "#" + d.getString(PUSH_ESM_TARGET_TITLE) );
-                            }
-                            editor.apply();
-                        }
-                        //mark as check
-                        db.collection(TEST_USER_COLLECTION)
-                                .document(device_id)
-                                .collection(PUSH_ESM_COLLECTION)
-                                .document(d.getId())
-                                .update(PUSH_ESM_SAMPLE, 3)
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Log.d("lognewsselect", "DocumentSnapshot successfully updated!");
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.w("lognewsselect", "Error updating document", e);
-                                    }
-                                });
-
-                    }
-                }
-                Log.d("lognewsselect", "**********COMPLETE TASK3");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d("lognewsselect", String.valueOf(e));
-                // if we do not get any data or any error we are displaying
-                // a toast message that we do not get any data
-//                Toast.makeText(TestNewsOneActivity.this, "Fail to get the data.", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-    }
+//    private void search_sample_history() {
+//        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+//        @SuppressLint("HardwareIds") final String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+//        task3 =  db.collection(TEST_USER_COLLECTION)
+//                .document(device_id)
+//                .collection(PUSH_ESM_COLLECTION)
+//                .whereEqualTo(PUSH_ESM_SAMPLE, 2)
+//                .get();
+//        task3.addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//            @Override
+//            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                if (!queryDocumentSnapshots.isEmpty()) {
+//                    List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
+//                    for (DocumentSnapshot d : list) {
+//                        if (d.get(PUSH_ESM_TARGET_TITLE)!=null && !d.get(PUSH_ESM_TARGET_TITLE).equals("NA")){
+//                            String target_read_title = sharedPrefs.getString(TARGET_NEWS_TITLE, "");
+//                            SharedPreferences.Editor editor = sharedPrefs.edit();
+//                            if(target_read_title.equals("")){//no history
+//                                editor.putString(TARGET_NEWS_TITLE, d.getString(PUSH_ESM_TARGET_TITLE));
+//                            } else {
+//                                editor.putString(TARGET_NEWS_TITLE, target_read_title + "#" + d.getString(PUSH_ESM_TARGET_TITLE) );
+//                            }
+//                            editor.apply();
+//                        }
+//                        //mark as check
+//                        db.collection(TEST_USER_COLLECTION)
+//                                .document(device_id)
+//                                .collection(PUSH_ESM_COLLECTION)
+//                                .document(d.getId())
+//                                .update(PUSH_ESM_SAMPLE, 3)
+//                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                    @Override
+//                                    public void onSuccess(Void aVoid) {
+//                                        Log.d("lognewsselect", "DocumentSnapshot successfully updated!");
+//                                    }
+//                                })
+//                                .addOnFailureListener(new OnFailureListener() {
+//                                    @Override
+//                                    public void onFailure(@NonNull Exception e) {
+//                                        Log.w("lognewsselect", "Error updating document", e);
+//                                    }
+//                                });
+//
+//                    }
+//                }
+//                Log.d("lognewsselect", "**********COMPLETE TASK3");
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                Log.d("lognewsselect", String.valueOf(e));
+//                // if we do not get any data or any error we are displaying
+//                // a toast message that we do not get any data
+////                Toast.makeText(TestNewsOneActivity.this, "Fail to get the data.", Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//
+//    }
 
     public void openESM() {
 
         Intent intent_esm = new Intent();
-        intent_esm.setClass(this, ESMActivity.class);
+        intent_esm.setClass(this, SurveyActivity.class);
         intent_esm.putExtra(ESM_ID, esm_id);//******************
         intent_esm.putExtra(NOTIFICATION_TYPE_KEY, NOTIFICATION_TYPE_VALUE_ESM);
 //        Log.d("lognewsselect", "openESM" + esm_id);
@@ -302,7 +304,9 @@ public class LoadingPageActivity extends AppCompatActivity {
 //                                        editor.putString(arrayName + "_" + i, array[i]);
 //                                    editor.commit();
 //                                    Log.d("lognewsselect", "task1 " + d.getString(READING_BEHAVIOR_TITLE));
-                                    news_title_target_array.add(d.getString(READING_BEHAVIOR_TITLE) + "¢" + share_var + "¢" + trigger_var + "¢" + cat_var);
+                                    Timestamp timestamp = d.getTimestamp(READING_BEHAVIOR_IN_TIME);
+                                    Date date = timestamp.toDate();
+                                    news_title_target_array.add(d.getString(READING_BEHAVIOR_TITLE) + "¢" + share_var + "¢" + trigger_var + "¢" + cat_var + "¢" + date);
                                 }
                             }
                         }

@@ -3,7 +3,6 @@
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
-import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -15,7 +14,6 @@ import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
@@ -53,7 +51,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -70,7 +67,7 @@ import androidx.viewpager.widget.ViewPager;
 import javax.annotation.Nullable;
 
 //import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_PARCELABLE;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_CHANNEL_ID;
+
 
 //import com.google.firebase.FirebaseApp;
 
@@ -409,7 +406,7 @@ public class TestNewsAllActivity extends AppCompatActivity implements Navigation
 //                scheduleNotification_repeat(getNotification_esm("time"));
 //                return true;
 //            case R.id.action_10 :
-//                Intent intent_ems = new Intent(TestNewsAllActivity.this, ESMActivity.class);
+//                Intent intent_ems = new Intent(TestNewsAllActivity.this, SurveyActivity.class);
 //                startActivity(intent_ems);
 //                return true;
 //            case R.id.action_30 :
@@ -489,7 +486,7 @@ public class TestNewsAllActivity extends AppCompatActivity implements Navigation
         int nid = (int) System.currentTimeMillis();
         Log.d("logesm", "esm id " + nid + " " + Timestamp.now());
         Intent intent_esm = new Intent();
-        intent_esm.setClass(TestNewsAllActivity.this, ESMActivity.class);
+        intent_esm.setClass(TestNewsAllActivity.this, SurveyActivity.class);
         intent_esm.putExtra("trigger_from", "Notification");
         intent_esm.putExtra("esm_id", esm_id);
         intent_esm.putExtra("noti_timestamp", Timestamp.now());

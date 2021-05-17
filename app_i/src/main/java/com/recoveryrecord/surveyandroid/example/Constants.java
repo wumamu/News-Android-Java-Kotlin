@@ -54,8 +54,10 @@ public class Constants {
     public static final String NOTIFICATION_TYPE_VALUE_NEWS = "news";
     public static final String NOTIFICATION_TYPE_VALUE_ESM = "esm";
     public static final String NOTIFICATION_TYPE_VALUE_DIARY = "diary";
-    //LoadingPageActivity ESMActivity
+    //ESMLoadingPageActivity SurveyActivity
     public static final String ESM_ID = "esm_id";
+    //DiaryLoadingPageActivity SurveyActivity
+    public static final String DIARY_ID = "diary_id";
     //FIRESTORE FIELD###############################################################################
     //FIRESTORE FIELD###############################################################################
     //FIRESTORE FIELD###############################################################################
@@ -109,6 +111,7 @@ public class Constants {
     //PUSH ESM
     public static final String PUSH_ESM_COLLECTION = "push_esm";
     public static final String PUSH_ESM_SAMPLE = "sample";
+    public static final String PUSH_ESM_RESULT = "result";
     public static final String PUSH_ESM_REMOVE_TIME = "remove_timestamp";
     public static final String PUSH_ESM_NOTI_TIME = "noti_timestamp";
     public static final String PUSH_ESM_OPEN_TIME = "open_timestamp";
@@ -117,7 +120,9 @@ public class Constants {
     public static final String PUSH_ESM_READ_ARRAY = "ReadNewsTitle";
     public static final String PUSH_ESM_NOTI_ARRAY = "NotiNewTitle";
     public static final String PUSH_ESM_TARGET_TITLE = "target_read_title";
-
+    public static final String PUSH_ESM_TARGET_IN_TIME = "target_in_time";
+    public static final String PUSH_ESM_TARGET_SITUATION = "target_situation";
+    public static final String PUSH_ESM_TARGET_PLACE = "target_place";
 
 
 

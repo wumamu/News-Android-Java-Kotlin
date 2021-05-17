@@ -1,13 +1,10 @@
 package com.recoveryrecord.surveyandroid.example;
-import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,12 +27,10 @@ import com.recoveryrecord.surveyandroid.example.model.NewsModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 //import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_PARCELABLE;
 //import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_NEWS_PARCELABLE;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_CHANNEL_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_CHANNEL_ID;
+
 
 public class TestNewsOneActivity extends AppCompatActivity {
     private RecyclerView courseRV;
@@ -203,7 +198,7 @@ public class TestNewsOneActivity extends AppCompatActivity {
         int nid = (int) System.currentTimeMillis();
         Log.d("log: notification", "esm id" + nid);
         Intent intent_esm = new Intent();
-        intent_esm.setClass(TestNewsOneActivity.this, ESMActivity.class);
+        intent_esm.setClass(TestNewsOneActivity.this, SurveyActivity.class);
         intent_esm.putExtra("trigger_from", "Notification");
         intent_esm.putExtra("esm_id", System.currentTimeMillis());
         PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_esm, 0);

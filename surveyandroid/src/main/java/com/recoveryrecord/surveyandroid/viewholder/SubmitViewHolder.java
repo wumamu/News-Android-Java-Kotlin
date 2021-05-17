@@ -51,6 +51,10 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
     String result_json = "";
     String sample_title = "";
     String target_read_title = "NA";
+    String target_read_current_title = "NA";
+    String target_read_title_in_time = "NA";
+    String target_read_title_situation = "NA";
+    String target_read_title_place = "NA";
     List<String> sample_read_Array = new ArrayList<>();
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -75,7 +79,7 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                 }
                 String ESM_DONE_TOTAL = "ESMDoneTotal";
                 String ESM_DAY_DONE_PREFIX = "ESMDayDone_";
-                SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences((Activity)v.getContext());
+                final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences((Activity)v.getContext());
                 SharedPreferences.Editor editor = sharedPrefs.edit();
                 Calendar calendar = Calendar.getInstance();
                 int day_index = calendar.get(Calendar.DAY_OF_YEAR);
@@ -106,6 +110,12 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                                                     if(jsonAnswerObject.get(key).equals("有印象，且沒看過相同的新聞")){
                                                         List<String> add_what = new ArrayList<String>(Arrays.asList(key.split("_")));
                                                         target_read_title = sample_read_Array.get(Integer.parseInt(add_what.get(1)));
+                                                        if (jsonAnswerObject.has("read_13")) {
+                                                            target_read_title_situation = jsonAnswerObject.getString("read_13");
+                                                        }
+                                                        if (jsonAnswerObject.has("read_15")) {
+                                                            target_read_title_place =  jsonAnswerObject.getString("read_15");
+                                                        }
                                                         break;
                                                     }
                                                 } catch (JSONException e) {
@@ -142,11 +152,31 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                                 int sample = 1;
                                 if(!target_read_title.equals("NA")){
                                     sample = 2;
+                                    String TARGET_NEWS_TITLE = "TargetNewsTitleArray";
+                                    String target_read_title_array_string = sharedPrefs.getString(TARGET_NEWS_TITLE, "");
+                                    SharedPreferences.Editor editor = sharedPrefs.edit();
+                                    if(target_read_title_array_string.equals("")){//no history
+                                        editor.putString(TARGET_NEWS_TITLE, target_read_title);
+                                    } else {
+                                        editor.putString(TARGET_NEWS_TITLE, target_read_title_array_string + "#" + target_read_title );
+                                    }
+                                    List<String> tmp = new ArrayList<String>(Arrays.asList(target_read_title.split("¢")));
+                                    target_read_title_in_time = tmp.get(4);
                                 }
-                                rbRef.update("sample", sample,
-                                        "target_read_title", target_read_title,
-                                        "submit_timestamp", current,
-                                        "result", result_json)//another field
+                                String PUSH_ESM_SUBMIT_TIME = "submit_timestamp";
+                                String PUSH_ESM_SAMPLE = "sample";
+                                String PUSH_ESM_RESULT = "result";
+                                String PUSH_ESM_TARGET_TITLE = "target_read_title";
+                                String PUSH_ESM_TARGET_IN_TIME = "target_in_time";
+                                String PUSH_ESM_TARGET_SITUATION = "target_situation";
+                                String PUSH_ESM_TARGET_PLACE = "target_place";
+                                rbRef.update(PUSH_ESM_SAMPLE, sample,
+                                        PUSH_ESM_TARGET_TITLE, target_read_title,
+                                        PUSH_ESM_TARGET_IN_TIME, target_read_title_in_time,
+                                        PUSH_ESM_TARGET_SITUATION, target_read_title_situation,
+                                        PUSH_ESM_TARGET_PLACE, target_read_title_place,
+                                        PUSH_ESM_SUBMIT_TIME, current,
+                                        PUSH_ESM_RESULT, result_json)//another field
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {

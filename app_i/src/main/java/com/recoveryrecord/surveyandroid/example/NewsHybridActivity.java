@@ -64,7 +64,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -561,7 +560,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 
         Intent intent_esm = new Intent();
         intent_esm.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent_esm.setClass(NewsHybridActivity.this, LoadingPageActivity.class);
+        intent_esm.setClass(NewsHybridActivity.this, ESMLoadingPageActivity.class);
         intent_esm.putExtra("esm_id", esm_id);
         int nid = (int) System.currentTimeMillis();
         PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_esm, 0);

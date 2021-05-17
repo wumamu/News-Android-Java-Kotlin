@@ -97,7 +97,20 @@ public class AlarmReceiver extends BroadcastReceiver {
         int MinHour = sharedPrefs.getInt(ESM_START_TIME_HOUR, 9);
         int MaxHour = sharedPrefs.getInt(ESM_END_TIME_HOUR, 21);
         long LastEsmTime = sharedPrefs.getLong(LAST_ESM_TIME, 0L);
-        if(c.get(Calendar.HOUR_OF_DAY) >= MinHour && c.get(Calendar.HOUR_OF_DAY) < MaxHour) {
+        boolean in_range = false;
+        if(MaxHour>MinHour){
+            //min 9 max 21
+            if((c.get(Calendar.HOUR_OF_DAY) >= MinHour && c.get(Calendar.HOUR_OF_DAY) < MaxHour)){
+                in_range = true;
+            }
+        } else {
+            //min 11 max 2
+            //in midnight
+            if(((c.get(Calendar.HOUR_OF_DAY) >= MinHour || c.get(Calendar.HOUR_OF_DAY) < MaxHour))){
+                in_range = true;
+            }
+        }
+        if(in_range) {
             Log.d("lognewsselect", "in daily interval");
             if(now - LastEsmTime > ESM_INTERVAL){
                 Log.d("lognewsselect", "in hour interval");
@@ -127,8 +140,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         esm_id = time_now;
 
         Intent intent_esm = new Intent();
-//        intent_esm.setClass(NewsHybridActivity.this, ESMActivity.class);
-        intent_esm.setClass(context, LoadingPageActivity.class);
+//        intent_esm.setClass(NewsHybridActivity.this, SurveyActivity.class);
+        intent_esm.setClass(context, ESMLoadingPageActivity.class);
         intent_esm.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent_esm.putExtra(ESM_ID, esm_id);
         int nid = (int) System.currentTimeMillis();

@@ -1,8 +1,6 @@
 package com.recoveryrecord.surveyandroid.example;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -18,10 +16,8 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
-import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,9 +28,6 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 
-import java.util.Calendar;
-import java.util.concurrent.ThreadLocalRandom;
-
 import com.recoveryrecord.surveyandroid.example.receiever.BlueToothReceiver;
 import com.recoveryrecord.surveyandroid.example.receiever.NetworkChangeReceiver;
 
@@ -44,8 +37,7 @@ import static android.media.AudioManager.STREAM_NOTIFICATION;
 import static android.media.AudioManager.STREAM_RING;
 //import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_PARCELABLE;
 //import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_NEWS_PARCELABLE;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_CHANNEL_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_CHANNEL_ID;
+
 //import android.support.v4.app.NotificationCompat ;
 //import android.support.v7.app.AppCompatActivity ;
 
@@ -96,7 +88,7 @@ public class TestBasicActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
             Intent intent = new Intent();
-            intent.setClass(TestBasicActivity.this, ESMActivity.class);
+            intent.setClass(TestBasicActivity.this, SurveyActivity.class);
 //            intent.setClass(TestActivityRecognitionActivity.this, TestESMJsonViewActivity.class);
             startActivity(intent);
             //TestActivityRecognitionActivity.this.finish();
@@ -500,7 +492,7 @@ public class TestBasicActivity extends AppCompatActivity {
     private Notification getNotification_esm (String content) {
         int nid = (int) System.currentTimeMillis();
         Intent intent_esm = new Intent();
-        intent_esm.setClass(TestBasicActivity.this, ESMActivity.class);
+        intent_esm.setClass(TestBasicActivity.this, SurveyActivity.class);
         intent_esm.putExtra("trigger_from", "Notification");
         PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_esm, 0);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);

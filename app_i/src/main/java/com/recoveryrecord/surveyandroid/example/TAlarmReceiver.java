@@ -142,8 +142,8 @@
 //        String esm_id = "";
 //        String json_file_name = "3.json";
 //        esm_id = String.valueOf(date);
-//        Intent notificationIntent = new Intent(context, ESMActivity.class); //Intent(this, 點下去會跳到ESM class)
-//        notificationIntent.putExtra("json_file_name", "ExampleQuestions.json");
+//        Intent notificationIntent = new Intent(context, SurveyActivity.class); //Intent(this, 點下去會跳到ESM class)
+//        notificationIntent.putExtra("json_file_name", "test.json");
 //        notificationIntent.putExtra("esm_id", esm_id);
 //        notificationIntent.putExtra("noti_timestamp", Timestamp.now());
 //        notificationIntent.putExtra("json_file_name", json_file_name);
@@ -180,8 +180,8 @@
 //        String diary_id = "";
 //        String json_file_name = "3.json";
 //        diary_id = String.valueOf(date);
-//        Intent notificationIntent = new Intent(context, ESMActivity.class); //Intent(this, 點下去會跳到ESM class)
-//        notificationIntent.putExtra("json_file_name", "ExampleQuestions.json");
+//        Intent notificationIntent = new Intent(context, SurveyActivity.class); //Intent(this, 點下去會跳到ESM class)
+//        notificationIntent.putExtra("json_file_name", "test.json");
 //        notificationIntent.putExtra("esm_id", diary_id);
 //        notificationIntent.putExtra("noti_timestamp", Timestamp.now());
 //        notificationIntent.putExtra("json_file_name", json_file_name);

@@ -1,0 +1,266 @@
+{
+  "questions": [
+    {
+      "id": "ice_cream",
+      "header": "Question 1",
+      "question": "What is your favorite ice cream flavor?",
+      "question_type": "single_select",
+      "options": [
+        "Strawberry",
+        "Chocolate",
+        "Vanilla",
+        {
+          "title": "Other flavor",
+          "type": "freeform"
+        },
+        {
+          "title": "Other dessert",
+          "type": "freeform"
+        }
+      ]
+    },
+    {
+      "id": "strawberry_more_info",
+      "header": "Question 1.5",
+      "question": "Why strawberry?",
+      "question_type": "single_text_area",
+      "show_if": {
+        "id": "ice_cream",
+        "operation": "equals",
+        "value": "Strawberry"
+      }
+    },
+    {
+      "id": "perfect_day",
+      "header": "Question 2",
+      "question": "How would you describe your perfect day?",
+      "question_type": "single_text_area"
+    },
+    {
+      "id": "sports",
+      "header": "Question 3",
+      "question": "Do you like to play sports?",
+      "question_type": "single_select",
+      "options": [
+        "Yes",
+        "No"
+      ]
+    },
+    {
+      "id": "which_sports",
+      "question": "Which sports do you like to play?",
+      "question_type": "add_text_field",
+      "input_type": "default",
+      "show_if": {
+        "id": "sports",
+        "operation": "equals",
+        "value": "Yes"
+      }
+    },
+    {
+      "id": "age",
+      "header": "Question 4",
+      "question": "What is your current age in years?",
+      "question_type": "single_text_field",
+      "label": "Years",
+      "input_type": "number",
+      "max_chars": "2",
+      "validations": [
+        {
+          "operation": "greater than",
+          "value": 10,
+          "on_fail_message": "Age must be at least 10"
+        },
+        {
+          "operation": "less than or equal to",
+          "value": 80,
+          "on_fail_message": "You must be 80 or younger"
+        }
+      ]
+    },
+    {
+      "id": "age_of_first_kiss",
+      "header": "Question 5",
+      "question": "Age when you had your first kiss?",
+      "question_type": "single_text_field",
+      "label": "Years",
+      "input_type": "number",
+      "max_chars": "2",
+      "validations": [
+        {
+          "operation": "greater than",
+          "value": 8,
+          "on_fail_message": "That doesn't count (older than 8)"
+        },
+        {
+          "operation": "less than or equal to",
+          "answer_to_question_id": "age",
+          "on_fail_message": "Time machines not invented yet"
+        }
+      ]
+    },
+    {
+      "id": "felt_like_adult",
+      "header": "Question 6",
+      "question": "How old were you when you felt like an adult?",
+      "question_type": "single_select",
+      "options": [
+        {
+          "title": "Years old",
+          "type": "number",
+          "validations": [
+            {
+              "operation": "greater than",
+              "value": 5,
+              "on_fail_message": "Age must be at least 10"
+            },
+            {
+              "operation": "less than or equal to",
+              "answer_to_question_id": "age",
+              "on_fail_message": "Greater than your current age"
+            }
+          ]
+        },
+        "Don't know"
+      ]
+    },
+    {
+      "id": "lie_about_age",
+      "header": "Question 7",
+      "question": "Do you ever lie about your age?",
+      "question_type": "single_select",
+      "options": [
+        "Yes",
+        "No"
+      ],
+      "show_if": {
+        "ids": [
+          "age",
+          "birthyear"
+        ],
+        "operation": "custom",
+        "extra": {
+          "id": "check_age",
+          "wiggle_room": 1
+        }
+      }
+    },
+    {
+      "id": "like_music",
+      "header": "Question 8",
+      "question": "Do you like music?",
+      "question_type": "single_select",
+      "options": [
+        "Yes",
+        "No"
+      ]
+    },
+    {
+      "id": "music_types",
+      "header": "Question 9",
+      "question": "What types of music do you like?",
+      "question_type": "multi_select",
+      "options": [
+        "Pop",
+        "Rock",
+        "Rap",
+        "Country",
+        {
+          "title": "Other",
+          "type": "freeform"
+        }
+      ],
+      "show_if": {
+        "id": "like_music",
+        "operation": "equals",
+        "value": "Yes"
+      }
+    },
+    {
+      "id": "go_to_concerts",
+      "header": "Question 10",
+      "question": "Do you go to concerts?",
+      "question_type": "single_select",
+      "options": [
+        "Yes",
+        "No"
+      ],
+      "show_if": {
+        "id": "music_types",
+        "operation": "contains",
+        "value": "Pop"
+      }
+    },
+    {
+      "id": "happiness",
+      "header": "Question 13",
+      "question": "How happy are you?",
+      "question_type": "segment_select",
+      "low_tag": "1. Not happy",
+      "high_tag": "7. Super happy",
+      "values": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "id": "prefer_tv_books",
+      "header": "Question 15",
+      "question": "Do you like to read the book of the movie before you see it?",
+      "question_type": "single_select",
+      "options": [
+        "Yes",
+        "No"
+      ],
+      "show_if": {
+        "operation": "and",
+        "subconditions": [
+          {
+            "operation": "or",
+            "subconditions": [
+              {
+                "id": "weekend_activities",
+                "subid": "read_books",
+                "operation": "equals",
+                "value": "Yes"
+              },
+              {
+                "id": "weekend_activities",
+                "subid": "read_books",
+                "operation": "equals",
+                "value": "Sometimes"
+              }
+            ]
+          },
+          {
+            "operation": "or",
+            "subconditions": [
+              {
+                "id": "weekend_activities",
+                "subid": "watch_tv",
+                "operation": "equals",
+                "value": "Yes"
+              },
+              {
+                "id": "weekend_activities",
+                "subid": "watch_tv",
+                "operation": "equals",
+                "value": "Sometimes"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "submit": {
+    "button_title": "Submit Answers",
+    "url": "https://www.example.com"
+  },
+  "auto_focus_text": true
+}

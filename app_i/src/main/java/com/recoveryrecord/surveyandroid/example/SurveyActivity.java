@@ -2,11 +2,9 @@ package com.recoveryrecord.surveyandroid.example;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
@@ -24,12 +22,9 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.recoveryrecord.surveyandroid.Answer;
 import com.recoveryrecord.surveyandroid.R;
 import com.recoveryrecord.surveyandroid.condition.CustomConditionHandler;
-import com.recoveryrecord.surveyandroid.example.sqlite.DragObj;
 import com.recoveryrecord.surveyandroid.example.sqlite.NewsCompareObj;
 
 import org.json.JSONArray;
@@ -41,21 +36,15 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TARGET_RANGE;
-import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TARGET_RANGE;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_DIARY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_ESM;
@@ -65,12 +54,6 @@ import static com.recoveryrecord.surveyandroid.example.Constants.NOT_TARGET_READ
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_CLOSE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_OPEN_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_CLICK;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_NOTI_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_OUT_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_SAMPLE_CHECK;
 import static com.recoveryrecord.surveyandroid.example.Constants.READ_HISTORY_CANDIDATE;
 import static com.recoveryrecord.surveyandroid.example.Constants.TARGET_NEWS_TITLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.TARGET_READ_NEWS_TITLE_ANSWER;
@@ -79,7 +62,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.ZERO_RESULT_STR
 import static java.lang.Integer.parseInt;
 //import static com.recoveryrecord.surveyandroid.example.Constants.JSON_TEMPLATE;
 
-public class ESMActivity extends com.recoveryrecord.surveyandroid.SurveyActivity implements CustomConditionHandler, UserListCallback {
+public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActivity implements CustomConditionHandler, UserListCallback {
     String esm_id = "";
     Task task, task2;
     List<String> news_title_target_array = new ArrayList<>();
@@ -179,18 +162,13 @@ public class ESMActivity extends com.recoveryrecord.surveyandroid.SurveyActivity
                     return file_name;
                 }
             } else if (Objects.requireNonNull(b.getString(NOTIFICATION_TYPE_KEY)).equals(NOTIFICATION_TYPE_VALUE_DIARY)){
-                try {
-                    file_name = generate_esm_json("ReadNewsTitle", "NotiNewTitle", "1.json");
-                } catch (JSONException | InterruptedException e) {
-                    e.printStackTrace();
-                }
-                return file_name;
+                return "test.json";
             }
 //            Bundle b = getIntent().getExtras();
 //            Log.d("lognewsselect", "getJsonFilename() " + b.getString("json_file_name"));
 //            return b.getString("json_file_name");
         }
-        return "ExampleQuestions.json";
+        return "test.json";
     }
 
 
@@ -233,7 +211,7 @@ public class ESMActivity extends com.recoveryrecord.surveyandroid.SurveyActivity
                     }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    ESMActivity.super.onBackPressed();
+                    SurveyActivity.super.onBackPressed();
 
                 }
             }).show();
@@ -347,7 +325,7 @@ public class ESMActivity extends com.recoveryrecord.surveyandroid.SurveyActivity
                 List<String> history_list_title = new ArrayList<String>(Arrays.asList(target_history.split("#")));
                 for(int i = 0; i<history_list_title.size();i++){
                     List<String> very_tmp = new ArrayList<String>(Arrays.asList(history_list_title.get(i).split("¢")));
-                    if(very_tmp.size()==4){
+                    if(very_tmp.size()==5){
                         HistoryNewsTitleObjListArray.add(new NewsCompareObj(parseInt(very_tmp.get(1)), parseInt(very_tmp.get(2)), very_tmp.get(3), i, history_list_title.get(i),0));
                     } else {
                         Log.d("lognewsselect", "======================OLD==================================very_tmp" + very_tmp.size());
@@ -358,7 +336,7 @@ public class ESMActivity extends com.recoveryrecord.surveyandroid.SurveyActivity
                 if(read_news_title_array_json.size()>0 && !read_news_title_array_json.get(0).equals(ZERO_RESULT_STRING)){
                     for(int i = 0; i<read_news_title_array_json.size();i++){
                         List<String> very_tmp = new ArrayList<String>(Arrays.asList(read_news_title_array_json.get(i).split("¢")));
-                        if(very_tmp.size()==4){
+                        if(very_tmp.size()==5){
                             MyNewsTitleObjListArray.add(new NewsCompareObj(parseInt(very_tmp.get(1)), parseInt(very_tmp.get(2)), very_tmp.get(3), i, read_news_title_array_json.get(i),0));
                         } else {
                             Log.d("lognewsselect", "======================NEW=================================very_tmp" + very_tmp.size());
