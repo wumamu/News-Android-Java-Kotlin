@@ -44,18 +44,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_ID;
+//import static com.recoveryrecord.surveyandroid.example.Constants.ESM_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_READ_HISTORY_CANDIDATE;
+import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_DIARY;
+import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_ESM;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_CLOSE_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_OPEN_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.SURVEY_PAGE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_DIARY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_ESM;
-import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_UNCLICKED_CANDIDATE;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOTIFICATION_UNCLICKED_CANDIDATE;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTI_UNCLICK_LAST_ONE;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOT_TARGET_READ_NEWS_TITLE_ANSWER;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_CLOSE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_OPEN_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.READ_HISTORY_CANDIDATE;
-import static com.recoveryrecord.surveyandroid.example.Constants.TARGET_NEWS_TITLE;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_READ_HISTORY_CANDIDATE;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TARGET_NEWS_TITLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.TARGET_READ_NEWS_TITLE_ANSWER;
 import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.ZERO_RESULT_STRING;
@@ -63,8 +70,8 @@ import static java.lang.Integer.parseInt;
 //import static com.recoveryrecord.surveyandroid.example.Constants.JSON_TEMPLATE;
 
 public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActivity implements CustomConditionHandler, UserListCallback {
-    String esm_id = "";
-    Task task, task2;
+    String esm_id = "", diary_id = "", type = "";
+    Boolean is_esm = false, is_diary = false;
     List<String> news_title_target_array = new ArrayList<>();
     List<String> notification_unclick_array = new ArrayList<>();
     List<String> final_news_title_array = new ArrayList<>();
@@ -80,11 +87,24 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
         String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         if (getIntent().getExtras() != null) {
             Bundle b = getIntent().getExtras();
-            esm_id = Objects.requireNonNull(b.getString(ESM_ID));
-//            Log.d("lognewsselect", "onCreate" + esm_id);
+            type = Objects.requireNonNull(b.getString(NOTIFICATION_TYPE_KEY));
+            if (type.equals(LOADING_PAGE_TYPE_ESM)){
+                esm_id = Objects.requireNonNull(b.getString(SURVEY_PAGE_ID));
+                if(!esm_id.equals("")){
+                    is_esm = true;
+                }
+            } else if (type.equals(LOADING_PAGE_TYPE_DIARY)){
+                diary_id = Objects.requireNonNull(b.getString(SURVEY_PAGE_ID));
+                if(!diary_id.equals("")){
+                    is_diary = true;
+                }
+            }
         }
+        Log.d("lognewsselect", "//+++++++++esm_id" + esm_id);
+        Log.d("lognewsselect", "//+++++++++diary_id" + diary_id);
+        Log.d("lognewsselect", "//+++++++++type" + type);
         //temp
-        if (!esm_id.equals("")){
+        if (is_esm){
             final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(PUSH_ESM_COLLECTION).document(esm_id);
             rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -114,19 +134,65 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                     }
                 }
             });
+        } else if(is_diary){
+            final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(PUSH_DIARY_COLLECTION).document(diary_id);
+            rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        assert document != null;
+                        if (document.exists()) {
+                            rbRef.update(PUSH_DIARY_OPEN_TIME, current_now)//another field
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.d("lognewsselect", "DocumentSnapshot successfully updated!");
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.w("lognewsselect", "Error updating document", e);
+                                        }
+                                    });
+                        } else {
+                            Log.d("lognewsselect", "No such document");
+                        }
+                    } else {
+                        Log.d("lognewsselect", "get failed with ", task.getException());
+                    }
+                }
+            });
         }
 
     }
-    //add survey activity
-    //seems useless now
     @Override
     protected String getSurveyId() {
         return "123123";
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected String getSurveyTitle() {
-        return "ESM";
+        if (getIntent().getExtras() != null) {
+            Bundle b = getIntent().getExtras();
+            type = Objects.requireNonNull(b.getString(NOTIFICATION_TYPE_KEY));
+            if (type.equals(LOADING_PAGE_TYPE_ESM)){
+                esm_id = Objects.requireNonNull(b.getString(SURVEY_PAGE_ID));
+                if(!esm_id.equals("")){
+                    is_esm = true;
+                    return "ESM";
+                }
+            } else if (type.equals(LOADING_PAGE_TYPE_DIARY)){
+                diary_id = Objects.requireNonNull(b.getString(SURVEY_PAGE_ID));
+                if(!diary_id.equals("")){
+                    is_diary = true;
+                    return "DIARY";
+                }
+            }
+        }
+        return "ERROR";
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -136,13 +202,9 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
         if (getIntent().getExtras() != null) {
             Bundle b = getIntent().getExtras();
             if (Objects.requireNonNull(b.getString(NOTIFICATION_TYPE_KEY)).equals(NOTIFICATION_TYPE_VALUE_ESM)){
-//                select_news_title_candidate();
                 final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-                String ReadNewsTitle = sharedPrefs.getString(READ_HISTORY_CANDIDATE, ZERO_RESULT_STRING);
-                String NotiNewTitle = sharedPrefs.getString(NOTIFICATION_UNCLICKED_CANDIDATE, ZERO_RESULT_STRING);
-                Log.d("lognewsselect", "~~~~~~~~~~~~~~~~~~~~~~~READ_HISTORY_CANDIDATE " + ReadNewsTitle);
-                Log.d("lognewsselect", "~~~~~~~~~~~~~~~~~~~~~~~NOTIFICATION_UNCLICKED_CANDIDATE " + NotiNewTitle);
-
+                String ReadNewsTitle = sharedPrefs.getString(ESM_READ_HISTORY_CANDIDATE, ZERO_RESULT_STRING);
+                String NotiNewTitle = sharedPrefs.getString(ESM_NOTIFICATION_UNCLICKED_CANDIDATE, ZERO_RESULT_STRING);
                 if(!ReadNewsTitle.equals(ZERO_RESULT_STRING)){
                     Log.d("lognewsselect", "exist rb");
                     try {
@@ -162,13 +224,30 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                     return file_name;
                 }
             } else if (Objects.requireNonNull(b.getString(NOTIFICATION_TYPE_KEY)).equals(NOTIFICATION_TYPE_VALUE_DIARY)){
-                return "test.json";
+                final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+                String diary_option_string_list = sharedPrefs.getString(DIARY_READ_HISTORY_CANDIDATE, ZERO_RESULT_STRING);
+                Log.d("lognewsselect", "DIARY&&&&&&&&&&&&&&&&&&&&&&&&&&");
+                if(!diary_option_string_list.equals(ZERO_RESULT_STRING)){
+                    Log.d("lognewsselect", "exist rb");
+                    try {
+                        file_name = generate_diary_json(diary_option_string_list, "diary.json", true);
+
+                    } catch (JSONException | InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    return file_name;
+                } else {
+                    Log.d("lognewsselect", "zero_result here");
+                    try {
+                        file_name = generate_diary_json(diary_option_string_list, "diary.json", false);
+                    } catch (JSONException | InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    return file_name;
+                }
             }
-//            Bundle b = getIntent().getExtras();
-//            Log.d("lognewsselect", "getJsonFilename() " + b.getString("json_file_name"));
-//            return b.getString("json_file_name");
         }
-        return "test.json";
+        return "diary.json";
     }
 
 
@@ -223,10 +302,9 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
         super.onDestroy();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final Timestamp current_end = Timestamp.now();
-        if (!esm_id.equals("")) {
-
-            @SuppressLint("HardwareIds")
-            String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        @SuppressLint("HardwareIds")
+        String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        if (is_esm){
             final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(PUSH_ESM_COLLECTION).document(esm_id);
             rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -239,20 +317,50 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            Log.d("log: firebase share", "DocumentSnapshot successfully updated!");
+                                            Log.d("lognewsselect", "DocumentSnapshot successfully updated!");
                                         }
                                     })
                                     .addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
-                                            Log.w("log: firebase share", "Error updating document", e);
+                                            Log.w("lognewsselect", "Error updating document", e);
                                         }
                                     });
                         } else {
-                            Log.d("log: firebase share", "No such document");
+                            Log.d("lognewsselect", "No such document");
                         }
                     } else {
-                        Log.d("log: firebase share", "get failed with ", task.getException());
+                        Log.d("lognewsselect", "get failed with ", task.getException());
+                    }
+                }
+            });
+        } else if(is_diary){
+            final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(PUSH_DIARY_COLLECTION).document(diary_id);
+            rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        assert document != null;
+                        if (document.exists()) {
+                            rbRef.update(PUSH_DIARY_CLOSE_TIME, current_end)//another field
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.d("lognewsselect", "DocumentSnapshot successfully updated!");
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.w("lognewsselect", "Error updating document", e);
+                                        }
+                                    });
+                        } else {
+                            Log.d("lognewsselect", "No such document");
+                        }
+                    } else {
+                        Log.d("lognewsselect", "get failed with ", task.getException());
                     }
                 }
             });
@@ -260,6 +368,65 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
 
     }
 
+    private String generate_diary_json(String diary_option_string_list, String file_name, Boolean exist) throws JSONException, InterruptedException {
+        if(exist){
+            List<String> diary_option_string_list_array_json = new ArrayList<String>(Arrays.asList(diary_option_string_list.split("#")));
+            JSONArray option_arr = new JSONArray();
+            for (int x = 0; x< diary_option_string_list_array_json.size(); x++){
+                if(diary_option_string_list_array_json.get(0).equals(ZERO_RESULT_STRING)){
+                    break;
+                }
+                option_arr.put(diary_option_string_list_array_json.get(x));
+            }
+            option_arr.put("無");
+            JSONObject jsonRootObject = new JSONObject(loadJSONFromAsset("diary.json"));
+            JSONArray jsonQuestionObject = jsonRootObject.optJSONArray("questions");
+            for (int i =0 ; i < jsonQuestionObject.length();i++){
+                JSONObject one = jsonQuestionObject.getJSONObject(i);
+                //for 2
+                if(one.optString("id").equals("opportune_1")){
+                    one.putOpt("options", option_arr);
+                    continue;
+                }
+                //for 5
+                if(one.optString("id").equals("inopportune_1")){
+                    one.putOpt("options", option_arr);
+                    continue;
+                }
+            }
+            File file;
+            file = new File(getFilesDir(), "diary.json");
+            try{
+                FileOutputStream fos = new FileOutputStream(file);//创建一个文件输出流
+                fos.write(jsonRootObject.toString().getBytes());//将生成的JSON数据写出
+                fos.close();//关闭输出流
+                Toast.makeText(getApplicationContext(),"创建成功紀錄！",Toast.LENGTH_SHORT).show();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return file.getAbsolutePath();
+        } else {
+            JSONArray option_arr = new JSONArray();
+            option_arr.put("無");
+            JSONObject jsonRootObject = new JSONObject(loadJSONFromAsset("diary.json"));
+            File file;
+            file = new File(getFilesDir(), "diary.json");
+            try{
+                FileOutputStream fos = new FileOutputStream(file);//创建一个文件输出流
+                fos.write(jsonRootObject.toString().getBytes());//将生成的JSON数据写出
+                fos.close();//关闭输出流
+                Toast.makeText(getApplicationContext(),"创建成功無閱讀紀錄！",Toast.LENGTH_SHORT).show();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return file.getAbsolutePath();
+        }
+
+    }
     @RequiresApi(api = Build.VERSION_CODES.N)
     private String generate_esm_json(String read_news_title_array_string, String noti_news_title_array_string, String file_name) throws JSONException, InterruptedException {
         if(file_name.equals("0.json")){
@@ -299,7 +466,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
             }
 
             File file;
-            file = new File(getFilesDir(),"test.json");
+            file = new File(getFilesDir(), "0.json");
             try{
                 FileOutputStream fos = new FileOutputStream(file);//创建一个文件输出流
                 fos.write(jsonRootObject.toString().getBytes());//将生成的JSON数据写出
@@ -315,7 +482,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
         } else {
             //reorder_news_title
             final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-            String target_history = sharedPrefs.getString(TARGET_NEWS_TITLE, "");
+            String target_history = sharedPrefs.getString(ESM_TARGET_NEWS_TITLE, "");
             if(target_history.equals("")){
                 //no sample preference
                 final_news_title_array = new ArrayList<String>(Arrays.asList(read_news_title_array_string.split("#")));
@@ -540,8 +707,8 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
 //                    .document(String.valueOf(Timestamp.now()))
 //                    .set(record_noti);
             File file;
-            file = new File(getFilesDir(),"test.json");
-//            file = new File(getFilesDir(),"test.json");
+            file = new File(getFilesDir(), "diary.json");
+//            file = new File(getFilesDir(),"diary.json");
             try{
                 FileOutputStream fos = new FileOutputStream(file);//创建一个文件输出流
                 fos.write(jsonRootObject.toString().getBytes());//将生成的JSON数据写出

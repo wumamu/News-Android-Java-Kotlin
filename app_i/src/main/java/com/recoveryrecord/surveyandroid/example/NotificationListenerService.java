@@ -35,6 +35,9 @@ import androidx.preference.PreferenceManager;
 import static com.recoveryrecord.surveyandroid.example.Constants.CHINA_TIMES_PACKAGE_NAME;
 import static com.recoveryrecord.surveyandroid.example.Constants.CNA_PACKAGE_NAME;
 import static com.recoveryrecord.surveyandroid.example.Constants.CTS_PACKAGE_NAME;
+import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_DAY_PUSH_PREFIX;
+import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_NOTIFICATION_CONTENT_TITLE;
+import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_PUSH_TOTAL;
 import static com.recoveryrecord.surveyandroid.example.Constants.DOC_ID_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.EBC_PACKAGE_NAME;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_DAY_PUSH_PREFIX;
@@ -43,6 +46,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.ESM_START_TIME_
 import static com.recoveryrecord.surveyandroid.example.Constants.ETTODAY_PACKAGE_NAME;
 import static com.recoveryrecord.surveyandroid.example.Constants.LTN_PACKAGE_NAME;
 import static com.recoveryrecord.surveyandroid.example.Constants.MY_APP_PACKAGE_NAME;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_DIARY_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_DIARY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_ESM;
@@ -56,6 +60,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BA
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_TITLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOTIFICATION_CONTENT_TITLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_REMOVE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_REMOVE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_COLLECTION;
@@ -174,6 +179,17 @@ public class NotificationListenerService extends android.service.notification.No
                         editor.putInt(ESM_PUSH_TOTAL, esm_sum+1);
                         editor.putInt(ESM_DAY_PUSH_PREFIX + day_index, esm_day_sum+1);
                         editor.apply();
+                    } else if(extras.getString("android.title").equals(DIARY_NOTIFICATION_CONTENT_TITLE)){
+                        document_name = NOTIFICATION_BAR_DIARY_COLLECTION;
+                        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+                        SharedPreferences.Editor editor = sharedPrefs.edit();
+                        Calendar calendar = Calendar.getInstance();
+                        int day_index = calendar.get(Calendar.DAY_OF_YEAR);
+                        int diary_sum = sharedPrefs.getInt(DIARY_PUSH_TOTAL, 0);
+                        int diary_day_sum = sharedPrefs.getInt(DIARY_DAY_PUSH_PREFIX+ day_index, 0);
+                        editor.putInt(DIARY_PUSH_TOTAL, diary_sum+1);
+                        editor.putInt(DIARY_DAY_PUSH_PREFIX + day_index, diary_day_sum+1);
+                        editor.apply();
                     }
                     check_title = true;
                 } else {
@@ -229,17 +245,24 @@ public class NotificationListenerService extends android.service.notification.No
             String type = Objects.requireNonNull(extras.getString(NOTIFICATION_TYPE_KEY));
             String doc_id = Objects.requireNonNull(extras.getString(DOC_ID_KEY));
             String collection_id = "";
+            String remove_field = "";
+            Boolean mark = false;
             if(type.equals(NOTIFICATION_TYPE_VALUE_ESM)){
                 collection_id = PUSH_ESM_COLLECTION;
+                remove_field = PUSH_ESM_REMOVE_TIME;
+                mark = true;
             } else if(type.equals(NOTIFICATION_TYPE_VALUE_NEWS)){
                 collection_id = PUSH_NEWS_COLLECTION;
             } else if(type.equals(NOTIFICATION_TYPE_VALUE_DIARY)){
                 collection_id = PUSH_DIARY_COLLECTION;
+                remove_field = PUSH_DIARY_REMOVE_TIME;
+                mark = true;
             }
             Log.i(TAG,"********** onNOtificationRemoved type" + collection_id);
             Log.i(TAG,"********** onNOtificationRemoved id" + doc_id);
-            if(!collection_id.equals("")){
-                final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(PUSH_ESM_COLLECTION).document(doc_id);
+            if(mark){
+                final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(collection_id).document(doc_id);
+                final String finalRemove_field = remove_field;
                 rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -247,7 +270,7 @@ public class NotificationListenerService extends android.service.notification.No
                             DocumentSnapshot document = task.getResult();
                             assert document != null;
                             if (document.exists()) {
-                                rbRef.update(PUSH_ESM_REMOVE_TIME, current_now)//another field
+                                rbRef.update(finalRemove_field, current_now)//another field
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {

@@ -1,0 +1,72 @@
+{
+  "questions": [
+    {
+      "id": "base_1",
+      "header": "Question base_1(1)",
+      "question": "以上是您今天填答問卷的情況，以下問題請依照「該篇新聞閱讀時機」回答，並簡單說明原因。題目皆無標準答案，請依您主觀感受作答。",
+      "question_type": "single_select",
+      "options": [
+        "了解"
+      ]
+    },
+    {
+      "id": "opportune_1",
+      "header": "Question opportune_1(2)",
+      "question": "請參考今天的閱讀行為，選擇一則對你來說「最適合推播新聞通知的時機」，若無則選無。",
+      "question_type": "single_select",
+      "options": [
+        "無"
+      ]
+    },
+    {
+      "id": "opportune_2",
+      "header": "Question opportune_2(3)",
+      "question": "關於這次「最適合推播新聞通知時機」，你最在乎甚麼因素？(可複選，最多2項)",
+      "question_type": "multi_select",
+      "options": [
+        "時間(time-of-day)",
+        "地點(location)",
+        "正在執行的任務種類(task category)",
+        "精神多寡(注意力資源)(cognition resource)",
+        "可運用時間多寡(time resource)",
+        "及時(in time)",
+        {
+          "title": "其他",
+          "type": "freeform"
+        }
+      ]
+    },
+    {
+      "id": "inopportune_1",
+      "header": "Question inopportune_1(4)",
+      "question": "請參考今天的閱讀行為，選擇一則對你來說「最不適合推播新聞通知的時機」，若無則選無。",
+      "question_type": "single_select",
+      "options": [
+        "無"
+      ]
+    },
+    {
+      "id": "inopportune_2",
+      "header": "Question inopportune_2(5)",
+      "question": "關於這次「最不適合推播新聞通知時機」，你最在乎甚麼因素？(可複選，最多2項)",
+      "question_type": "multi_select",
+      "options": [
+        "時間(time-of-day)",
+        "地點(location)",
+        "正在執行的任務種類(task category)",
+        "精神多寡(注意力資源)(cognition resource)",
+        "可運用時間多寡(time resource)",
+        "及時(in time)",
+        {
+          "title": "其他",
+          "type": "freeform"
+        }
+      ]
+    }
+  ],
+  "submit": {
+    "button_title": "Submit Answers",
+    "url": "https://www.example.com"
+  },
+  "auto_focus_text": true
+}

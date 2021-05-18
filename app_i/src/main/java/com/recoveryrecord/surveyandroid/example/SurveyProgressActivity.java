@@ -69,7 +69,7 @@ public class SurveyProgressActivity extends AppCompatActivity {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             esmSumTextView.setText("總體esm問卷進度(已回答/總共)" + esm_done_total + "/" + esm_push_total);
             diarySumTextView.setText("總體回顧問卷進度(已回答/總共)" + diary_done_total + "/" + diary_push_total);
-            esmDailySumTextView.setText("本日回顧問卷進度(已回答/總共)" + esm_day_done + "/" + esm_day_push);
+            esmDailySumTextView.setText("本日esm問卷進度(已回答/總共)" + esm_day_done + "/" + esm_day_push);
             diaryDailySumTextView.setText("本日回顧問卷進度(已回答/總共)" + diary_day_done + "/" + diary_day_push);
             dayTextView.setText(tmp.get(0));
             esmSumTextView.setGravity(Gravity.CENTER);
@@ -99,19 +99,19 @@ public class SurveyProgressActivity extends AppCompatActivity {
             dynamicTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 25);
 //            rowTextView.setTextColor(Color.parseColor("black"));
 //            rowTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, text_size);
-            dynamicButton.setLayoutParams(params);
-            dynamicButton.setText("點我去設定");
-            dynamicButton.setGravity(Gravity.CENTER);
-            dynamicButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent= new Intent();
-                    intent.setClass(getApplicationContext(), NotificationRangeActivity.class);
-                    startActivity(intent);
-                }
-            });
+//            dynamicButton.setLayoutParams(params);
+//            dynamicButton.setText("點我去設定");
+//            dynamicButton.setGravity(Gravity.CENTER);
+//            dynamicButton.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    Intent intent= new Intent();
+//                    intent.setClass(getApplicationContext(), NotificationRangeActivity.class);
+//                    startActivity(intent);
+//                }
+//            });
             ((LinearLayout) findViewById(R.id.layout_inside)).addView(dynamicTextView);
-            ((LinearLayout) findViewById(R.id.layout_inside)).addView(dynamicButton);
+//            ((LinearLayout) findViewById(R.id.layout_inside)).addView(dynamicButton);
         }
 
     }

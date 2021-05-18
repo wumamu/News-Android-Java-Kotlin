@@ -102,6 +102,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.ESM_END_TIME_MI
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_SET_ONCE;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_START_TIME_HOUR;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_START_TIME_MIN;
+import static com.recoveryrecord.surveyandroid.example.Constants.REPEAT_ALARM_CHECKER;
 
 public class NotificationRangeActivity extends AppCompatActivity {
 
@@ -142,7 +143,7 @@ public class NotificationRangeActivity extends AppCompatActivity {
                 AlarmManager alarmManager = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
                 Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
-                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),10 * 60 * 1000, pendingIntent);
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),REPEAT_ALARM_CHECKER, pendingIntent);//every ten min check
                 Log.d("lognewsselect", "onClick");
                 ll_set_time.setAlpha(1);
                 ee_set_time.setAlpha(1);
@@ -260,11 +261,11 @@ public class NotificationRangeActivity extends AppCompatActivity {
             return getResources().getConfiguration().locale;
         }
     }
-//    @Override
-//    public void onBackPressed() {
-//        super.onBackPressed();
-//        Intent intent = new Intent(NotificationRangeActivity.this, NewsHybridActivity.class);
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+//        Intent intent = new Intent(NotificationRangeActivity.this, SettingsActivity.class);
 //        startActivity(intent);
-//    }
+    }
 }
 

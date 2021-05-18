@@ -52,6 +52,8 @@
         </activity>
         <activity android:name=".NewsHybridActivity"/>
         <receiver android:name = ".NotificationListenerNews" />
+        <receiver android:name = ".NotificationListenerESM" />
+        <receiver android:name = ".NotificationListenerDiary" />
 
         <activity android:name=".SettingsActivity"
             android:theme="@style/AppThemeActionBar"/>
@@ -126,6 +128,7 @@
             android:theme="@style/AppThemeActionBar"/>
         <activity android:name=".TestDoubleBarActivity" />
         <activity android:name=".ESMLoadingPageActivity" />
+        <activity android:name=".DiaryLoadingPageActivity" />
 
 
 

@@ -22,7 +22,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -39,15 +38,18 @@ import androidx.preference.PreferenceManager;
 
 //import static com.recoveryrecord.surveyandroid.example.Constants.CATEGORY_HASH_SET_PREFIX;
 //import static com.recoveryrecord.surveyandroid.example.Constants.CATEGORY_HASH_SET_SIZE;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_ID;
+//import static com.recoveryrecord.surveyandroid.example.Constants.ESM_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.SURVEY_PAGE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TARGET_RANGE;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TIME_ON_PAGE_THRESHOLD;
+import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NA_STRING;
 import static com.recoveryrecord.surveyandroid.example.Constants.NONE_STRING;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TARGET_RANGE;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_ESM;
-import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_UNCLICKED_CANDIDATE;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOTIFICATION_UNCLICKED_CANDIDATE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_CLICK;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_COLLECTION;
@@ -65,8 +67,8 @@ import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIO
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_TITLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_TRIGGER_BY;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_TRIGGER_BY_NOTIFICATION;
-import static com.recoveryrecord.surveyandroid.example.Constants.READ_HISTORY_CANDIDATE;
-import static com.recoveryrecord.surveyandroid.example.Constants.TARGET_NEWS_TITLE;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_READ_HISTORY_CANDIDATE;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TARGET_NEWS_TITLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.ZERO_RESULT_STRING;
 
@@ -75,7 +77,7 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
     String output_file_name = "2.json";
     Task task, task2, task3;
     Boolean finish = false;
-    String esm_id = "";
+    String esm_id = "", type ="";
     List<String> news_title_target_array = new ArrayList<>();
     List<String> notification_unclick_array = new ArrayList<>();
     String result_json = "";
@@ -83,18 +85,22 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
     String target_read_title = "NA";
     List<String> tmp_share_Array = new ArrayList<>();
     List<String> tmp_category_Array = new ArrayList<>();
+//    TextView who;
 //    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_loading_page);
+        setContentView(R.layout.activity_loading_page_esm);
         if (getIntent().getExtras() != null) {
             Bundle b = getIntent().getExtras();
-            esm_id = Objects.requireNonNull(b.getString(ESM_ID));
+            esm_id = Objects.requireNonNull(b.getString(LOADING_PAGE_ID));
+            type = Objects.requireNonNull(b.getString(LOADING_PAGE_TYPE_KEY));
         }
 //        search_sample_history();
+//        who.findViewById(R.id.textView);
+//        who.setText("ESM問卷生成中");
         select_news_title_candidate();
         button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
@@ -169,15 +175,15 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
 
         Intent intent_esm = new Intent();
         intent_esm.setClass(this, SurveyActivity.class);
-        intent_esm.putExtra(ESM_ID, esm_id);//******************
+        intent_esm.putExtra(SURVEY_PAGE_ID, esm_id);//******************
         intent_esm.putExtra(NOTIFICATION_TYPE_KEY, NOTIFICATION_TYPE_VALUE_ESM);
 //        Log.d("lognewsselect", "openESM" + esm_id);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Map<String, Object> esm = new HashMap<>();
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String ReadNewsTitle = sharedPrefs.getString(READ_HISTORY_CANDIDATE, ZERO_RESULT_STRING);
-        String NotiNewTitle = sharedPrefs.getString(NOTIFICATION_UNCLICKED_CANDIDATE, ZERO_RESULT_STRING);
+        String ReadNewsTitle = sharedPrefs.getString(ESM_READ_HISTORY_CANDIDATE, ZERO_RESULT_STRING);
+        String NotiNewTitle = sharedPrefs.getString(ESM_NOTIFICATION_UNCLICKED_CANDIDATE, ZERO_RESULT_STRING);
         final List<String> noti_news_title_array_json = new ArrayList<String>(Arrays.asList(NotiNewTitle.split("#")));
         final List<String> read_news_title_array_json = new ArrayList<String>(Arrays.asList(ReadNewsTitle.split("#")));
 
@@ -216,7 +222,7 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
             });
         }
         esm_id = "";
-        String TMP = sharedPrefs.getString(TARGET_NEWS_TITLE, "");
+        String TMP = sharedPrefs.getString(ESM_TARGET_NEWS_TITLE, "");
         Log.d("lognewsselect", "#################current sample history" + TMP);
         startActivity(intent_esm);
     }
@@ -340,12 +346,12 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
 //                            int randomNumber=r.nextInt(news_title_array.size());
 //                            SelectedNewsTitle[0] = news_title_array.get(randomNumber);
                     SharedPreferences.Editor editor = sharedPrefs.edit();
-                    editor.putString(READ_HISTORY_CANDIDATE, title_array);
+                    editor.putString(ESM_READ_HISTORY_CANDIDATE, title_array);
                     editor.apply();
                     Log.d("lognewsselect", "@@@@@@@@@@@@@");
                 } else {
                     SharedPreferences.Editor editor = sharedPrefs.edit();
-                    editor.putString(READ_HISTORY_CANDIDATE, ZERO_RESULT_STRING);
+                    editor.putString(ESM_READ_HISTORY_CANDIDATE, ZERO_RESULT_STRING);
                     editor.apply();
                 }
                 Log.d("lognewsselect", "**********COMPLETE TASK1");
@@ -396,11 +402,11 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
                         notification_unclick_string+= notification_unclick_array.get(i) + "#";
                     }
                     SharedPreferences.Editor editor = sharedPrefs.edit();
-                    editor.putString(NOTIFICATION_UNCLICKED_CANDIDATE, notification_unclick_string);
+                    editor.putString(ESM_NOTIFICATION_UNCLICKED_CANDIDATE, notification_unclick_string);
                     editor.apply();
                 } else {
                     SharedPreferences.Editor editor = sharedPrefs.edit();
-                    editor.putString(NOTIFICATION_UNCLICKED_CANDIDATE, ZERO_RESULT_STRING);
+                    editor.putString(ESM_NOTIFICATION_UNCLICKED_CANDIDATE, ZERO_RESULT_STRING);
                     editor.apply();
                 }
                 Log.d("lognewsselect", "**********COMPLETE TASK2");

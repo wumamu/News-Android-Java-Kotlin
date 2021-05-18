@@ -83,14 +83,40 @@ import androidx.viewpager.widget.ViewPager;
 
 import javax.annotation.Nullable;
 
+import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_DIARY_CHANNEL_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_DIARY_NOTIFICATION;
+import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_DIARY_NOTIFICATION_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_CHANNEL_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_NOTIFICATION;
 import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_NOTIFICATION_ID;
 //import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_PARCELABLE;
+import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_NEWS_CHANNEL_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_CHANNEL_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_NOTIFICATION_CONTENT_TEXT;
+import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_NOTIFICATION_CONTENT_TITLE;
+import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_TIME_OUT;
+import static com.recoveryrecord.surveyandroid.example.Constants.DOC_ID_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_CHANNEL_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_END_TIME_HOUR;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOTIFICATION_CONTENT_TEXT;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOTIFICATION_CONTENT_TITLE;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_START_TIME_HOUR;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TIME_OUT;
+import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_DIARY;
+import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_ESM;
+import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_KEY;
+import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_CHANNEL_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_KEY;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_DIARY;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_ESM;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_DONE;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_NOTI_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_NOTI_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_SAMPLE;
+import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.VIBRATE_EFFECT;
 
 //public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
@@ -153,6 +179,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 //                String value = getIntent().getExtras().getString(key);
 //                Log.d(TAG, "Key: " + key + " Value: " + value);
 //            }}
+
         setContentView(R.layout.activity_news_hybrid);
         //initial value for user (first time)
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -508,6 +535,17 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 Toast.makeText(this, "發送esm~", Toast.LENGTH_SHORT).show();;
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
+            case R.id.nav_tmp :
+                scheduleNotification_diary(getNotification_diary("Please fill out the questionnaire" ), 1000 );
+                Toast.makeText(this, "發送esm~", Toast.LENGTH_SHORT).show();;
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+            case R.id.clear:
+                SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+                sharedPrefs.edit().clear().apply();
+                Toast.makeText(this, "清除資料", Toast.LENGTH_SHORT).show();;
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
             default :
                 return false;
         }
@@ -561,7 +599,8 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         Intent intent_esm = new Intent();
         intent_esm.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent_esm.setClass(NewsHybridActivity.this, ESMLoadingPageActivity.class);
-        intent_esm.putExtra("esm_id", esm_id);
+        intent_esm.putExtra(LOADING_PAGE_ID, esm_id);
+        intent_esm.putExtra(LOADING_PAGE_TYPE_KEY, LOADING_PAGE_TYPE_ESM);
         int nid = (int) System.currentTimeMillis();
         PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_esm, 0);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, DEFAULT_ESM_CHANNEL_ID);
@@ -576,38 +615,95 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         builder.setPriority(NotificationManager.IMPORTANCE_MAX);
         builder.setCategory(Notification.CATEGORY_REMINDER);
         Bundle extras = new Bundle();
-        extras.putString("id", esm_id);
-        extras.putString("type", "esm");
+        extras.putString(DOC_ID_KEY, esm_id);
+        extras.putString(NOTIFICATION_TYPE_KEY, NOTIFICATION_TYPE_VALUE_ESM);
         builder.setExtras(extras);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         @SuppressLint("HardwareIds")
         String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         Map<String, Object> esm = new HashMap<>();
-        esm.put("noti_timestamp", Timestamp.now());
-        esm.put("sample", 0);
-        db.collection("test_users")
+        esm.put(PUSH_ESM_NOTI_TIME, Timestamp.now());
+        esm.put(PUSH_ESM_SAMPLE, 0);
+        db.collection(TEST_USER_COLLECTION)
                 .document(device_id)
-                .collection("push_esm")
+                .collection(PUSH_ESM_COLLECTION)
                 .document(esm_id)
                 .set(esm);
         return builder.build();
     }
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void scheduleNotification_esm (Notification notification, int delay) {
-        Intent notificationIntent = new Intent(this, NotificationListenerNews.class);
+        Intent notificationIntent = new Intent(this, NotificationListenerESM.class);
         notificationIntent.putExtra(DEFAULT_ESM_NOTIFICATION_ID, 1 ) ;
         notificationIntent.putExtra(DEFAULT_ESM_NOTIFICATION, notification) ;
-//        notificationIntent.putExtra(NotificationListenerESM.NOTIFICATION_ID, 1 ) ;
-//        notificationIntent.putExtra(NotificationListenerESM.NOTIFICATION, notification) ;
         int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
         PendingIntent pendingIntent = PendingIntent.getBroadcast( this, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         long futureInMillis = SystemClock.elapsedRealtime() + delay;
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         assert alarmManager != null;
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+//        Log.d ("shit", "scheduleNotification_esm");
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private Notification getNotification_diary (String content) {
+        Date date = new Date(System.currentTimeMillis());
+        String diary_id = "";
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+        String time_now = formatter.format(date);
+        diary_id = time_now;
+
+        Intent intent_diary = new Intent();
+        intent_diary.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent_diary.setClass(NewsHybridActivity.this, DiaryLoadingPageActivity.class);
+        intent_diary.putExtra(LOADING_PAGE_ID, diary_id);
+        intent_diary.putExtra(LOADING_PAGE_TYPE_KEY, LOADING_PAGE_TYPE_DIARY);
+        int nid = (int) System.currentTimeMillis();
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_diary, 0);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, DEFAULT_DIARY_CHANNEL_ID);
+        builder.setContentTitle(DIARY_NOTIFICATION_CONTENT_TITLE);
+        builder.setContentText(DIARY_NOTIFICATION_CONTENT_TEXT);
+        builder.setSmallIcon(R.drawable.ic_launcher_foreground);
+        builder.setContentIntent(pendingIntent);
+        builder.setAutoCancel(true);
+        builder.setChannelId(DIARY_CHANNEL_ID);
+        builder.setVibrate(VIBRATE_EFFECT);              //震動模式
+        builder.setTimeoutAfter(DIARY_TIME_OUT);           //自動消失 15*60*1000
+        builder.setPriority(NotificationManager.IMPORTANCE_MAX);
+        builder.setCategory(Notification.CATEGORY_REMINDER);
+        Bundle extras = new Bundle();
+        extras.putString(DOC_ID_KEY, diary_id);
+        extras.putString(NOTIFICATION_TYPE_KEY, NOTIFICATION_TYPE_VALUE_DIARY);
+        builder.setExtras(extras);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        @SuppressLint("HardwareIds")
+        String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        Map<String, Object> diary = new HashMap<>();
+        diary.put(PUSH_DIARY_NOTI_TIME, Timestamp.now());
+        diary.put(PUSH_DIARY_DONE, 0);
+        db.collection(TEST_USER_COLLECTION)
+                .document(device_id)
+                .collection(PUSH_DIARY_COLLECTION)
+                .document(diary_id)
+                .set(diary);
+        return builder.build();
+    }
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void scheduleNotification_diary (Notification notification, int delay) {
+        Intent notificationIntent = new Intent(this, NotificationListenerDiary.class);
+        notificationIntent.putExtra(DEFAULT_DIARY_NOTIFICATION_ID, 1 ) ;
+        notificationIntent.putExtra(DEFAULT_DIARY_NOTIFICATION, notification) ;
+        int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast( this, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        assert alarmManager != null;
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+//        Log.d ("shit", "scheduleNotification_esm");
+    }
     @Override
     public void onRefresh() {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),context);

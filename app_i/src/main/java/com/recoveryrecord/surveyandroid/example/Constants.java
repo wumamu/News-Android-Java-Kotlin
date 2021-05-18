@@ -20,23 +20,32 @@ public class Constants {
     public static final int PUSH_HISTORY_LIMIT_PER_PAGE = 50;
     public static final int READ_HISTORY_LIMIT_PER_PAGE = 50;
     //GENERATE ESM
+    public static final int REPEAT_ALARM_CHECKER = 10 * 60 * 1000;//10 min
     public static final int ESM_TIME_ON_PAGE_THRESHOLD = 5;//5 seconds
     public static final int ESM_INTERVAL = 60 * 60 * 1000;//one hour
+    public static final int DIARY_INTERVAL = 23 * 60 * 60 * 1000;//23 hour
     public static final int ESM_TARGET_RANGE = 30 * 60;//30 min (seconds)
     public static final int NOTIFICATION_TARGET_RANGE = 15 * 60;//15 min (seconds)
     public static final String ESM_NOTIFICATION_CONTENT_TITLE = "ESM";
     public static final String ESM_NOTIFICATION_CONTENT_TEXT = "是時候填寫問卷咯!";
+    public static final String DIARY_NOTIFICATION_CONTENT_TITLE = "DIARY";
+    public static final String DIARY_NOTIFICATION_CONTENT_TEXT = "是時候填寫問卷咯!";
     //PUSH ESM
     public static final int ESM_TIME_OUT = 15 * 60 * 1000;//15 min
+    public static final int DIARY_TIME_OUT = 60 * 60 * 1000;//60 min
     public static final long[] VIBRATE_EFFECT = {100, 200, 300, 300, 500, 300, 300};
     public static final String ESM_CHANNEL_ID = "10001";
     public static final String NEWS_CHANNEL_ID = "10002";
+    public static final String DIARY_CHANNEL_ID = "10003";
     public static final String DEFAULT_ESM_CHANNEL_ID = "default_esm";
     public static final String DEFAULT_NEWS_CHANNEL_ID = "default_news";
+    public static final String DEFAULT_DIARY_CHANNEL_ID = "default_diary";
     public static final String DEFAULT_ESM_NOTIFICATION_ID = "notification-id";
     public static final String DEFAULT_NEWS_NOTIFICATION_ID = "notification-id";
+    public static final String DEFAULT_DIARY_NOTIFICATION_ID = "notification-id";
     public static final String DEFAULT_ESM_NOTIFICATION = "notification";
     public static final String DEFAULT_NEWS_NOTIFICATION = "notification";
+    public static final String DEFAULT_DIARY_NOTIFICATION = "notification";
 
     //SUBMIT ESM CHECK
     public static final String TARGET_READ_NEWS_TITLE_ANSWER = "有印象，且沒看過相同的新聞";
@@ -55,7 +64,13 @@ public class Constants {
     public static final String NOTIFICATION_TYPE_VALUE_ESM = "esm";
     public static final String NOTIFICATION_TYPE_VALUE_DIARY = "diary";
     //ESMLoadingPageActivity SurveyActivity
-    public static final String ESM_ID = "esm_id";
+//    public static final String ESM_ID = "esm_id";
+    public static final String LOADING_PAGE_ID = "id";
+    public static final String SURVEY_PAGE_ID = "id";
+//    public static final String DIARY_PAGE_ID = "id";
+    public static final String LOADING_PAGE_TYPE_KEY = "type";
+    public static final String LOADING_PAGE_TYPE_ESM = "esm";
+    public static final String LOADING_PAGE_TYPE_DIARY = "diary";
     //DiaryLoadingPageActivity SurveyActivity
     public static final String DIARY_ID = "diary_id";
     //FIRESTORE FIELD###############################################################################
@@ -68,6 +83,8 @@ public class Constants {
     public static final String NOTIFICATION_BAR_NEWS_MONITOR_COLLECTION = "notification_bar_news(not app)";
     //NOTIFICATION BAR ESM
     public static final String NOTIFICATION_BAR_ESM_COLLECTION = "notification_bar_esm";
+    //NOTIFICATION BAR DIARY
+    public static final String NOTIFICATION_BAR_DIARY_COLLECTION = "notification_bar_diary";
     //NOTIFICATION BAR SERVICE
     public static final String NOTIFICATION_BAR_SERVICE_COLLECTION = "notification_bar_service_check";
 
@@ -96,8 +113,6 @@ public class Constants {
     public static final String READING_BEHAVIOR_IN_TIME = "in_timestamp";
     public static final String READING_BEHAVIOR_OUT_TIME = "out_timestamp";
     public static final String READING_BEHAVIOR_SAMPLE_CHECK = "select";
-    //PUSH DIARY
-    public static final String PUSH_DIARY_COLLECTION = "push_diary";
     //PUSH NEWS
     public static final String PUSH_NEWS_COLLECTION = "push_news";
     public static final String PUSH_NEWS_CLICK = "click";
@@ -120,10 +135,20 @@ public class Constants {
     public static final String PUSH_ESM_READ_ARRAY = "ReadNewsTitle";
     public static final String PUSH_ESM_NOTI_ARRAY = "NotiNewTitle";
     public static final String PUSH_ESM_TARGET_TITLE = "target_read_title";
+    public static final String PUSH_ESM_TARGET_TITLE_DIARY = "target_read_title_diary";
     public static final String PUSH_ESM_TARGET_IN_TIME = "target_in_time";
     public static final String PUSH_ESM_TARGET_SITUATION = "target_situation";
     public static final String PUSH_ESM_TARGET_PLACE = "target_place";
-
+    //PUSH DIARY
+    public static final String PUSH_DIARY_COLLECTION = "push_diary";
+    public static final String PUSH_DIARY_OPTION = "target_history_candidate";
+    public static final String PUSH_DIARY_REMOVE_TIME = "remove_timestamp";
+    public static final String PUSH_DIARY_NOTI_TIME = "noti_timestamp";
+    public static final String PUSH_DIARY_OPEN_TIME = "open_timestamp";
+    public static final String PUSH_DIARY_CLOSE_TIME = "close_timestamp";
+    public static final String PUSH_DIARY_SUBMIT_TIME = "submit_timestamp";
+    public static final String PUSH_DIARY_DONE = "done";
+    public static final String PUSH_DIARY_RESULT = "result";
 
 
 
@@ -134,19 +159,23 @@ public class Constants {
     //SHARE PREFERENCE #############################################################################
     //SHARE PREFERENCE #############################################################################
     //ESM
-    public static final String NOTIFICATION_UNCLICKED_CANDIDATE = "PushNotificationNewsTitleArray";
-    public static final String READ_HISTORY_CANDIDATE = "ReadingBehaviorNewsTitleArray";
-    public static final String TARGET_NEWS_TITLE = "TargetNewsTitleArray";
+    public static final String ESM_NOTIFICATION_UNCLICKED_CANDIDATE = "PushNotificationNewsTitleArray";
+    public static final String ESM_READ_HISTORY_CANDIDATE = "ReadingBehaviorNewsTitleArray";
+    public static final String ESM_TARGET_NEWS_TITLE = "TargetNewsTitleArray";
     public static final String ESM_START_TIME_HOUR = "ESMStartTimeHour";
     public static final String ESM_START_TIME_MIN = "ESMStartTimeMin";
     public static final String ESM_END_TIME_HOUR = "ESMEndTimeHour";
     public static final String ESM_END_TIME_MIN = "ESMEndTimeMin";
     public static final String ESM_SET_ONCE = "ESMSetOnce";
     public static final String LAST_ESM_TIME = "LastEsmTime";
+    public static final String LAST_DIARY_TIME = "LastDiaryTime";
+
+    //DIARY
+    public static final String DIARY_READ_HISTORY_CANDIDATE = "DiaryTargetOptionArray";
+    //OTHER
     public static final String PUSH_NEWS_MEDIA_LIST_SELECTION = "media_select";
     public static final String MAIN_PAGE_MEDIA_ORDER = "media_rank";
-
-
+    //ESM DIARY COUNT
     public static final String ESM_PUSH_TOTAL = "ESMPushTotal";
     public static final String ESM_DONE_TOTAL = "ESMDoneTotal";
     public static final String ESM_DAY_PUSH_PREFIX = "ESMDayPush_";
