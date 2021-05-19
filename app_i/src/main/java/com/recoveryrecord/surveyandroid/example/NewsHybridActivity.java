@@ -113,9 +113,14 @@ import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TY
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_DONE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_NOTI_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_TRIGGER_BY;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_TRIGGER_BY_SELF;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_NOTI_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_SAMPLE;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TRIGGER_BY;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TRIGGER_BY_ALARM;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TRIGGER_BY_SELF;
 import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.VIBRATE_EFFECT;
 
@@ -281,7 +286,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         actionBarDrawerToggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        setTitle("Time Me 即時新聞");
+        setTitle("即時新聞");
 
         //check notification service running
         mYourService = new NewsNotificationService();
@@ -625,6 +630,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         Map<String, Object> esm = new HashMap<>();
         esm.put(PUSH_ESM_NOTI_TIME, Timestamp.now());
         esm.put(PUSH_ESM_SAMPLE, 0);
+        esm.put(PUSH_ESM_TRIGGER_BY, PUSH_ESM_TRIGGER_BY_SELF);
         db.collection(TEST_USER_COLLECTION)
                 .document(device_id)
                 .collection(PUSH_ESM_COLLECTION)
@@ -684,6 +690,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         Map<String, Object> diary = new HashMap<>();
         diary.put(PUSH_DIARY_NOTI_TIME, Timestamp.now());
         diary.put(PUSH_DIARY_DONE, 0);
+        diary.put(PUSH_DIARY_TRIGGER_BY, PUSH_DIARY_TRIGGER_BY_SELF);
         db.collection(TEST_USER_COLLECTION)
                 .document(device_id)
                 .collection(PUSH_DIARY_COLLECTION)

@@ -28,7 +28,7 @@
     {
       "id": "not_read_title_1",
       "header": "Question not_read_title_1(38)",
-      "question": "開始閱讀前，您是否正在從事以下活動？",
+      "question": "填答前，您是否正在從事以下活動？",
       "question_type": "single_select",
       "options": [
         "處理家務",
@@ -979,7 +979,7 @@
     {
       "id": "not_read_title_forget_1",
       "header": "Question not_read_title_forget_1(41)",
-      "question": "開始閱讀前，您是否正在從事以下活動？",
+      "question": "填答前，您是否正在從事以下活動？",
       "question_type": "single_select",
       "options": [
         "處理家務",
@@ -1225,7 +1225,7 @@
     {
       "id": "59",
       "header": "Question not_read_title_1(59)",
-      "question": "開始閱讀前，您是否正在從事以下活動？",
+      "question": "填答前，您是否正在從事以下活動？",
       "question_type": "single_select",
       "options": [
         "處理家務",
@@ -2261,7 +2261,7 @@
     {
       "id": "63",
       "header": "Question not_read_title_forget_1(63)",
-      "question": "開始閱讀前，您是否正在從事以下活動？",
+      "question": "填答前，您是否正在從事以下活動？",
       "question_type": "single_select",
       "options": [
         "處理家務",
@@ -2888,8 +2888,8 @@
       "header": "Question read_9(11)",
       "question": "對您來說，這則新聞是可信任的。\n(無法判斷或沒意見請選擇4)",
       "question_type": "segment_select",
-      "low_tag": "非常不感興趣",
-      "high_tag": "非常感興趣",
+      "low_tag": "非常不符合",
+      "high_tag": "非常符合",
       "values": [
         "1",
         "2",

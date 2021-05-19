@@ -58,7 +58,9 @@ import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_CHANNEL_ID
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_ID_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_MEDIA_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_KEY;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_ESM;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_NEWS;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_SERVICE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_MEDIA;
@@ -103,10 +105,10 @@ public class NewsNotificationService extends Service {
         manager.createNotificationChannel(chan);
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
-//        Bundle extras = new Bundle();
-//        extras.putString("id", news_id);
-//        extras.putString("type", "news");
-//        builder.setExtras(extras);
+        Bundle extras = new Bundle();
+        extras.putString(DOC_ID_KEY, "####");
+        extras.putString(NOTIFICATION_TYPE_KEY, NOTIFICATION_TYPE_VALUE_SERVICE);
+        notificationBuilder.setExtras(extras);
         Notification notification = notificationBuilder.setOngoing(true)
                 .setContentTitle("App is running in background")
                 .setPriority(NotificationManager.IMPORTANCE_MIN)

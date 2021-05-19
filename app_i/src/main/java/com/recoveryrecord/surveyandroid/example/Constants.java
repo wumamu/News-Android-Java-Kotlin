@@ -63,6 +63,7 @@ public class Constants {
     public static final String NOTIFICATION_TYPE_VALUE_NEWS = "news";
     public static final String NOTIFICATION_TYPE_VALUE_ESM = "esm";
     public static final String NOTIFICATION_TYPE_VALUE_DIARY = "diary";
+    public static final String NOTIFICATION_TYPE_VALUE_SERVICE = "service";
     //ESMLoadingPageActivity SurveyActivity
 //    public static final String ESM_ID = "esm_id";
     public static final String LOADING_PAGE_ID = "id";
@@ -79,6 +80,16 @@ public class Constants {
     //FIRESTORE FIELD###############################################################################
     //FIRESTORE FIELD###############################################################################
     public static final String TEST_USER_COLLECTION = "test_users";
+    public static final String ALARM_SERVICE_COLLECTION = "alarm_service";
+    public static final String ALARM_SERVICE_POST_COLLECTION = "alarm_service_post";
+    public static final String DIARY_STATUS = "diary_status";
+    public static final String DIARY_PUSH = "success";
+    public static final String DIARY_NOT_IN_PUSH_RANGE = "fail_not_in_range";
+    public static final String DIARY_OUT_OF_INTERVAL_LIMIT = "fail_more_than_one_per_day";//ONE DAY
+    public static final String ESM_STATUS = "esm_status";
+    public static final String ESM_PUSH = "success";
+    public static final String ESM_NOT_IN_PUSH_RANGE= "fail_not_in_range";
+    public static final String ESM_OUT_OF_INTERVAL_LIMIT = "fail_more_than_one_per_hour";//ONE HOUR
     //NOTIFICATION BAR NEWS NOT APP
     public static final String NOTIFICATION_BAR_NEWS_MONITOR_COLLECTION = "notification_bar_news(not app)";
     //NOTIFICATION BAR ESM
@@ -86,7 +97,7 @@ public class Constants {
     //NOTIFICATION BAR DIARY
     public static final String NOTIFICATION_BAR_DIARY_COLLECTION = "notification_bar_diary";
     //NOTIFICATION BAR SERVICE
-    public static final String NOTIFICATION_BAR_SERVICE_COLLECTION = "notification_bar_service_check";
+    public static final String NOTIFICATION_BAR_SERVICE_COLLECTION = "notification_bar_my_news";
 
 
     public static final String NOTIFICATION_BAR_TITLE = "title";
@@ -117,6 +128,7 @@ public class Constants {
     public static final String PUSH_NEWS_COLLECTION = "push_news";
     public static final String PUSH_NEWS_CLICK = "click";
     public static final String PUSH_NEWS_NOTI_TIME = "noti_timestamp";
+    public static final String PUSH_NEWS_RECEIEVE_TIME = "receieve_timestamp";
     public static final String PUSH_NEWS_PUBDATE = "pubdate";
     public static final String PUSH_NEWS_SELECTION = "selections";
     public static final String PUSH_NEWS_TITLE = "title";
@@ -126,8 +138,13 @@ public class Constants {
     //PUSH ESM
     public static final String PUSH_ESM_COLLECTION = "push_esm";
     public static final String PUSH_ESM_SAMPLE = "sample";
+    public static final String PUSH_ESM_TRIGGER_BY_NOTIFICATION = "notification_service";
+    public static final String PUSH_ESM_TRIGGER_BY_ALARM = "alarm";
+    public static final String PUSH_ESM_TRIGGER_BY_SELF = "self";
+    public static final String PUSH_ESM_TRIGGER_BY = "trigger_by";
     public static final String PUSH_ESM_RESULT = "result";
     public static final String PUSH_ESM_REMOVE_TIME = "remove_timestamp";
+    public static final String PUSH_ESM_RECEIEVE_TIME = "receieve_timestamp";
     public static final String PUSH_ESM_NOTI_TIME = "noti_timestamp";
     public static final String PUSH_ESM_OPEN_TIME = "open_timestamp";
     public static final String PUSH_ESM_CLOSE_TIME = "close_timestamp";
@@ -143,15 +160,20 @@ public class Constants {
     public static final String PUSH_DIARY_COLLECTION = "push_diary";
     public static final String PUSH_DIARY_OPTION = "target_history_candidate";
     public static final String PUSH_DIARY_REMOVE_TIME = "remove_timestamp";
+    public static final String PUSH_DIARY_RECEIEVE_TIME = "receieve_timestamp";
     public static final String PUSH_DIARY_NOTI_TIME = "noti_timestamp";
     public static final String PUSH_DIARY_OPEN_TIME = "open_timestamp";
     public static final String PUSH_DIARY_CLOSE_TIME = "close_timestamp";
     public static final String PUSH_DIARY_SUBMIT_TIME = "submit_timestamp";
     public static final String PUSH_DIARY_DONE = "done";
     public static final String PUSH_DIARY_RESULT = "result";
-
-
-
+    public static final String PUSH_DIARY_TRIGGER_BY_NOTIFICATION = "notification_service";
+    public static final String PUSH_DIARY_TRIGGER_BY_ALARM = "alarm";
+    public static final String PUSH_DIARY_TRIGGER_BY_SELF = "self";
+    public static final String PUSH_DIARY_TRIGGER_BY = "trigger_by";
+    //PUSH SERVICE
+    public static final String PUSH_SERVICE_COLLECTION = "push_service";
+    public static final String PUSH_SERVICE_RECEIEVE_TIME = "receieve_timestamp";
 
     //SHARE PREFERENCE #############################################################################
     //SHARE PREFERENCE #############################################################################

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.recoveryrecord.surveyandroid.example">
+    package="com.recoveryrecord.surveyandroid.example"
+    tools:ignore="ExtraText">
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.BLUETOOTH" android:label="BLUETOOTH"/>
@@ -12,6 +13,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 <!--    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />-->
     <!-- Required to access activity recognition. -->
     <!-- TODO: Add both activity recognition permissions to the manifest. -->
@@ -154,8 +156,14 @@
             </intent-filter>
         </receiver>
         <receiver android:name=".AlarmReceiver"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
+            android:directBootAware="true"
             android:enabled="true"
-            android:exported="true">
+            android:exported="true"
+            tools:targetApi="n">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
         </receiver>
 <!--        <receiver android:name=".TAlarmReceiver"-->
 <!--            android:enabled="true"-->
