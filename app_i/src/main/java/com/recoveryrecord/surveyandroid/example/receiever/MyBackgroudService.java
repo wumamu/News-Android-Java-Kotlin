@@ -18,7 +18,6 @@ public class MyBackgroudService extends Service{
     public void onCreate() {
         super.onCreate();
         mystreamManager = MyStreamManager.getInstance();
-        Toast.makeText(this, "STREAM", Toast.LENGTH_SHORT).show();
     }
 
     @Nullable
@@ -39,6 +38,7 @@ public class MyBackgroudService extends Service{
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 //        Toast.makeText(this, "OnStartCommand", Toast.LENGTH_SHORT).show();
+//        mystreamManager.updateStreamGenerators();
         mMainThread.postDelayed(runnable, DetectTime);
         return super.onStartCommand(intent, flags, startId);
     }

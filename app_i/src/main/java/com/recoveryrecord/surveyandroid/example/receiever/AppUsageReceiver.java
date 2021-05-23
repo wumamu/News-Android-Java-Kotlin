@@ -72,6 +72,23 @@ public class AppUsageReceiver extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         handler.postDelayed(r, DetectTime);
+        device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        final Timestamp current_end = Timestamp.now();
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+        final String time_now = formatter.format(date);
+        Map<String, Object> sensordb = new HashMap<>();
+        String foregroundActivityName = ForegroundAppUtil.getForegroundActivityName(getApplicationContext());
+        Log.e("AppUsage", foregroundActivityName);
+        sensordb.put("AppUsage", foregroundActivityName);
+//            Toast.makeText(getApplicationContext(), foregroundActivityName, Toast.LENGTH_SHORT).show();
+        db.collection("test_users")
+                .document(device_id)
+                .collection("Sensor collection")
+                .document("Sensor")
+                .collection("AppUsage")
+                .document(time_now)
+                .set(sensordb);
         return START_STICKY;
     }
 

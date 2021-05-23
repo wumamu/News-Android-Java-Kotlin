@@ -35,17 +35,11 @@ import static com.recoveryrecord.surveyandroid.example.NotificationScheduler.TAG
 
 public class ActivityRecognitionReceiver extends IntentService implements StreamGenerator{
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private String device_id;
+    private static String device_id;
 
     public ActivityRecognitionReceiver() {
         super("ActivityRecognitionReceiver");
     }
-//
-//    @Override
-//    public void onReceive(Context context, Intent intent) {
-//        LocalBroadcastManager.getInstance(context).sendBroadcast(intent.setAction("activity"));
-//    }
-
     public ActivityRecognitionReceiver(String name) {
         super(name);
     }
@@ -60,12 +54,24 @@ public class ActivityRecognitionReceiver extends IntentService implements Stream
     public static final String STRING_DETECTED_ACTIVITY_NA = "NA";
     public static final int NO_ACTIVITY_TYPE = -1;
 //    private ActivityRecognitionDataRecord activityRecognitionDataRecord;
-final Timestamp current_end = Timestamp.now();
+    final Timestamp current_end = Timestamp.now();
     Date date = new Date(System.currentTimeMillis());
     SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
     final String time_now = formatter.format(date);
     Map<String, Object> sensordb = new HashMap<>();
     Intent intent;
+    private static int Vehicle = 0;
+    private static int Bicycle = 0;
+    private static int Foot = 0;
+    private static int Running = 0;
+    private static int Still = 0;
+    private static int Tilting = 0;
+    private static int Walking = 0;
+    private static int Unknown = 0;
+    public void onCreate() {
+        super.onCreate();
+        device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+    }
     @Override
     protected void onHandleIntent(Intent intent) {
 
@@ -83,9 +89,31 @@ final Timestamp current_end = Timestamp.now();
         ActivityRecognitionResult result = ActivityRecognitionResult.extractResult(intent);
         handleDetectedActivities(result.getProbableActivities());
     }
-
+    @Override
+    public void updateStream() {
+//        device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+        final Timestamp current_end = Timestamp.now();
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+        final String time_now = formatter.format(date);
+        sensordb.put("Activity Recognition 1", "In Vehicle: " + Vehicle);
+        sensordb.put("Activity Recognition 2", "On Bicycle: " + Bicycle);
+        sensordb.put("Activity Recognition 3", "On Foot: " + Foot);
+        sensordb.put("Activity Recognition 4", "Running: " + Running);
+        sensordb.put("Activity Recognition 5", "Still: " + Still);
+        sensordb.put("Activity Recognition 6", "Tilting: " + Tilting);
+        sensordb.put("Activity Recognition 7", "Walking: " + Walking);
+        sensordb.put("Activity Recognition 8", "Unknown: " + Unknown);
+        db.collection("test_users")
+                .document(device_id)
+                .collection("Sensor collection")
+                .document("Sensor")
+                .collection("Activity Recognition")
+                .document(time_now)
+                .set(sensordb);
+    }
     private void handleDetectedActivities(List<DetectedActivity> probableActivities) {
-
+        device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         final DocumentReference ref = db.collection("test_users")
                 .document(device_id)
                 .collection("Sensor collection")
@@ -105,6 +133,7 @@ final Timestamp current_end = Timestamp.now();
                     Log.e("ActivityRecognition", "In Vehicle: " + activity.getConfidence());
 //                    sensordb.put("ActivityRecognition", "In Vehicle: " + activity.getConfidence());
                     ref.update("Activity Recognition 1", "In Vehicle: " + activity.getConfidence());
+                    Vehicle = activity.getConfidence();
                     handler.post(new Runnable(){
                         public void run(){
 //                            Toast.makeText(getApplicationContext(), "在坐車啦" + activity.getConfidence(), Toast.LENGTH_LONG).show();
@@ -116,6 +145,7 @@ final Timestamp current_end = Timestamp.now();
                     Log.e("ActivityRecognition", "On Bicycle: " + activity.getConfidence());
                     ref.update("Activity Recognition 2", "On Bicycle: " + activity.getConfidence());
 //                    sensordb.put("ActivityRecognition", "On Bicycle: " + activity.getConfidence());
+                    Bicycle = activity.getConfidence();
                     handler.post(new Runnable(){
                         public void run(){
 //                            Toast.makeText(getApplicationContext(), "騎腳踏車啦" + activity.getConfidence(), Toast.LENGTH_LONG).show();
@@ -127,6 +157,7 @@ final Timestamp current_end = Timestamp.now();
                     Log.e("ActivityRecognition", "On Foot: " + activity.getConfidence());
                     ref.update("Activity Recognition 3", "On Foot: " + activity.getConfidence());
 //                    sensordb.put("ActivityRecognition", "On Foot: " + activity.getConfidence());
+                    Foot = activity.getConfidence();
                     handler.post(new Runnable(){
                         public void run(){
 //                            Toast.makeText(getApplicationContext(), "走路啦" + activity.getConfidence(), Toast.LENGTH_LONG).show();
@@ -138,6 +169,7 @@ final Timestamp current_end = Timestamp.now();
                     Log.e("ActivityRecognition", "Running: " + activity.getConfidence());
                     ref.update("Activity Recognition 4", "Running: " + activity.getConfidence());
 //                    sensordb.put("ActivityRecognition", "Running: " + activity.getConfidence());
+                    Running = activity.getConfidence();
                     handler.post(new Runnable(){
                         public void run(){
 //                            Toast.makeText(getApplicationContext(), "跑步啦" + activity.getConfidence(), Toast.LENGTH_LONG).show();
@@ -150,6 +182,7 @@ final Timestamp current_end = Timestamp.now();
                     Log.e("ActivityRecognition", "Still: " + activity.getConfidence());
                     ref.update("Activity Recognition 5", "Still: " + activity.getConfidence());
 //                    sensordb.put("ActivityRecognition", "Still: " + activity.getConfidence());
+                    Still = activity.getConfidence();
                     handler.post(new Runnable(){
                         public void run(){
 //                            Toast.makeText(getApplicationContext(), "靜止不動啦" + activity.getConfidence(), Toast.LENGTH_LONG).show();
@@ -167,6 +200,7 @@ final Timestamp current_end = Timestamp.now();
                     Log.e("ActivityRecognition", "Tilting: " + activity.getConfidence());
                     ref.update("Activity Recognition 6", "Tilting: " + activity.getConfidence());
 //                    sensordb.put("ActivityRecognition", "Tilting: " + activity.getConfidence());
+                    Tilting = activity.getConfidence();
                     handler.post(new Runnable(){
                         public void run(){
 //                            Toast.makeText(getApplicationContext(), "傾斜的啦" + activity.getConfidence(), Toast.LENGTH_LONG).show();
@@ -178,6 +212,7 @@ final Timestamp current_end = Timestamp.now();
                     Log.e("ActivityRecognition", "Walking: " + activity.getConfidence());
                     ref.update("Activity Recognition 7", "Walking: " + activity.getConfidence());
 //                    sensordb.put("ActivityRecognition", "Walking: " + activity.getConfidence());
+                    Walking = activity.getConfidence();
                     handler.post(new Runnable(){
                         public void run(){
 //                            Toast.makeText(getApplicationContext(), "又是走路啦" + activity.getConfidence(), Toast.LENGTH_LONG).show();
@@ -189,6 +224,7 @@ final Timestamp current_end = Timestamp.now();
                     Log.e("ActivityRecognition", "Unknown: " + activity.getConfidence());
                     ref.update("Activity Recognition 8", "Unknown: " + activity.getConfidence());
 //                    sensordb.put("ActivityRecognition", "Unknown: " + activity.getConfidence());
+                    Unknown = activity.getConfidence();
                     handler.post(new Runnable(){
                         public void run(){
 //                            Toast.makeText(getApplicationContext(), "不知道啦" + activity.getConfidence(), Toast.LENGTH_LONG).show();
@@ -238,9 +274,6 @@ final Timestamp current_end = Timestamp.now();
         return "NA";
     }
 
-    @Override
-    public void updateStream() {
 
-    }
 }
 

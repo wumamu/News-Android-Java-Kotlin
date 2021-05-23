@@ -44,6 +44,7 @@ public class RingModeReceiver implements StreamGenerator{
             }
             IntentFilter filter = new IntentFilter();
             filter.addAction(AudioManager.RINGER_MODE_CHANGED_ACTION);
+            device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
             context.registerReceiver(mReceiver, filter);
         }
 
