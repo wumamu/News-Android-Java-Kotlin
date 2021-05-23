@@ -293,7 +293,7 @@ public class TestNewsAllActivity extends AppCompatActivity implements Navigation
 
         //Screen
         _ScreenStateReceiver = new ScreenStateReceiver();
-        _ScreenStateReceiver.registerScreenStateReceiver(this);
+//        _ScreenStateReceiver.registerScreenStateReceiver(this);
 
 
     }
@@ -543,7 +543,7 @@ public class TestNewsAllActivity extends AppCompatActivity implements Navigation
     public void onDestroy() {
         _BluetoothReceiver.unregisterBluetoothReceiver(this);
         _NetworkChangeReceiver.unregisterNetworkReceiver(this);
-        _ScreenStateReceiver.unregisterScreenStateReceiver(this);
+//        _ScreenStateReceiver.unregisterScreenStateReceiver(this);
         super.onDestroy();
     }
 

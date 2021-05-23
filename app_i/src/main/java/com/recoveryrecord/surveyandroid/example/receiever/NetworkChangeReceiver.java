@@ -31,19 +31,42 @@ import java.util.Map;
 import static java.security.AccessController.getContext;
 
 //import static com.recoveryrecord.surveyandroid.example.NetworkCheckerActivity.dialog;
-public class NetworkChangeReceiver {
+public class NetworkChangeReceiver implements StreamGenerator{
     private static final String TAG = "Main";
     private NetworkChangeReceiver.NetworkChangeBroadcastReceiver mReceiver;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private String device_id;
+    private static String device_id;
+    private static String NetworkState = "NA";
+    static Context  context;
+    Map<String, Object> sensordb = new HashMap<>();
+    final Timestamp current_end = Timestamp.now();
+    Date date = new Date(System.currentTimeMillis());
+    SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+    final String time_now = formatter.format(date);
     public void registerNetworkReceiver(Context context) {
         if (mReceiver == null) {
             mReceiver = new NetworkChangeReceiver.NetworkChangeBroadcastReceiver();
         }
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-
+        device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
         context.registerReceiver(mReceiver, filter);
+    }
+
+    @Override
+    public void updateStream() {
+        final Timestamp current_end = Timestamp.now();
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+        final String time_now = formatter.format(date);
+        sensordb.put("Network", NetworkState);
+        db.collection("test_users")
+                .document(device_id)
+                .collection("Sensor collection")
+                .document("Sensor")
+                .collection("Network")
+                .document(time_now)
+                .set(sensordb);
     }
 
     public class NetworkChangeBroadcastReceiver extends BroadcastReceiver {
@@ -55,7 +78,7 @@ public class NetworkChangeReceiver {
             Date date = new Date(System.currentTimeMillis());
             SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
             final String time_now = formatter.format(date);
-            Map<String, Object> sensordb = new HashMap<>();
+
 //            DocumentReference ref = db.collection("test_users").document(device_id).collection("Sensor collection").document("BlurTooth");
             try {
                 if (isOnline(context)) {
@@ -68,11 +91,13 @@ public class NetworkChangeReceiver {
                         // Do whatever
                         Log.e("log: network status", "connected by wifi");
 //                        Toast.makeText(context, "用WiFi連的", Toast.LENGTH_SHORT).show();
+                        NetworkState = "Connected by Wifi";
                         sensordb.put("Network", "Connected by Wifi");
 
                     } else {
                         Log.e("log: network status", "connected by mobile data");
 //                        Toast.makeText(context, "用手機網路連的", Toast.LENGTH_SHORT).show();
+                        NetworkState = "Connected by Mobile";
                         sensordb.put("Network", "Connected by Mobile");
                     }
                     //should check null because in airplane mode it will be null
@@ -88,6 +113,7 @@ public class NetworkChangeReceiver {
                     //                dialog(false);
                     Log.e("log: ", "disconnected");
 //                    Toast.makeText(context, "斷網了", Toast.LENGTH_SHORT).show();
+                    NetworkState = "Disconnected";
                     sensordb.put("Network", "Disconnected");
                 }
                 db.collection("test_users")

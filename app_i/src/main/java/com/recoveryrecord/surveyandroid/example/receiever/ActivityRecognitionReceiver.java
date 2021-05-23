@@ -1,7 +1,9 @@
 package com.recoveryrecord.surveyandroid.example.receiever;
 
 import android.app.IntentService;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
@@ -14,6 +16,7 @@ import androidx.core.app.NotificationManagerCompat;
 import com.google.android.gms.location.ActivityRecognition;
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -25,9 +28,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static android.icu.lang.UCharacter.IndicPositionalCategory.NA;
+import javax.annotation.Nullable;
 
-public class ActivityRecognitionReceiver extends IntentService {
+import static android.icu.lang.UCharacter.IndicPositionalCategory.NA;
+import static com.recoveryrecord.surveyandroid.example.NotificationScheduler.TAG;
+
+public class ActivityRecognitionReceiver extends IntentService implements StreamGenerator{
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private String device_id;
 
@@ -58,17 +64,12 @@ final Timestamp current_end = Timestamp.now();
     Date date = new Date(System.currentTimeMillis());
     SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
     final String time_now = formatter.format(date);
+    Map<String, Object> sensordb = new HashMap<>();
+    Intent intent;
     @Override
     protected void onHandleIntent(Intent intent) {
-//        Handler handler = new Handler(Looper.getMainLooper());
-//        handler.post(new Runnable(){
-//            public void run(){
-//                Toast.makeText(getApplicationContext(), "OnHandleIntent", Toast.LENGTH_LONG).show();
-//            }
-//        });
-        device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        Map<String, Object> sensordb = new HashMap<>();
+        device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
         sensordb.put("Activity Recognition", "NA");
         db.collection("test_users")
@@ -78,10 +79,10 @@ final Timestamp current_end = Timestamp.now();
                 .collection("Activity Recognition")
                 .document(time_now)
                 .set(sensordb);
+
         ActivityRecognitionResult result = ActivityRecognitionResult.extractResult(intent);
         handleDetectedActivities(result.getProbableActivities());
     }
-
 
     private void handleDetectedActivities(List<DetectedActivity> probableActivities) {
 
@@ -235,6 +236,11 @@ final Timestamp current_end = Timestamp.now();
                 return STRING_DETECTED_ACTIVITY_NA;
         }
         return "NA";
+    }
+
+    @Override
+    public void updateStream() {
+
     }
 }
 
