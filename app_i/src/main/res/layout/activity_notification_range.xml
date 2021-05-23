@@ -13,6 +13,7 @@
 
         <TextView
             android:id="@+id/tv_reminder_header"
+            android:layout_gravity="center_horizontal"
             style="@style/settings_header"
             android:text="@string/sett_reminder_header" />
 
@@ -20,6 +21,7 @@
         <TextView
             android:id="@+id/tv_reminder_desc"
             style="@style/settings_details"
+            android:layout_gravity="center_horizontal"
             android:paddingTop="@dimen/items_top_padding"
             android:paddingBottom="@dimen/items_inbetween_space"
             android:text="@string/sett_reminder_desc" />
@@ -33,10 +35,12 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:gravity="center"
                 android:layout_marginTop="@dimen/items_inbetween_space">
 
                 <TextView
                     android:id="@+id/tv_reminder_time_label"
+                    android:layout_gravity="center_horizontal"
                     style="@style/settings_sub_header"
                     android:text="@string/sett_reminder_time_label"/>
 
@@ -45,6 +49,7 @@
 
             <TextView
                 android:id="@+id/tv_reminder_time_desc"
+                android:layout_gravity="center_horizontal"
                 style="@style/settings_details"
                 android:paddingTop="@dimen/items_top_padding"
                 android:paddingBottom="@dimen/items_inbetween_space"
@@ -60,10 +65,12 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:gravity="center"
                 android:layout_marginTop="@dimen/items_inbetween_space">
 
                 <TextView
                     android:id="@+id/tv_reminder_time_label_e"
+                    android:layout_gravity="center_horizontal"
                     style="@style/settings_sub_header"
                     android:text="@string/sett_reminder_time_label_ee"/>
 
@@ -72,6 +79,7 @@
 
             <TextView
                 android:id="@+id/ee_tv_reminder_time_desc"
+                android:layout_gravity="center_horizontal"
                 style="@style/settings_details"
                 android:paddingTop="@dimen/items_top_padding"
                 android:paddingBottom="@dimen/items_inbetween_space"
@@ -82,8 +90,7 @@
             android:id="@+id/button_s"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
+            android:layout_gravity="center_horizontal"
             android:text="儲存設定" />
 
     </LinearLayout>

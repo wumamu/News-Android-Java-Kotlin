@@ -1,5 +1,6 @@
 package com.recoveryrecord.surveyandroid.example;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -22,7 +23,8 @@ public class NotificationListenerESM extends BroadcastReceiver {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE) ;
         Notification notification = intent.getParcelableExtra(DEFAULT_ESM_NOTIFICATION) ;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O ) {
-            NotificationChannel notificationChannel = new NotificationChannel(ESM_CHANNEL_ID, "ESM_CHANNEL", NotificationManager.IMPORTANCE_HIGH) ;
+            @SuppressLint("WrongConstant")
+            NotificationChannel notificationChannel = new NotificationChannel(ESM_CHANNEL_ID, "ESM_CHANNEL", NotificationManager.IMPORTANCE_MAX) ;
             assert notificationManager != null;
             notificationManager.createNotificationChannel(notificationChannel) ;
         }

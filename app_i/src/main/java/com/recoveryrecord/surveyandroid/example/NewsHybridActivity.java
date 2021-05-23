@@ -30,6 +30,8 @@ import com.google.android.gms.location.ActivityRecognition;
 import com.google.android.gms.location.ActivityRecognitionClient;
 import com.google.android.gms.location.ActivityTransition;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
@@ -57,11 +59,13 @@ import com.recoveryrecord.surveyandroid.example.udn.UdnMainFragment;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -83,6 +87,9 @@ import androidx.viewpager.widget.ViewPager;
 
 import javax.annotation.Nullable;
 
+import static com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_KEY;
+import static com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_VALUE;
+import static com.recoveryrecord.surveyandroid.example.Constants.CACHE_CLEAR;
 import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_DIARY_CHANNEL_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_DIARY_NOTIFICATION;
 import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_DIARY_NOTIFICATION_ID;
@@ -90,23 +97,35 @@ import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_CHA
 import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_NOTIFICATION;
 import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_NOTIFICATION_ID;
 //import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_PARCELABLE;
-import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_NEWS_CHANNEL_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_ALARM_ACTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_CHANNEL_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_NOTIFICATION_CONTENT_TEXT;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_NOTIFICATION_CONTENT_TITLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_TIME_OUT;
 import static com.recoveryrecord.surveyandroid.example.Constants.DOC_ID_KEY;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_ALARM_ACTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_CHANNEL_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_END_TIME_HOUR;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOTIFICATION_CONTENT_TEXT;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOTIFICATION_CONTENT_TITLE;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_SET_ONCE;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_START_TIME_HOUR;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TIME_OUT;
+import static com.recoveryrecord.surveyandroid.example.Constants.INITIAL_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.LAST_LAUNCH_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_DIARY;
 import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_ESM;
 import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_KEY;
-import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_CHANNEL_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_KEY;
+import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_VALUE_BOOT_UP;
+import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_VALUE_FAILED_RESTART;
+import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_VALUE_MAIN_PAGE;
+import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_KEY;
+import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_VALUE_RESTART;
+import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_VALUE_RUNNING;
+import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_DIARY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_ESM;
@@ -119,9 +138,17 @@ import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_COLLEC
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_NOTI_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_SAMPLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TRIGGER_BY;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TRIGGER_BY_ALARM;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TRIGGER_BY_SELF;
+import static com.recoveryrecord.surveyandroid.example.Constants.REPEAT_ALARM_CHECKER;
+import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_ACTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_SURVEY_END;
+import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_SURVEY_START;
+import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_TRIGGER_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.UPDATE_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.USER_DEVICE_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.USER_PHONE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.VIBRATE_EFFECT;
 
 //public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
@@ -178,12 +205,6 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = getApplicationContext();
-//        Log.d(TAG, "on create");
-//        if (getIntent().getExtras() != null) {
-//            for (String key : getIntent().getExtras().keySet()){
-//                String value = getIntent().getExtras().getString(key);
-//                Log.d(TAG, "Key: " + key + " Value: " + value);
-//            }}
 
         setContentView(R.layout.activity_news_hybrid);
         //initial value for user (first time)
@@ -191,9 +212,14 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         //first in app
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean firstStart = sharedPrefs.getBoolean("firstStart", true);
-        if (firstStart) {
-            DocumentReference docIdRef = db.collection("test_users").document(device_id);
+        boolean clear = sharedPrefs.getBoolean(CACHE_CLEAR, true);
+        final DocumentReference docIdRef = db.collection("test_users").document(device_id);
+//        Boolean set_once = sharedPrefs.getBoolean(ESM_SET_ONCE, false);
+        if (clear) {
+//            AlarmManager alarmManager = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+//            Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
+//            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
+//            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),REPEAT_ALARM_CHECKER, pendingIntent);//every ten min check
             docIdRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -202,12 +228,31 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                         assert document != null;
                         if (document.exists()) {
                             Log.d(TAG, "Document exists!");
+                            docIdRef.update(APP_VERSION_KEY, APP_VERSION_VALUE,
+                                    UPDATE_TIME, Timestamp.now(),
+                                    LAST_LAUNCH_TIME, Timestamp.now()
+                            )//another field
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.d("lognewsselect", "DocumentSnapshot successfully updated!");
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.w("lognewsselect", "Error updating document", e);
+                                        }
+                                    });
                         } else {
                             Log.d(TAG, "Document does not exist!");
                             Map<String, Object> first = new HashMap<>();
-                            first.put("test", Timestamp.now());
-                            first.put("user_id", device_id);
-                            first.put("user_phone_id", Build.MODEL);
+                            first.put(INITIAL_TIME, Timestamp.now());
+                            first.put(UPDATE_TIME, Timestamp.now());
+                            first.put(LAST_LAUNCH_TIME, Timestamp.now());
+                            first.put(USER_DEVICE_ID, device_id);
+                            first.put(USER_PHONE_ID, Build.MODEL);
+                            first.put(APP_VERSION_KEY, APP_VERSION_VALUE);
                             db.collection("test_users")
                                     .document(device_id)
                                     .set(first);
@@ -220,7 +265,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
             showStartDialog();
 
             SharedPreferences.Editor editor = sharedPrefs.edit();
-            editor.putBoolean("firstStart", false);
+            editor.putBoolean(CACHE_CLEAR, false);
             editor.apply();
             //initial media list
             Set<String> ranking = sharedPrefs.getStringSet("media_rank", null);
@@ -241,8 +286,48 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 edit.apply();
 //                Toast.makeText(this, "帳號設定可以調整首頁媒體排序喔~", Toast.LENGTH_SHORT).show();
             }
-            editor.putBoolean("firstStart", false);
-            editor.apply();
+
+        } else {
+            docIdRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        assert document != null;
+                        if (document.exists()) {
+                            Log.d(TAG, "Document exists!");
+                            docIdRef.update(LAST_LAUNCH_TIME, Timestamp.now()
+                            )//another field
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.d("lognewsselect", "DocumentSnapshot successfully updated!");
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.w("lognewsselect", "Error updating document", e);
+                                        }
+                                    });
+                        } else {
+                            Log.d(TAG, "Document does not exist!");
+                            Map<String, Object> first = new HashMap<>();
+                            first.put(INITIAL_TIME, Timestamp.now());
+                            first.put(UPDATE_TIME, Timestamp.now());
+                            first.put(LAST_LAUNCH_TIME, Timestamp.now());
+                            first.put(USER_DEVICE_ID, device_id);
+                            first.put(USER_PHONE_ID, Build.MODEL);
+                            first.put(APP_VERSION_KEY, APP_VERSION_VALUE);
+                            db.collection("test_users")
+                                    .document(device_id)
+                                    .set(first);
+                        }
+                    } else {
+                        Log.d(TAG, "Failed with: ", task.getException());
+                    }
+                }
+            });
         }
         //notification media_select
         Set<String> selections = sharedPrefs.getStringSet("media_select", null);
@@ -290,26 +375,26 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 
         //check notification service running
         mYourService = new NewsNotificationService();
-//        mServiceIntent = new Intent(this, mYourService.getClass());
         mServiceIntent = new Intent(this, NewsNotificationService.class);
         Map<String, Object> log_service = new HashMap<>();
-        log_service.put("flag", true);
-        log_service.put("service_timestamp", Timestamp.now());
-        log_service.put("cycle", "create");
-        log_service.put("activity", "NewsHybridActivity");
-        Log.d("log: activity cycle", "NewsHybridActivity On create");
         if (!isMyServiceRunning(mYourService.getClass())) {
-            log_service.put("status", "failed(start)");
-            Toast.makeText(this, "service failed", Toast.LENGTH_SHORT).show();
+//            log_service.put("status", "failed(start)");
+            log_service.put(NEWS_SERVICE_STATUS_KEY, NEWS_SERVICE_STATUS_VALUE_RESTART);
+            log_service.put(NEWS_SERVICE_CYCLE_KEY, NEWS_SERVICE_CYCLE_VALUE_FAILED_RESTART);
+//            Toast.makeText(this, "service failed", Toast.LENGTH_SHORT).show();
             startService(mServiceIntent);
         } else {
-            log_service.put("status", "running");
-            Toast.makeText(this, "service running", Toast.LENGTH_SHORT).show();
+            log_service.put(NEWS_SERVICE_STATUS_KEY, NEWS_SERVICE_STATUS_VALUE_RUNNING);
+            log_service.put(NEWS_SERVICE_CYCLE_KEY, NEWS_SERVICE_CYCLE_VALUE_MAIN_PAGE);
+//            Toast.makeText(this, "service running", Toast.LENGTH_SHORT).show();
         }
-        db.collection("test_users")
+        log_service.put(NEWS_SERVICE_TIME, Timestamp.now());
+//        log_service.put(NEWS_SERVICE_STATUS_KEY, NEWS_SERVICE_STATUS_VALUE_RESTART);
+
+        db.collection(TEST_USER_COLLECTION)
                 .document(device_id)
-                .collection("test_service")
-                .document(String.valueOf(Timestamp.now()))
+                .collection(NEWS_SERVICE_COLLECTION)
+                .document(String.valueOf(Timestamp.now().toDate()))
                 .set(log_service);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),this);
         mViewPager = (ViewPager) findViewById(R.id.container_hy);
@@ -391,31 +476,26 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 //            String value = getIntent().getExtras().getString(key);
 //                Log.d(TAG, "Key: " + key + " Value: " + value);
 //            }}
-        Log.d("log: activity cycle", "NewsHybridActivity On resume");
-        Map<String, Object> log_service = new HashMap<>();
-        log_service.put("flag", true);
-        log_service.put("service_timestamp", Timestamp.now());
-        log_service.put("cycle", "resume");
-        log_service.put("activity", "NewsHybridActivity");
-        if (!isMyServiceRunning(mYourService.getClass())) {
-            log_service.put("status", "failed");
-            Toast.makeText(this, "service failed", Toast.LENGTH_SHORT).show();
-            startService(mServiceIntent);
-        } else {
-            log_service.put("status", "running");
-            Toast.makeText(this, "service running", Toast.LENGTH_SHORT).show();
-        }
-        db.collection("test_users")
-                .document(device_id)
-                .collection("test_service")
-                .document(String.valueOf(Timestamp.now()))
-                .set(log_service);
+//        Log.d("log: activity cycle", "NewsHybridActivity On resume");
+//        Map<String, Object> log_service = new HashMap<>();
+//        log_service.put("flag", true);
+//        log_service.put("service_timestamp", Timestamp.now());
+//        log_service.put("cycle", "resume");
+//        log_service.put("activity", "NewsHybridActivity");
 //        if (!isMyServiceRunning(mYourService.getClass())) {
-//            Toast.makeText(this, "service failed", Toast.LENGTH_SHORT).show();
+//            log_service.put("status", "failed");
+////            Toast.makeText(this, "service failed", Toast.LENGTH_SHORT).show();
 //            startService(mServiceIntent);
 //        } else {
-//            Toast.makeText(this, "service running", Toast.LENGTH_SHORT).show();
+//            log_service.put("status", "running");
+////            Toast.makeText(this, "service running", Toast.LENGTH_SHORT).show();
 //        }
+//        db.collection("test_users")
+//                .document(device_id)
+//                .collection("test_service")
+//                .document(String.valueOf(Timestamp.now()))
+//                .set(log_service);
+
 
     }
 
@@ -439,49 +519,49 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 
     @Override
     protected void onStop() {
-        Log.d("log: activity cycle", "NewsHybridActivity On stop");
-        Map<String, Object> log_service = new HashMap<>();
-        log_service.put("service_timestamp", Timestamp.now());
-        log_service.put("cycle", "stop");
-        log_service.put("flag", false);
-        log_service.put("activity", "NewsHybridActivity");
-        if (!isMyServiceRunning(mYourService.getClass())) {
-            log_service.put("status", "failed");
-            Toast.makeText(this, "service failed", Toast.LENGTH_SHORT).show();
-            startService(mServiceIntent);
-        } else {
-            log_service.put("status", "running");
-            Toast.makeText(this, "service running", Toast.LENGTH_SHORT).show();
-        }
-        db.collection("test_users")
-                .document(device_id)
-                .collection("test_service")
-                .document(String.valueOf(Timestamp.now()))
-                .set(log_service);
+//        Log.d("log: activity cycle", "NewsHybridActivity On stop");
+//        Map<String, Object> log_service = new HashMap<>();
+//        log_service.put("service_timestamp", Timestamp.now());
+//        log_service.put("cycle", "stop");
+//        log_service.put("flag", false);
+//        log_service.put("activity", "NewsHybridActivity");
+//        if (!isMyServiceRunning(mYourService.getClass())) {
+//            log_service.put("status", "failed");
+////            Toast.makeText(this, "service failed", Toast.LENGTH_SHORT).show();
+//            startService(mServiceIntent);
+//        } else {
+//            log_service.put("status", "running");
+////            Toast.makeText(this, "service running", Toast.LENGTH_SHORT).show();
+//        }
+//        db.collection("test_users")
+//                .document(device_id)
+//                .collection("test_service")
+//                .document(String.valueOf(Timestamp.now()))
+//                .set(log_service);
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        Log.d("log: activity cycle", "NewsHybridActivity On destroy");
-        Map<String, Object> log_service = new HashMap<>();
-        log_service.put("service_timestamp", Timestamp.now());
-        log_service.put("cycle", "destroy");
-        log_service.put("flag", false);
-        log_service.put("activity", "NewsHybridActivity");
-        if (!isMyServiceRunning(mYourService.getClass())) {
-            log_service.put("status", "failed");
-            Toast.makeText(this, "service failed", Toast.LENGTH_SHORT).show();
-            startService(mServiceIntent);
-        } else {
-            log_service.put("status", "running");
-            Toast.makeText(this, "service running", Toast.LENGTH_SHORT).show();
-        }
-        db.collection("test_users")
-                .document(device_id)
-                .collection("test_service")
-                .document(String.valueOf(Timestamp.now()))
-                .set(log_service);
+//        Log.d("log: activity cycle", "NewsHybridActivity On destroy");
+//        Map<String, Object> log_service = new HashMap<>();
+//        log_service.put("service_timestamp", Timestamp.now());
+//        log_service.put("cycle", "destroy");
+//        log_service.put("flag", false);
+//        log_service.put("activity", "NewsHybridActivity");
+//        if (!isMyServiceRunning(mYourService.getClass())) {
+//            log_service.put("status", "failed");
+////            Toast.makeText(this, "service failed", Toast.LENGTH_SHORT).show();
+//            startService(mServiceIntent);
+//        } else {
+//            log_service.put("status", "running");
+////            Toast.makeText(this, "service running", Toast.LENGTH_SHORT).show();
+//        }
+//        db.collection("test_users")
+//                .document(device_id)
+//                .collection("test_service")
+//                .document(String.valueOf(Timestamp.now()))
+//                .set(log_service);
         _BluetoothReceiver.unregisterBluetoothReceiver(this);
         _NetworkChangeReceiver.unregisterNetworkReceiver(this);
         _ScreenStateReceiver.unregisterScreenStateReceiver(this);
@@ -500,11 +580,6 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                     }
                 })
                 .create().show();
-//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-////        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
-//        SharedPreferences.Editor editor = prefs.edit();
-//        editor.putBoolean("firstStart", false);
-//        editor.apply();
     }
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @SuppressLint("NonConstantResourceId")
@@ -535,28 +610,59 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 startActivity(intent_notih);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
-            case R.id.nav_contact :
-                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 1000 );
-                Toast.makeText(this, "發送esm~", Toast.LENGTH_SHORT).show();;
-                drawerLayout.closeDrawer(GravityCompat.START);
-                return true;
-            case R.id.nav_tmp :
-                scheduleNotification_diary(getNotification_diary("Please fill out the questionnaire" ), 1000 );
-                Toast.makeText(this, "發送esm~", Toast.LENGTH_SHORT).show();;
-                drawerLayout.closeDrawer(GravityCompat.START);
-                return true;
-            case R.id.clear:
-                SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-                sharedPrefs.edit().clear().apply();
-                Toast.makeText(this, "清除資料", Toast.LENGTH_SHORT).show();;
-                drawerLayout.closeDrawer(GravityCompat.START);
-                return true;
+//            case R.id.nav_contact :
+//                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 1000 );
+//                Toast.makeText(this, "發送esm~", Toast.LENGTH_SHORT).show();;
+//                drawerLayout.closeDrawer(GravityCompat.START);
+//                return true;
+//            case R.id.nav_tmp :
+//                scheduleNotification_diary(getNotification_diary("Please fill out the questionnaire" ), 1000 );
+//                Toast.makeText(this, "發送esm~", Toast.LENGTH_SHORT).show();;
+//                drawerLayout.closeDrawer(GravityCompat.START);
+//                return true;
+//            case R.id.clear:
+////                SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+////                sharedPrefs.edit().clear().apply();
+////                Toast.makeText(this, "清除資料", Toast.LENGTH_SHORT).show();;
+//                drawerLayout.closeDrawer(GravityCompat.START);
+//                return true;
+//            case R.id.schedule:
+////                Intent intent_schedule = new Intent(context, AlarmReceiver.class);
+////                intent_schedule.setAction(SCHEDULE_ALARM_ACTION);
+////                AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+////                PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1000, intent_schedule, 0);
+////                Calendar cal = Calendar.getInstance();
+////                cal.add(Calendar.SECOND, 3);
+////                alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() , pendingIntent);
+//                drawerLayout.closeDrawer(GravityCompat.START);
+//                return true;
             default :
                 return false;
         }
 
 //        return false;
     }
+
+//    private void alarm(int time, int requestCode) {
+//        Calendar cal1 = Calendar.getInstance();//get a Calendar object with current time
+////        cal1.add(Calendar.SECOND, time);//"配置鬧終於3秒後
+//        cal1.set(Calendar.HOUR_OF_DAY, 1);
+//        cal1.set(Calendar.MINUTE, 0);
+//        cal1.set(Calendar.SECOND, 0);
+//        cal1.add(Calendar.MINUTE, 16);
+//        Log.d("AlarmReceiver", String.valueOf(cal1));
+//        Intent intent_esm = new Intent(getApplicationContext(), AlarmReceiver.class);
+//        Intent intent_diary = new Intent(getApplicationContext(), AlarmReceiver.class);
+//        intent_esm.setAction(ESM_ALARM_ACTION);
+//        intent_diary.setAction(DIARY_ALARM_ACTION);
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), requestCode, intent_esm, 0);
+//        AlarmManager alarmManager = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+//        alarmManager.set(AlarmManager.RTC_WAKEUP, cal1.getTimeInMillis() , pendingIntent);
+//    }
+//
+//    private void schedule_alarm() {
+//
+//    }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
@@ -1003,6 +1109,8 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
     }
+
+
 
 
 }

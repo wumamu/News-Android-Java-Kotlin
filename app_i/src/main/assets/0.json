@@ -393,7 +393,7 @@
     {
       "id": "read_title_6",
       "header": "Question read_title_6(29)",
-      "question": "開始閱讀前，您是否正在從事以下活動？",
+      "question": "填答前，您是否正在從事以下活動？",
       "question_type": "single_select",
       "options": [
         "處理家務",
@@ -1635,7 +1635,7 @@
     {
       "id": "51",
       "header": "Question read_title_6(51)",
-      "question": "開始閱讀前，您是否正在從事以下活動？",
+      "question": "填答前，您是否正在從事以下活動？",
       "question_type": "single_select",
       "options": [
         "處理家務",

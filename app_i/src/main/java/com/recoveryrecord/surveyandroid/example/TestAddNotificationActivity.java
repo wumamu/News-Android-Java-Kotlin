@@ -8,7 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.recoveryrecord.surveyandroid.example.activity.NotificationDbViewActivity;
+//import com.recoveryrecord.surveyandroid.example.activity.NotificationDbViewActivity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -73,8 +73,8 @@ public class TestAddNotificationActivity extends AppCompatActivity {
         listBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                intent = new Intent(TestAddNotificationActivity.this, NotificationDbViewActivity.class);
-                startActivity(intent);
+//                intent = new Intent(TestAddNotificationActivity.this, NotificationDbViewActivity.class);
+//                startActivity(intent);
             }
         });
 

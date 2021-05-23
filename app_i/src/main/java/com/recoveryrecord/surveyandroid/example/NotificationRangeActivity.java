@@ -87,9 +87,11 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -103,6 +105,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.ESM_SET_ONCE;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_START_TIME_HOUR;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_START_TIME_MIN;
 import static com.recoveryrecord.surveyandroid.example.Constants.REPEAT_ALARM_CHECKER;
+import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_ACTION;
 
 public class NotificationRangeActivity extends AppCompatActivity {
 
@@ -140,14 +143,22 @@ public class NotificationRangeActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = sharedPrefs.edit();
                 editor.putBoolean(ESM_SET_ONCE, true);
                 editor.apply();
+                Intent intent_schedule = new Intent(getApplicationContext(), AlarmReceiver.class);
+                intent_schedule.setAction(SCHEDULE_ALARM_ACTION);
                 AlarmManager alarmManager = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-                Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
-                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),REPEAT_ALARM_CHECKER, pendingIntent);//every ten min check
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 1001, intent_schedule, 0);
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.SECOND, 3);
+                alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() , pendingIntent);
+//                AlarmManager alarmManager = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+//                Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
+//                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
+//                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),REPEAT_ALARM_CHECKER, pendingIntent);//every ten min check
                 Log.d("lognewsselect", "onClick");
                 ll_set_time.setAlpha(1);
                 ee_set_time.setAlpha(1);
                 button_s.setEnabled(false);
+                Toast.makeText(getApplicationContext(), "設定完成", Toast.LENGTH_SHORT).show();
             }
         });
 //        hour = localData.get_hour();

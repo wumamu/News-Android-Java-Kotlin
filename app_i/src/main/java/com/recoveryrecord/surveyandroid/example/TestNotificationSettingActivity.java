@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.recoveryrecord.surveyandroid.example.activity.NotificationDbViewActivity;
+//import com.recoveryrecord.surveyandroid.example.activity.NotificationDbViewActivity;
 
 import androidx.core.app.ActivityCompat;
 
@@ -72,8 +72,8 @@ public class TestNotificationSettingActivity extends Activity {
         btnListNotify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(TestNotificationSettingActivity.this, NotificationDbViewActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(TestNotificationSettingActivity.this, NotificationDbViewActivity.class);
+//                startActivity(intent);
             }
         });
 

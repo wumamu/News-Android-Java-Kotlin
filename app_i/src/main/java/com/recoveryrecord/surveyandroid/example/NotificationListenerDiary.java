@@ -1,5 +1,6 @@
 package com.recoveryrecord.surveyandroid.example;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -17,8 +18,9 @@ public class NotificationListenerDiary extends BroadcastReceiver {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context. NOTIFICATION_SERVICE ) ;
         Notification notification = intent.getParcelableExtra(DEFAULT_DIARY_NOTIFICATION) ;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            int importance = NotificationManager.IMPORTANCE_HIGH ;
-            NotificationChannel notificationChannel = new NotificationChannel( DIARY_CHANNEL_ID , "DIARY_CHANNEL" , importance) ;
+//            int importance = NotificationManager.IMPORTANCE_HIGH ;
+            @SuppressLint("WrongConstant")
+            NotificationChannel notificationChannel = new NotificationChannel( DIARY_CHANNEL_ID , "DIARY_CHANNEL" , NotificationManager.IMPORTANCE_MAX) ;
             assert notificationManager != null;
             notificationManager.createNotificationChannel(notificationChannel) ;
         }

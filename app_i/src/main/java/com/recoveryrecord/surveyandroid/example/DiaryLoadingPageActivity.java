@@ -41,6 +41,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_COLL
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_OPTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_SAMPLE;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_SAMPLE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TARGET_IN_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TARGET_PLACE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TARGET_SITUATION;
@@ -160,7 +161,7 @@ public class DiaryLoadingPageActivity extends AppCompatActivity {
                                 .document(device_id)
                                 .collection(PUSH_ESM_COLLECTION)
                                 .document(d.getId())
-                                .update(PUSH_ESM_SAMPLE, 3)
+                                .update(PUSH_ESM_SAMPLE, 3, PUSH_ESM_SAMPLE_ID, diary_id)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {

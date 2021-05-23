@@ -28,6 +28,10 @@
             app:summary="記得按下儲存">
             <intent android:action="com.recoveryrecord.surveyandroid.example.NotificationRangeActivity"/>
         </PreferenceScreen>
+
+        <Preference
+            app:key="clear_cache"
+            android:title="清除暫存"/>
     <PreferenceCategory app:title="偏好">
         <MultiSelectListPreference
             app:key="media_select"
@@ -48,6 +52,7 @@
         <Preference
             android:summary="to be continue"
             android:title="聯絡我們"/>
+
         <!--        <Preference-->
         <!--            app:title="open url">-->
         <!--            <intent-->

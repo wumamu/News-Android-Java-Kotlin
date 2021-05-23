@@ -336,13 +336,13 @@ public class TestNewsAllActivity extends AppCompatActivity implements Navigation
 //                startActivity(intent_base);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
-            case R.id.nav_contact :
-                Log.d("log: navigation", "nav_contact " + item.getItemId());
-                Toast.makeText(this, "目前什麼都沒有拉~", Toast.LENGTH_LONG).show();
-                Intent intent_ems = new Intent(TestNewsAllActivity.this, NewsHybridActivity.class);
-                startActivity(intent_ems);
-                drawerLayout.closeDrawer(GravityCompat.START);
-                return true;
+//            case R.id.nav_contact :
+//                Log.d("log: navigation", "nav_contact " + item.getItemId());
+//                Toast.makeText(this, "目前什麼都沒有拉~", Toast.LENGTH_LONG).show();
+//                Intent intent_ems = new Intent(TestNewsAllActivity.this, NewsHybridActivity.class);
+//                startActivity(intent_ems);
+//                drawerLayout.closeDrawer(GravityCompat.START);
+//                return true;
             default :
                 return false;
         }

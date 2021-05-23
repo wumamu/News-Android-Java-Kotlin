@@ -29,7 +29,9 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -42,6 +44,8 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.preference.PreferenceManager;
 
+import static com.recoveryrecord.surveyandroid.example.Constants.ALARM_SERVICE_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.CHECK_SERVICE_ACTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.COMPARE_RESULT_CLICK;
 import static com.recoveryrecord.surveyandroid.example.Constants.COMPARE_RESULT_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.COMPARE_RESULT_ID;
@@ -57,6 +61,13 @@ import static com.recoveryrecord.surveyandroid.example.Constants.DOC_ID_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_CHANNEL_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_ID_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_MEDIA_KEY;
+import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_KEY;
+import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_VALUE_SERVICE_PAGE;
+import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_KEY;
+import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_VALUE_INITIAL;
+import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_VALUE_RUNNING;
+import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_ESM;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_NEWS;
@@ -70,6 +81,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_PUBDA
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_SELECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_TITLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_TYPE;
+import static com.recoveryrecord.surveyandroid.example.Constants.SERVICE_CHECKER_INTERVAL;
 import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.TRIGGER_BY_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.TRIGGER_BY_VALUE_NOTIFICATION;
@@ -116,6 +128,7 @@ public class NewsNotificationService extends Service {
                 .build();
         startForeground(2, notification);
     }
+    @SuppressLint("HardwareIds")
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     // execution of service will start
@@ -123,13 +136,43 @@ public class NewsNotificationService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d("lognewsselect", "onStartCommand");
         listen_compare_result();//news
+        add_ServiceChecker();//service checker
         return START_STICKY;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void add_ServiceChecker() {
+        try {
+            Thread.sleep(200);
+        } catch (Exception e) {
+
+        }
+        Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
+        intent.setAction(CHECK_SERVICE_ACTION);
+        PendingIntent pi = PendingIntent.getBroadcast(getApplicationContext(), 50, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager am = (AlarmManager) getApplicationContext().getSystemService(ALARM_SERVICE);
+        long time_fired = System.currentTimeMillis() + SERVICE_CHECKER_INTERVAL;
+        am.setExact(AlarmManager.RTC_WAKEUP, time_fired, pi);       //註冊鬧鐘
+        //用于设置一次性闹铃，执行时间更为精准，为精确闹铃。
     }
 
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void listen_compare_result() {
         final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        Map<String, Object> service_check = new HashMap<>();
+//        Date date = new Date(System.currentTimeMillis());
+//        @SuppressLint("SimpleDateFormat")
+//        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+        service_check.put(NEWS_SERVICE_STATUS_KEY, NEWS_SERVICE_STATUS_VALUE_INITIAL);
+        service_check.put(NEWS_SERVICE_TIME, Timestamp.now());
+        service_check.put(NEWS_SERVICE_CYCLE_KEY, NEWS_SERVICE_CYCLE_VALUE_SERVICE_PAGE);
+        db.collection(TEST_USER_COLLECTION)
+                .document(device_id)
+                .collection(NEWS_SERVICE_COLLECTION)
+                .document(String.valueOf(Timestamp.now().toDate()))
+                .set(service_check);
+
         db.collection(TEST_USER_COLLECTION)
                 .document(device_id)
                 .collection(COMPARE_RESULT_COLLECTION)
@@ -259,10 +302,17 @@ public class NewsNotificationService extends Service {
 //                .set(log_service);
         // stopping the process
 //        player.stop();
-        Intent broadcastIntent = new Intent();
-        broadcastIntent.setAction("restartservice");
-        broadcastIntent.setClass(this, NewsNotificationRestarter.class);
-        this.sendBroadcast(broadcastIntent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            sendBroadcast(new Intent(this, NewsNotificationRestarter.class).setAction(Constants.CHECK_SERVICE_ACTION));
+        } else {
+            Intent checkServiceIntent = new Intent(Constants.CHECK_SERVICE_ACTION);
+            sendBroadcast(checkServiceIntent);
+        }
+
+//        Intent broadcastIntent = new Intent();
+//        broadcastIntent.setAction(CHECK_SERVICE_ACTION);
+//        broadcastIntent.setClass(this, NewsNotificationRestarter.class);
+//        this.sendBroadcast(broadcastIntent);
     }
 
     @Nullable
@@ -301,7 +351,7 @@ public class NewsNotificationService extends Service {
         builder.setAutoCancel(true);
         builder.setChannelId(NEWS_CHANNEL_ID);
         builder.setVibrate(VIBRATE_EFFECT);              //震動模式
-        builder.setPriority(NotificationManager.IMPORTANCE_DEFAULT);
+        builder.setPriority(NotificationManager.IMPORTANCE_HIGH);
         builder.setCategory(Notification.CATEGORY_MESSAGE);
         Bundle extras = new Bundle();
         extras.putString(DOC_ID_KEY, news_id);

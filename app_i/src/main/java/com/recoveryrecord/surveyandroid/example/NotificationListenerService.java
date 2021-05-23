@@ -90,15 +90,15 @@ import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TY
 import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.LTN_PACKAGE_NAME;
 import static com.recoveryrecord.surveyandroid.example.Constants.MY_APP_PACKAGE_NAME;
-import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_DIARY_COLLECTION;
+//import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_DIARY_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_DIARY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_ESM;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_NEWS;
-import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_ESM_COLLECTION;
+//import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_ESM_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_NEWS_MONITOR_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_NOTI_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_SERVICE_COLLECTION;
+//import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_SERVICE_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_SOURCE;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_TEXT;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_TITLE;
@@ -154,16 +154,11 @@ public class NotificationListenerService extends android.service.notification.No
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
-//        AlarmManager alarmManager = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-//        Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
-//        assert alarmManager != null;
-//        alarmManager.set(AlarmManager.RTC_WAKEUP,  System.currentTimeMillis(), pendingIntent);
         final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        set_once = sharedPrefs.getBoolean(ESM_SET_ONCE, false);
-        if(set_once){
-            check_my_diary_and_esm();
-        }
+//        set_once = sharedPrefs.getBoolean(ESM_SET_ONCE, false);
+//        if(set_once){
+//            check_my_diary_and_esm();
+//        }
 
 //        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),REPEAT_ALARM_CHECKER, pendingIntent);//every ten min check
         Log.i(TAG,"**********  onNotificationPosted ***********");

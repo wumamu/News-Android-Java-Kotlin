@@ -5,11 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-public class ShowNotificationReceiver extends BroadcastReceiver {
+public class TestShowNotificationReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         //判断app进程是否存活
-        if (Helper.isAppRunning(context, context.getPackageName())) {
+        if (TestHelper.isAppRunning(context, context.getPackageName())) {
             // App is running
             Log.d("apprunning", "1");
 

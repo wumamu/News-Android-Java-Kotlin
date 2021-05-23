@@ -5,7 +5,7 @@ import android.content.Context;
 
 import java.util.List;
 
-public class Helper {
+class TestAppAliveHelper {
 
     public static boolean isAppRunning(final Context context, final String packageName) {
         final ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
