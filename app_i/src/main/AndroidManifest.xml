@@ -194,6 +194,7 @@
 <!--        </service>-->
         <service android:name=".receiever.ActivityRecognitionReceiver"/>
         <service android:name=".receiever.AppUsageReceiver" />
+        <service android:name=".receiever.MyBackgroudService"/>
     </application>
 
 </manifest>

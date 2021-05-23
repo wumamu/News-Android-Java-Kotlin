@@ -29,6 +29,8 @@ import java.util.Map;
 
 import static android.app.AppOpsManager.MODE_ALLOWED;
 import static android.app.AppOpsManager.OPSTR_GET_USAGE_STATS;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
+
 public class AppUsageReceiver extends Service {
     private Context context;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -52,7 +54,7 @@ public class AppUsageReceiver extends Service {
             Log.e("AppUsage", foregroundActivityName);
             sensordb.put("AppUsage", foregroundActivityName);
 //            Toast.makeText(getApplicationContext(), foregroundActivityName, Toast.LENGTH_SHORT).show();
-            handler.postDelayed(r, 10000);
+            handler.postDelayed(r, DetectTime);
             db.collection("test_users")
                     .document(device_id)
                     .collection("Sensor collection")
@@ -69,8 +71,9 @@ public class AppUsageReceiver extends Service {
     }
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        handler.postDelayed(r, 10000);
+        handler.postDelayed(r, DetectTime);
         return START_STICKY;
     }
+
 }
 

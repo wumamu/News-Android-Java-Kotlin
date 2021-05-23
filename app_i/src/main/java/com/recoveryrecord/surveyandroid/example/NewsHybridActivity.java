@@ -7,6 +7,7 @@ import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.util.Log;
@@ -47,6 +49,7 @@ import com.recoveryrecord.surveyandroid.example.ltn.LtnMainFragment;
 import com.recoveryrecord.surveyandroid.example.receiever.ActivityRecognitionReceiver;
 import com.recoveryrecord.surveyandroid.example.receiever.AppUsageReceiver;
 import com.recoveryrecord.surveyandroid.example.receiever.BlueToothReceiver;
+import com.recoveryrecord.surveyandroid.example.receiever.MyBackgroudService;
 import com.recoveryrecord.surveyandroid.example.receiever.NetworkChangeReceiver;
 import com.recoveryrecord.surveyandroid.example.receiever.RingModeReceiver;
 import com.recoveryrecord.surveyandroid.example.receiever.ScreenStateReceiver;
@@ -63,6 +66,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ThreadLocalRandom;
 
 import androidx.annotation.NonNull;
@@ -163,7 +168,6 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     }
     //sensor part
     BlueToothReceiver _BluetoothReceiver;
-    //    RingModeReceiver _RingModeReceiver;
     private AudioManager myAudioManager;
     private boolean activityTrackingEnabled;
     private List<ActivityTransition> activityTransitionList;
@@ -173,6 +177,13 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     NetworkChangeReceiver _NetworkChangeReceiver;
     ScreenStateReceiver _ScreenStateReceiver;
     RingModeReceiver _RingModeReceiver;
+
+    //session
+    //計session數量
+    public int SessionIDcounter = 0;
+    //計時離開app的區間
+    Timer timer;
+    int tt = 3 * 60;
     @SuppressLint("HardwareIds")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -326,9 +337,9 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
             //Android M Permission check
             if(this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
                 final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("This app needs location access");
-                builder.setMessage("Please grant location access so this app can detect beacons.");
-                builder.setPositiveButton(android.R.string.ok, null);
+//                builder.setTitle("This app needs location access");
+//                builder.setMessage("Please grant location access so this app can detect beacons.");
+//                builder.setPositiveButton(android.R.string.ok, null);
                 builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialogInterface) {
@@ -338,6 +349,9 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 builder.show();
             }
         }
+
+
+
         //Detected Activity
 
         mApiClient = new GoogleApiClient.Builder(this)
@@ -364,9 +378,9 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
             //Android Q Permission check
             if(this.checkSelfPermission(Manifest.permission.ACTIVITY_RECOGNITION)!= PackageManager.PERMISSION_GRANTED){
                 final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("This app needs activity recognition access");
-                builder.setMessage("Please grant activity recognition access so this app can detect physical activity.");
-                builder.setPositiveButton(android.R.string.ok, null);
+//                builder.setTitle("This app needs activity recognition access");
+//                builder.setMessage("Please grant activity recognition access so this app can detect physical activity.");
+//                builder.setPositiveButton(android.R.string.ok, null);
                 builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialogInterface) {
@@ -379,8 +393,24 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 
         //AppUsage
         startService(new Intent(getApplicationContext(), AppUsageReceiver.class));
+        startService(new Intent(getApplicationContext(), MyBackgroudService.class));
 
-
+        //Session - timer
+//        timer = new Timer();
+//        final TimerTask task = new TimerTask() {
+//            @Override
+//            public void run() {
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        tt--;
+//                        if(tt < 1){
+//                            tt = 3 * 60;
+//                        }
+//                    }
+//                });
+//            }
+//        }
     }
     @Override
     protected void onResume() {
@@ -416,7 +446,10 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 //        } else {
 //            Toast.makeText(this, "service running", Toast.LENGTH_SHORT).show();
 //        }
-
+        //Sessions
+//        Toast.makeText(this, "OnResume", Toast.LENGTH_SHORT).show();
+        SessionIDcounter = SessionIDcounter + 1;
+        Toast.makeText(this, "SeesionId" + SessionIDcounter, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -458,6 +491,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 .collection("test_service")
                 .document(String.valueOf(Timestamp.now()))
                 .set(log_service);
+
         super.onStop();
     }
 
@@ -997,6 +1031,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         Task<Void> task = ActivityRecognition.getClient(this).requestActivityUpdates(300000, pendingIntent);
         //mApiClient.disconnect();
     }
+
     @Override
     public void onConnectionSuspended(int i) {
     }

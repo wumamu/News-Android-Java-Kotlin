@@ -19,33 +19,26 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BlueToothReceiver{
+public class BlueToothReceiver implements StreamGenerator{
     private static final String TAG = "Main";
-    private BluetoothAdapter mBluetoothadapter;
     private BluetoothStateBroadcastReceiver mReceiver;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private String device_id;
-
-    public void getBlueToothDevice() {
-        //獲取藍芽配對裝置
-        mBluetoothadapter = BluetoothAdapter.getDefaultAdapter();
-    }
-    public boolean getBlueToothState() {
-        //獲取藍芽狀態
-        return mBluetoothadapter.isEnabled();
-    }
-
-
-    //    public boolean openBlueTooth(){
-//        if(getBlueToothState()) return true;
-//        //打開藍芽
-//        return mBluetoothadapter.enable();
+    private static String device_id;
+    Map<String, Object> sensordb = new HashMap<>();
+    private static String BlueToothState = "NA";
+    final Timestamp current_end = Timestamp.now();
+    Date date = new Date(System.currentTimeMillis());
+    SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+    final String time_now = formatter.format(date);
+//    public void getBlueToothDevice() {
+//        //獲取藍芽配對裝置
+//        mBluetoothadapter = BluetoothAdapter.getDefaultAdapter();
 //    }
-//    public boolean closeBlueTooth(){
-//        if(!getBlueToothState()) return true;
-//        //關閉藍芽
-//        return mBluetoothadapter.disable();
+//    public void getBlueToothState() {
+//        //獲取藍芽狀態
+//
 //    }
+
     public void registerBluetoothReceiver(Context context){
         if(mReceiver == null){
             mReceiver = new BluetoothStateBroadcastReceiver();
@@ -54,8 +47,12 @@ public class BlueToothReceiver{
         filter.addAction(BluetoothDevice.ACTION_FOUND);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        Log.e("BlueTooth", "Register");
         context.registerReceiver(mReceiver, filter);
+
     }
+
 
     class BluetoothStateBroadcastReceiver extends BroadcastReceiver {
         int devicecount = 0;
@@ -67,19 +64,21 @@ public class BlueToothReceiver{
             Date date = new Date(System.currentTimeMillis());
             SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
             final String time_now = formatter.format(date);
-            Map<String, Object> sensordb = new HashMap<>();
+
 //            BluetoothDevice device = (BluetoothDevice) intent.getParcelableArrayExtra(BluetoothDevice.EXTRA_DEVICE);
             if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
                 //discovery starts, we can show progress dialog or perform other tasks
                 Log.e("log: bluetooth device", "ACTION_DISCOVERY_STARTED");
 //                Toast.makeText(context, "開始偵測藍芽", Toast.LENGTH_LONG).show();
+                BlueToothState = "BlueTooth Is Opened";
                 sensordb.put("BlueTooth", "Start Detect BlueTooth");
                 devicecount = 0;
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 //discovery finishes, dismis progress dialog
                 Log.e("log: bluetooth device", "ACTION_DISCOVERY_FINISHED");
 //                Toast.makeText(context, "結束偵測藍芽", Toast.LENGTH_LONG).show();
-                sensordb.put("BlueTooth", "Stop Detec                                          xxxxxxxt BlueTooth");
+                BlueToothState = "BlueTooth Is Opened";
+                sensordb.put("BlueTooth", "Stop Detect BlueTooth");
             } else if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 //bluetooth device found
                 Log.e("log: bluetooth device", "ACTION_FOUND");
@@ -102,6 +101,31 @@ public class BlueToothReceiver{
                     .set(sensordb);
         }
     };
+
+    @Override
+    public void updateStream() {
+        BluetoothAdapter mBtAdapter = BluetoothAdapter.getDefaultAdapter( );
+        if( !mBtAdapter.isEnabled( ) ) {
+            BlueToothState = "BlueTooth Is Closed";
+//            Intent enableIntent = new Intent( BluetoothAdapter.ACTION_REQUEST_ENABLE );
+//            startActivityForResult( enableIntent, 1);
+        }else{
+            BlueToothState = "BlueTooth Is Opened";
+        }
+        final Timestamp current_end = Timestamp.now();
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+        final String time_now = formatter.format(date);
+        sensordb.put("BlueTooth", BlueToothState);
+        db.collection("test_users")
+                .document(device_id)
+                .collection("Sensor collection")
+                .document("Sensor")
+                .collection("BlueTooth")
+                .document(time_now)
+                .set(sensordb);
+    }
+
     public void unregisterBluetoothReceiver(Context context){
         if(mReceiver != null){
             context.unregisterReceiver(mReceiver);
