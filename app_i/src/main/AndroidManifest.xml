@@ -76,6 +76,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".NotificationRangeActivity"
+
             android:theme="@style/AppThemeActionBar"
             android:screenOrientation="portrait">
             <intent-filter>

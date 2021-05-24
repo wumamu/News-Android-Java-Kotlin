@@ -38,6 +38,7 @@ import androidx.preference.PreferenceManager;
 import static android.content.Context.ALARM_SERVICE;
 import static com.recoveryrecord.surveyandroid.example.Constants.ALARM_SERVICE_COLLECTION;
 //import static com.recoveryrecord.surveyandroid.example.Constants.DAIRY_ALARM_ACTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.CANCEL_ALARM_ACTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.CHECK_SERVICE_ACTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_DIARY_CHANNEL_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_DIARY_NOTIFICATION;
@@ -146,6 +147,31 @@ public class AlarmReceiver extends BroadcastReceiver {
 //            Log.d("AlarmReceiver", action);
             schedule_alarm(context);
 //            scheduleNotification_diary(context, getNotification_diary(context, "Please fill out the questionnaire" ),  1000 );
+        }
+        if(action.equals(CANCEL_ALARM_ACTION) && set_once){
+            //cancel diary request code 100
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            Intent updateDiaryServiceIntent = new Intent(context, AlarmReceiver.class);
+            updateDiaryServiceIntent.setAction(DIARY_ALARM_ACTION);
+            PendingIntent pendingUpdateIntent = PendingIntent.getService(context, 100, updateDiaryServiceIntent, 0);
+            try {
+                alarmManager.cancel(pendingUpdateIntent);
+            } catch (Exception e) {
+//                Log.e(TAG, "AlarmManager update was not canceled. " + e.toString());
+            }
+            //cancel esm request code 0-15
+            for(int i=0; i<16;i++){
+                Intent updateEsmServiceIntent = new Intent(context, AlarmReceiver.class);
+                updateEsmServiceIntent.setAction(ESM_ALARM_ACTION);
+                PendingIntent pendingEsmUpdateIntent = PendingIntent.getService(context, i, updateEsmServiceIntent, 0);
+                try {
+                    alarmManager.cancel(pendingEsmUpdateIntent);
+                } catch (Exception e) {
+//                Log.e(TAG, "AlarmManager update was not canceled. " + e.toString());
+                }
+            }
+            //regenerate new alarm
+            schedule_alarm(context);
         }
 //        if(set_once){
 //            //send diary

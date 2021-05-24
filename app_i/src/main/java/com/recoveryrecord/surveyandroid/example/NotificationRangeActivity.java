@@ -74,6 +74,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -95,10 +96,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.preference.PreferenceManager;
 
+import static com.recoveryrecord.surveyandroid.example.Constants.CANCEL_ALARM_ACTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_END_TIME_HOUR;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_END_TIME_MIN;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_SET_ONCE;
@@ -137,28 +140,68 @@ public class NotificationRangeActivity extends AppCompatActivity {
         tvTime = (TextView) findViewById(R.id.tv_reminder_time_desc);
         ee_tvTime = (TextView) findViewById(R.id.ee_tv_reminder_time_desc);
         final Button button_s = (Button) findViewById(R.id.button_s);
+        final Button button_restart = (Button) findViewById(R.id.button_restart);
         button_s.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedPreferences.Editor editor = sharedPrefs.edit();
-                editor.putBoolean(ESM_SET_ONCE, true);
-                editor.apply();
-                Intent intent_schedule = new Intent(getApplicationContext(), AlarmReceiver.class);
-                intent_schedule.setAction(SCHEDULE_ALARM_ACTION);
-                AlarmManager alarmManager = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 1001, intent_schedule, 0);
-                Calendar cal = Calendar.getInstance();
-                cal.add(Calendar.SECOND, 3);
-                alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() , pendingIntent);
+                new AlertDialog.Builder(NotificationRangeActivity.this)
+                        .setTitle("儲存設定")
+                        .setMessage("只有一次機會，請確認好")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton("確認", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                SharedPreferences.Editor editor = sharedPrefs.edit();
+                                editor.putBoolean(ESM_SET_ONCE, true);
+                                editor.apply();
+                                Intent intent_schedule = new Intent(getApplicationContext(), AlarmReceiver.class);
+                                intent_schedule.setAction(SCHEDULE_ALARM_ACTION);
+                                AlarmManager alarmManager = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+                                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 1001, intent_schedule, 0);
+                                Calendar cal = Calendar.getInstance();
+                                cal.add(Calendar.SECOND, 2);
+                                alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() , pendingIntent);
+                                Toast.makeText(NotificationRangeActivity.this, "設定完成", Toast.LENGTH_SHORT).show();
+                                ll_set_time.setAlpha(1);
+                                ee_set_time.setAlpha(1);
+                                button_s.setEnabled(false);
+                                set_once = true;
+                            }})
+                        .setNegativeButton("取消", null).show();
+
+
 //                AlarmManager alarmManager = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
 //                Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
 //                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
 //                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),REPEAT_ALARM_CHECKER, pendingIntent);//every ten min check
-                Log.d("lognewsselect", "onClick");
-                ll_set_time.setAlpha(1);
-                ee_set_time.setAlpha(1);
-                button_s.setEnabled(false);
-                Toast.makeText(getApplicationContext(), "設定完成", Toast.LENGTH_SHORT).show();
+//                Log.d("lognewsselect", "onClick");
+//
+//                Toast.makeText(getApplicationContext(), "設定完成", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        button_restart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(set_once){
+                    new AlertDialog.Builder(NotificationRangeActivity.this)
+                            .setTitle("重新配置問卷發送時間")
+                            .setMessage("請勿在非指示下刪除資料!\n可能會影響app運行")
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setPositiveButton("確認", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    Intent intent_restart = new Intent(NotificationRangeActivity.this, AlarmReceiver.class);
+                                    intent_restart.setAction(CANCEL_ALARM_ACTION);
+                                    AlarmManager alarmManager = (AlarmManager)NotificationRangeActivity.this.getSystemService(Context.ALARM_SERVICE);
+                                    PendingIntent pendingIntent = PendingIntent.getBroadcast(NotificationRangeActivity.this, 1050, intent_restart, 0);
+                                    Calendar cal = Calendar.getInstance();
+                                    cal.add(Calendar.SECOND, 2);
+                                    alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() , pendingIntent);
+                                    Toast.makeText(NotificationRangeActivity.this, "重置成功", Toast.LENGTH_SHORT).show();
+                                }})
+                            .setNegativeButton("取消", null).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "請先設定區間", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 //        hour = localData.get_hour();

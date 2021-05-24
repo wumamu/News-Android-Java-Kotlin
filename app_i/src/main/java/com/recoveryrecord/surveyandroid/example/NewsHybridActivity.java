@@ -276,7 +276,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 }
             });
             showStartDialog();
-
+            clear = false;
             SharedPreferences.Editor editor = sharedPrefs.edit();
             editor.putBoolean(CACHE_CLEAR, false);
             editor.apply();

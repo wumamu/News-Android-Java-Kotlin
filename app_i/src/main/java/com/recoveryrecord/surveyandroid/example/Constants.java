@@ -5,11 +5,10 @@ import java.util.HashSet;
 public class Constants {
     //action
     public static final String CHECK_SERVICE_ACTION = "CheckService";//request code 50 60
-    public static final String ESM_ALARM_ACTION = "EsmAlarm";//request code 0-16
+    public static final String ESM_ALARM_ACTION = "EsmAlarm";//request code 0-15
     public static final String DIARY_ALARM_ACTION = "DiaryAlarm";//request code 100
+    public static final String CANCEL_ALARM_ACTION = "CancelAlarm";//request code 1050
     public static final String SCHEDULE_ALARM_ACTION = "ScheduleAlarm";//request code 1000 1001
-
-
 
     public static final int SERVICE_CHECKER_INTERVAL = 20 * 60 * 1000;//every 20 min
     //other
@@ -91,7 +90,7 @@ public class Constants {
     //FIRESTORE FIELD###############################################################################
     public static final String TEST_USER_COLLECTION = "test_users";
     public static final String APP_VERSION_KEY = "app_version";
-    public static final String APP_VERSION_VALUE = "21.05.23-4";
+    public static final String APP_VERSION_VALUE = "21.05.26-1";
     public static final String UPDATE_TIME = "update_timestamp";
     public static final String INITIAL_TIME = "initial_timestamp";
     public static final String LAST_LAUNCH_TIME = "last_launch_timestamp";
