@@ -152,8 +152,14 @@ public class NewsNotificationService extends Service {
         PendingIntent pi = PendingIntent.getBroadcast(getApplicationContext(), 50, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         AlarmManager am = (AlarmManager) getApplicationContext().getSystemService(ALARM_SERVICE);
         long time_fired = System.currentTimeMillis() + SERVICE_CHECKER_INTERVAL;
-        am.setExact(AlarmManager.RTC_WAKEUP, time_fired, pi);       //註冊鬧鐘
+//        am.setExact(AlarmManager.RTC_WAKEUP, time_fired, pi);       //註冊鬧鐘
         //用于设置一次性闹铃，执行时间更为精准，为精确闹铃。
+        assert am != null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            am.setExact(AlarmManager.RTC_WAKEUP, time_fired, pi);       //註冊鬧鐘
+        } else {
+            am.set(AlarmManager.RTC_WAKEUP, time_fired, pi);       //註冊鬧鐘
+        }
     }
 
 
