@@ -156,6 +156,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.UPDATE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_PHONE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.VIBRATE_EFFECT;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
 
 //public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener , GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
@@ -466,7 +467,8 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
             if(this.checkSelfPermission(Manifest.permission.ACTIVITY_RECOGNITION)!= PackageManager.PERMISSION_GRANTED){
                 final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 //                builder.setTitle("This app needs activity recognition access");
-//                builder.setMessage("Please grant activity recognition access so this app can detect physical activity.");
+//                builder.setMessage("Please g
+//                rant activity recognition access so this app can detect physical activity.");
 //                builder.setPositiveButton(android.R.string.ok, null);
                 builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
@@ -532,7 +534,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         //Sessions
 //        Toast.makeText(this, "OnResume", Toast.LENGTH_SHORT).show();
         SessionIDcounter = SessionIDcounter + 1;
-        Toast.makeText(this, "SeesionId" + SessionIDcounter, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "SeesionId" + SessionIDcounter, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -1133,10 +1135,9 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     //sensor
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        Log.e(TAG, "DetectedActivityConnected");
         Intent intent = new Intent( this, ActivityRecognitionReceiver.class );
         PendingIntent pendingIntent = PendingIntent.getService( this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT );
-        Task<Void> task = ActivityRecognition.getClient(this).requestActivityUpdates(300000, pendingIntent);
+        Task<Void> task = ActivityRecognition.getClient(this).requestActivityUpdates(DetectTime, pendingIntent);
         //mApiClient.disconnect();
     }
     @Override
