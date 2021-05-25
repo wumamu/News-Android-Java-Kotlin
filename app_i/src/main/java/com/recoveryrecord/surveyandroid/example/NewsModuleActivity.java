@@ -1092,16 +1092,16 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         activityStopped = false;
         //isScreenOn(R.layout.activity_news_detail);
         in_time = System.currentTimeMillis();
-        Map<String, Object> log_service = new HashMap<>();
-        log_service.put("service_timestamp", Timestamp.now());
-        log_service.put("flag", true);
-        log_service.put("cycle", "resume");
-        log_service.put("activity", "NewsModuleActivity");
-        db.collection("test_users")
-                .document(device_id)
-                .collection("notification_service")
-                .document(String.valueOf(Timestamp.now()))
-                .set(log_service);
+//        Map<String, Object> log_service = new HashMap<>();
+//        log_service.put("service_timestamp", Timestamp.now());
+//        log_service.put("flag", true);
+//        log_service.put("cycle", "resume");
+//        log_service.put("activity", "NewsModuleActivity");
+//        db.collection("test_users")
+//                .document(device_id)
+//                .collection("notification_service")
+//                .document(String.valueOf(Timestamp.now()))
+//                .set(log_service);
     }
 
     @Override
@@ -1244,16 +1244,16 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         super.onStop();
         Log.d("log: activity cycle", "NewsModuleActivity On stop");
         activityStopped = true;
-        Map<String, Object> log_service = new HashMap<>();
-        log_service.put("service_timestamp", Timestamp.now());
-        log_service.put("flag", false);
-        log_service.put("cycle", "stop");
-        log_service.put("activity", "NewsModuleActivity");
-        db.collection("test_users")
-                .document(device_id)
-                .collection("notification_service")
-                .document(String.valueOf(Timestamp.now()))
-                .set(log_service);
+//        Map<String, Object> log_service = new HashMap<>();
+//        log_service.put("service_timestamp", Timestamp.now());
+//        log_service.put("flag", false);
+//        log_service.put("cycle", "stop");
+//        log_service.put("activity", "NewsModuleActivity");
+//        db.collection("test_users")
+//                .document(device_id)
+//                .collection("notification_service")
+//                .document(String.valueOf(Timestamp.now()))
+//                .set(log_service);
 
     }
 
@@ -1269,16 +1269,16 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
     @Override
     protected void onDestroy() {
 //        Log.d("log: activity cycle", "NewsHybridActivity On destroy");
-        Map<String, Object> log_service = new HashMap<>();
-        log_service.put("service_timestamp", Timestamp.now());
-        log_service.put("flag", false);
-        log_service.put("cycle", "destroy");
-        log_service.put("activity", "NewsModuleActivity");
-        db.collection("test_users")
-                .document(device_id)
-                .collection("notification_service")
-                .document(String.valueOf(Timestamp.now()))
-                .set(log_service);
+//        Map<String, Object> log_service = new HashMap<>();
+//        log_service.put("service_timestamp", Timestamp.now());
+//        log_service.put("flag", false);
+//        log_service.put("cycle", "destroy");
+//        log_service.put("activity", "NewsModuleActivity");
+//        db.collection("test_users")
+//                .document(device_id)
+//                .collection("notification_service")
+//                .document(String.valueOf(Timestamp.now()))
+//                .set(log_service);
         super.onDestroy();
         Log.d("log: activity cycle", "NewsModuleActivity On destroy");
         activityEnd = true;

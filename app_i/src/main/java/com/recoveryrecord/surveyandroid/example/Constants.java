@@ -29,6 +29,7 @@ public class Constants {
     public static final int PUSH_HISTORY_LIMIT_PER_PAGE = 50;
     public static final int READ_HISTORY_LIMIT_PER_PAGE = 50;
     //GENERATE ESM
+
     public static final int REPEAT_ALARM_CHECKER = 10 * 60 * 1000;//10 min
     public static final int ESM_TIME_ON_PAGE_THRESHOLD = 5;//5 seconds
     public static final int ESM_INTERVAL = 60 * 60 * 1000;//one hour
@@ -39,9 +40,11 @@ public class Constants {
     public static final String ESM_NOTIFICATION_CONTENT_TEXT = "是時候填寫問卷咯!";
     public static final String DIARY_NOTIFICATION_CONTENT_TITLE = "DIARY";
     public static final String DIARY_NOTIFICATION_CONTENT_TEXT = "是時候填寫問卷咯!";
+    //GENERATE DIARY
+    public static final int DIARY_TARGET_RANGE = 24 * 60 * 60;//24 hour
     //PUSH ESM
     public static final int ESM_TIME_OUT = 15 * 60 * 1000;//15 min
-    public static final int DIARY_TIME_OUT = 60 * 60 * 1000;//60 min
+    public static final int DIARY_TIME_OUT = 120 * 60 * 1000;//120 min
     public static final long[] VIBRATE_EFFECT = {100, 200, 300, 300, 500, 300, 300};
     public static final String ESM_CHANNEL_ID = "10001";
     public static final String NEWS_CHANNEL_ID = "10002";
@@ -83,6 +86,10 @@ public class Constants {
     public static final String LOADING_PAGE_TYPE_DIARY = "diary";
     //DiaryLoadingPageActivity SurveyActivity
     public static final String DIARY_ID = "diary_id";
+    //Survey
+    public static final String ESM_EXIST_READ_SAMPLE = "esm_exist_read";
+    public static final String ESM_EXIST_NOTIFICATION_SAMPLE = "esm_exist_notification";
+    public static final String DIARY_EXIST_ESM_SAMPLE = "diary_exist_esm_sample";
     //FIRESTORE FIELD###############################################################################
     //FIRESTORE FIELD###############################################################################
     //FIRESTORE FIELD###############################################################################
@@ -90,7 +97,7 @@ public class Constants {
     //FIRESTORE FIELD###############################################################################
     public static final String TEST_USER_COLLECTION = "test_users";
     public static final String APP_VERSION_KEY = "app_version";
-    public static final String APP_VERSION_VALUE = "21.05.25-test-1";
+    public static final String APP_VERSION_VALUE = "21.05.26-1";
     public static final String UPDATE_TIME = "update_timestamp";
     public static final String INITIAL_TIME = "initial_timestamp";
     public static final String LAST_LAUNCH_TIME = "last_launch_timestamp";

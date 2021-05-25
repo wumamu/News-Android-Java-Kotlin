@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TARGET_TITLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_OUT_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.READ_HISTORY_LIMIT_PER_PAGE;
@@ -108,10 +109,10 @@ public class ReadingHistoryFragment extends Fragment {
                         if (!queryDocumentSnapshots.isEmpty()) {
                             List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
                             for (DocumentSnapshot d : list) {
-//                                if(d.getString("id")!=null){
+                                if(d.get(PUSH_ESM_TARGET_TITLE)!=null && !d.get(PUSH_ESM_TARGET_TITLE).equals("NA")){
                                     NewsModel dataModal = d.toObject(NewsModel.class);
                                     dataModalArrayList.add(dataModal);
-//                                }
+                                }
                             }
                             dataRVAdapter.notifyDataSetChanged();
                         } else {

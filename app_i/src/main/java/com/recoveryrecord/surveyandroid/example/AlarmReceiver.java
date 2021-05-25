@@ -636,7 +636,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         builder.setAutoCancel(true);
         builder.setChannelId(DIARY_CHANNEL_ID);
         builder.setVibrate(VIBRATE_EFFECT);              //震動模式
-        builder.setTimeoutAfter(DIARY_TIME_OUT);           //自動消失 15*60*1000
+        builder.setTimeoutAfter(DIARY_TIME_OUT);           //自動消失 120 min
         builder.setPriority(NotificationManager.IMPORTANCE_MAX);
         builder.setCategory(Notification.CATEGORY_REMINDER);
         Bundle extras = new Bundle();
