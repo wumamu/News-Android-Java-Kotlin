@@ -52,6 +52,7 @@ public class AppUsageReceiver extends Service {
             Map<String, Object> sensordb = new HashMap<>();
             String foregroundActivityName = ForegroundAppUtil.getForegroundActivityName(getApplicationContext());
             Log.e("AppUsage", foregroundActivityName);
+            sensordb.put("Time", time_now);
             sensordb.put("AppUsage", foregroundActivityName);
 //            Toast.makeText(getApplicationContext(), foregroundActivityName, Toast.LENGTH_SHORT).show();
             handler.postDelayed(r, DetectTime);
@@ -80,6 +81,7 @@ public class AppUsageReceiver extends Service {
         Map<String, Object> sensordb = new HashMap<>();
         String foregroundActivityName = ForegroundAppUtil.getForegroundActivityName(getApplicationContext());
         Log.e("AppUsage", foregroundActivityName);
+        sensordb.put("Time", time_now);
         sensordb.put("AppUsage", foregroundActivityName);
 //            Toast.makeText(getApplicationContext(), foregroundActivityName, Toast.LENGTH_SHORT).show();
         db.collection("test_users")

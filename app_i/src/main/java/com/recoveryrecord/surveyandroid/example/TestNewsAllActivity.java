@@ -37,7 +37,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 //import com.google.firebase.messaging.FirebaseMessaging;
 import com.recoveryrecord.surveyandroid.example.model.Pagers;
-import com.recoveryrecord.surveyandroid.example.receiever.ActivityRecognitionReceiver;
+//import com.recoveryrecord.surveyandroid.example.receiever.ActivityRecognitionReceiver;
 import com.recoveryrecord.surveyandroid.example.receiever.BlueToothReceiver;
 import com.recoveryrecord.surveyandroid.example.receiever.NetworkChangeReceiver;
 import com.recoveryrecord.surveyandroid.example.receiever.ScreenStateReceiver;
@@ -528,9 +528,9 @@ public class TestNewsAllActivity extends AppCompatActivity implements Navigation
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.e(TAG, "DetectedActivityConnected");
-        Intent intent = new Intent( this, ActivityRecognitionReceiver.class );
-        PendingIntent pendingIntent = PendingIntent.getService( this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT );
-        Task<Void> task = ActivityRecognition.getClient(this).requestActivityUpdates(30000, pendingIntent);
+//        Intent intent = new Intent( this, ActivityRecognitionReceiver.class );
+//        PendingIntent pendingIntent = PendingIntent.getService( this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT );
+//        Task<Void> task = ActivityRecognition.getClient(this).requestActivityUpdates(30000, pendingIntent);
         //mApiClient.disconnect();
     }
     @Override
