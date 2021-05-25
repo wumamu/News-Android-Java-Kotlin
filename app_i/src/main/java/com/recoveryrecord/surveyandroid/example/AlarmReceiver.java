@@ -141,7 +141,12 @@ public class AlarmReceiver extends BroadcastReceiver {
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1000, intent_schedule, 0);
             Calendar cal = Calendar.getInstance();
             cal.add(Calendar.HOUR, 2);
-            alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() , pendingIntent);
+//            alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() , pendingIntent);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() , pendingIntent);
+            } else {
+                alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() , pendingIntent);
+            }
         }
         if(action.equals(SCHEDULE_ALARM_ACTION) && set_once){
 //            Log.d("AlarmReceiver", action);
@@ -269,11 +274,18 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         AlarmManager am = (AlarmManager) context.getSystemService(ALARM_SERVICE);
         long time_fired = System.currentTimeMillis() + SERVICE_CHECKER_INTERVAL;
-        am.setExact(AlarmManager.RTC_WAKEUP, time_fired, pi);       //註冊鬧鐘
+        assert am != null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            am.setExact(AlarmManager.RTC_WAKEUP, time_fired, pi);       //註冊鬧鐘
+        } else {
+            am.set(AlarmManager.RTC_WAKEUP, time_fired, pi);       //註冊鬧鐘
+        }
+//        am.setExact(AlarmManager.RTC_WAKEUP, time_fired, pi);       //註冊鬧鐘
     }
     private void schedule_alarm(Context context) {
         //initial
         //schedule after diary receieve
+        @SuppressLint("HardwareIds")
         String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
         Map<String, Object> my_alarm = new HashMap<>();
         AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
@@ -322,7 +334,13 @@ public class AlarmReceiver extends BroadcastReceiver {
         Intent intent_diary = new Intent(context, AlarmReceiver.class);
         intent_diary.setAction(DIARY_ALARM_ACTION);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 100, intent_diary, 0);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent);
+        assert alarmManager != null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent);
+        }else {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent);
+        }
+//        alarmManager.set(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent);
 
         //esm alarm
         int max_esm = hour_interval*2/3;
@@ -356,7 +374,12 @@ public class AlarmReceiver extends BroadcastReceiver {
                         intent_e.setAction(ESM_ALARM_ACTION);
                         PendingIntent pendingIntent_e = PendingIntent.getBroadcast(context, i, intent_e, 0);
                         intentEsmArray.add(pendingIntent_e);
-                        alarmManager.set(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_e);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                            alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_e);
+                        }else {
+                            alarmManager.set(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_e);
+                        }
+//                        alarmManager.set(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_e);
                     }
                 }
             } else {
@@ -370,7 +393,12 @@ public class AlarmReceiver extends BroadcastReceiver {
                         intent_e.setAction(ESM_ALARM_ACTION);
                         PendingIntent pendingIntent_e = PendingIntent.getBroadcast(context, i, intent_e, 0);
                         intentEsmArray.add(pendingIntent_e);
-                        alarmManager.set(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_e);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                            alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_e);
+                        }else {
+                            alarmManager.set(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_e);
+                        }
+//                        alarmManager.set(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_e);
                     }
 
                 }
@@ -406,23 +434,16 @@ public class AlarmReceiver extends BroadcastReceiver {
         int EndHour = sharedPrefs.getInt(ESM_END_TIME_HOUR, 21);
         if(EndHour==0){
             //StartHour 9 EndHour 0
-            if((cal_esm.get(Calendar.HOUR_OF_DAY) >= StartHour)){
-                return true;
-            }
+            return cal_esm.get(Calendar.HOUR_OF_DAY) >= StartHour;
         } else if(EndHour>StartHour){
             //StartHour 9 EndHour 21
             //8 23
-            if((cal_esm.get(Calendar.HOUR_OF_DAY) >= StartHour && cal_esm.get(Calendar.HOUR_OF_DAY) < EndHour)){
-                return true;
-            }
+            return cal_esm.get(Calendar.HOUR_OF_DAY) >= StartHour && cal_esm.get(Calendar.HOUR_OF_DAY) < EndHour;
         } else {
             //StartHour 11 EndHour 2
             //in midnight
-            if(((cal_esm.get(Calendar.HOUR_OF_DAY) >= StartHour || cal_esm.get(Calendar.HOUR_OF_DAY) < EndHour))){
-                return true;
-            }
+            return cal_esm.get(Calendar.HOUR_OF_DAY) >= StartHour || cal_esm.get(Calendar.HOUR_OF_DAY) < EndHour;
         }
-        return false;
     }
 
     private boolean check_diary_time_range(Context context) {

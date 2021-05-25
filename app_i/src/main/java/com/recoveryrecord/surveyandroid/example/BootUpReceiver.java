@@ -1,5 +1,7 @@
 package com.recoveryrecord.surveyandroid.example;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -15,12 +17,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.recoveryrecord.surveyandroid.example.Constants.CANCEL_ALARM_ACTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_VALUE_BOOT_UP;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_VALUE_RESTART;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_ACTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
 
 public class BootUpReceiver extends BroadcastReceiver {
@@ -44,6 +48,14 @@ public class BootUpReceiver extends BroadcastReceiver {
 //            int ShutDown_Day = pref.getInt("ShutDown_Day", 0); //關機日期
             Log.d("BootOrShutDown", "restart service");
             context.startService(new Intent(context, NewsNotificationService.class));
+
+            Intent intent_restart = new Intent(context, AlarmReceiver.class);
+            intent_restart.setAction(CANCEL_ALARM_ACTION);
+            AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1050, intent_restart, 0);
+            Calendar cal_r = Calendar.getInstance();
+            cal_r.add(Calendar.SECOND, 2);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, cal_r.getTimeInMillis() , pendingIntent);
 
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             Map<String, Object> log_service = new HashMap<>();
