@@ -307,8 +307,8 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
         task2.addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                notification_unclick_array.clear();
                 if (!queryDocumentSnapshots.isEmpty()) {
-                    notification_unclick_array.clear();
                     List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
                     for (DocumentSnapshot d : list) {
                         if (Math.abs(now/1000 - d.getTimestamp(PUSH_NEWS_NOTI_TIME).getSeconds()) <= NOTIFICATION_TARGET_RANGE) {

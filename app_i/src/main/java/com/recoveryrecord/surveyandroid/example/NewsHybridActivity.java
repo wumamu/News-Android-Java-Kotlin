@@ -230,10 +230,6 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         final DocumentReference docIdRef = db.collection("test_users").document(device_id);
 //        Boolean set_once = sharedPrefs.getBoolean(ESM_SET_ONCE, false);
         if (clear) {
-//            AlarmManager alarmManager = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-//            Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
-//            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
-//            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),REPEAT_ALARM_CHECKER, pendingIntent);//every ten min check
             docIdRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -310,7 +306,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                         assert document != null;
                         if (document.exists()) {
                             Log.d(TAG, "Document exists!");
-                            docIdRef.update(LAST_LAUNCH_TIME, Timestamp.now()
+                            docIdRef.update(LAST_LAUNCH_TIME, Timestamp.now(), APP_VERSION_KEY, APP_VERSION_VALUE
                             )//another field
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
@@ -504,33 +500,6 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     @Override
     protected void onResume() {
         super.onResume();
-//        Log.d(TAG, "on resume");
-//        if (getIntent().getExtras() != null) {
-//            for (String key : getIntent().getExtras().keySet()){
-//            String value = getIntent().getExtras().getString(key);
-//                Log.d(TAG, "Key: " + key + " Value: " + value);
-//            }}
-//        Log.d("log: activity cycle", "NewsHybridActivity On resume");
-//        Map<String, Object> log_service = new HashMap<>();
-//        log_service.put("flag", true);
-//        log_service.put("service_timestamp", Timestamp.now());
-//        log_service.put("cycle", "resume");
-//        log_service.put("activity", "NewsHybridActivity");
-//        if (!isMyServiceRunning(mYourService.getClass())) {
-//            log_service.put("status", "failed");
-////            Toast.makeText(this, "service failed", Toast.LENGTH_SHORT).show();
-//            startService(mServiceIntent);
-//        } else {
-//            log_service.put("status", "running");
-////            Toast.makeText(this, "service running", Toast.LENGTH_SHORT).show();
-//        }
-//        db.collection("test_users")
-//                .document(device_id)
-//                .collection("test_service")
-//                .document(String.valueOf(Timestamp.now()))
-//                .set(log_service);
-
-
         //Sessions
 //        Toast.makeText(this, "OnResume", Toast.LENGTH_SHORT).show();
         SessionIDcounter = SessionIDcounter + 1;
@@ -557,49 +526,11 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 
     @Override
     protected void onStop() {
-//        Log.d("log: activity cycle", "NewsHybridActivity On stop");
-//        Map<String, Object> log_service = new HashMap<>();
-//        log_service.put("service_timestamp", Timestamp.now());
-//        log_service.put("cycle", "stop");
-//        log_service.put("flag", false);
-//        log_service.put("activity", "NewsHybridActivity");
-//        if (!isMyServiceRunning(mYourService.getClass())) {
-//            log_service.put("status", "failed");
-////            Toast.makeText(this, "service failed", Toast.LENGTH_SHORT).show();
-//            startService(mServiceIntent);
-//        } else {
-//            log_service.put("status", "running");
-////            Toast.makeText(this, "service running", Toast.LENGTH_SHORT).show();
-//        }
-//        db.collection("test_users")
-//                .document(device_id)
-//                .collection("test_service")
-//                .document(String.valueOf(Timestamp.now()))
-//                .set(log_service);
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-//        Log.d("log: activity cycle", "NewsHybridActivity On destroy");
-//        Map<String, Object> log_service = new HashMap<>();
-//        log_service.put("service_timestamp", Timestamp.now());
-//        log_service.put("cycle", "destroy");
-//        log_service.put("flag", false);
-//        log_service.put("activity", "NewsHybridActivity");
-//        if (!isMyServiceRunning(mYourService.getClass())) {
-//            log_service.put("status", "failed");
-////            Toast.makeText(this, "service failed", Toast.LENGTH_SHORT).show();
-//            startService(mServiceIntent);
-//        } else {
-//            log_service.put("status", "running");
-////            Toast.makeText(this, "service running", Toast.LENGTH_SHORT).show();
-//        }
-//        db.collection("test_users")
-//                .document(device_id)
-//                .collection("test_service")
-//                .document(String.valueOf(Timestamp.now()))
-//                .set(log_service);
         _BluetoothReceiver.unregisterBluetoothReceiver(this);
         _NetworkChangeReceiver.unregisterNetworkReceiver(this);
         _ScreenStateReceiver.unregisterScreenStateReceiver(this);
@@ -648,32 +579,36 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 startActivity(intent_notih);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
-//            case R.id.nav_contact :
-//                scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 1000 );
-//                Toast.makeText(this, "發送esm~", Toast.LENGTH_SHORT).show();;
-//                drawerLayout.closeDrawer(GravityCompat.START);
-//                return true;
-//            case R.id.nav_tmp :
-//                scheduleNotification_diary(getNotification_diary("Please fill out the questionnaire" ), 1000 );
-//                Toast.makeText(this, "發送esm~", Toast.LENGTH_SHORT).show();;
-//                drawerLayout.closeDrawer(GravityCompat.START);
-//                return true;
-//            case R.id.clear:
-////                SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-////                sharedPrefs.edit().clear().apply();
-////                Toast.makeText(this, "清除資料", Toast.LENGTH_SHORT).show();;
-//                drawerLayout.closeDrawer(GravityCompat.START);
-//                return true;
-//            case R.id.schedule:
-////                Intent intent_schedule = new Intent(context, AlarmReceiver.class);
-////                intent_schedule.setAction(SCHEDULE_ALARM_ACTION);
-////                AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-////                PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1000, intent_schedule, 0);
-////                Calendar cal = Calendar.getInstance();
-////                cal.add(Calendar.SECOND, 3);
-////                alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() , pendingIntent);
-//                drawerLayout.closeDrawer(GravityCompat.START);
-//                return true;
+            case R.id.nav_contact :
+                Intent intent_esm = new Intent(context, AlarmReceiver.class);
+                intent_esm.setAction(ESM_ALARM_ACTION);
+                PendingIntent pendingIntent_esm = PendingIntent.getBroadcast(context, 77, intent_esm, 0);
+                AlarmManager alarmManager_esm = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+                Calendar cal_esm = Calendar.getInstance();
+                cal_esm.add(Calendar.SECOND, 2);
+                assert alarmManager_esm != null;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    alarmManager_esm.setExact(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_esm);
+                }else {
+                    alarmManager_esm.set(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_esm);
+                }
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+            case R.id.nav_tmp :
+                Intent intent_diary = new Intent(context, AlarmReceiver.class);
+                intent_diary.setAction(DIARY_ALARM_ACTION);
+                PendingIntent pendingIntent_diary = PendingIntent.getBroadcast(context, 78, intent_diary, 0);
+                AlarmManager alarmManager_diary = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+                Calendar cal_diary = Calendar.getInstance();
+                cal_diary.add(Calendar.SECOND, 2);
+                assert alarmManager_diary != null;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    alarmManager_diary.setExact(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent_diary);
+                }else {
+                    alarmManager_diary.set(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent_diary);
+                }
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
             default :
                 return false;
         }
@@ -681,26 +616,6 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 //        return false;
     }
 
-//    private void alarm(int time, int requestCode) {
-//        Calendar cal1 = Calendar.getInstance();//get a Calendar object with current time
-////        cal1.add(Calendar.SECOND, time);//"配置鬧終於3秒後
-//        cal1.set(Calendar.HOUR_OF_DAY, 1);
-//        cal1.set(Calendar.MINUTE, 0);
-//        cal1.set(Calendar.SECOND, 0);
-//        cal1.add(Calendar.MINUTE, 16);
-//        Log.d("AlarmReceiver", String.valueOf(cal1));
-//        Intent intent_esm = new Intent(getApplicationContext(), AlarmReceiver.class);
-//        Intent intent_diary = new Intent(getApplicationContext(), AlarmReceiver.class);
-//        intent_esm.setAction(ESM_ALARM_ACTION);
-//        intent_diary.setAction(DIARY_ALARM_ACTION);
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), requestCode, intent_esm, 0);
-//        AlarmManager alarmManager = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-//        alarmManager.set(AlarmManager.RTC_WAKEUP, cal1.getTimeInMillis() , pendingIntent);
-//    }
-//
-//    private void schedule_alarm() {
-//
-//    }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
@@ -735,125 +650,6 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 }
             }, 2000);
         }
-    }
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    private Notification getNotification_esm (String content) {
-        Date date = new Date(System.currentTimeMillis());
-        String esm_id = "";
-        @SuppressLint("SimpleDateFormat")
-        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-        String time_now = formatter.format(date);
-        esm_id = time_now;
-
-        Intent intent_esm = new Intent();
-        intent_esm.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent_esm.setClass(NewsHybridActivity.this, ESMLoadingPageActivity.class);
-        intent_esm.putExtra(LOADING_PAGE_ID, esm_id);
-        intent_esm.putExtra(LOADING_PAGE_TYPE_KEY, LOADING_PAGE_TYPE_ESM);
-        int nid = (int) System.currentTimeMillis();
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_esm, 0);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, DEFAULT_ESM_CHANNEL_ID);
-        builder.setContentTitle(ESM_NOTIFICATION_CONTENT_TITLE);
-        builder.setContentText(ESM_NOTIFICATION_CONTENT_TEXT);
-        builder.setSmallIcon(R.drawable.ic_launcher_foreground);
-        builder.setContentIntent(pendingIntent);
-        builder.setAutoCancel(true);
-        builder.setChannelId(ESM_CHANNEL_ID);
-        builder.setVibrate(VIBRATE_EFFECT);              //震動模式
-        builder.setTimeoutAfter(ESM_TIME_OUT);           //自動消失 15*60*1000
-        builder.setPriority(NotificationManager.IMPORTANCE_MAX);
-        builder.setCategory(Notification.CATEGORY_REMINDER);
-        Bundle extras = new Bundle();
-        extras.putString(DOC_ID_KEY, esm_id);
-        extras.putString(NOTIFICATION_TYPE_KEY, NOTIFICATION_TYPE_VALUE_ESM);
-        builder.setExtras(extras);
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        @SuppressLint("HardwareIds")
-        String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-        Map<String, Object> esm = new HashMap<>();
-        esm.put(PUSH_ESM_NOTI_TIME, Timestamp.now());
-        esm.put(PUSH_ESM_SAMPLE, 0);
-        esm.put(PUSH_ESM_TRIGGER_BY, PUSH_ESM_TRIGGER_BY_SELF);
-        db.collection(TEST_USER_COLLECTION)
-                .document(device_id)
-                .collection(PUSH_ESM_COLLECTION)
-                .document(esm_id)
-                .set(esm);
-        return builder.build();
-    }
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void scheduleNotification_esm (Notification notification, int delay) {
-        Intent notificationIntent = new Intent(this, NotificationListenerESM.class);
-        notificationIntent.putExtra(DEFAULT_ESM_NOTIFICATION_ID, 1 ) ;
-        notificationIntent.putExtra(DEFAULT_ESM_NOTIFICATION, notification) ;
-        int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast( this, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        long futureInMillis = SystemClock.elapsedRealtime() + delay;
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        assert alarmManager != null;
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
-//        Log.d ("shit", "scheduleNotification_esm");
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    private Notification getNotification_diary (String content) {
-        Date date = new Date(System.currentTimeMillis());
-        String diary_id = "";
-        @SuppressLint("SimpleDateFormat")
-        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-        String time_now = formatter.format(date);
-        diary_id = time_now;
-
-        Intent intent_diary = new Intent();
-        intent_diary.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent_diary.setClass(NewsHybridActivity.this, DiaryLoadingPageActivity.class);
-        intent_diary.putExtra(LOADING_PAGE_ID, diary_id);
-        intent_diary.putExtra(LOADING_PAGE_TYPE_KEY, LOADING_PAGE_TYPE_DIARY);
-        int nid = (int) System.currentTimeMillis();
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_diary, 0);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, DEFAULT_DIARY_CHANNEL_ID);
-        builder.setContentTitle(DIARY_NOTIFICATION_CONTENT_TITLE);
-        builder.setContentText(DIARY_NOTIFICATION_CONTENT_TEXT);
-        builder.setSmallIcon(R.drawable.ic_launcher_foreground);
-        builder.setContentIntent(pendingIntent);
-        builder.setAutoCancel(true);
-        builder.setChannelId(DIARY_CHANNEL_ID);
-        builder.setVibrate(VIBRATE_EFFECT);              //震動模式
-        builder.setTimeoutAfter(DIARY_TIME_OUT);           //自動消失 15*60*1000
-        builder.setPriority(NotificationManager.IMPORTANCE_MAX);
-        builder.setCategory(Notification.CATEGORY_REMINDER);
-        Bundle extras = new Bundle();
-        extras.putString(DOC_ID_KEY, diary_id);
-        extras.putString(NOTIFICATION_TYPE_KEY, NOTIFICATION_TYPE_VALUE_DIARY);
-        builder.setExtras(extras);
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        @SuppressLint("HardwareIds")
-        String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-        Map<String, Object> diary = new HashMap<>();
-        diary.put(PUSH_DIARY_NOTI_TIME, Timestamp.now());
-        diary.put(PUSH_DIARY_DONE, 0);
-        diary.put(PUSH_DIARY_TRIGGER_BY, PUSH_DIARY_TRIGGER_BY_SELF);
-        db.collection(TEST_USER_COLLECTION)
-                .document(device_id)
-                .collection(PUSH_DIARY_COLLECTION)
-                .document(diary_id)
-                .set(diary);
-        return builder.build();
-    }
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void scheduleNotification_diary (Notification notification, int delay) {
-        Intent notificationIntent = new Intent(this, NotificationListenerDiary.class);
-        notificationIntent.putExtra(DEFAULT_DIARY_NOTIFICATION_ID, 1 ) ;
-        notificationIntent.putExtra(DEFAULT_DIARY_NOTIFICATION, notification) ;
-        int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast( this, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        long futureInMillis = SystemClock.elapsedRealtime() + delay;
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        assert alarmManager != null;
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
-//        Log.d ("shit", "scheduleNotification_esm");
     }
     @Override
     public void onRefresh() {

@@ -462,7 +462,6 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
             Toast.makeText(getApplicationContext(), "沒有資料qq", Toast.LENGTH_SHORT).show();
         } else {
             docRef = db.collection("medias").document(media_name).collection("news").document(news_id);
-//            Toast.makeText(getApplicationContext(), "Successfully " + media_name + " " + news_id, Toast.LENGTH_SHORT).show();
             Toast.makeText(getApplicationContext(), "努力loading中!!", Toast.LENGTH_SHORT).show();
             myReadingBehavior.setKEY_NEWS_ID(news_id);
         }
@@ -1354,7 +1353,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         int id = item.getItemId();
 
         if (id == R.id.share){
-            Toast.makeText(this, "share is being clicked", Toast.LENGTH_LONG).show();
+//            Toast.makeText(this, "share is being clicked", Toast.LENGTH_LONG).show();
             String share_field = "";
 //            final DocumentReference rbRef = db.collection(Build.ID).document(String.valueOf(l_date)).collection("reading_behaviors").document(myReadingBehavior.getKEY_TIME_IN());
 //            String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
