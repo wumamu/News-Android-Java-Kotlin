@@ -1,24 +1,40 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="NoActionBarLight" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/LightcolorPrimary</item>
+        <item name="colorPrimaryDark">@color/LightcolorPrimaryDark</item>
+        <item name="colorAccent">@color/LightcolorAccent</item>
 <!--        <item name="android:forceDarkAllowed">true</item>-->
     </style>
 
-    <style name="AppThemeActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="NoActionBarDark" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/LightcolorPrimary</item>
+        <item name="colorPrimaryDark">@color/LightcolorPrimaryDark</item>
+        <item name="colorAccent">@color/LightcolorAccent</item>
+        <!--        <item name="android:forceDarkAllowed">true</item>-->
+    </style>
+
+    <style name="ActionBarLight" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/LightcolorPrimary</item>
+        <item name="colorPrimaryDark">@color/LightcolorPrimaryDark</item>
+        <item name="colorAccent">@color/LightcolorAccent</item>
 <!--        <item name="android:forceDarkAllowed">true</item>-->
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="ActionBarDark" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/LightcolorPrimary</item>
+        <item name="colorPrimaryDark">@color/LightcolorPrimaryDark</item>
+        <item name="colorAccent">@color/LightcolorAccent</item>
+        <!--        <item name="android:forceDarkAllowed">true</item>-->
+    </style>
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppTheme.AppBarOverlayLight" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+<!--    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />-->
     <!-- tab layout font -->
     <style name="TabLayoutTextStyle">
         <item name="android:textSize">16sp</item>
@@ -32,7 +48,7 @@
     </style>
 
     <style name="DialogTheme" parent="Theme.AppCompat.Light.Dialog">
-        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="colorAccent">@color/LightcolorPrimary</item>
         <item name="colorControlNormal">#ffffff</item>
 <!--        <item name="android:forceDarkAllowed">true</item>-->
     </style>

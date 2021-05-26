@@ -101,7 +101,7 @@ public class Constants {
     //FIRESTORE FIELD###############################################################################
     public static final String TEST_USER_COLLECTION = "test_users";
     public static final String APP_VERSION_KEY = "app_version";
-    public static final String APP_VERSION_VALUE = "21.05.26-3";
+    public static final String APP_VERSION_VALUE = "21.05.27-1";
     public static final String UPDATE_TIME = "update_timestamp";
     public static final String INITIAL_TIME = "initial_timestamp";
     public static final String LAST_LAUNCH_TIME = "last_launch_timestamp";

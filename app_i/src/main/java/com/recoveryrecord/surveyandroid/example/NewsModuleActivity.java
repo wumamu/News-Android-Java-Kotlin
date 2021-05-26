@@ -544,10 +544,10 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                         int divided_by = 22;
                         if(text_size_string.equals("1")){
                             divided_by = 22;
-                        } else if (text_size_string.equals("0")){
-                            divided_by = 20;
-                        } else {
-                            divided_by = 24;
+                        } else if (text_size_string.equals("0")){//smaller
+                            divided_by = 18;
+                        } else {//bigger
+                            divided_by = 25;
                         }
                         int cut_size = (int) (dpWidth / divided_by);
                         myReadingBehavior.setKEY_BYTE_PER_LINE(cut_size*2);
@@ -783,7 +783,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                         }
                         myReadingBehavior.setKEY_CHAR_NUM_TOTAL(char_num_total);
                         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                        params.setMargins(30, 10, 10, 10);
+                        params.setMargins(10, 10, 10, 10);
                         //set viewport number ######################################################
                         int textview_num = divList.size();
                         myReadingBehavior.setKEY_VIEW_PORT_NUM(textview_num);
@@ -797,9 +797,9 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                         if(text_size_string.equals("1")){
                             text_size = 20;
                         } else if (text_size_string.equals("0")){
-                            text_size = 18;
+                            text_size = 17;
                         } else {
-                            text_size = 22;
+                            text_size = 23;
                         }
                         final TextView myTextViewsTitle = new TextView(NewsModuleActivity.this);
                         final TextView myTextViewsDate = new TextView(NewsModuleActivity.this);

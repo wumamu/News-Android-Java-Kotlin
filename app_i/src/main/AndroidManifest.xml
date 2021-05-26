@@ -37,7 +37,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/NoActionBarLight">
         <activity android:name=".SplashScreenActivity"
             android:theme="@style/SplashScreenTheme"
             android:screenOrientation="portrait">
@@ -49,10 +49,10 @@
         <activity android:name=".NewsHybridActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".SettingsActivity"
-            android:theme="@style/AppThemeActionBar"
+            android:theme="@style/ActionBarLight"
             android:screenOrientation="portrait"/>
         <activity android:name=".SurveyProgressActivity"
-            android:theme="@style/AppThemeActionBar"
+            android:theme="@style/ActionBarLight"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.recoveryrecord.surveyandroid.example.SurveyProgressActivity" />
@@ -60,7 +60,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ReadHistoryActivity"
-            android:theme="@style/AppThemeActionBar"
+            android:theme="@style/ActionBarLight"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.recoveryrecord.surveyandroid.example.ReadHistoryActivity" />
@@ -68,7 +68,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".PushHistoryActivity"
-            android:theme="@style/AppThemeActionBar"
+            android:theme="@style/ActionBarLight"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.recoveryrecord.surveyandroid.example.PushHistoryActivity" />
@@ -77,7 +77,7 @@
         </activity>
         <activity android:name=".NotificationRangeActivity"
 
-            android:theme="@style/AppThemeActionBar"
+            android:theme="@style/ActionBarLight"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.recoveryrecord.surveyandroid.example.NotificationRangeActivity" />
@@ -85,7 +85,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".MediaRankActivity"
-            android:theme="@style/AppThemeActionBar"
+            android:theme="@style/ActionBarLight"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.recoveryrecord.surveyandroid.example.MediaRankActivity" />
@@ -94,7 +94,7 @@
         </activity>
         <activity android:name=".NewsModuleActivity"
             android:parentActivityName=".NewsHybridActivity"
-            android:theme="@style/AppThemeActionBar"
+            android:theme="@style/ActionBarLight"
             tools:targetApi="jelly_bean"
             android:screenOrientation="portrait">
             <intent-filter>
