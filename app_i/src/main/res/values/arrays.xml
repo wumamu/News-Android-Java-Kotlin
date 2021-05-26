@@ -1,14 +1,27 @@
 <resources>
     <!-- Reply Preference -->
-    <string-array name="reply_entries">
-        <item>Reply</item>
-        <item>Reply to all</item>
+<!--    <string-array name="reply_entries">-->
+<!--        <item>Reply</item>-->
+<!--        <item>Reply to all</item>-->
+<!--    </string-array>-->
+
+<!--    <string-array name="reply_values">-->
+<!--        <item>reply</item>-->
+<!--        <item>reply_all</item>-->
+<!--    </string-array>-->
+
+    <string-array name="text_entries">
+        <item>"小"</item>
+        <item>"中"</item>
+        <item>"大"</item>
     </string-array>
 
-    <string-array name="reply_values">
-        <item>reply</item>
-        <item>reply_all</item>
+    <string-array name="text_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
     </string-array>
+
 
     <string-array name="media_select_entries">
         <item>中時</item>

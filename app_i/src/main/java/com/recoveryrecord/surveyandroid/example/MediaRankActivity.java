@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import static com.recoveryrecord.surveyandroid.example.Constants.MAIN_PAGE_MEDIA_ORDER;
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER;
 
 public class MediaRankActivity extends AppCompatActivity{
 
@@ -71,7 +71,7 @@ public class MediaRankActivity extends AppCompatActivity{
     }
 
     private void loadrecyclerViewData() {
-        Set<String> ranking = mSharedPreferences.getStringSet(MAIN_PAGE_MEDIA_ORDER, null);
+        Set<String> ranking = mSharedPreferences.getStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, null);
         for (int i = 1; i<=9; i++){
             for (String r : ranking){
                 List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
@@ -112,7 +112,7 @@ public class MediaRankActivity extends AppCompatActivity{
         }
 
         //save to SharedPreference
-        mEditor.putStringSet(MAIN_PAGE_MEDIA_ORDER, new_set).commit();
+        mEditor.putStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, new_set).commit();
         mEditor.commit();
         super.onStop();
     }

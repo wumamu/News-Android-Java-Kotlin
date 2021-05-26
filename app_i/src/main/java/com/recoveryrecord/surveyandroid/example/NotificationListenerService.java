@@ -364,8 +364,9 @@ public class NotificationListenerService extends android.service.notification.No
                 @SuppressLint("HardwareIds")
                 String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
                 boolean is_me = false;
-                if (device_id.equals("564da153307f5547")){
+                if (device_id.equals("564da153307f5547") || device_id.equals("14f44cefb3a2d7aa")){
                     is_me = true;
+                    receieve_notification.put("source", device_id);
                 }
                 if (is_me){
                     db.collection("compare")
@@ -382,49 +383,7 @@ public class NotificationListenerService extends android.service.notification.No
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    private void check_my_diary_and_esm() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        esm_status = "NA";
-        diary_status = "NA";
-//        final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-//        Boolean set_once = sharedPrefs.getBoolean(ESM_SET_ONCE, false);
-        Map<String, Object> log_service = new HashMap<>();
-        log_service.put("service_timestamp", Timestamp.now());
-        Random r=new Random();
-        int randomNumber = r.nextInt(5);
-        log_service.put("delay_min", randomNumber*3);
-        String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-//        if(set_once){
-            //send diary
-        if(check_diary_time_range(getApplicationContext())){
-            scheduleNotification_diary(getApplicationContext(), getNotification_diary(getApplicationContext(), "Please fill out the questionnaire" ), randomNumber * 3 * 60 *1000 + 1000 );
-            log_service.put("diary", true);
-        } else {
-            log_service.put("diary", false);
-        }
-        if(check_esm_time_range(getApplicationContext())){//send esm
-//            select_news();
-            Log.d("lognewsselect", "check_daily_time_range success");
-            scheduleNotification_esm(getApplicationContext(), getNotification_esm(getApplicationContext(), "Please fill out the questionnaire" ), randomNumber * 3 * 60 *1000 + 1000);
-            log_service.put("esm", true);
-        } else {
-            log_service.put("esm", false);
-        }
-        final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        log_service.put("start_hour", sharedPrefs.getInt(ESM_START_TIME_HOUR, 9));
-        log_service.put("end_hour", sharedPrefs.getInt(ESM_END_TIME_HOUR, 21));
-        log_service.put("start_min", sharedPrefs.getInt(ESM_START_TIME_MIN, 0));
-        log_service.put("end_min", sharedPrefs.getInt(ESM_END_TIME_MIN, 0));
-        log_service.put(DIARY_STATUS, diary_status);
-        log_service.put(ESM_STATUS, esm_status);
-        db.collection(TEST_USER_COLLECTION)
-                .document(device_id)
-                .collection(ALARM_SERVICE_POST_COLLECTION)
-                .document(String.valueOf(Timestamp.now()))
-                .set(log_service);
-//        }
-    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override

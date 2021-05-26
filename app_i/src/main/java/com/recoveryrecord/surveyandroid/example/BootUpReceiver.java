@@ -1,5 +1,6 @@
 package com.recoveryrecord.surveyandroid.example;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -12,7 +13,9 @@ import android.util.Log;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,6 +60,10 @@ public class BootUpReceiver extends BroadcastReceiver {
             cal_r.add(Calendar.SECOND, 2);
             alarmManager.set(AlarmManager.RTC_WAKEUP, cal_r.getTimeInMillis() , pendingIntent);
 
+            Date date = new Date(System.currentTimeMillis());
+            @SuppressLint("SimpleDateFormat")
+            SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             Map<String, Object> log_service = new HashMap<>();
             log_service.put(NEWS_SERVICE_TIME, Timestamp.now());
@@ -65,7 +72,8 @@ public class BootUpReceiver extends BroadcastReceiver {
             db.collection(TEST_USER_COLLECTION)
                     .document(Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID))
                     .collection(NEWS_SERVICE_COLLECTION)
-                    .document(String.valueOf(Timestamp.now().toDate()))
+//                    .document(String.valueOf(Timestamp.now().toDate()))
+                    .document(formatter.format(date))
                     .set(log_service);
         }
     }

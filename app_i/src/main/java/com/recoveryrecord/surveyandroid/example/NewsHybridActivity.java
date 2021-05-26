@@ -3,22 +3,16 @@ package com.recoveryrecord.surveyandroid.example;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
-import android.app.AlarmManager;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
-import android.os.SystemClock;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
@@ -62,17 +56,13 @@ import com.recoveryrecord.surveyandroid.example.udn.UdnMainFragment;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ThreadLocalRandom;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -80,7 +70,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.NotificationCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -94,69 +83,26 @@ import javax.annotation.Nullable;
 
 import static com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_VALUE;
-import static com.recoveryrecord.surveyandroid.example.Constants.CACHE_CLEAR;
-import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_DIARY_CHANNEL_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_DIARY_NOTIFICATION;
-import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_DIARY_NOTIFICATION_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_CHANNEL_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_NOTIFICATION;
-import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_NOTIFICATION_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_CLEAR_CACHE;
 //import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_PARCELABLE;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_ALARM_ACTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_CHANNEL_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_NOTIFICATION_CONTENT_TEXT;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_NOTIFICATION_CONTENT_TITLE;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_TIME_OUT;
-import static com.recoveryrecord.surveyandroid.example.Constants.DOC_ID_KEY;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_ALARM_ACTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_CHANNEL_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_END_TIME_HOUR;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOTIFICATION_CONTENT_TEXT;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOTIFICATION_CONTENT_TITLE;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_SET_ONCE;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_START_TIME_HOUR;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TIME_OUT;
+import static com.recoveryrecord.surveyandroid.example.Constants.OUR_EMAIL;
 import static com.recoveryrecord.surveyandroid.example.Constants.INITIAL_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.LAST_LAUNCH_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_DIARY;
-import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_ESM;
-import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_KEY;
-import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_VALUE_BOOT_UP;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_VALUE_FAILED_RESTART;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_VALUE_MAIN_PAGE;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_VALUE_RESTART;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_VALUE_RUNNING;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_KEY;
-import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_DIARY;
-import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_ESM;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_DONE;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_NOTI_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_TRIGGER_BY;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_TRIGGER_BY_SELF;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_NOTI_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_SAMPLE;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TRIGGER_BY;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TRIGGER_BY_ALARM;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TRIGGER_BY_SELF;
-import static com.recoveryrecord.surveyandroid.example.Constants.REPEAT_ALARM_CHECKER;
-import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_ACTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_SURVEY_END;
-import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_SURVEY_START;
-import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_TRIGGER_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER;
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.UPDATE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_PHONE_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.VIBRATE_EFFECT;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
 
 //public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener , GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
@@ -164,6 +110,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DocumentReference noteRef = db.document("server_push_notifications/start");
     private CollectionReference noteRefqq = db.collection("server_push_notifications");
+    private String signature = "尚未設定實驗編號";
 
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
@@ -226,8 +173,8 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         //first in app
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean clear = sharedPrefs.getBoolean(CACHE_CLEAR, true);
-        final DocumentReference docIdRef = db.collection("test_users").document(device_id);
+        boolean clear = sharedPrefs.getBoolean(SHARE_PREFERENCE_CLEAR_CACHE, true);
+        final DocumentReference docIdRef = db.collection(TEST_USER_COLLECTION).document(device_id);
 //        Boolean set_once = sharedPrefs.getBoolean(ESM_SET_ONCE, false);
         if (clear) {
             docIdRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -263,7 +210,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                             first.put(USER_DEVICE_ID, device_id);
                             first.put(USER_PHONE_ID, Build.MODEL);
                             first.put(APP_VERSION_KEY, APP_VERSION_VALUE);
-                            db.collection("test_users")
+                            db.collection(TEST_USER_COLLECTION)
                                     .document(device_id)
                                     .set(first);
                         }
@@ -275,10 +222,10 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
             showStartDialog();
             clear = false;
             SharedPreferences.Editor editor = sharedPrefs.edit();
-            editor.putBoolean(CACHE_CLEAR, false);
+            editor.putBoolean(SHARE_PREFERENCE_CLEAR_CACHE, false);
             editor.apply();
             //initial media list
-            Set<String> ranking = sharedPrefs.getStringSet("media_rank", null);
+            Set<String> ranking = sharedPrefs.getStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, null);
             if (ranking==null){
                 Set<String> set = new HashSet<String>();
                 set.add("中時 1");
@@ -292,7 +239,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 set.add("三立 9");
                 SharedPreferences.Editor edit = sharedPrefs.edit();
                 edit.clear();
-                edit.putStringSet("media_rank", set);
+                edit.putStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, set);
                 edit.apply();
 //                Toast.makeText(this, "帳號設定可以調整首頁媒體排序喔~", Toast.LENGTH_SHORT).show();
             }
@@ -329,7 +276,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                             first.put(USER_DEVICE_ID, device_id);
                             first.put(USER_PHONE_ID, Build.MODEL);
                             first.put(APP_VERSION_KEY, APP_VERSION_VALUE);
-                            db.collection("test_users")
+                            db.collection(TEST_USER_COLLECTION)
                                     .document(device_id)
                                     .set(first);
                         }
@@ -340,7 +287,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
             });
         }
         //notification media_select
-        Set<String> selections = sharedPrefs.getStringSet("media_select", null);
+        Set<String> selections = sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, null);
         if (selections==null){
 //            Toast.makeText(this, "趕快去設定選擇想要收到推播的媒體吧~", Toast.LENGTH_SHORT).show();
         } else {
@@ -363,10 +310,9 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         user_id = (TextView) header.findViewById(R.id.textView_user_id);
         user_id.setText(device_id);
         user_name = (TextView) header.findViewById(R.id.textView_user_name);
-        String signature = sharedPrefs.getString("signature", null);
-        if (signature==null){
-//            Toast.makeText(this, "趕快去設定選擇想要的媒體吧~", Toast.LENGTH_LONG).show();
-            user_name.setText("使用者名稱");
+        signature = sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號");
+        if (signature.equals("尚未設定實驗編號")){
+            user_name.setText("尚未設定實驗編號");
         } else {
             user_name.setText(signature);
         }
@@ -399,12 +345,17 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 //            Toast.makeText(this, "service running", Toast.LENGTH_SHORT).show();
         }
         log_service.put(NEWS_SERVICE_TIME, Timestamp.now());
-//        log_service.put(NEWS_SERVICE_STATUS_KEY, NEWS_SERVICE_STATUS_VALUE_RESTART);
+
+
+        Date date = new Date(System.currentTimeMillis());
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 
         db.collection(TEST_USER_COLLECTION)
                 .document(device_id)
                 .collection(NEWS_SERVICE_COLLECTION)
-                .document(String.valueOf(Timestamp.now().toDate()))
+//                .document(String.valueOf(Timestamp.now().toDate()))
+                .document(formatter.format(date))
                 .set(log_service);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),this);
         mViewPager = (ViewPager) findViewById(R.id.container_hy);
@@ -556,27 +507,43 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nav_setting :
-                Log.d("log: navigation", "nav_setting " + item.getItemId());
+//                Log.d("log: navigation", "nav_setting " + item.getItemId());
                 Intent intent_setting = new Intent(NewsHybridActivity.this, SettingsActivity.class);
                 startActivity(intent_setting);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             case R.id.nav_progressing :
-                Log.d("log: navigation", "nav_progressing " + item.getItemId());
+//                Log.d("log: navigation", "nav_progressing " + item.getItemId());
                 Intent intent_db = new Intent(NewsHybridActivity.this, SurveyProgressActivity.class);
                 startActivity(intent_db);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             case R.id.nav_history :
-                Log.d("log: navigation", "nav_history " + item.getItemId());
+//                Log.d("log: navigation", "nav_history " + item.getItemId());
                 Intent intent_rbh = new Intent(NewsHybridActivity.this, ReadHistoryActivity.class);
                 startActivity(intent_rbh);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             case R.id.nav_reschedule :
-                Log.d("log: navigation", "nav_reschedule " + item.getItemId());
+//                Log.d("log: navigation", "nav_reschedule " + item.getItemId());
                 Intent intent_notih = new Intent(NewsHybridActivity.this, PushHistoryActivity.class);
                 startActivity(intent_notih);
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+            case R.id.nav_contact:
+                Intent selectorIntent = new Intent(Intent.ACTION_SENDTO);
+                selectorIntent.setData(Uri.parse("mailto:"));
+
+                final Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{OUR_EMAIL});
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "NewsMoment App 問題回報");
+                emailIntent.putExtra(Intent.EXTRA_TEXT, "Hi, 我的 user id 是" + signature + "，" + "\ndevice id 是" + device_id +"，\n我有問題要回報(以文字描述發生的問題)：\n以下是相關問題截圖(如有截圖或是錄影，可以幫助我們更快了解問題)：");
+                emailIntent.setSelector(selectorIntent);
+                if (emailIntent.resolveActivity(getPackageManager())!=null)
+                    startActivity(Intent.createChooser(emailIntent, "Send email..."));
+                else
+                    Toast.makeText(this,"Gmail App is not installed",Toast.LENGTH_LONG).show();
+
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
 //            case R.id.nav_contact :
@@ -621,11 +588,11 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (serviceClass.getName().equals(service.service.getClassName())) {
-                Log.d ("Servicestatus", "Running");
+//                Log.d ("Servicestatus", "Running");
                 return true;
             }
         }
-        Log.d ("Servicestatus", "Not running");
+//        Log.d ("Servicestatus", "Not running");
         return false;
     }
     @Override

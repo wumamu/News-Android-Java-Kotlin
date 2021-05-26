@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -70,12 +71,16 @@ import java.util.concurrent.ThreadLocalRandom;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
+
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_TEST_SIZE;
 //import android.support.v7.widget.Toolbar;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class NewsModuleActivity extends AppCompatActivity implements GestureListener.SimpleGestureListener {
     //    String TagCycle = "my activity cycle";
     String device_id = "";
+    String text_size_string = "1";
 
     volatile boolean activityStopped = false;
     volatile boolean activityEnd = false;
@@ -321,6 +326,8 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("log: activity cycle", "NewsModuleActivity On create");
         super.onCreate(savedInstanceState);
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        text_size_string = sharedPrefs.getString(SHARE_PREFERENCE_TEST_SIZE, "1");
         device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 //        getSupportActionBar().hide();
         setContentView(R.layout.activity_news_module);
@@ -534,7 +541,15 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                         Log.d("log: firebase", "DocumentSnapshot content: end");
                         List<String> divList = new ArrayList<>();
 //                        int cut_size = (int) (dpWidth / 26);
-                        int cut_size = (int) (dpWidth / 22);
+                        int divided_by = 22;
+                        if(text_size_string.equals("1")){
+                            divided_by = 22;
+                        } else if (text_size_string.equals("0")){
+                            divided_by = 20;
+                        } else {
+                            divided_by = 24;
+                        }
+                        int cut_size = (int) (dpWidth / divided_by);
                         myReadingBehavior.setKEY_BYTE_PER_LINE(cut_size*2);
                         //loop for each paragraph
                         for (int i = 0; i < c_list.size(); i++) {
@@ -779,6 +794,13 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                         //put title into layout
                         //int text_size = (int) (dpWidth /30);
                         int text_size = 20;
+                        if(text_size_string.equals("1")){
+                            text_size = 20;
+                        } else if (text_size_string.equals("0")){
+                            text_size = 18;
+                        } else {
+                            text_size = 22;
+                        }
                         final TextView myTextViewsTitle = new TextView(NewsModuleActivity.this);
                         final TextView myTextViewsDate = new TextView(NewsModuleActivity.this);
                         final TextView myTextViewsSrc = new TextView(NewsModuleActivity.this);

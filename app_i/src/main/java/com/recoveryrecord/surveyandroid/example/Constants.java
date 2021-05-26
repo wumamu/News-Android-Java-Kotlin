@@ -3,10 +3,13 @@ package com.recoveryrecord.surveyandroid.example;
 import java.util.HashSet;
 
 public class Constants {
+    //email
+    public static final String OUR_EMAIL = "wcclevi1225@gmail.com";
     //action
     public static final String CHECK_SERVICE_ACTION = "CheckService";//request code 50 60
     public static final String ESM_ALARM_ACTION = "EsmAlarm";//request code 0-15
     public static final String ESM_SCHEDULE_ID = "esm_schedule_id";
+    public static final String SCHEDULE_SOURCE = "schedule_source";
     public static final String DIARY_ALARM_ACTION = "DiaryAlarm";//request code 100
     public static final String CANCEL_ALARM_ACTION = "CancelAlarm";//request code 1050
     public static final String SCHEDULE_ALARM_ACTION = "ScheduleAlarm";//request code 1000 1001
@@ -98,7 +101,7 @@ public class Constants {
     //FIRESTORE FIELD###############################################################################
     public static final String TEST_USER_COLLECTION = "test_users";
     public static final String APP_VERSION_KEY = "app_version";
-    public static final String APP_VERSION_VALUE = "21.05.26-2";
+    public static final String APP_VERSION_VALUE = "21.05.26-3";
     public static final String UPDATE_TIME = "update_timestamp";
     public static final String INITIAL_TIME = "initial_timestamp";
     public static final String LAST_LAUNCH_TIME = "last_launch_timestamp";
@@ -192,6 +195,7 @@ public class Constants {
     public static final String PUSH_ESM_REMOVE_TIME = "remove_timestamp";
     public static final String PUSH_ESM_RECEIEVE_TIME = "receieve_timestamp";
     public static final String PUSH_ESM_SCHEDULE_ID = "esm_schedule_id";
+    public static final String PUSH_ESM_SCHEDULE_SOURCE = "esm_schedule_source";
     public static final String PUSH_ESM_NOTI_TIME = "noti_timestamp";
     public static final String PUSH_ESM_OPEN_TIME = "open_timestamp";
     public static final String PUSH_ESM_CLOSE_TIME = "close_timestamp";
@@ -223,6 +227,7 @@ public class Constants {
     public static final String PUSH_DIARY_TRIGGER_BY_ALARM = "alarm";
     public static final String PUSH_DIARY_TRIGGER_BY_SELF = "self";
     public static final String PUSH_DIARY_TRIGGER_BY = "trigger_by";
+    public static final String PUSH_DIARY_SCHEDULE_SOURCE = "diary_schedule_source";
     //PUSH SERVICE
     public static final String PUSH_SERVICE_COLLECTION = "push_service";
     public static final String PUSH_SERVICE_RECEIEVE_TIME = "receieve_timestamp";
@@ -232,7 +237,14 @@ public class Constants {
     //SHARE PREFERENCE #############################################################################
     //SHARE PREFERENCE #############################################################################
     //SHARE PREFERENCE #############################################################################
-    public static final String CACHE_CLEAR = "SharePreferenceClear";
+    public static final String SHARE_PREFERENCE_CLEAR_CACHE = "SharePreferenceClear";
+    public static final String SHARE_PREFERENCE_TEST_SIZE = "text_size";
+    public static final String SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION = "media_select";
+    public static final String SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER = "media_rank";
+    public static final String SHARE_PREFERENCE_USER_ID = "signature";
+
+
+
     //ESM
     public static final String ESM_NOTIFICATION_UNCLICKED_CANDIDATE = "PushNotificationNewsTitleArray";
     public static final String ESM_READ_HISTORY_CANDIDATE = "ReadingBehaviorNewsTitleArray";
@@ -248,8 +260,7 @@ public class Constants {
     //DIARY
     public static final String DIARY_READ_HISTORY_CANDIDATE = "DiaryTargetOptionArray";
     //OTHER
-    public static final String PUSH_NEWS_MEDIA_LIST_SELECTION = "media_select";
-    public static final String MAIN_PAGE_MEDIA_ORDER = "media_rank";
+
     //ESM DIARY COUNT
     public static final String ESM_PUSH_TOTAL = "ESMPushTotal";
     public static final String ESM_DONE_TOTAL = "ESMDoneTotal";
