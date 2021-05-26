@@ -6,6 +6,7 @@ public class Constants {
     //action
     public static final String CHECK_SERVICE_ACTION = "CheckService";//request code 50 60
     public static final String ESM_ALARM_ACTION = "EsmAlarm";//request code 0-15
+    public static final String ESM_SCHEDULE_ID = "esm_schedule_id";
     public static final String DIARY_ALARM_ACTION = "DiaryAlarm";//request code 100
     public static final String CANCEL_ALARM_ACTION = "CancelAlarm";//request code 1050
     public static final String SCHEDULE_ALARM_ACTION = "ScheduleAlarm";//request code 1000 1001
@@ -97,7 +98,7 @@ public class Constants {
     //FIRESTORE FIELD###############################################################################
     public static final String TEST_USER_COLLECTION = "test_users";
     public static final String APP_VERSION_KEY = "app_version";
-    public static final String APP_VERSION_VALUE = "21.05.26-1";
+    public static final String APP_VERSION_VALUE = "21.05.26-2";
     public static final String UPDATE_TIME = "update_timestamp";
     public static final String INITIAL_TIME = "initial_timestamp";
     public static final String LAST_LAUNCH_TIME = "last_launch_timestamp";
@@ -190,6 +191,7 @@ public class Constants {
     public static final String PUSH_ESM_RESULT = "result";
     public static final String PUSH_ESM_REMOVE_TIME = "remove_timestamp";
     public static final String PUSH_ESM_RECEIEVE_TIME = "receieve_timestamp";
+    public static final String PUSH_ESM_SCHEDULE_ID = "esm_schedule_id";
     public static final String PUSH_ESM_NOTI_TIME = "noti_timestamp";
     public static final String PUSH_ESM_OPEN_TIME = "open_timestamp";
     public static final String PUSH_ESM_CLOSE_TIME = "close_timestamp";
