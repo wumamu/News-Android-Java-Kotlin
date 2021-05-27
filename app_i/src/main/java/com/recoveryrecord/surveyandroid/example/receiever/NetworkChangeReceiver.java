@@ -59,6 +59,7 @@ public class NetworkChangeReceiver implements StreamGenerator{
         Date date = new Date(System.currentTimeMillis());
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         final String time_now = formatter.format(date);
+        sensordb.put("Time", time_now);
         sensordb.put("Network", NetworkState);
         db.collection("test_users")
                 .document(device_id)
@@ -92,12 +93,14 @@ public class NetworkChangeReceiver implements StreamGenerator{
                         Log.e("log: network status", "connected by wifi");
 //                        Toast.makeText(context, "用WiFi連的", Toast.LENGTH_SHORT).show();
                         NetworkState = "Connected by Wifi";
+                        sensordb.put("Time", time_now);
                         sensordb.put("Network", "Connected by Wifi");
 
                     } else {
                         Log.e("log: network status", "connected by mobile data");
 //                        Toast.makeText(context, "用手機網路連的", Toast.LENGTH_SHORT).show();
                         NetworkState = "Connected by Mobile";
+                        sensordb.put("Time", time_now);
                         sensordb.put("Network", "Connected by Mobile");
                     }
                     //should check null because in airplane mode it will be null
@@ -114,6 +117,7 @@ public class NetworkChangeReceiver implements StreamGenerator{
                     Log.e("log: ", "disconnected");
 //                    Toast.makeText(context, "斷網了", Toast.LENGTH_SHORT).show();
                     NetworkState = "Disconnected";
+                    sensordb.put("Time", time_now);
                     sensordb.put("Network", "Disconnected");
                 }
                 db.collection("test_users")

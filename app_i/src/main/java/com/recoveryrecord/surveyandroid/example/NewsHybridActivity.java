@@ -47,6 +47,7 @@ import com.recoveryrecord.surveyandroid.example.ebc.EbcMainFragment;
 import com.recoveryrecord.surveyandroid.example.ettoday.EttodayMainFragment;
 import com.recoveryrecord.surveyandroid.example.ltn.LtnMainFragment;
 //import com.recoveryrecord.surveyandroid.example.receiever.ActivityRecognitionReceiver;
+import com.recoveryrecord.surveyandroid.example.receiever.ActivityRecognitionReceiver;
 import com.recoveryrecord.surveyandroid.example.receiever.AppUsageReceiver;
 import com.recoveryrecord.surveyandroid.example.receiever.BlueToothReceiver;
 import com.recoveryrecord.surveyandroid.example.receiever.MyBackgroudService;
@@ -394,9 +395,12 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 builder.show();
             }
         }
-
-
-
+        //若沒開啟藍芽則跳出要求
+        BluetoothAdapter mBtAdapter = BluetoothAdapter.getDefaultAdapter( );
+        if( !mBtAdapter.isEnabled( ) ) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, 1);
+        }
         //Detected Activity
 
         mApiClient = new GoogleApiClient.Builder(this)
@@ -439,6 +443,8 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 
         //AppUsage
         startService(new Intent(getApplicationContext(), AppUsageReceiver.class));
+
+        //regular timestated period
         startService(new Intent(getApplicationContext(), MyBackgroudService.class));
 
         //Session - timer
@@ -908,9 +914,9 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     //sensor
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-//        Intent intent = new Intent( this, ActivityRecognitionReceiver.class );
-//        PendingIntent pendingIntent = PendingIntent.getService( this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT );
-//        Task<Void> task = ActivityRecognition.getClient(this).requestActivityUpdates(DetectTime, pendingIntent);
+        Intent intent = new Intent( this, ActivityRecognitionReceiver.class );
+        PendingIntent pendingIntent = PendingIntent.getService( this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT );
+        Task<Void> task = ActivityRecognition.getClient(this).requestActivityUpdates(DetectTime, pendingIntent);
         //mApiClient.disconnect();
     }
     @Override

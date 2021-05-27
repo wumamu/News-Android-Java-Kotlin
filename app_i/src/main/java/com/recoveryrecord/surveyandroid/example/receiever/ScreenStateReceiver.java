@@ -62,12 +62,14 @@ public class ScreenStateReceiver implements StreamGenerator{
                 Log.e("log: screen status", "Screen on");
 //                Toast.makeText(context, "螢幕是開啟的", Toast.LENGTH_SHORT).show();
                 ScreenState = "Screen On";
+                sensordb.put("Time", time_now);
                 sensordb.put("Screen", "Screen On");
             } else if (Intent.ACTION_SCREEN_OFF.equals(action)) {
                 //code
                 Log.e("log: screen status", "Screen off");
 //                Toast.makeText(context, "螢幕是關閉的", Toast.LENGTH_SHORT).show();
                 ScreenState = "Screen Off";
+                sensordb.put("Time", time_now);
                 sensordb.put("Screen", "Screen Off");
             }
             db.collection("test_users")
@@ -84,6 +86,7 @@ public class ScreenStateReceiver implements StreamGenerator{
         Date date = new Date(System.currentTimeMillis());
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         final String time_now = formatter.format(date);
+        sensordb.put("Time", time_now);
         sensordb.put("Screen", ScreenState);
         db.collection("test_users")
                 .document(device_id)

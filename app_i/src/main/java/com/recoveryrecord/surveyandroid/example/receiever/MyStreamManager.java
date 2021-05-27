@@ -22,7 +22,7 @@ public class MyStreamManager{
     StreamGenerator streamGenerator2 = new BlueToothReceiver();
     StreamGenerator streamGenerator3 = new RingModeReceiver();
     StreamGenerator streamGenerator4 = new NetworkChangeReceiver();
-//    StreamGenerator streamGenerator5 = new ActivityRecognitionReceiver();
+    StreamGenerator streamGenerator5 = new ActivityRecognitionReceiver();
 
     private Handler handler = new Handler();
     private static MyStreamManager instance;
@@ -41,6 +41,6 @@ public class MyStreamManager{
         streamGenerator2.updateStream();
         streamGenerator3.updateStream();
         streamGenerator4.updateStream();
-//        streamGenerator5.updateStream();
+        streamGenerator5.updateStream();
         }
 }
