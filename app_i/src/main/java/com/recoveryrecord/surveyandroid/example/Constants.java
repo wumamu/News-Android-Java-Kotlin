@@ -71,9 +71,12 @@ public class Constants {
     //NEWS NewsModuleActivity
     public static final String TRIGGER_BY_KEY = "trigger_by";
     public static final String TRIGGER_BY_VALUE_NOTIFICATION = "Notification";
+    public static final String TRIGGER_BY_VALUE_SELF_TRIGGER = "self_trigger";
     public static final String NEWS_ID_KEY = "news_id";
     public static final String NEWS_MEDIA_KEY = "media";
     //NotificationListenerService
+    public static final String GROUP_NEWS = "NewsMoment";
+    public static final String GROUP_NEWS_SERVICE = "NewsMoment Service";
     public static final String DOC_ID_KEY = "id";
     public static final String NOTIFICATION_TYPE_KEY = "type";
     public static final String NOTIFICATION_TYPE_VALUE_NEWS = "news";
@@ -101,22 +104,34 @@ public class Constants {
     //FIRESTORE FIELD###############################################################################
     public static final String TEST_USER_COLLECTION = "test_users";
     public static final String APP_VERSION_KEY = "app_version";
-    public static final String APP_VERSION_VALUE = "21.05.27-1";
+    public static final String APP_VERSION_VALUE = "21.05.28-1";
     public static final String UPDATE_TIME = "update_timestamp";
     public static final String INITIAL_TIME = "initial_timestamp";
     public static final String LAST_LAUNCH_TIME = "last_launch_timestamp";
     public static final String USER_DEVICE_ID = "device_id";
     public static final String USER_PHONE_ID = "phone_id";
+    //MEDIA
+    public static final String MEDIA_COLLECTION = "medias";
+    public static final String NEWS_COLLECTION = "news";
+    public static final String NEWS_URL = "url";
+    public static final String NEWS_CATEGORY = "category";
+    public static final String NEWS_TITLE = "title";
+    public static final String NEWS_PUBDATE = "pubdate";
+    public static final String NEWS_IMAGE = "image";
+    public static final String NEWS_CONTENT = "content";
+    public static final String NEWS_MEDIA = "media";
+    public static final String NEWS_ID = "id";
+    //ALARM SERVICE
     public static final String ALARM_SERVICE_COLLECTION = "alarm_service";
-    public static final String ALARM_SERVICE_POST_COLLECTION = "alarm_service_post";
-    public static final String DIARY_STATUS = "diary_status";
-    public static final String DIARY_PUSH = "success";
-    public static final String DIARY_NOT_IN_PUSH_RANGE = "fail_not_in_range";
-    public static final String DIARY_OUT_OF_INTERVAL_LIMIT = "fail_more_than_one_per_day";//ONE DAY
-    public static final String ESM_STATUS = "esm_status";
-    public static final String ESM_PUSH = "success";
-    public static final String ESM_NOT_IN_PUSH_RANGE= "fail_not_in_range";
-    public static final String ESM_OUT_OF_INTERVAL_LIMIT = "fail_more_than_one_per_hour";//ONE HOUR
+//    public static final String ALARM_SERVICE_POST_COLLECTION = "alarm_service_post";
+//    public static final String DIARY_STATUS = "diary_status";
+//    public static final String DIARY_PUSH = "success";
+//    public static final String DIARY_NOT_IN_PUSH_RANGE = "fail_not_in_range";
+//    public static final String DIARY_OUT_OF_INTERVAL_LIMIT = "fail_more_than_one_per_day";//ONE DAY
+//    public static final String ESM_STATUS = "esm_status";
+//    public static final String ESM_PUSH = "success";
+//    public static final String ESM_NOT_IN_PUSH_RANGE= "fail_not_in_range";
+//    public static final String ESM_OUT_OF_INTERVAL_LIMIT = "fail_more_than_one_per_hour";//ONE HOUR
     //NOTIFICATION BAR NEWS NOT APP
     public static final String NOTIFICATION_BAR_NEWS_MONITOR_COLLECTION = "notification_bar_news(not app)";
 //    //NOTIFICATION BAR ESM
@@ -177,6 +192,10 @@ public class Constants {
     public static final String PUSH_NEWS_SAMPLE_CHECK_ID = "select_esm_id";
     public static final String PUSH_NEWS_NOTI_TIME = "noti_timestamp";
     public static final String PUSH_NEWS_RECEIEVE_TIME = "receieve_timestamp";
+    public static final String PUSH_NEWS_OPEN_TIME = "open_timestamp";
+    public static final String PUSH_NEWS_REMOVE_TIME = "remove_timestamp";
+    public static final String PUSH_NEWS_REMOVE_TYPE = "remove_type";
+    public static final String PUSH_NEWS_READING_BEHAVIOR_ID = "reading_behavior_id";
     public static final String PUSH_NEWS_PUBDATE = "pubdate";
     public static final String PUSH_NEWS_SELECTION = "selections";
     public static final String PUSH_NEWS_TITLE = "title";
@@ -193,6 +212,7 @@ public class Constants {
     public static final String PUSH_ESM_TRIGGER_BY = "trigger_by";
     public static final String PUSH_ESM_RESULT = "result";
     public static final String PUSH_ESM_REMOVE_TIME = "remove_timestamp";
+    public static final String PUSH_ESM_REMOVE_TYPE = "remove_type";
     public static final String PUSH_ESM_RECEIEVE_TIME = "receieve_timestamp";
     public static final String PUSH_ESM_SCHEDULE_ID = "esm_schedule_id";
     public static final String PUSH_ESM_SCHEDULE_SOURCE = "esm_schedule_source";
@@ -216,6 +236,7 @@ public class Constants {
     public static final String PUSH_DIARY_COLLECTION = "push_diary";
     public static final String PUSH_DIARY_OPTION = "target_history_candidate";
     public static final String PUSH_DIARY_REMOVE_TIME = "remove_timestamp";
+    public static final String PUSH_DIARY_REMOVE_TYPE = "remove_type";
     public static final String PUSH_DIARY_RECEIEVE_TIME = "receieve_timestamp";
     public static final String PUSH_DIARY_NOTI_TIME = "noti_timestamp";
     public static final String PUSH_DIARY_OPEN_TIME = "open_timestamp";
@@ -231,7 +252,13 @@ public class Constants {
     //PUSH SERVICE
     public static final String PUSH_SERVICE_COLLECTION = "push_service";
     public static final String PUSH_SERVICE_RECEIEVE_TIME = "receieve_timestamp";
-
+    //NOTIFICATION BAR
+    public static final String NOTIFICATION_BAR_OTHER_APP_COLLECTION = "notification_bar(others)";
+    public static final String NOTIFICATION_BAR_RECEIEVE_TIME = "receieve_timestamp";
+    public static final String NOTIFICATION_BAR_REMOVE_TIME = "remove_timestamp";
+    public static final String NOTIFICATION_BAR_REMOVE_TYPE = "remove_type";
+    public static final String NOTIFICATION_BAR_PACKAGE_NAME = "package_name";
+    public static final String NOTIFICATION_BAR_PACKAGE_ID = "package_id";
     //SHARE PREFERENCE #############################################################################
     //SHARE PREFERENCE #############################################################################
     //SHARE PREFERENCE #############################################################################
@@ -242,6 +269,7 @@ public class Constants {
     public static final String SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION = "media_select";
     public static final String SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER = "media_rank";
     public static final String SHARE_PREFERENCE_USER_ID = "signature";
+    public static final String SHARE_NOTIFICATION_FIRST_CREATE = "new_group";
 
 
 

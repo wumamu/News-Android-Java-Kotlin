@@ -3,6 +3,10 @@ package com.recoveryrecord.surveyandroid.example;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -56,6 +60,7 @@ import com.recoveryrecord.surveyandroid.example.udn.UdnMainFragment;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -70,6 +75,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -83,6 +90,9 @@ import javax.annotation.Nullable;
 
 import static com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_VALUE;
+import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_ALARM_ACTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.GROUP_NEWS;
+import static com.recoveryrecord.surveyandroid.example.Constants.GROUP_NEWS_SERVICE;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_CLEAR_CACHE;
 //import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_PARCELABLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.OUR_EMAIL;
@@ -175,7 +185,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         boolean clear = sharedPrefs.getBoolean(SHARE_PREFERENCE_CLEAR_CACHE, true);
         final DocumentReference docIdRef = db.collection(TEST_USER_COLLECTION).document(device_id);
-//        Boolean set_once = sharedPrefs.getBoolean(ESM_SET_ONCE, false);
+
         if (clear) {
             docIdRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override

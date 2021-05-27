@@ -13,6 +13,8 @@ import com.google.firebase.Timestamp;
 
 import java.util.Date;
 
+import androidx.core.app.NotificationManagerCompat;
+
 import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_NOTIFICATION;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_CHANNEL_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_CHANNEL_ID;
@@ -30,6 +32,7 @@ public class NotificationListenerESM extends BroadcastReceiver {
         }
         assert notificationManager != null;
         notificationManager.notify((int) System.currentTimeMillis() , notification) ;
+//        NotificationManagerCompat.from(context).notify((int) System.currentTimeMillis() , notification);
     }
 
 }

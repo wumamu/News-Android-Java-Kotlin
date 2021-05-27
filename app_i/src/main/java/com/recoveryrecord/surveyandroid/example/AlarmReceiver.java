@@ -53,10 +53,10 @@ import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_CHANNEL_I
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_INTERVAL;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_NOTIFICATION_CONTENT_TEXT;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_NOTIFICATION_CONTENT_TITLE;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_NOT_IN_PUSH_RANGE;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_OUT_OF_INTERVAL_LIMIT;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_PUSH;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_STATUS;
+//import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_NOT_IN_PUSH_RANGE;
+//import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_OUT_OF_INTERVAL_LIMIT;
+//import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_PUSH;
+//import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_STATUS;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_TIME_OUT;
 import static com.recoveryrecord.surveyandroid.example.Constants.DOC_ID_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_ALARM_ACTION;
@@ -67,16 +67,17 @@ import static com.recoveryrecord.surveyandroid.example.Constants.ESM_END_TIME_MI
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_INTERVAL;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOTIFICATION_CONTENT_TEXT;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOTIFICATION_CONTENT_TITLE;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOT_IN_PUSH_RANGE;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_OUT_OF_INTERVAL_LIMIT;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_PUSH;
+//import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOT_IN_PUSH_RANGE;
+//import static com.recoveryrecord.surveyandroid.example.Constants.ESM_OUT_OF_INTERVAL_LIMIT;
+//import static com.recoveryrecord.surveyandroid.example.Constants.ESM_PUSH;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_SCHEDULE_ID;
 //import static com.recoveryrecord.surveyandroid.example.Constants.ESM_SCHEDULE_SOURCE;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_SET_ONCE;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_START_TIME_HOUR;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_START_TIME_MIN;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_STATUS;
+//import static com.recoveryrecord.surveyandroid.example.Constants.ESM_STATUS;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TIME_OUT;
+import static com.recoveryrecord.surveyandroid.example.Constants.GROUP_NEWS;
 import static com.recoveryrecord.surveyandroid.example.Constants.LAST_DIARY_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.LAST_ESM_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_ID;
@@ -118,6 +119,8 @@ import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_
 import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_TRIGGER_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_SOURCE;
 import static com.recoveryrecord.surveyandroid.example.Constants.SERVICE_CHECKER_INTERVAL;
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_NOTIFICATION_FIRST_CREATE;
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_CLEAR_CACHE;
 import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.VIBRATE_EFFECT;
 
@@ -430,111 +433,111 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
     }
 
-    private boolean check_diary_time_range(Context context) {
-        Long now = System.currentTimeMillis();
-        Calendar c = Calendar.getInstance();
-        c.setTimeInMillis(now);
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-        long LastDiaryTime = sharedPrefs.getLong(LAST_DIARY_TIME, 0L);
-        boolean in_range = false;
-        int EndHour = sharedPrefs.getInt(ESM_END_TIME_HOUR, 21);
-        int low = 0;
-        Log.d("lognewsselect", "current" + c.get(Calendar.HOUR_OF_DAY));
-        if(EndHour==0){
-            //下午11
-            low = 23;
-            if(c.get(Calendar.HOUR_OF_DAY)>=low){
-                Log.d("lognewsselect", "diary in push interval");
-                if(now - LastDiaryTime > DIARY_INTERVAL){
-                    Log.d("lognewsselect", "diary in 23 hour interval");
-                    SharedPreferences.Editor editor = sharedPrefs.edit();
-                    editor.putLong(LAST_DIARY_TIME, now);
-                    editor.apply();
-                    in_range = true;
-                    diary_status = DIARY_PUSH;
-                } else {
-                    diary_status = DIARY_OUT_OF_INTERVAL_LIMIT;
-                    Log.d("lognewsselect", "diary not in 23 hour interval");
-                }
-            } else {
-                diary_status = DIARY_NOT_IN_PUSH_RANGE;
-                Log.d("lognewsselect", "diary not in push interval");
-            }
-        } else {
-            low = EndHour-1;
-            if(c.get(Calendar.HOUR_OF_DAY) >=low && c.get(Calendar.HOUR_OF_DAY) <EndHour){
-                Log.d("lognewsselect", "diary in push interval");
-                if(now - LastDiaryTime > DIARY_INTERVAL){
-                    Log.d("lognewsselect", "diary in 23 hour interval");
-                    SharedPreferences.Editor editor = sharedPrefs.edit();
-                    editor.putLong(LAST_DIARY_TIME, now);
-                    editor.apply();
-                    in_range = true;
-                    diary_status = DIARY_PUSH;
-                } else {
-                    diary_status = DIARY_OUT_OF_INTERVAL_LIMIT;
-                    Log.d("lognewsselect", "diary not in 23 hour interval");
-                }
-            } else {
-                diary_status = DIARY_NOT_IN_PUSH_RANGE;
-                Log.d("lognewsselect", "diary not in push interval");
-            }
-        }
+//    private boolean check_diary_time_range(Context context) {
+//        Long now = System.currentTimeMillis();
+//        Calendar c = Calendar.getInstance();
+//        c.setTimeInMillis(now);
+//        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+//        long LastDiaryTime = sharedPrefs.getLong(LAST_DIARY_TIME, 0L);
+//        boolean in_range = false;
+//        int EndHour = sharedPrefs.getInt(ESM_END_TIME_HOUR, 21);
+//        int low = 0;
+//        Log.d("lognewsselect", "current" + c.get(Calendar.HOUR_OF_DAY));
+//        if(EndHour==0){
+//            //下午11
+//            low = 23;
+//            if(c.get(Calendar.HOUR_OF_DAY)>=low){
+//                Log.d("lognewsselect", "diary in push interval");
+//                if(now - LastDiaryTime > DIARY_INTERVAL){
+//                    Log.d("lognewsselect", "diary in 23 hour interval");
+//                    SharedPreferences.Editor editor = sharedPrefs.edit();
+//                    editor.putLong(LAST_DIARY_TIME, now);
+//                    editor.apply();
+//                    in_range = true;
+//                    diary_status = DIARY_PUSH;
+//                } else {
+//                    diary_status = DIARY_OUT_OF_INTERVAL_LIMIT;
+//                    Log.d("lognewsselect", "diary not in 23 hour interval");
+//                }
+//            } else {
+//                diary_status = DIARY_NOT_IN_PUSH_RANGE;
+//                Log.d("lognewsselect", "diary not in push interval");
+//            }
+//        } else {
+//            low = EndHour-1;
+//            if(c.get(Calendar.HOUR_OF_DAY) >=low && c.get(Calendar.HOUR_OF_DAY) <EndHour){
+//                Log.d("lognewsselect", "diary in push interval");
+//                if(now - LastDiaryTime > DIARY_INTERVAL){
+//                    Log.d("lognewsselect", "diary in 23 hour interval");
+//                    SharedPreferences.Editor editor = sharedPrefs.edit();
+//                    editor.putLong(LAST_DIARY_TIME, now);
+//                    editor.apply();
+//                    in_range = true;
+//                    diary_status = DIARY_PUSH;
+//                } else {
+//                    diary_status = DIARY_OUT_OF_INTERVAL_LIMIT;
+//                    Log.d("lognewsselect", "diary not in 23 hour interval");
+//                }
+//            } else {
+//                diary_status = DIARY_NOT_IN_PUSH_RANGE;
+//                Log.d("lognewsselect", "diary not in push interval");
+//            }
+//        }
+//
+//
+//        return in_range;
+//    }
 
-
-        return in_range;
-    }
-
-    private boolean check_esm_time_range(Context context){
-        Long now = System.currentTimeMillis();
-        Calendar c = Calendar.getInstance();
-        c.setTimeInMillis(now);
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-        //下午12點 12 凌晨12 - 0
-        int StartHour = sharedPrefs.getInt(ESM_START_TIME_HOUR, 9);
-        int EndHour = sharedPrefs.getInt(ESM_END_TIME_HOUR, 21);
-        Log.d("lognewsselect", "MinHour" + StartHour);
-        Log.d("lognewsselect", "MaxHour" + EndHour);
-        long LastEsmTime = sharedPrefs.getLong(LAST_ESM_TIME, 0L);
-        boolean in_range = false;
-        if(EndHour==0){
-            //StartHour 9 EndHour 0
-            if((c.get(Calendar.HOUR_OF_DAY) >= StartHour)){
-                in_range = true;
-            }
-        } else if(EndHour>StartHour){
-            //StartHour 9 EndHour 21
-            //8 23
-            if((c.get(Calendar.HOUR_OF_DAY) >= StartHour && c.get(Calendar.HOUR_OF_DAY) < EndHour)){
-                in_range = true;
-            }
-        } else {
-            //StartHour 11 EndHour 2
-            //in midnight
-            if(((c.get(Calendar.HOUR_OF_DAY) >= StartHour || c.get(Calendar.HOUR_OF_DAY) < EndHour))){
-                in_range = true;
-            }
-        }
-        if(in_range) {
-            Log.d("lognewsselect", "esm in daily interval");
-            if(now - LastEsmTime > ESM_INTERVAL){
-                Log.d("lognewsselect", "esm in hour interval");
-                SharedPreferences.Editor editor = sharedPrefs.edit();
-                editor.putLong(LAST_ESM_TIME, now);
-                editor.apply();
-                esm_status = ESM_PUSH;
-                return true;
-            } else {
-                Log.d("lognewsselect", "esm not in hour interval");
-                esm_status = ESM_OUT_OF_INTERVAL_LIMIT;
-                return false;
-            }
-        } else {
-            Log.d("lognewsselect", "esm not in interval");
-            esm_status = ESM_NOT_IN_PUSH_RANGE;
-            return false;
-        }
-    }
+//    private boolean check_esm_time_range(Context context){
+//        Long now = System.currentTimeMillis();
+//        Calendar c = Calendar.getInstance();
+//        c.setTimeInMillis(now);
+//        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+//        //下午12點 12 凌晨12 - 0
+//        int StartHour = sharedPrefs.getInt(ESM_START_TIME_HOUR, 9);
+//        int EndHour = sharedPrefs.getInt(ESM_END_TIME_HOUR, 21);
+//        Log.d("lognewsselect", "MinHour" + StartHour);
+//        Log.d("lognewsselect", "MaxHour" + EndHour);
+//        long LastEsmTime = sharedPrefs.getLong(LAST_ESM_TIME, 0L);
+//        boolean in_range = false;
+//        if(EndHour==0){
+//            //StartHour 9 EndHour 0
+//            if((c.get(Calendar.HOUR_OF_DAY) >= StartHour)){
+//                in_range = true;
+//            }
+//        } else if(EndHour>StartHour){
+//            //StartHour 9 EndHour 21
+//            //8 23
+//            if((c.get(Calendar.HOUR_OF_DAY) >= StartHour && c.get(Calendar.HOUR_OF_DAY) < EndHour)){
+//                in_range = true;
+//            }
+//        } else {
+//            //StartHour 11 EndHour 2
+//            //in midnight
+//            if(((c.get(Calendar.HOUR_OF_DAY) >= StartHour || c.get(Calendar.HOUR_OF_DAY) < EndHour))){
+//                in_range = true;
+//            }
+//        }
+//        if(in_range) {
+//            Log.d("lognewsselect", "esm in daily interval");
+//            if(now - LastEsmTime > ESM_INTERVAL){
+//                Log.d("lognewsselect", "esm in hour interval");
+//                SharedPreferences.Editor editor = sharedPrefs.edit();
+//                editor.putLong(LAST_ESM_TIME, now);
+//                editor.apply();
+//                esm_status = ESM_PUSH;
+//                return true;
+//            } else {
+//                Log.d("lognewsselect", "esm not in hour interval");
+//                esm_status = ESM_OUT_OF_INTERVAL_LIMIT;
+//                return false;
+//            }
+//        } else {
+//            Log.d("lognewsselect", "esm not in interval");
+//            esm_status = ESM_NOT_IN_PUSH_RANGE;
+//            return false;
+//        }
+//    }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @SuppressLint("HardwareIds")
@@ -565,6 +568,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         builder.setTimeoutAfter(ESM_TIME_OUT);           //自動消失 15*60*1000
         builder.setPriority(NotificationManager.IMPORTANCE_MAX);
         builder.setCategory(Notification.CATEGORY_REMINDER);
+//        builder.setGroup(GROUP_NEWS);
+//        builder.setGroupSummary(true);
         Bundle extras = new Bundle();
         extras.putString(DOC_ID_KEY, esm_id);
         extras.putString(NOTIFICATION_TYPE_KEY, NOTIFICATION_TYPE_VALUE_ESM);
@@ -600,6 +605,9 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
     @RequiresApi(api = Build.VERSION_CODES.N)
     private Notification getNotification_diary (Context context, String diary_schedule_source) {
+//        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+//        Boolean first_group = sharedPrefs.getBoolean(SHARE_NOTIFICATION_FIRST_CREATE, true);
+
         Date date = new Date(System.currentTimeMillis());
         String diary_id = "";
         @SuppressLint("SimpleDateFormat")
@@ -625,11 +633,18 @@ public class AlarmReceiver extends BroadcastReceiver {
         builder.setTimeoutAfter(DIARY_TIME_OUT);           //自動消失 120 min
         builder.setPriority(NotificationManager.IMPORTANCE_MAX);
         builder.setCategory(Notification.CATEGORY_REMINDER);
+
         Bundle extras = new Bundle();
         extras.putString(DOC_ID_KEY, diary_id);
         extras.putString(NOTIFICATION_TYPE_KEY, NOTIFICATION_TYPE_VALUE_DIARY);
         builder.setExtras(extras);
-
+//        builder.setGroup(GROUP_NEWS);
+//        if(first_group){
+//            builder.setGroupSummary(true);
+//            SharedPreferences.Editor editor = sharedPrefs.edit();
+//            editor.putBoolean(SHARE_NOTIFICATION_FIRST_CREATE, false);
+//            editor.apply();
+//        }
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         @SuppressLint("HardwareIds")
         String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);

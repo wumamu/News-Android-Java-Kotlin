@@ -42,6 +42,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
 
 import static com.recoveryrecord.surveyandroid.example.Constants.CHECK_SERVICE_ACTION;
@@ -57,6 +58,8 @@ import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_NEWS_CH
 import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_NEWS_NOTIFICATION;
 import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_NEWS_NOTIFICATION_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.DOC_ID_KEY;
+import static com.recoveryrecord.surveyandroid.example.Constants.GROUP_NEWS;
+import static com.recoveryrecord.surveyandroid.example.Constants.GROUP_NEWS_SERVICE;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_CHANNEL_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_ID_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_MEDIA_KEY;
@@ -72,6 +75,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TY
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_MEDIA;
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_NOTIFICATION_FIRST_CREATE;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_NOTI_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_PUBDATE;
@@ -88,7 +92,7 @@ public class NewsNotificationService extends Service {
 
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     String device_id = "";
-
+    Boolean first_group = true;
     @SuppressLint("HardwareIds")
     @Override
     public void onCreate(){
@@ -102,6 +106,9 @@ public class NewsNotificationService extends Service {
     }
     @RequiresApi(Build.VERSION_CODES.O)
     private void startMyOwnForeground() {
+
+
+
         Log.d("lognewsselect", "startMyOwnForeground");
         String NOTIFICATION_CHANNEL_ID = "example.permanence";
         String channelName = "Background Service";
@@ -118,10 +125,16 @@ public class NewsNotificationService extends Service {
         extras.putString(DOC_ID_KEY, "####");
         extras.putString(NOTIFICATION_TYPE_KEY, NOTIFICATION_TYPE_VALUE_SERVICE);
         notificationBuilder.setExtras(extras);
-        Notification notification = notificationBuilder.setOngoing(true)
+
+
+
+        Notification notification = notificationBuilder
+                .setOngoing(true)
                 .setContentTitle("App is running in background")
                 .setPriority(NotificationManager.IMPORTANCE_MIN)
                 .setCategory(Notification.CATEGORY_SERVICE)
+//                .setGroup(GROUP_NEWS_SERVICE)
+//                .setGroupSummary(true)
                 .build();
         startForeground(2, notification);
     }
@@ -255,28 +268,6 @@ public class NewsNotificationService extends Service {
                                             });
                                     break;
                                 case MODIFIED:
-//                                    if(count<20 && selections.contains(dc.getDocument().getString("media"))){
-//                                        Log.d("lognewsselect", "Modified doc: " + dc.getDocument().getData());
-//                                        String news_id_m = dc.getDocument().getString("id");
-//                                        String media_m  = dc.getDocument().getString("media");
-//                                        String title_m = dc.getDocument().getString("news_title");
-//                                        title_m = "新! " + title_m;
-//                                        scheduleNotification(getNotification(news_id_m, media_m, title_m), 1000 );
-//                                    }
-//                                    db.collection(TEST_USER_COLLECTION).document(device_id).collection("compare_result").document(dc.getDocument().getId())
-//                                            .delete()
-//                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                                @Override
-//                                                public void onSuccess(Void aVoid) {
-//                                                    Log.d("lognewsselect", "DocumentSnapshot successfully deleted!");
-//                                                }
-//                                            })
-//                                            .addOnFailureListener(new OnFailureListener() {
-//                                                @Override
-//                                                public void onFailure(@NonNull Exception e) {
-//                                                    Log.d("lognewsselect", "Error deleting document", e);
-//                                                }
-//                                            });
                                     break;
                                 case REMOVED:
                                     Log.d("lognewsselect", "Removed doc: " + dc.getDocument().getData());
@@ -295,30 +286,12 @@ public class NewsNotificationService extends Service {
     // stop on calling this method
     public void onDestroy() {
         super.onDestroy();
-//        Log.d("lognewsselect", "onDestroy service");
-//        FirebaseFirestore db = FirebaseFirestore.getInstance();
-//        Map<String, Object> log_service = new HashMap<>();
-//        log_service.put("noti_timestamp", Timestamp.now());
-//        log_service.put("cycle", "destroy(service)");
-//        log_service.put("status", "failed");
-//        db.collection(TEST_USER_COLLECTION)
-//                .document(Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID))
-//                .collection("notification_service_dead")
-//                .document(String.valueOf(Timestamp.now()))
-//                .set(log_service);
-        // stopping the process
-//        player.stop();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             sendBroadcast(new Intent(this, NewsNotificationRestarter.class).setAction(Constants.CHECK_SERVICE_ACTION));
         } else {
             Intent checkServiceIntent = new Intent(Constants.CHECK_SERVICE_ACTION);
             sendBroadcast(checkServiceIntent);
         }
-
-//        Intent broadcastIntent = new Intent();
-//        broadcastIntent.setAction(CHECK_SERVICE_ACTION);
-//        broadcastIntent.setClass(this, NewsNotificationRestarter.class);
-//        this.sendBroadcast(broadcastIntent);
     }
 
     @Nullable
@@ -341,6 +314,10 @@ public class NewsNotificationService extends Service {
     }
     @RequiresApi(api = Build.VERSION_CODES.N)
     private Notification getNotification(String news_id, String media, String title) {
+
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+//        Boolean first_group = sharedPrefs.getBoolean(SHARE_NOTIFICATION_FIRST_CREATE, true);
+
         int nid = (int) System.currentTimeMillis();
         Intent intent_news = new Intent();
         intent_news.setClass(this, NewsModuleActivity.class);
@@ -358,7 +335,15 @@ public class NewsNotificationService extends Service {
         builder.setChannelId(NEWS_CHANNEL_ID);
         builder.setVibrate(VIBRATE_EFFECT);              //震動模式
         builder.setPriority(NotificationManager.IMPORTANCE_HIGH);
-        builder.setCategory(Notification.CATEGORY_MESSAGE);
+        builder.setCategory(Notification.CATEGORY_RECOMMENDATION);
+        builder.setGroup(GROUP_NEWS);
+        if(first_group){
+            builder.setGroupSummary(true);
+            first_group = false;
+//            SharedPreferences.Editor editor = sharedPrefs.edit();
+//            editor.putBoolean(SHARE_NOTIFICATION_FIRST_CREATE, false);
+//            editor.apply();
+        }
         Bundle extras = new Bundle();
         extras.putString(DOC_ID_KEY, news_id);
         extras.putString(NOTIFICATION_TYPE_KEY, NOTIFICATION_TYPE_VALUE_NEWS);

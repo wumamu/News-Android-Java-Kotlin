@@ -1,17 +1,10 @@
 package com.recoveryrecord.surveyandroid.example;
 
 import android.annotation.SuppressLint;
-import android.app.AlarmManager;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.provider.Settings;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
@@ -34,63 +27,39 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.core.app.NotificationCompat;
 import androidx.preference.PreferenceManager;
 
-import static com.recoveryrecord.surveyandroid.example.Constants.ALARM_SERVICE_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.ALARM_SERVICE_POST_COLLECTION;
+//import static com.recoveryrecord.surveyandroid.example.Constants.ALARM_SERVICE_POST_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.CHINA_TIMES_PACKAGE_NAME;
 import static com.recoveryrecord.surveyandroid.example.Constants.CNA_PACKAGE_NAME;
 import static com.recoveryrecord.surveyandroid.example.Constants.CTS_PACKAGE_NAME;
-import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_DIARY_CHANNEL_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_DIARY_NOTIFICATION;
-import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_DIARY_NOTIFICATION_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_CHANNEL_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_NOTIFICATION;
-import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_NOTIFICATION_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_CHANNEL_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_DAY_PUSH_PREFIX;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_INTERVAL;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_NOTIFICATION_CONTENT_TEXT;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_NOTIFICATION_CONTENT_TITLE;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_NOT_IN_PUSH_RANGE;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_OUT_OF_INTERVAL_LIMIT;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_PUSH;
+//import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_NOT_IN_PUSH_RANGE;
+//import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_OUT_OF_INTERVAL_LIMIT;
+//import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_PUSH;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_PUSH_TOTAL;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_STATUS;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_TIME_OUT;
+//import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_STATUS;
 import static com.recoveryrecord.surveyandroid.example.Constants.DOC_ID_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.EBC_PACKAGE_NAME;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_CHANNEL_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_DAY_PUSH_PREFIX;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_END_TIME_HOUR;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_END_TIME_MIN;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_INTERVAL;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOTIFICATION_CONTENT_TEXT;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOT_IN_PUSH_RANGE;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_OUT_OF_INTERVAL_LIMIT;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_PUSH;
+//import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOT_IN_PUSH_RANGE;
+//import static com.recoveryrecord.surveyandroid.example.Constants.ESM_OUT_OF_INTERVAL_LIMIT;
+//import static com.recoveryrecord.surveyandroid.example.Constants.ESM_PUSH;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_PUSH_TOTAL;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_SET_ONCE;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_START_TIME_HOUR;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_START_TIME_MIN;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_STATUS;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TIME_OUT;
+//import static com.recoveryrecord.surveyandroid.example.Constants.ESM_STATUS;
 import static com.recoveryrecord.surveyandroid.example.Constants.ETTODAY_PACKAGE_NAME;
-import static com.recoveryrecord.surveyandroid.example.Constants.LAST_DIARY_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.LAST_ESM_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_DIARY;
-import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_ESM;
-import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.LTN_PACKAGE_NAME;
 import static com.recoveryrecord.surveyandroid.example.Constants.MY_APP_PACKAGE_NAME;
 //import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_DIARY_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_OTHER_APP_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_PACKAGE_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_PACKAGE_NAME;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_RECEIEVE_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_REMOVE_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_REMOVE_TYPE;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_DIARY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_ESM;
@@ -102,33 +71,26 @@ import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BA
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_SOURCE;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_TEXT;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_TITLE;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOTIFICATION_CONTENT_TITLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_DONE;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_NOTI_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_RECEIEVE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_REMOVE_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_TRIGGER_BY;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_TRIGGER_BY_ALARM;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_TRIGGER_BY_NOTIFICATION;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_REMOVE_TYPE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_NOTI_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_RECEIEVE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_REMOVE_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_SAMPLE;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TRIGGER_BY;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TRIGGER_BY_NOTIFICATION;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_REMOVE_TYPE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_RECEIEVE_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_REMOVE_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_REMOVE_TYPE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_SERVICE_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_SERVICE_RECEIEVE_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.REPEAT_ALARM_CHECKER;
 import static com.recoveryrecord.surveyandroid.example.Constants.SETS_PACKAGE_NAME;
 import static com.recoveryrecord.surveyandroid.example.Constants.STORM_PACKAGE_NAME;
 import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.UDN_PACKAGE_NAME;
-import static com.recoveryrecord.surveyandroid.example.Constants.VIBRATE_EFFECT;
 
+@SuppressLint("OverrideAbstract")
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class NotificationListenerService extends android.service.notification.NotificationListenerService {
 
@@ -153,7 +115,8 @@ public class NotificationListenerService extends android.service.notification.No
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
-    public void onNotificationPosted(StatusBarNotification sbn) {
+    public void onNotificationPosted (StatusBarNotification sbn, NotificationListenerService.RankingMap rankingMap) {
+
         final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 //        set_once = sharedPrefs.getBoolean(ESM_SET_ONCE, false);
 //        if(set_once){
@@ -161,7 +124,10 @@ public class NotificationListenerService extends android.service.notification.No
 //        }
 
 //        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),REPEAT_ALARM_CHECKER, pendingIntent);//every ten min check
-        Log.i(TAG,"**********  onNotificationPosted ***********");
+        Log.i(TAG,"**********  onNotificationPosted ***********" + rankingMap);
+        Log.i(TAG,"**********  onNotificationPosted ***********" + sbn.getGroupKey());
+        Log.i(TAG,"**********  onNotificationPosted7 ***********" + sbn.getKey());
+        Log.i(TAG,"**********  onNotificationPosted ***********" + sbn);
         boolean is_target = false;
         switch (sbn.getPackageName()) {
             case CHINA_TIMES_PACKAGE_NAME:
@@ -209,7 +175,7 @@ public class NotificationListenerService extends android.service.notification.No
                 String collection_id = "";
                 String receieve_field = "";
                 Boolean mark = false;
-                if(type.equals(NOTIFICATION_TYPE_VALUE_ESM)){
+                if(type.equals(NOTIFICATION_TYPE_VALUE_ESM)){//esm
                     collection_id = PUSH_ESM_COLLECTION;
                     receieve_field = PUSH_ESM_RECEIEVE_TIME;
                     mark = true;
@@ -222,10 +188,11 @@ public class NotificationListenerService extends android.service.notification.No
                     editor.putInt(ESM_PUSH_TOTAL, esm_sum+1);
                     editor.putInt(ESM_DAY_PUSH_PREFIX + day_index, esm_day_sum+1);
                     editor.apply();
-                } else if(type.equals(NOTIFICATION_TYPE_VALUE_NEWS)){
+                } else if(type.equals(NOTIFICATION_TYPE_VALUE_NEWS)){//news
                     collection_id = PUSH_NEWS_COLLECTION;
                     receieve_field = PUSH_NEWS_RECEIEVE_TIME;
-                } else if(type.equals(NOTIFICATION_TYPE_VALUE_DIARY)){
+                    mark = true;
+                } else if(type.equals(NOTIFICATION_TYPE_VALUE_DIARY)){//diary
                     collection_id = PUSH_DIARY_COLLECTION;
                     receieve_field = PUSH_DIARY_RECEIEVE_TIME;
                     mark = true;
@@ -238,7 +205,7 @@ public class NotificationListenerService extends android.service.notification.No
                     editor.putInt(DIARY_PUSH_TOTAL, diary_sum+1);
                     editor.putInt(DIARY_DAY_PUSH_PREFIX + day_index, diary_day_sum+1);
                     editor.apply();
-                } else {
+                } else {//service
                     collection_id = PUSH_SERVICE_COLLECTION;
                     receieve_field = PUSH_SERVICE_RECEIEVE_TIME;
                 }
@@ -318,30 +285,6 @@ public class NotificationListenerService extends android.service.notification.No
             if (extras.containsKey("android.title")) {
                 if(extras.getString("android.title")!=null){
                     receieve_notification.put(NOTIFICATION_BAR_TITLE, Objects.requireNonNull(extras.getString("android.title")));
-                    //check if is news or esm
-//                    if(extras.getString("android.title").equals(ESM_NOTIFICATION_CONTENT_TITLE)){
-//                        document_name = NOTIFICATION_BAR_ESM_COLLECTION;
-////                        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-//                        SharedPreferences.Editor editor = sharedPrefs.edit();
-//                        Calendar calendar = Calendar.getInstance();
-//                        int day_index = calendar.get(Calendar.DAY_OF_YEAR);
-//                        int esm_sum = sharedPrefs.getInt(ESM_PUSH_TOTAL, 0);
-//                        int esm_day_sum = sharedPrefs.getInt(ESM_DAY_PUSH_PREFIX+ day_index, 0);
-//                        editor.putInt(ESM_PUSH_TOTAL, esm_sum+1);
-//                        editor.putInt(ESM_DAY_PUSH_PREFIX + day_index, esm_day_sum+1);
-//                        editor.apply();
-//                    } else if(extras.getString("android.title").equals(DIARY_NOTIFICATION_CONTENT_TITLE)){
-//                        document_name = NOTIFICATION_BAR_DIARY_COLLECTION;
-////                        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-//                        SharedPreferences.Editor editor = sharedPrefs.edit();
-//                        Calendar calendar = Calendar.getInstance();
-//                        int day_index = calendar.get(Calendar.DAY_OF_YEAR);
-//                        int diary_sum = sharedPrefs.getInt(DIARY_PUSH_TOTAL, 0);
-//                        int diary_day_sum = sharedPrefs.getInt(DIARY_DAY_PUSH_PREFIX+ day_index, 0);
-//                        editor.putInt(DIARY_PUSH_TOTAL, diary_sum+1);
-//                        editor.putInt(DIARY_DAY_PUSH_PREFIX + day_index, diary_day_sum+1);
-//                        editor.apply();
-//                    }
                     check_title = true;
                 } else {
                     receieve_notification.put(NOTIFICATION_BAR_TITLE,  "null");
@@ -380,6 +323,19 @@ public class NotificationListenerService extends android.service.notification.No
                         .set(receieve_notification);
             }
 
+        } else {
+            Map<String, Object> receieve_notification = new HashMap<>();
+            receieve_notification.put(NOTIFICATION_BAR_PACKAGE_NAME, sbn.getPackageName());
+            receieve_notification.put(NOTIFICATION_BAR_PACKAGE_ID, sbn.getKey());
+            receieve_notification.put(NOTIFICATION_BAR_RECEIEVE_TIME, Timestamp.now());
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            @SuppressLint("HardwareIds")
+            String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+            db.collection(TEST_USER_COLLECTION)
+                    .document(device_id)
+                    .collection(NOTIFICATION_BAR_OTHER_APP_COLLECTION)
+                    .document(sbn.getKey())
+                    .set(receieve_notification);
         }
     }
 
@@ -387,8 +343,104 @@ public class NotificationListenerService extends android.service.notification.No
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
-    public void onNotificationRemoved(StatusBarNotification sbn) {
+    public void onNotificationRemoved(final StatusBarNotification sbn, NotificationListenerService.RankingMap rankingMap, int reason) {
+        Log.i(TAG,"**********  onNotificationPosted7 ***********" + sbn.getKey());
         Log.i(TAG,"********** onNOtificationRemoved");
+        Log.i(TAG,"********** onNOtificationRemoved" + reason);
+        String remove_reason = "remove_reason";
+        switch (reason) {
+            case 1:
+                //canceled by the status bar reporting a notification click.
+                //click
+                remove_reason = "REASON_CLICK";
+                break;
+            case 2:
+                //swipe remove single
+                //canceled by the status bar reporting a user dismissal.
+                remove_reason = "REASON_CANCEL";
+                break;
+            case 3:
+                //canceled by the status bar reporting a user dismiss all.
+                //remove all
+                remove_reason = "REASON_CANCEL_ALL";
+                break;
+            case 4:
+                //canceled by the status bar reporting an inflation error.
+                remove_reason = "REASON_ERROR";
+                break;
+            case 5:
+                //canceled by the package manager modifying the package.
+                remove_reason = "REASON_PACKAGE_CHANGED";
+                break;
+            case 6:
+                //canceled by the owning user context being stopped.
+                remove_reason = "REASON_USER_STOPPED";
+                break;
+            case 7:
+                //canceled by the user banning the package.
+                remove_reason = "REASON_PACKAGE_BANNED";
+                break;
+            case 8:
+                //canceled by the app canceling this specific notification.
+                remove_reason = "REASON_APP_CANCEL";
+                break;
+            case 9:
+                //canceled by the app cancelling all its notifications.
+                remove_reason = "REASON_APP_CANCEL_ALL";
+                break;
+            case 10:
+                //canceled by a listener reporting a user dismissal.
+                remove_reason = "REASON_LISTENER_CANCEL";
+                break;
+            case 11:
+                //canceled by a listener reporting a user dismiss all.
+                remove_reason = "REASON_LISTENER_CANCEL_ALL";
+                break;
+            case 12:
+                //canceled because it was a member of a canceled group
+                //remove group
+                remove_reason = "REASON_GROUP_SUMMARY_CANCELED";
+                break;
+            case 13:
+                //canceled because it was an invisible member of a group.
+                remove_reason = "REASON_GROUP_OPTIMIZATION";
+                break;
+            case 14:
+                //canceled by the device administrator suspending the package.
+                remove_reason = "REASON_PACKAGE_SUSPENDED";
+                break;
+            case 15:
+                //canceled by the owning managed profile being turned off.
+                remove_reason = "REASON_PROFILE_TURNED_OFF";
+                break;
+            case 16:
+                //Autobundled summary notification was canceled because its group was unbundled
+                remove_reason = "REASON_UNAUTOBUNDLED";
+                break;
+            case 17:
+                //canceled by the user banning the channel.
+                remove_reason = "REASON_CHANNEL_BANNED";
+                break;
+            case 18:
+                //Notification was snoozed.
+                remove_reason = "REASON_SNOOZED";
+                break;
+            case 19:
+                //Notification was canceled due to timeout
+                remove_reason = "REASON_TIMEOUT";
+                break;
+            case 20:
+                //canceled due to the backing channel being deleted
+                remove_reason = "REASON_CHANNEL_REMOVED";
+                break;
+            case 21:
+                // canceled due to the app's storage being cleared
+                remove_reason = "REASON_CLEAR_DATA";
+                break;
+            default:
+                remove_reason = "NO MATCH";
+                break;
+        }
         Log.i(TAG, java.text.DateFormat.getDateTimeInstance().format(new Date()) + "\t" + "\t" + sbn.getPackageName());
         final Timestamp current_now = Timestamp.now();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -402,16 +454,22 @@ public class NotificationListenerService extends android.service.notification.No
                 String doc_id = Objects.requireNonNull(extras.getString(DOC_ID_KEY));
                 String collection_id = "";
                 String remove_field = "";
+                String remove_type_field = "";
                 Boolean mark = false;
                 if(type.equals(NOTIFICATION_TYPE_VALUE_ESM)){
                     collection_id = PUSH_ESM_COLLECTION;
                     remove_field = PUSH_ESM_REMOVE_TIME;
+                    remove_type_field = PUSH_ESM_REMOVE_TYPE;
                     mark = true;
                 } else if(type.equals(NOTIFICATION_TYPE_VALUE_NEWS)){
                     collection_id = PUSH_NEWS_COLLECTION;
+                    remove_field = PUSH_NEWS_REMOVE_TIME;
+                    remove_type_field = PUSH_NEWS_REMOVE_TYPE;
+                    mark = true;
                 } else if(type.equals(NOTIFICATION_TYPE_VALUE_DIARY)){
                     collection_id = PUSH_DIARY_COLLECTION;
                     remove_field = PUSH_DIARY_REMOVE_TIME;
+                    remove_type_field = PUSH_DIARY_REMOVE_TYPE;
                     mark = true;
                 }
                 Log.i(TAG,"********** onNOtificationRemoved type" + collection_id);
@@ -419,6 +477,8 @@ public class NotificationListenerService extends android.service.notification.No
                 if(mark){
                     final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(collection_id).document(doc_id);
                     final String finalRemove_field = remove_field;
+                    final String finalRemove_reason = remove_reason;
+                    final String finalRemove_type_field = remove_type_field;
                     rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -426,7 +486,8 @@ public class NotificationListenerService extends android.service.notification.No
                                 DocumentSnapshot document = task.getResult();
                                 assert document != null;
                                 if (document.exists()) {
-                                    rbRef.update(finalRemove_field, current_now)//another field
+                                    rbRef.update(finalRemove_field, current_now,
+                                            finalRemove_type_field, finalRemove_reason)//another field
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
@@ -449,294 +510,42 @@ public class NotificationListenerService extends android.service.notification.No
                     });
                 }
             }
-        }
-
-    }
-    private boolean check_diary_time_range(Context context) {
-        Long now = System.currentTimeMillis();
-        Calendar c = Calendar.getInstance();
-        c.setTimeInMillis(now);
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-        long LastDiaryTime = sharedPrefs.getLong(LAST_DIARY_TIME, 0L);
-        boolean in_range = false;
-        int EndHour = sharedPrefs.getInt(ESM_END_TIME_HOUR, 21);
-        int low = 0;
-        Log.d("lognewsselect", "current" + c.get(Calendar.HOUR_OF_DAY));
-        if(EndHour==0){
-            //下午11
-            low = 23;
-            if(c.get(Calendar.HOUR_OF_DAY)>=low){
-                Log.d("lognewsselect", "diary in push interval");
-                if(now - LastDiaryTime > DIARY_INTERVAL){
-                    Log.d("lognewsselect", "diary in 23 hour interval");
-                    SharedPreferences.Editor editor = sharedPrefs.edit();
-                    editor.putLong(LAST_DIARY_TIME, now);
-                    editor.apply();
-                    in_range = true;
-                    diary_status = DIARY_PUSH;
-                } else {
-                    diary_status = DIARY_OUT_OF_INTERVAL_LIMIT;
-                    Log.d("lognewsselect", "diary not in 23 hour interval");
+        } else {
+            final String package_id = sbn.getKey();
+            final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(NOTIFICATION_BAR_OTHER_APP_COLLECTION).document(package_id);
+            final String finalRemove_reason1 = remove_reason;
+            rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        assert document != null;
+                        if (document.exists()) {
+                            rbRef.update(NOTIFICATION_BAR_REMOVE_TIME, current_now,
+                                    NOTIFICATION_BAR_REMOVE_TYPE, finalRemove_reason1,
+                                    NOTIFICATION_BAR_PACKAGE_ID, package_id)//another field
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.d("lognewsselect", "DocumentSnapshot successfully updated!");
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.w("lognewsselect", "Error updating document", e);
+                                        }
+                                    });
+                        } else {
+                            Log.d("lognewsselect", "No such document");
+                        }
+                    } else {
+                        Log.d("lognewsselect", "get failed with ", task.getException());
+                    }
                 }
-            } else {
-                diary_status = DIARY_NOT_IN_PUSH_RANGE;
-                Log.d("lognewsselect", "diary not in push interval");
-            }
-        } else {
-            low = EndHour-1;
-            if(c.get(Calendar.HOUR_OF_DAY) >=low && c.get(Calendar.HOUR_OF_DAY) <EndHour){
-                Log.d("lognewsselect", "diary in push interval");
-                if(now - LastDiaryTime > DIARY_INTERVAL){
-                    Log.d("lognewsselect", "diary in 23 hour interval");
-                    SharedPreferences.Editor editor = sharedPrefs.edit();
-                    editor.putLong(LAST_DIARY_TIME, now);
-                    editor.apply();
-                    in_range = true;
-                    diary_status = DIARY_PUSH;
-                } else {
-                    diary_status = DIARY_OUT_OF_INTERVAL_LIMIT;
-                    Log.d("lognewsselect", "diary not in 23 hour interval");
-                }
-            } else {
-                diary_status = DIARY_NOT_IN_PUSH_RANGE;
-                Log.d("lognewsselect", "diary not in push interval");
-            }
+            });
         }
 
-
-        return in_range;
     }
-
-    private boolean check_esm_time_range(Context context){
-        Long now = System.currentTimeMillis();
-        Calendar c = Calendar.getInstance();
-        c.setTimeInMillis(now);
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-        //下午12點 12 凌晨12 - 0
-        int StartHour = sharedPrefs.getInt(ESM_START_TIME_HOUR, 9);
-        int EndHour = sharedPrefs.getInt(ESM_END_TIME_HOUR, 21);
-        Log.d("lognewsselect", "MinHour" + StartHour);
-        Log.d("lognewsselect", "MaxHour" + EndHour);
-        long LastEsmTime = sharedPrefs.getLong(LAST_ESM_TIME, 0L);
-        boolean in_range = false;
-        if(EndHour==0){
-            //StartHour 9 EndHour 0
-            if((c.get(Calendar.HOUR_OF_DAY) >= StartHour)){
-                in_range = true;
-            }
-        } else if(EndHour>StartHour){
-            //StartHour 9 EndHour 21
-            if((c.get(Calendar.HOUR_OF_DAY) >= StartHour && c.get(Calendar.HOUR_OF_DAY) < EndHour)){
-                in_range = true;
-            }
-        } else {
-            //StartHour 11 EndHour 2
-            //in midnight
-            if(((c.get(Calendar.HOUR_OF_DAY) >= StartHour || c.get(Calendar.HOUR_OF_DAY) < EndHour))){
-                in_range = true;
-            }
-        }
-        if(in_range) {
-            Log.d("lognewsselect", "esm in daily interval");
-            if(now - LastEsmTime > ESM_INTERVAL){
-                Log.d("lognewsselect", "esm in hour interval");
-                SharedPreferences.Editor editor = sharedPrefs.edit();
-                editor.putLong(LAST_ESM_TIME, now);
-                editor.apply();
-                esm_status = ESM_PUSH;
-                return true;
-            } else {
-                Log.d("lognewsselect", "esm not in hour interval");
-                esm_status = ESM_OUT_OF_INTERVAL_LIMIT;
-                return false;
-            }
-        } else {
-            Log.d("lognewsselect", "esm not in interval");
-            esm_status = ESM_NOT_IN_PUSH_RANGE;
-            return false;
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    @SuppressLint("HardwareIds")
-    private Notification getNotification_esm(Context context, String content){
-
-        Date date = new Date(System.currentTimeMillis());
-        String esm_id = "";
-        @SuppressLint("SimpleDateFormat")
-        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-        String time_now = formatter.format(date);
-        esm_id = time_now;
-
-        Intent intent_esm = new Intent();
-        intent_esm.setClass(context, ESMLoadingPageActivity.class);
-        intent_esm.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent_esm.putExtra(LOADING_PAGE_ID, esm_id);
-        intent_esm.putExtra(LOADING_PAGE_TYPE_KEY, LOADING_PAGE_TYPE_ESM);
-        int nid = (int) System.currentTimeMillis();
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, nid, intent_esm, 0);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, DEFAULT_ESM_CHANNEL_ID);
-        builder.setContentTitle(ESM_NOTIFICATION_CONTENT_TITLE);
-        builder.setContentText(ESM_NOTIFICATION_CONTENT_TEXT);
-        builder.setSmallIcon(R.drawable.ic_launcher_foreground);
-        builder.setContentIntent(pendingIntent);
-        builder.setAutoCancel(true);
-        builder.setChannelId(ESM_CHANNEL_ID);
-        builder.setVibrate(VIBRATE_EFFECT);              //震動模式
-        builder.setTimeoutAfter(ESM_TIME_OUT);           //自動消失 15*60*1000
-        builder.setPriority(NotificationManager.IMPORTANCE_MAX);
-        builder.setCategory(Notification.CATEGORY_REMINDER);
-        Bundle extras = new Bundle();
-        extras.putString(DOC_ID_KEY, esm_id);
-        extras.putString(NOTIFICATION_TYPE_KEY, NOTIFICATION_TYPE_VALUE_ESM);
-        builder.setExtras(extras);
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-        Map<String, Object> esm = new HashMap<>();
-        esm.put(PUSH_ESM_NOTI_TIME, Timestamp.now());
-        esm.put(PUSH_ESM_SAMPLE, 0);
-        esm.put(PUSH_ESM_TRIGGER_BY, PUSH_ESM_TRIGGER_BY_NOTIFICATION);
-        db.collection(TEST_USER_COLLECTION)
-                .document(device_id)
-                .collection(PUSH_ESM_COLLECTION)
-                .document(esm_id)
-                .set(esm);
-        return builder.build();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void scheduleNotification_esm (Context context, Notification notification, int delay) {
-        Intent notificationIntent = new Intent(context, NotificationListenerESM.class);
-        notificationIntent.putExtra(DEFAULT_ESM_NOTIFICATION_ID, 1 ) ;
-        notificationIntent.putExtra(DEFAULT_ESM_NOTIFICATION, notification) ;
-        int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        long futureInMillis = SystemClock.elapsedRealtime() + delay;
-        AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-        assert alarmManager != null;
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
-    }
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    private Notification getNotification_diary (Context context, String content) {
-        Date date = new Date(System.currentTimeMillis());
-        String diary_id = "";
-        @SuppressLint("SimpleDateFormat")
-        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-        String time_now = formatter.format(date);
-        diary_id = time_now;
-
-        Intent intent_diary = new Intent();
-        intent_diary.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent_diary.setClass(context, DiaryLoadingPageActivity.class);
-        intent_diary.putExtra(LOADING_PAGE_ID, diary_id);
-        intent_diary.putExtra(LOADING_PAGE_TYPE_KEY, LOADING_PAGE_TYPE_DIARY);
-        int nid = (int) System.currentTimeMillis();
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, nid, intent_diary, 0);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, DEFAULT_DIARY_CHANNEL_ID);
-        builder.setContentTitle(DIARY_NOTIFICATION_CONTENT_TITLE);
-        builder.setContentText(DIARY_NOTIFICATION_CONTENT_TEXT);
-        builder.setSmallIcon(R.drawable.ic_launcher_foreground);
-        builder.setContentIntent(pendingIntent);
-        builder.setAutoCancel(true);
-        builder.setChannelId(DIARY_CHANNEL_ID);
-        builder.setVibrate(VIBRATE_EFFECT);              //震動模式
-        builder.setTimeoutAfter(DIARY_TIME_OUT);           //自動消失 15*60*1000
-        builder.setPriority(NotificationManager.IMPORTANCE_MAX);
-        builder.setCategory(Notification.CATEGORY_REMINDER);
-        Bundle extras = new Bundle();
-        extras.putString(DOC_ID_KEY, diary_id);
-        extras.putString(NOTIFICATION_TYPE_KEY, NOTIFICATION_TYPE_VALUE_DIARY);
-        builder.setExtras(extras);
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        @SuppressLint("HardwareIds")
-        String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-        Map<String, Object> diary = new HashMap<>();
-        diary.put(PUSH_DIARY_NOTI_TIME, Timestamp.now());
-        diary.put(PUSH_DIARY_DONE, 0);
-        diary.put(PUSH_DIARY_TRIGGER_BY, PUSH_DIARY_TRIGGER_BY_NOTIFICATION);
-        db.collection(TEST_USER_COLLECTION)
-                .document(device_id)
-                .collection(PUSH_DIARY_COLLECTION)
-                .document(diary_id)
-                .set(diary);
-        return builder.build();
-    }
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void scheduleNotification_diary (Context context, Notification notification, int delay) {
-        Intent notificationIntent = new Intent(context, NotificationListenerDiary.class);
-        notificationIntent.putExtra(DEFAULT_DIARY_NOTIFICATION_ID, 1 ) ;
-        notificationIntent.putExtra(DEFAULT_DIARY_NOTIFICATION, notification) ;
-        int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast( context, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        long futureInMillis = SystemClock.elapsedRealtime() + delay;
-        AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-        assert alarmManager != null;
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
-//        Log.d ("shit", "scheduleNotification_esm");
-    }
-//    class NotificationListenerServiceReceiver extends BroadcastReceiver{
-//        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            Log.i(TAG,"**********  onNotificationonReceive");
-//            if(intent.getStringExtra("command").equals("clearall")){
-//                NotificationListenerService.this.cancelAllNotifications();
-//            } else if(intent.getStringExtra("command").equals("list")){
-//                Log.i("log: NLService", "NLService");
-//                List<String> noti_list = new ArrayList<String>();
-////                String tmp = "=====================\n";
-//                String tmp = "";
-////                noti_list.add(tmp);
-//                int count=1;
-//                for (StatusBarNotification sbn : NotificationListenerService.this.getActiveNotifications()) {
-//                    tmp = "";
-//                    tmp = count + "\n";
-//                    SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-////                    Date date = new Date(System.currentTimeMillis());
-//                    Date date = new Date(sbn.getPostTime());
-////                    java.text.DateFormat.getDateTimeInstance().format(new Date())
-//                    tmp = tmp + formatter.format(date) + "\n";
-//                    tmp = tmp + sbn.getPackageName() + "\n";
-//                    tmp = tmp + "tickertext: " + sbn.getNotification().tickerText + "\n";
-//                    Bundle extras = sbn.getNotification().extras;
-//                    if (extras.containsKey("android.title")) {
-//                        tmp = tmp + "title: " + extras.getString("android.title") + "\n";
-////                        Log.i(TAG, "------------------------- in onNotificationPosted(), Bundle android.title = " + extras.getString("android.title"));
-////                        StringBuilder builder = new StringBuilder("Extras:\n");
-////                        for (String key : extras.keySet()) { //extras is the Bundle containing info
-////                            Object value = extras.get(key); //get the current object
-////                            builder.append(key).append(": ").append(value).append("\n"); //add the key-value pair to the
-////                        }
-////                        Log.i("Extras",builder.toString()); //log the data or use it as needed.
-//                    } else {
-//                        tmp = tmp + "title: null\n";
-//                    }
-//                    if (extras.containsKey("android.text")) {
-//                        if (extras.getCharSequence("android.text") != null) {
-//                            String text = extras.getCharSequence("android.text").toString();
-////                            Log.i(TAG, "------------------------- in onNotificationPosted(), Bundle.text != NULL, so here it is = " + text);
-//                            tmp = tmp + "text: " + text + "\n";
-//                        } else {
-//                            tmp = tmp + "text: null\n";
-//                        }
-//                    } else {
-//                        tmp = tmp + "text: null\n";
-//                    }
-//                    count++;
-//                    noti_list.add(tmp);
-//                }
-//                for (int index = noti_list.size()-1; index >=0; index--) {
-//                    Intent i1 = new Intent("com.recoveryrecord.surveyandroid.example.NOTIFICATION_LISTENER_EXAMPLE");
-//                    i1.putExtra("notification_list",noti_list.get(index));
-//                    System.out.println(noti_list.get(index));
-//                    sendBroadcast(i1);
-//                }
-//                Toast.makeText(getApplicationContext(), "Catch Successfully", Toast.LENGTH_SHORT).show();
-//            }
-//
-//        }
-//    }
 
 }
