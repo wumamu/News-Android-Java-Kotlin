@@ -63,6 +63,12 @@ public class AppUsageReceiver extends Service {
                     .collection("AppUsage")
                     .document(time_now)
                     .set(sensordb);
+            if(foregroundActivityName == "com.recoveryrecord.surveyandroid"){
+                Log.e("Using NewsMoment ?", "YES");
+
+            }else{
+                Log.e("Using NewsMoment ?", "NO");
+            }
         }
     };
     @Override
