@@ -6,7 +6,7 @@
 
         <EditTextPreference
             app:key="signature"
-            app:title="使用者編號"
+            app:title="實驗編號"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
@@ -30,7 +30,7 @@
         </PreferenceScreen>
 
         <Preference
-            app:key="clear_cache"
+            app:key="SharePreferenceClear"
             android:title="清除暫存"/>
     <PreferenceCategory app:title="偏好">
         <MultiSelectListPreference
@@ -49,9 +49,21 @@
             <intent android:action="com.recoveryrecord.surveyandroid.example.MediaRankActivity"/>
         </PreferenceScreen>
 
-        <Preference
-            android:summary="to be continue"
-            android:title="聯絡我們"/>
+        <ListPreference
+            android:key="text_size"
+            android:title="內文字體大小"
+            android:defaultValue="1"
+            android:entries="@array/text_entries"
+            android:entryValues="@array/text_values"/>
+
+<!--        <SwitchPreference-->
+<!--            android:defaultValue="false"-->
+<!--            app:key="dark_mode"-->
+<!--            app:title="黑暗模式" />-->
+
+<!--        <Preference-->
+<!--            android:summary="to be continue"-->
+<!--            android:title="聯絡我們"/>-->
 
         <!--        <Preference-->
         <!--            app:title="open url">-->

@@ -18,6 +18,8 @@ import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreferenceCompat;
 
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_CLEAR_CACHE;
+
 public class SettingsFragment extends PreferenceFragmentCompat {
     Intent mServiceIntent;
     private NewsNotificationService mYourService;
@@ -26,7 +28,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
 //        String model = "MODEL : " + Build.MODEL;
         SwitchPreferenceCompat switchPref = findPreference("news_notification");
-        Preference  clearPref = findPreference("clear_cache");
+        Preference clearPref = findPreference(SHARE_PREFERENCE_CLEAR_CACHE);
 //        DialogPreference clearPref = findPreference("clear_cache");
 //        clearPref.setDialogTitle("清除站存");
 //        clearPref.setDialogMessage("請勿在非指示下刪除資料!");

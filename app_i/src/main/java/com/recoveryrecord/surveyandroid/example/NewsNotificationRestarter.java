@@ -13,6 +13,8 @@ import android.widget.Toast;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,6 +39,11 @@ public class NewsNotificationRestarter extends BroadcastReceiver {
         } else {
             context.startService(new Intent(context, NewsNotificationService.class));
         }
+
+        Date date = new Date(System.currentTimeMillis());
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Map<String, Object> log_service = new HashMap<>();
         log_service.put(NEWS_SERVICE_TIME, Timestamp.now());
@@ -45,7 +52,8 @@ public class NewsNotificationRestarter extends BroadcastReceiver {
         db.collection(TEST_USER_COLLECTION)
                 .document(Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID))
                 .collection(NEWS_SERVICE_COLLECTION)
-                .document(String.valueOf(Timestamp.now().toDate()))
+//                .document(String.valueOf(Timestamp.now().toDate()))
+                .document(formatter.format(date))
                 .set(log_service);
     }
 }

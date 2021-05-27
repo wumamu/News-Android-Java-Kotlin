@@ -277,7 +277,7 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                         }
                     });
                 }
-                Toast.makeText((Activity)v.getContext(), "Post Inserted Successfully", Toast.LENGTH_SHORT).show();
+//                Toast.makeText((Activity)v.getContext(), "Post Inserted Successfully", Toast.LENGTH_SHORT).show();
                 ((Activity)v.getContext()).finish();
 
             }

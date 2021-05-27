@@ -11,11 +11,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -23,6 +25,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -31,7 +34,11 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
+import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_EXIST_ESM_SAMPLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_READ_HISTORY_CANDIDATE;
+import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_TARGET_RANGE;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_EXIST_READ_SAMPLE;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TARGET_RANGE;
 import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_KEY;
@@ -40,6 +47,8 @@ import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TY
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_OPTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_NOTI_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_READ_EXIST;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_SAMPLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_SAMPLE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TARGET_IN_TIME;
@@ -47,6 +56,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TARGET
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TARGET_SITUATION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TARGET_TITLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TARGET_TITLE_DIARY;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_IN_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.SURVEY_PAGE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.ZERO_RESULT_STRING;
@@ -57,6 +67,7 @@ public class DiaryLoadingPageActivity extends AppCompatActivity {
     private Button button;
     Task task, task2, task3;
     String diary_id = "", type ="";
+    Boolean exist_esm_sample = false;
 //    TextView who;
     List<String> diary_option_array = new ArrayList<>();
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -68,11 +79,19 @@ public class DiaryLoadingPageActivity extends AppCompatActivity {
             Bundle b = getIntent().getExtras();
             diary_id = Objects.requireNonNull(b.getString(LOADING_PAGE_ID));
             type = Objects.requireNonNull(b.getString(LOADING_PAGE_TYPE_KEY));
-            Log.d("lognewsselect", "+++++++++diary_id" + diary_id);
-            Log.d("lognewsselect", "+++++++++type" + type);
         }
-//        who.findViewById(R.id.textView);
-//        who.setText("回顧問卷生成中");
+        if(diary_id.equals("")){
+            Toast.makeText(this, "系統出錯，幫您導回主頁面", Toast.LENGTH_SHORT).show();
+            Intent back = new Intent();
+            back.setClass(getApplicationContext(), NewsHybridActivity.class);
+            startActivity(back);
+        }
+        //initial
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(DIARY_READ_HISTORY_CANDIDATE, ZERO_RESULT_STRING);
+        editor.apply();
+
         select_news_title_candidate();
         button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
@@ -104,7 +123,7 @@ public class DiaryLoadingPageActivity extends AppCompatActivity {
                         DocumentSnapshot document = task.getResult();
                         assert document != null;
                         if (document.exists()) {
-                            rbRef.update(PUSH_DIARY_OPTION, diary_option_array)//another field
+                            rbRef.update(PUSH_DIARY_OPTION, diary_option_array, DIARY_EXIST_ESM_SAMPLE, exist_esm_sample)//another field
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
@@ -133,6 +152,10 @@ public class DiaryLoadingPageActivity extends AppCompatActivity {
     private void select_news_title_candidate() {
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+//        final Long now = System.currentTimeMillis();
+//        final Calendar c = Calendar.getInstance();
+//        c.setTimeInMillis(now);
+        final Timestamp now_time_stamp = Timestamp.now();
         @SuppressLint("HardwareIds") final String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         task3 =  db.collection(TEST_USER_COLLECTION)
                 .document(device_id)
@@ -145,16 +168,20 @@ public class DiaryLoadingPageActivity extends AppCompatActivity {
                 if (!queryDocumentSnapshots.isEmpty()) {
                     List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
                     for (DocumentSnapshot d : list) {
-                        if (d.get(PUSH_ESM_TARGET_TITLE)!=null && !d.get(PUSH_ESM_TARGET_TITLE).equals("NA")){
-                            String news_title = "NA";
-                            String news_time = "NA";
-                            String news_situation = "NA";
-                            String news_place = "NA";
-                            news_title = d.getString(PUSH_ESM_TARGET_TITLE_DIARY);
-                            news_time = d.getString(PUSH_ESM_TARGET_IN_TIME);
-                            news_situation = d.getString(PUSH_ESM_TARGET_SITUATION);
-                            news_place = d.getString(PUSH_ESM_TARGET_PLACE);
-                            diary_option_array.add(news_title + "\n" + news_time + "\n" + news_situation + "\n" + news_place);
+                        if(Math.abs(now_time_stamp.getSeconds() - d.getTimestamp(PUSH_ESM_NOTI_TIME).getSeconds()) <= DIARY_TARGET_RANGE){
+                            if (d.getBoolean(PUSH_ESM_READ_EXIST)!=null && d.getBoolean(PUSH_ESM_READ_EXIST)){
+//                            if (d.get(PUSH_ESM_TARGET_TITLE)!=null && !d.get(PUSH_ESM_TARGET_TITLE).equals("NA")){
+                                String news_title = "NA";
+                                String news_time = "NA";
+                                String news_situation = "NA";
+                                String news_place = "NA";
+                                news_title = d.getString(PUSH_ESM_TARGET_TITLE_DIARY);
+                                news_time = d.getString(PUSH_ESM_TARGET_IN_TIME);
+                                news_situation = d.getString(PUSH_ESM_TARGET_SITUATION);
+                                news_place = d.getString(PUSH_ESM_TARGET_PLACE);
+                                diary_option_array.add(news_title + "\n" + news_time + "\n" + news_situation + "\n" + news_place);
+                                exist_esm_sample = true;
+                            }
                         }
                         //mark as check
                         db.collection(TEST_USER_COLLECTION)
@@ -187,11 +214,12 @@ public class DiaryLoadingPageActivity extends AppCompatActivity {
                     editor.putString(DIARY_READ_HISTORY_CANDIDATE, title_array);
                     editor.apply();
                     Log.d("lognewsselect", "@@@@@@@@@@@@@");
-                } else {
-                    SharedPreferences.Editor editor = sharedPrefs.edit();
-                    editor.putString(DIARY_READ_HISTORY_CANDIDATE, ZERO_RESULT_STRING);
-                    editor.apply();
                 }
+//                else {
+//                    SharedPreferences.Editor editor = sharedPrefs.edit();
+//                    editor.putString(DIARY_READ_HISTORY_CANDIDATE, ZERO_RESULT_STRING);
+//                    editor.apply();
+//                }
                 Log.d("lognewsselect", "**********COMPLETE TASK3");
             }
         }).addOnFailureListener(new OnFailureListener() {

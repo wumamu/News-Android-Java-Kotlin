@@ -44,7 +44,6 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.preference.PreferenceManager;
 
-import static com.recoveryrecord.surveyandroid.example.Constants.ALARM_SERVICE_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.CHECK_SERVICE_ACTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.COMPARE_RESULT_CLICK;
 import static com.recoveryrecord.surveyandroid.example.Constants.COMPARE_RESULT_COLLECTION;
@@ -66,16 +65,14 @@ import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CY
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_VALUE_SERVICE_PAGE;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_VALUE_INITIAL;
-import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_VALUE_RUNNING;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_KEY;
-import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_ESM;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_NEWS;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_SERVICE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_MEDIA;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_MEDIA_LIST_SELECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_NOTI_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_PUBDATE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_SELECTION;
@@ -167,16 +164,19 @@ public class NewsNotificationService extends Service {
     private void listen_compare_result() {
         final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         Map<String, Object> service_check = new HashMap<>();
-//        Date date = new Date(System.currentTimeMillis());
-//        @SuppressLint("SimpleDateFormat")
-//        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         service_check.put(NEWS_SERVICE_STATUS_KEY, NEWS_SERVICE_STATUS_VALUE_INITIAL);
         service_check.put(NEWS_SERVICE_TIME, Timestamp.now());
         service_check.put(NEWS_SERVICE_CYCLE_KEY, NEWS_SERVICE_CYCLE_VALUE_SERVICE_PAGE);
+
+        Date date = new Date(System.currentTimeMillis());
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+
         db.collection(TEST_USER_COLLECTION)
                 .document(device_id)
                 .collection(NEWS_SERVICE_COLLECTION)
-                .document(String.valueOf(Timestamp.now().toDate()))
+//                .document(String.valueOf(Timestamp.now().toDate()))
+                .document(formatter.format(date))
                 .set(service_check);
 
         db.collection(TEST_USER_COLLECTION)
@@ -192,7 +192,7 @@ public class NewsNotificationService extends Service {
                             return;
                         }
 //                        Timestamp right_now = Timestamp.now();
-                        Set<String> selections = sharedPrefs.getStringSet(PUSH_NEWS_MEDIA_LIST_SELECTION, new HashSet<String>());
+                        Set<String> selections = sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, new HashSet<String>());
                         Log.d("lognewsselect_", "ss " + Arrays.toString(new Set[]{selections}));
                         int count = 0;
                         for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {

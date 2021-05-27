@@ -45,7 +45,10 @@ import java.util.Map;
 import java.util.Objects;
 
 //import static com.recoveryrecord.surveyandroid.example.Constants.ESM_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_EXIST_ESM_SAMPLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_READ_HISTORY_CANDIDATE;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_EXIST_NOTIFICATION_SAMPLE;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_EXIST_READ_SAMPLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_DIARY;
 import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_ESM;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_CLOSE_TIME;
@@ -72,6 +75,8 @@ import static java.lang.Integer.parseInt;
 public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActivity implements CustomConditionHandler, UserListCallback {
     String esm_id = "", diary_id = "", type = "";
     Boolean is_esm = false, is_diary = false;
+    Boolean exist_read = false, exist_notification = false;
+    Boolean exist_esm_sample = false;
     List<String> news_title_target_array = new ArrayList<>();
     List<String> notification_unclick_array = new ArrayList<>();
     List<String> final_news_title_array = new ArrayList<>();
@@ -92,17 +97,20 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 esm_id = Objects.requireNonNull(b.getString(SURVEY_PAGE_ID));
                 if(!esm_id.equals("")){
                     is_esm = true;
+                    exist_read = Objects.requireNonNull(b.getBoolean(ESM_EXIST_READ_SAMPLE));
+                    exist_notification = Objects.requireNonNull(b.getBoolean(ESM_EXIST_NOTIFICATION_SAMPLE));
                 }
             } else if (type.equals(LOADING_PAGE_TYPE_DIARY)){
                 diary_id = Objects.requireNonNull(b.getString(SURVEY_PAGE_ID));
                 if(!diary_id.equals("")){
                     is_diary = true;
+                    exist_esm_sample = Objects.requireNonNull(b.getBoolean(DIARY_EXIST_ESM_SAMPLE));
                 }
             }
         }
-        Log.d("lognewsselect", "//+++++++++esm_id" + esm_id);
-        Log.d("lognewsselect", "//+++++++++diary_id" + diary_id);
-        Log.d("lognewsselect", "//+++++++++type" + type);
+//        Log.d("lognewsselect", "//+++++++++esm_id" + esm_id);
+//        Log.d("lognewsselect", "//+++++++++diary_id" + diary_id);
+//        Log.d("lognewsselect", "//+++++++++type" + type);
         //temp
         if (is_esm){
             final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(PUSH_ESM_COLLECTION).document(esm_id);
@@ -213,7 +221,6 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                     } catch (JSONException | InterruptedException e) {
                         e.printStackTrace();
                     }
-                    return file_name;
                 } else {
                     Log.d("lognewsselect", "zero_result here");
                     try {
@@ -221,8 +228,8 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                     } catch (JSONException | InterruptedException e) {
                         e.printStackTrace();
                     }
-                    return file_name;
                 }
+                return file_name;
             } else if (Objects.requireNonNull(b.getString(NOTIFICATION_TYPE_KEY)).equals(NOTIFICATION_TYPE_VALUE_DIARY)){
                 final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
                 String diary_option_string_list = sharedPrefs.getString(DIARY_READ_HISTORY_CANDIDATE, ZERO_RESULT_STRING);
@@ -235,7 +242,6 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                     } catch (JSONException | InterruptedException e) {
                         e.printStackTrace();
                     }
-                    return file_name;
                 } else {
                     Log.d("lognewsselect", "zero_result here");
                     try {
@@ -243,8 +249,8 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                     } catch (JSONException | InterruptedException e) {
                         e.printStackTrace();
                     }
-                    return file_name;
                 }
+                return file_name;
             }
         }
         return "diary.json";
@@ -400,7 +406,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 FileOutputStream fos = new FileOutputStream(file);//创建一个文件输出流
                 fos.write(jsonRootObject.toString().getBytes());//将生成的JSON数据写出
                 fos.close();//关闭输出流
-                Toast.makeText(getApplicationContext(),"创建成功紀錄！",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(),"创建成功紀錄！",Toast.LENGTH_SHORT).show();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -417,7 +423,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 FileOutputStream fos = new FileOutputStream(file);//创建一个文件输出流
                 fos.write(jsonRootObject.toString().getBytes());//将生成的JSON数据写出
                 fos.close();//关闭输出流
-                Toast.makeText(getApplicationContext(),"创建成功無閱讀紀錄！",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(),"创建成功無閱讀紀錄！",Toast.LENGTH_SHORT).show();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -471,7 +477,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 FileOutputStream fos = new FileOutputStream(file);//创建一个文件输出流
                 fos.write(jsonRootObject.toString().getBytes());//将生成的JSON数据写出
                 fos.close();//关闭输出流
-                Toast.makeText(getApplicationContext(),"创建成功無閱讀紀錄！",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(),"创建成功無閱讀紀錄！",Toast.LENGTH_SHORT).show();
 //                Log.d("lognewsselect", "!!!!!!!!!!!!!!!!!!!()" + file.getAbsolutePath());
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -713,7 +719,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 FileOutputStream fos = new FileOutputStream(file);//创建一个文件输出流
                 fos.write(jsonRootObject.toString().getBytes());//将生成的JSON数据写出
                 fos.close();//关闭输出流
-                Toast.makeText(getApplicationContext(),"创建閱讀紀錄成功！",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(),"创建閱讀紀錄成功！",Toast.LENGTH_SHORT).show();
 //                Log.d("lognewsselect", "!!!!!!!!!!!!!!!!!!!()" + file.getAbsolutePath());
             } catch (FileNotFoundException e) {
                 e.printStackTrace();

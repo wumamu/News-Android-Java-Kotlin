@@ -28,6 +28,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -69,6 +70,8 @@ import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOTIFICATIO
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOT_IN_PUSH_RANGE;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_OUT_OF_INTERVAL_LIMIT;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_PUSH;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_SCHEDULE_ID;
+//import static com.recoveryrecord.surveyandroid.example.Constants.ESM_SCHEDULE_SOURCE;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_SET_ONCE;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_START_TIME_HOUR;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_START_TIME_MIN;
@@ -95,12 +98,15 @@ import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TY
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_DONE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_NOTI_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_SCHEDULE_SOURCE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_TRIGGER_BY;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_TRIGGER_BY_ALARM;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_TRIGGER_BY_SELF;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_NOTI_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_SAMPLE;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_SCHEDULE_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_SCHEDULE_SOURCE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TRIGGER_BY;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TRIGGER_BY_ALARM;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TRIGGER_BY_NOTIFICATION;
@@ -110,6 +116,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_
 import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_SURVEY_END;
 import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_SURVEY_START;
 import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_TRIGGER_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_SOURCE;
 import static com.recoveryrecord.surveyandroid.example.Constants.SERVICE_CHECKER_INTERVAL;
 import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.VIBRATE_EFFECT;
@@ -130,10 +137,19 @@ public class AlarmReceiver extends BroadcastReceiver {
             isServiceAlive(context);
         }
         if(action.equals(ESM_ALARM_ACTION) && set_once) {
-            scheduleNotification_esm(context, getNotification_esm(context, "Please fill out the questionnaire" ), 1000);
+            String esm_name = "777", esm_source = "888";
+            if (intent.getExtras().getString(ESM_SCHEDULE_ID) != null && intent.getExtras().getString(SCHEDULE_SOURCE) != null ) {
+                esm_name = intent.getExtras().getString(ESM_SCHEDULE_ID);
+                esm_source = intent.getExtras().getString(SCHEDULE_SOURCE);
+            }
+            scheduleNotification_esm(context, getNotification_esm(context, esm_name, esm_source), 1000);
         }
         if(action.equals(DIARY_ALARM_ACTION) && set_once){
-            scheduleNotification_diary(context, getNotification_diary(context, "Please fill out the questionnaire" ),  1000 );
+            String diary_source = "777";
+            if (intent.getExtras().getString(SCHEDULE_SOURCE) != null ) {
+                diary_source = intent.getExtras().getString(SCHEDULE_SOURCE);
+            }
+            scheduleNotification_diary(context, getNotification_diary(context, diary_source ),  1000 );
             //call next schedule
             Intent intent_schedule = new Intent(context, AlarmReceiver.class);
             intent_schedule.setAction(SCHEDULE_ALARM_ACTION);
@@ -141,12 +157,12 @@ public class AlarmReceiver extends BroadcastReceiver {
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1000, intent_schedule, 0);
             Calendar cal = Calendar.getInstance();
             cal.add(Calendar.HOUR, 2);
-//            alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() , pendingIntent);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() , pendingIntent);
-            } else {
-                alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() , pendingIntent);
-            }
+            alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() , pendingIntent);
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//                alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() , pendingIntent);
+//            } else {
+//                alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() , pendingIntent);
+//            }
         }
         if(action.equals(SCHEDULE_ALARM_ACTION) && set_once){
 //            Log.d("AlarmReceiver", action);
@@ -178,48 +194,6 @@ public class AlarmReceiver extends BroadcastReceiver {
             //regenerate new alarm
             schedule_alarm(context);
         }
-//        if(set_once){
-//            //send diary
-//            if(check_diary_time_range(context)){
-//                scheduleNotification_diary(context, getNotification_diary(context, "Please fill out the questionnaire" ), randomNumber * 3 * 60 *1000 + 1000 );
-//                log_service.put("diary", true);
-//            } else {
-//                log_service.put("diary", false);
-//            }
-//            //send esm
-//            if(check_esm_time_range(context)){
-////            select_news();
-//                Log.d("lognewsselect", "check_daily_time_range success");
-//                scheduleNotification_esm(context, getNotification_esm(context, "Please fill out the questionnaire" ), randomNumber * 3 * 60 *1000 + 1000);
-//                //            Handler handler = new Handler();
-////            handler.postDelayed(new Runnable() {
-////                public void run() {
-////                    Log.d("lognewsselect", "check_daily_time_range success");
-////                    // Actions to do after 10 seconds
-////                    try {
-////                        Log.d("lognewsselect", "check_daily_time_range success");
-//////                        scheduleNotification_esm(getNotification_esm("Please fill out the questionnaire" ), 1000);
-////                    } catch (JSONException e) {
-////                        e.printStackTrace();
-////                    }
-////                }
-////            }, 3*1000);
-//                log_service.put("esm", true);
-//            } else {
-//                log_service.put("esm", false);
-//            }
-//            log_service.put("start_hour", sharedPrefs.getInt(ESM_START_TIME_HOUR, 9));
-//            log_service.put("end_hour", sharedPrefs.getInt(ESM_END_TIME_HOUR, 21));
-//            log_service.put("start_min", sharedPrefs.getInt(ESM_START_TIME_MIN, 0));
-//            log_service.put("end_min", sharedPrefs.getInt(ESM_END_TIME_MIN, 0));
-//            log_service.put(DIARY_STATUS, diary_status);
-//            log_service.put(ESM_STATUS, esm_status);
-//            db.collection(TEST_USER_COLLECTION)
-//                    .document(device_id)
-//                    .collection(ALARM_SERVICE_COLLECTION)
-//                    .document(String.valueOf(Timestamp.now()))
-//                    .set(log_service);
-//        }
 
     }
 
@@ -237,16 +211,18 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
         service_check.put(NEWS_SERVICE_TIME, Timestamp.now());
         service_check.put(NEWS_SERVICE_CYCLE_KEY, NEWS_SERVICE_CYCLE_VALUE_ALARM);
-//        Date date = new Date(System.currentTimeMillis());
-//        @SuppressLint("SimpleDateFormat")
-//        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+
+        Date date = new Date(System.currentTimeMillis());
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+
         @SuppressLint("HardwareIds")
         String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
         db.collection(TEST_USER_COLLECTION)
             .document(device_id)
             .collection(NEWS_SERVICE_COLLECTION)
-            .document(String.valueOf(Timestamp.now().toDate()))
-//            .document(formatter.format(date))
+//            .document(String.valueOf(Timestamp.now().toDate()))
+            .document(formatter.format(date))
             .set(service_check);
         add_ServiceChecker(context);
     }
@@ -283,6 +259,9 @@ public class AlarmReceiver extends BroadcastReceiver {
 //        am.setExact(AlarmManager.RTC_WAKEUP, time_fired, pi);       //註冊鬧鐘
     }
     private void schedule_alarm(Context context) {
+        Date date = new Date(System.currentTimeMillis());
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         //initial
         //schedule after diary receieve
         @SuppressLint("HardwareIds")
@@ -333,14 +312,16 @@ public class AlarmReceiver extends BroadcastReceiver {
         my_alarm.put("diary", cal_diary.getTime());
         Intent intent_diary = new Intent(context, AlarmReceiver.class);
         intent_diary.setAction(DIARY_ALARM_ACTION);
+//        intent_diary.putExtra(ESM_SCHEDULE_ID, i + "_esm");
+        intent_diary.putExtra(SCHEDULE_SOURCE, formatter.format(date));
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 100, intent_diary, 0);
-        assert alarmManager != null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent);
-        }else {
-            alarmManager.set(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent);
-        }
-//        alarmManager.set(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent);
+//        assert alarmManager != null;
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent);
+//        }else {
+//            alarmManager.set(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent);
+//        }
+        alarmManager.set(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent);
 
         //esm alarm
         int max_esm = hour_interval*2/3;
@@ -372,14 +353,16 @@ public class AlarmReceiver extends BroadcastReceiver {
                         my_alarm.put(i + "_esm", cal_esm.getTime());
                         Intent intent_e = new Intent(context, AlarmReceiver.class);
                         intent_e.setAction(ESM_ALARM_ACTION);
+                        intent_e.putExtra(ESM_SCHEDULE_ID, i + "_esm");
+                        intent_e.putExtra(SCHEDULE_SOURCE, formatter.format(date));
                         PendingIntent pendingIntent_e = PendingIntent.getBroadcast(context, i, intent_e, 0);
                         intentEsmArray.add(pendingIntent_e);
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                            alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_e);
-                        }else {
-                            alarmManager.set(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_e);
-                        }
-//                        alarmManager.set(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_e);
+//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//                            alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_e);
+//                        }else {
+//                            alarmManager.set(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_e);
+//                        }
+                        alarmManager.set(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_e);
                     }
                 }
             } else {
@@ -391,14 +374,16 @@ public class AlarmReceiver extends BroadcastReceiver {
                         my_alarm.put(i + "_esm", cal_esm.getTime());
                         Intent intent_e = new Intent(context, AlarmReceiver.class);
                         intent_e.setAction(ESM_ALARM_ACTION);
+                        intent_e.putExtra(ESM_SCHEDULE_ID, i + "_esm");
+                        intent_e.putExtra(SCHEDULE_SOURCE, formatter.format(date));
                         PendingIntent pendingIntent_e = PendingIntent.getBroadcast(context, i, intent_e, 0);
                         intentEsmArray.add(pendingIntent_e);
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                            alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_e);
-                        }else {
-                            alarmManager.set(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_e);
-                        }
-//                        alarmManager.set(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_e);
+//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//                            alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_e);
+//                        }else {
+//                            alarmManager.set(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_e);
+//                        }
+                        alarmManager.set(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_e);
                     }
 
                 }
@@ -406,8 +391,6 @@ public class AlarmReceiver extends BroadcastReceiver {
 //            Log.d("AlarmReceiver", "after " + cal_esm.getTime().toString());
 
         }
-
-
 
 
 
@@ -419,7 +402,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         db.collection(TEST_USER_COLLECTION)
                 .document(device_id)
                 .collection(SCHEDULE_ALARM_COLLECTION)
-                .document(String.valueOf(Timestamp.now().toDate()))
+//                .document(String.valueOf(Timestamp.now().toDate()))
+                .document(formatter.format(date))
                 .set(my_alarm);
     }
 
@@ -554,13 +538,13 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @SuppressLint("HardwareIds")
-    private Notification getNotification_esm(Context context, String content){
+    private Notification getNotification_esm(Context context, String esm_schedule_name, String esm_schedule_source){
 
         Date date = new Date(System.currentTimeMillis());
-        String esm_id = "";
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         String time_now = formatter.format(date);
+        String esm_id = "";
         esm_id = time_now;
 
         Intent intent_esm = new Intent();
@@ -592,6 +576,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         esm.put(PUSH_ESM_NOTI_TIME, Timestamp.now());
         esm.put(PUSH_ESM_SAMPLE, 0);
         esm.put(PUSH_ESM_TRIGGER_BY, PUSH_ESM_TRIGGER_BY_ALARM);
+        esm.put(PUSH_ESM_SCHEDULE_ID, esm_schedule_name);
+        esm.put(PUSH_ESM_SCHEDULE_SOURCE, esm_schedule_source);
         db.collection(TEST_USER_COLLECTION)
                 .document(device_id)
                 .collection(PUSH_ESM_COLLECTION)
@@ -613,7 +599,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
     }
     @RequiresApi(api = Build.VERSION_CODES.N)
-    private Notification getNotification_diary (Context context, String content) {
+    private Notification getNotification_diary (Context context, String diary_schedule_source) {
         Date date = new Date(System.currentTimeMillis());
         String diary_id = "";
         @SuppressLint("SimpleDateFormat")
@@ -636,7 +622,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         builder.setAutoCancel(true);
         builder.setChannelId(DIARY_CHANNEL_ID);
         builder.setVibrate(VIBRATE_EFFECT);              //震動模式
-        builder.setTimeoutAfter(DIARY_TIME_OUT);           //自動消失 15*60*1000
+        builder.setTimeoutAfter(DIARY_TIME_OUT);           //自動消失 120 min
         builder.setPriority(NotificationManager.IMPORTANCE_MAX);
         builder.setCategory(Notification.CATEGORY_REMINDER);
         Bundle extras = new Bundle();
@@ -651,6 +637,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         diary.put(PUSH_DIARY_NOTI_TIME, Timestamp.now());
         diary.put(PUSH_DIARY_DONE, 0);
         diary.put(PUSH_DIARY_TRIGGER_BY, PUSH_DIARY_TRIGGER_BY_ALARM);
+        diary.put(PUSH_DIARY_SCHEDULE_SOURCE, diary_schedule_source);
         db.collection(TEST_USER_COLLECTION)
                 .document(device_id)
                 .collection(PUSH_DIARY_COLLECTION)
