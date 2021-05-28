@@ -279,6 +279,7 @@ public class Constants {
     public static final String SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER = "media_rank";
     public static final String SHARE_PREFERENCE_USER_ID = "signature";
     public static final String SHARE_NOTIFICATION_FIRST_CREATE = "new_group";
+    public static final String SHARE_PREFERENCE_DEVICE_ID = "device_id";
 
 
 

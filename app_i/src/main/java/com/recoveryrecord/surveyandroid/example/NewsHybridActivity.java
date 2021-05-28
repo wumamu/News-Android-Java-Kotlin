@@ -111,6 +111,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_ST
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_VALUE_RESTART;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_VALUE_RUNNING;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
@@ -194,6 +195,13 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         final DocumentReference docIdRef = db.collection(TEST_USER_COLLECTION).document(device_id);
 
         if (clear) {
+            SharedPreferences.Editor editor = sharedPrefs.edit();
+            editor.putString(SHARE_PREFERENCE_DEVICE_ID, device_id);
+            editor.apply();
+            clear = false;
+//            SharedPreferences.Editor editor = sharedPrefs.edit();
+            editor.putBoolean(SHARE_PREFERENCE_CLEAR_CACHE, false);
+            editor.apply();
             docIdRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -243,10 +251,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 }
             });
             showStartDialog();
-            clear = false;
-            SharedPreferences.Editor editor = sharedPrefs.edit();
-            editor.putBoolean(SHARE_PREFERENCE_CLEAR_CACHE, false);
-            editor.apply();
+
             //initial media list
             Set<String> ranking = sharedPrefs.getStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, Collections.<String>emptySet());
             if (ranking.isEmpty()){
