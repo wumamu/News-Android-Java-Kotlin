@@ -244,11 +244,7 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
                     List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
                     for (DocumentSnapshot d : list) {
                         if(!(d.getString(READING_BEHAVIOR_TITLE) ==null) && !d.getString(READING_BEHAVIOR_TITLE).equals("NA")){
-                            if (d.getDouble(READING_BEHAVIOR_TIME_ON_PAGE)>= ESM_TIME_ON_PAGE_THRESHOLD) {
-//                                Log.d("debugggg", "IN TIME " + d.getTimestamp(READING_BEHAVIOR_IN_TIME).toDate());
-//                                Log.d("debugggg", "NOW TIME " + now_time_stamp.toDate());
-//                                Log.d("debugggg", "difference " + Math.abs(now/1000 - d.getTimestamp(READING_BEHAVIOR_IN_TIME).getSeconds()));
-//                                if (Math.abs(now/1000 - d.getTimestamp(READING_BEHAVIOR_IN_TIME).getSeconds()) <= ESM_TARGET_RANGE) {
+//                            if (d.getDouble(READING_BEHAVIOR_TIME_ON_PAGE)>= ESM_TIME_ON_PAGE_THRESHOLD) {
                                 if (Math.abs(now_time_stamp.getSeconds() - d.getTimestamp(READING_BEHAVIOR_IN_TIME).getSeconds()) <= ESM_TARGET_RANGE) {
 //                                    news_title_target_array.add(d.getString(READING_BEHAVIOR_TITLE));
                                     //define share arrary trigger by category
@@ -265,7 +261,8 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
                                     if(d.getString(READING_BEHAVIOR_TRIGGER_BY).equals(READING_BEHAVIOR_TRIGGER_BY_NOTIFICATION)){
                                         trigger_var = 1;
                                     }
-                                    tmp_category_Array = (List<String>) d.get(READING_BEHAVIOR_CATEGORY);
+//                                    tmp_category_Array = (List<String>) d.get(READING_BEHAVIOR_CATEGORY);
+                                    tmp_category_Array.add("暫無");
                                     cat_var = tmp_category_Array.get(0);
                                     Timestamp timestamp = d.getTimestamp(READING_BEHAVIOR_IN_TIME);
                                     Date date = timestamp.toDate();
@@ -273,9 +270,9 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
                                 } else {
                                     not_sample_far.add(d.getString(READING_BEHAVIOR_TITLE));
                                 }
-                            } else {
-                                not_sample_short.add(d.getString(READING_BEHAVIOR_TITLE));
-                            }
+//                            } else {
+//                                not_sample_short.add(d.getString(READING_BEHAVIOR_TITLE));
+//                            }
                         }
                         //mark as check
                         db.collection(TEST_USER_COLLECTION)

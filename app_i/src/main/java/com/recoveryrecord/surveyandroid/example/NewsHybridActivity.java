@@ -7,6 +7,7 @@ import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -62,6 +63,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -94,6 +96,8 @@ import static com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_VAL
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_ALARM_ACTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.GROUP_NEWS;
 import static com.recoveryrecord.surveyandroid.example.Constants.GROUP_NEWS_SERVICE;
+import static com.recoveryrecord.surveyandroid.example.Constants.MEDIA_BAR_ORDER;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_MEDIA_SELECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_CLEAR_CACHE;
 //import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_PARCELABLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.OUR_EMAIL;
@@ -114,6 +118,8 @@ import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLE
 import static com.recoveryrecord.surveyandroid.example.Constants.UPDATE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_PHONE_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.USER_SURVEY_NUMBER;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
 
 //public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener , GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
@@ -183,7 +189,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         //first in app
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         boolean clear = sharedPrefs.getBoolean(SHARE_PREFERENCE_CLEAR_CACHE, true);
         final DocumentReference docIdRef = db.collection(TEST_USER_COLLECTION).document(device_id);
 
@@ -198,7 +204,10 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                             Log.d(TAG, "Document exists!");
                             docIdRef.update(APP_VERSION_KEY, APP_VERSION_VALUE,
                                     UPDATE_TIME, Timestamp.now(),
-                                    LAST_LAUNCH_TIME, Timestamp.now()
+                                    LAST_LAUNCH_TIME, Timestamp.now(),
+                                    PUSH_MEDIA_SELECTION, sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, Collections.<String>emptySet()).toString(),
+                                    MEDIA_BAR_ORDER, sharedPrefs.getStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, Collections.<String>emptySet()).toString(),
+                                    USER_SURVEY_NUMBER, sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號")
                             )//another field
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
@@ -221,6 +230,9 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                             first.put(USER_DEVICE_ID, device_id);
                             first.put(USER_PHONE_ID, Build.MODEL);
                             first.put(APP_VERSION_KEY, APP_VERSION_VALUE);
+                            first.put(USER_SURVEY_NUMBER, sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+                            first.put(PUSH_MEDIA_SELECTION, sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, Collections.<String>emptySet()).toString());
+                            first.put(MEDIA_BAR_ORDER, sharedPrefs.getStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, Collections.<String>emptySet()).toString());
                             db.collection(TEST_USER_COLLECTION)
                                     .document(device_id)
                                     .set(first);
@@ -236,8 +248,8 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
             editor.putBoolean(SHARE_PREFERENCE_CLEAR_CACHE, false);
             editor.apply();
             //initial media list
-            Set<String> ranking = sharedPrefs.getStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, null);
-            if (ranking==null){
+            Set<String> ranking = sharedPrefs.getStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, Collections.<String>emptySet());
+            if (ranking.isEmpty()){
                 Set<String> set = new HashSet<String>();
                 set.add("中時 1");
                 set.add("中央社 2");
@@ -264,7 +276,12 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                         assert document != null;
                         if (document.exists()) {
                             Log.d(TAG, "Document exists!");
-                            docIdRef.update(LAST_LAUNCH_TIME, Timestamp.now(), APP_VERSION_KEY, APP_VERSION_VALUE
+                            docIdRef.update(APP_VERSION_KEY, APP_VERSION_VALUE,
+                                    UPDATE_TIME, Timestamp.now(),
+                                    LAST_LAUNCH_TIME, Timestamp.now(),
+                                    PUSH_MEDIA_SELECTION, sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, Collections.<String>emptySet()).toString(),
+                                    MEDIA_BAR_ORDER, sharedPrefs.getStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, Collections.<String>emptySet()).toString(),
+                                    USER_SURVEY_NUMBER, sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號")
                             )//another field
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
@@ -287,6 +304,9 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                             first.put(USER_DEVICE_ID, device_id);
                             first.put(USER_PHONE_ID, Build.MODEL);
                             first.put(APP_VERSION_KEY, APP_VERSION_VALUE);
+                            first.put(USER_SURVEY_NUMBER, sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+                            first.put(PUSH_MEDIA_SELECTION, sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, Collections.<String>emptySet()).toString());
+                            first.put(MEDIA_BAR_ORDER, sharedPrefs.getStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, Collections.<String>emptySet()).toString());
                             db.collection(TEST_USER_COLLECTION)
                                     .document(device_id)
                                     .set(first);
@@ -298,13 +318,13 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
             });
         }
         //notification media_select
-        Set<String> selections = sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, null);
-        if (selections==null){
-//            Toast.makeText(this, "趕快去設定選擇想要收到推播的媒體吧~", Toast.LENGTH_SHORT).show();
-        } else {
-//            String[] selected = selections.toArray(new String[] {});
-            Log.d("lognewsselect", Arrays.toString(new Set[]{selections}));
-        }
+//        Set<String> selections = sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, Collections.<String>emptySet());
+//        if (selections==null){
+////            Toast.makeText(this, "趕快去設定選擇想要收到推播的媒體吧~", Toast.LENGTH_SHORT).show();
+//        } else {
+////            String[] selected = selections.toArray(new String[] {});
+//            Log.d("lognewsselect", Arrays.toString(new Set[]{selections}));
+//        }
         swipeRefreshLayout = (MySwipeRefreshLayout) findViewById(R.id.mainSwipeContainer);
 //        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.mainSwipeContainer);
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -476,6 +496,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     @Override
     protected void onStart() {
         Log.d("log: activity cycle", "NewsHybridActivity On Start");
+        Log.d("log: activity cycle", String.valueOf(Timestamp.now()));
         super.onStart();
     }
 
@@ -577,21 +598,21 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 //                }
 //                drawerLayout.closeDrawer(GravityCompat.START);
 //                return true;
-//            case R.id.nav_tmp :
-//                Intent intent_diary = new Intent(context, AlarmReceiver.class);
-//                intent_diary.setAction(DIARY_ALARM_ACTION);
-//                PendingIntent pendingIntent_diary = PendingIntent.getBroadcast(context, 78, intent_diary, 0);
-//                AlarmManager alarmManager_diary = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-//                Calendar cal_diary = Calendar.getInstance();
-//                cal_diary.add(Calendar.SECOND, 2);
-//                assert alarmManager_diary != null;
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//                    alarmManager_diary.setExact(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent_diary);
-//                }else {
-//                    alarmManager_diary.set(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent_diary);
-//                }
-//                drawerLayout.closeDrawer(GravityCompat.START);
-//                return true;
+            case R.id.nav_tmp :
+                Intent intent_diary = new Intent(context, AlarmReceiver.class);
+                intent_diary.setAction(DIARY_ALARM_ACTION);
+                PendingIntent pendingIntent_diary = PendingIntent.getBroadcast(context, 78, intent_diary, 0);
+                AlarmManager alarmManager_diary = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+                Calendar cal_diary = Calendar.getInstance();
+                cal_diary.add(Calendar.SECOND, 2);
+                assert alarmManager_diary != null;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    alarmManager_diary.setExact(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent_diary);
+                }else {
+                    alarmManager_diary.set(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent_diary);
+                }
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
             default :
                 return false;
         }
@@ -655,11 +676,11 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 
         @Override
         public Fragment getItem(int position) {
-            Log.d ("mediaselect", String.valueOf(position));
+//            Log.d ("mediaselect", String.valueOf(position));
             SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-            Set<String> ranking = sharedPrefs.getStringSet("media_rank", null);
+            Set<String> ranking = sharedPrefs.getStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, Collections.<String>emptySet());
             String media_name = "";
-            if (ranking!=null){
+            if (!ranking.isEmpty()){
                 switch (position) {
                     case 0:
                         for (String r : ranking){
@@ -802,9 +823,9 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         @Override
         public CharSequence getPageTitle(int position) {
             SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-            Set<String> ranking = sharedPrefs.getStringSet("media_rank", null);
+            Set<String> ranking = sharedPrefs.getStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, Collections.<String>emptySet());
             String media_name = "";
-            if (ranking!=null){
+            if (!ranking.isEmpty()){
                 switch (position) {
                     case 0:
                         for (String r : ranking){

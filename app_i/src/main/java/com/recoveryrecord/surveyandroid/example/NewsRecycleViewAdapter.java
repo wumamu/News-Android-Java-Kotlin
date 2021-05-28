@@ -9,7 +9,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.recoveryrecord.surveyandroid.example.model.NewsModel;
 
 import java.text.SimpleDateFormat;
@@ -20,6 +28,16 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import static com.recoveryrecord.surveyandroid.example.Constants.MEDIA_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_NOTIFICATION_EXIST;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_NOTI_ARRAY;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_NOT_SAMPLE_NOTIFICATION_FAR;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_NOT_SAMPLE_READ_FAR;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_NOT_SAMPLE_READ_SHORT;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_READ_ARRAY;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_READ_EXIST;
 
 //import com.squareup.picasso.Picasso;
 
@@ -42,17 +60,44 @@ public class NewsRecycleViewAdapter extends RecyclerView.Adapter<NewsRecycleView
 
 
     @Override
-    public void onBindViewHolder(@NonNull NewsRecycleViewAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final NewsRecycleViewAdapter.ViewHolder holder, int position) {
         // setting data to our views in Recycler view items.
-        NewsModel model = dataModelArrayList.get(position);
+        final NewsModel model = dataModelArrayList.get(position);
         holder.newsTitle.setText(model.getTitle());
-        Date date = model.getPubdate().toDate();
-        @SuppressLint("SimpleDateFormat")
-        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-        List<String> my_tt = new ArrayList<String>(Arrays.asList(formatter.format(date).split(" ")));
-        holder.newsPubTime.setText(String.format("%s %s", my_tt.get(0), my_tt.get(2)));
+        if(model.getPubdate()==null){
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            DocumentReference docRef = db.collection("server_push_notifications").document(model.getId());
+            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        assert document != null;
+                        if (document.exists()) {
+                            Date date = document.getTimestamp("pubdate").toDate();
+                            @SuppressLint("SimpleDateFormat")
+                            SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+                            List<String> my_tt = new ArrayList<String>(Arrays.asList(formatter.format(date).split(" ")));
+                            holder.newsPubTime.setText(String.format("%s %s", my_tt.get(0), my_tt.get(2)));
+                            holder.newsMedia.setText(document.getString("media"));
+                        } else {
+                            Log.d("lognewsselect", "No such document");
+                        }
+                    } else {
+                        Log.d("lognewsselect", "get failed with ", task.getException());
+                    }
+                }
+            });
+        } else {
+            Date date = model.getPubdate().toDate();
+            @SuppressLint("SimpleDateFormat")
+            SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+            List<String> my_tt = new ArrayList<String>(Arrays.asList(formatter.format(date).split(" ")));
+            holder.newsPubTime.setText(String.format("%s %s", my_tt.get(0), my_tt.get(2)));
 //        holder.newsPubTime.setText("123");
-        holder.newsMedia.setText(model.getMedia());
+            holder.newsMedia.setText(model.getMedia());
+        }
+
 
         // we are using Picasso to load images
         // from URL inside our image view.

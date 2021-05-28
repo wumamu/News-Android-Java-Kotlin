@@ -107,8 +107,8 @@
             android:excludeFromRecents="true"
             android:theme="@style/Widget.SurveyAndroid"
             android:screenOrientation="portrait"/>
-        <activity android:name=".ActivityRecognitionPermissionRationalActivity"
-            android:screenOrientation="portrait"/>
+<!--        <activity android:name=".ActivityRecognitionPermissionRationalActivity"-->
+<!--            android:screenOrientation="portrait"/>-->
 
         <activity android:name=".ESMLoadingPageActivity"
             android:screenOrientation="portrait"/>

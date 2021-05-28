@@ -18,10 +18,13 @@ import android.os.SystemClock;
 import android.provider.Settings;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -45,6 +48,8 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
 
+import static com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_KEY;
+import static com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_VALUE;
 import static com.recoveryrecord.surveyandroid.example.Constants.CHECK_SERVICE_ACTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.COMPARE_RESULT_CLICK;
 import static com.recoveryrecord.surveyandroid.example.Constants.COMPARE_RESULT_COLLECTION;
@@ -60,6 +65,8 @@ import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_NEWS_NO
 import static com.recoveryrecord.surveyandroid.example.Constants.DOC_ID_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.GROUP_NEWS;
 import static com.recoveryrecord.surveyandroid.example.Constants.GROUP_NEWS_SERVICE;
+import static com.recoveryrecord.surveyandroid.example.Constants.INITIAL_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.LAST_LAUNCH_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_CHANNEL_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_ID_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_MEDIA_KEY;
@@ -73,8 +80,12 @@ import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TY
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_NEWS;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_SERVICE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_MEDIA;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_USER_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_DEVICE_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_NOTIFICATION_FIRST_CREATE;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_NOTI_TIME;
@@ -83,9 +94,13 @@ import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_SELEC
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_TITLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_TYPE;
 import static com.recoveryrecord.surveyandroid.example.Constants.SERVICE_CHECKER_INTERVAL;
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.TRIGGER_BY_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.TRIGGER_BY_VALUE_NOTIFICATION;
+import static com.recoveryrecord.surveyandroid.example.Constants.UPDATE_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.USER_DEVICE_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.USER_PHONE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.VIBRATE_EFFECT;
 
 public class NewsNotificationService extends Service {
@@ -213,6 +228,10 @@ public class NewsNotificationService extends Service {
                             switch (dc.getType()) {
                                 case ADDED:
                                     //add record
+//                                    Date date = new Date(System.currentTimeMillis());
+//                                    @SuppressLint("SimpleDateFormat")
+//                                    SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+//                                    String doc_name = device_id + " " + formatter.format(date);
                                     Map<String, Object> record_noti = new HashMap<>();
                                     String news_id = "", media = "", title = "", doc_id = "";
                                     if(selections.contains(dc.getDocument().getString(COMPARE_RESULT_MEDIA))){
@@ -235,20 +254,25 @@ public class NewsNotificationService extends Service {
                                         record_noti.put(PUSH_NEWS_TYPE, "not target");
                                         record_noti.put(COMPARE_RESULT_CLICK, 3);
                                     }
-                                    record_noti.put(PUSH_NEWS_MEDIA, dc.getDocument().getString(COMPARE_RESULT_MEDIA));
+//                                    record_noti.put(PUSH_NEWS_MEDIA, dc.getDocument().getString(COMPARE_RESULT_MEDIA));
                                     record_noti.put(PUSH_NEWS_TITLE, dc.getDocument().getString(COMPARE_RESULT_NEW_TITLE));
                                     record_noti.put(PUSH_NEWS_ID, dc.getDocument().getString(COMPARE_RESULT_ID));
-                                    record_noti.put(PUSH_NEWS_PUBDATE, dc.getDocument().getTimestamp(COMPARE_RESULT_PUBDATE));
+//                                    record_noti.put(PUSH_NEWS_PUBDATE, dc.getDocument().getTimestamp(COMPARE_RESULT_PUBDATE));
                                     record_noti.put(PUSH_NEWS_NOTI_TIME, Timestamp.now());
-                                    record_noti.put(PUSH_NEWS_SELECTION, Arrays.toString(new Set[]{selections}));
+                                    record_noti.put(PUSH_NEWS_DEVICE_ID,  device_id);
+                                    record_noti.put(PUSH_NEWS_USER_ID,  sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+//                                    record_noti.put(PUSH_NEWS_SELECTION, Arrays.toString(new Set[]{selections}));
+
 
 
                                     db.collection(TEST_USER_COLLECTION)
                                             .document(device_id)
                                             .collection(PUSH_NEWS_COLLECTION)
-                                            .document(dc.getDocument().getId())
+                                            .document(device_id + " " + news_id)
+//                                            .document(dc.getDocument().getId())
                                             .set(record_noti);
-                                    //before delete
+
+                                    //delete
                                     db.collection(TEST_USER_COLLECTION)
                                             .document(device_id)
                                             .collection(COMPARE_RESULT_COLLECTION)

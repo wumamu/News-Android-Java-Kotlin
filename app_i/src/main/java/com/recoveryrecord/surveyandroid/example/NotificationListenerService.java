@@ -54,6 +54,11 @@ import static com.recoveryrecord.surveyandroid.example.Constants.ETTODAY_PACKAGE
 import static com.recoveryrecord.surveyandroid.example.Constants.LTN_PACKAGE_NAME;
 import static com.recoveryrecord.surveyandroid.example.Constants.MY_APP_PACKAGE_NAME;
 //import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_DIARY_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_NEWS_NOTI_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_NEWS_PACKAGE_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_NEWS_SOURCE;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_NEWS_TEXT;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_NEWS_TITLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_OTHER_APP_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_PACKAGE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_PACKAGE_NAME;
@@ -66,11 +71,11 @@ import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TY
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_NEWS;
 //import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_ESM_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_NEWS_MONITOR_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_NOTI_TIME;
+//import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_NOTI_TIME;
 //import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_SERVICE_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_SOURCE;
-import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_TEXT;
-import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_TITLE;
+//import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_SOURCE;
+//import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_TEXT;
+//import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_TITLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_RECEIEVE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_REMOVE_TIME;
@@ -142,7 +147,6 @@ public class NotificationListenerService extends android.service.notification.No
                 is_target = true;
                 break;
             default:
-                is_target = false;
                 break;
         }
         //cancel notification
@@ -192,6 +196,7 @@ public class NotificationListenerService extends android.service.notification.No
                     collection_id = PUSH_NEWS_COLLECTION;
                     receieve_field = PUSH_NEWS_RECEIEVE_TIME;
                     mark = true;
+                    doc_id = device_id + " " + doc_id;
                 } else if(type.equals(NOTIFICATION_TYPE_VALUE_DIARY)){//diary
                     collection_id = PUSH_DIARY_COLLECTION;
                     receieve_field = PUSH_DIARY_RECEIEVE_TIME;
@@ -246,32 +251,8 @@ public class NotificationListenerService extends android.service.notification.No
                     });
                 }
             }
-        }
-        //add to fire base
-        boolean receieve_to_firestore = false;
-        String document_name ="";
-        switch (sbn.getPackageName()) {
-//            case MY_APP_PACKAGE_NAME:
-//                receieve_to_firestore = true;
-//                document_name = NOTIFICATION_BAR_SERVICE_COLLECTION;
-//                break;
-            case CHINA_TIMES_PACKAGE_NAME:
-            case CNA_PACKAGE_NAME:
-            case UDN_PACKAGE_NAME:
-            case LTN_PACKAGE_NAME:
-            case ETTODAY_PACKAGE_NAME:
-            case CTS_PACKAGE_NAME:
-            case EBC_PACKAGE_NAME:
-            case STORM_PACKAGE_NAME:
-            case SETS_PACKAGE_NAME:
-                receieve_to_firestore = true;
-                document_name = NOTIFICATION_BAR_NEWS_MONITOR_COLLECTION;
-                break;
-            default:
-                receieve_to_firestore = false;
-        }
-        boolean check_title = false, check_text = false;
-        if(receieve_to_firestore){
+        } else if(is_target) {//new media
+            boolean check_title = false, check_text = false;
             Log.d("checking", "NLService");
             Bundle extras = sbn.getNotification().extras;
             SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
@@ -280,27 +261,28 @@ public class NotificationListenerService extends android.service.notification.No
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             Timestamp mytimestamp = Timestamp.now();//new Timestamp(System.currentTimeMillis());
             Map<String, Object> receieve_notification = new HashMap<>();
-            receieve_notification.put(NOTIFICATION_BAR_SOURCE, sbn.getPackageName());
-            receieve_notification.put(NOTIFICATION_BAR_NOTI_TIME, mytimestamp);
+            receieve_notification.put(NOTIFICATION_BAR_NEWS_SOURCE, sbn.getPackageName());
+            receieve_notification.put(NOTIFICATION_BAR_NEWS_NOTI_TIME, mytimestamp);
+            receieve_notification.put(NOTIFICATION_BAR_NEWS_PACKAGE_ID, sbn.getKey());
             if (extras.containsKey("android.title")) {
                 if(extras.getString("android.title")!=null){
-                    receieve_notification.put(NOTIFICATION_BAR_TITLE, Objects.requireNonNull(extras.getString("android.title")));
+                    receieve_notification.put(NOTIFICATION_BAR_NEWS_TITLE, Objects.requireNonNull(extras.getString("android.title")));
                     check_title = true;
                 } else {
-                    receieve_notification.put(NOTIFICATION_BAR_TITLE,  "null");
+                    receieve_notification.put(NOTIFICATION_BAR_NEWS_TITLE,  "null");
                 }
             } else {
-                receieve_notification.put(NOTIFICATION_BAR_TITLE,  "null");
+                receieve_notification.put(NOTIFICATION_BAR_NEWS_TITLE,  "null");
             }
             if (extras.containsKey("android.text")) {
                 if(extras.getCharSequence("android.text")!=null){
-                    receieve_notification.put(NOTIFICATION_BAR_TEXT,  extras.getCharSequence("android.text").toString());
+                    receieve_notification.put(NOTIFICATION_BAR_NEWS_TEXT,  extras.getCharSequence("android.text").toString());
                     check_text = true;
                 } else {
-                    receieve_notification.put(NOTIFICATION_BAR_TEXT, "null");
+                    receieve_notification.put(NOTIFICATION_BAR_NEWS_TEXT, "null");
                 }
             } else {
-                receieve_notification.put(NOTIFICATION_BAR_TEXT, "null");
+                receieve_notification.put(NOTIFICATION_BAR_NEWS_TEXT, "null");
             }
             // if both is null then we don't need it
             if (check_title && check_text){
@@ -318,12 +300,12 @@ public class NotificationListenerService extends android.service.notification.No
                 }
                 db.collection(TEST_USER_COLLECTION)
                         .document(device_id)
-                        .collection(document_name)
-                        .document(formatter.format(date))
+                        .collection(NOTIFICATION_BAR_NEWS_MONITOR_COLLECTION)
+                        .document(sbn.getKey())
                         .set(receieve_notification);
             }
 
-        } else {
+        } else {//other
             Map<String, Object> receieve_notification = new HashMap<>();
             receieve_notification.put(NOTIFICATION_BAR_PACKAGE_NAME, sbn.getPackageName());
             receieve_notification.put(NOTIFICATION_BAR_PACKAGE_ID, sbn.getKey());
@@ -465,6 +447,7 @@ public class NotificationListenerService extends android.service.notification.No
                     collection_id = PUSH_NEWS_COLLECTION;
                     remove_field = PUSH_NEWS_REMOVE_TIME;
                     remove_type_field = PUSH_NEWS_REMOVE_TYPE;
+                    doc_id = device_id + " " + doc_id;
                     mark = true;
                 } else if(type.equals(NOTIFICATION_TYPE_VALUE_DIARY)){
                     collection_id = PUSH_DIARY_COLLECTION;

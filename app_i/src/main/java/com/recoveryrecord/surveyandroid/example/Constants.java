@@ -104,12 +104,15 @@ public class Constants {
     //FIRESTORE FIELD###############################################################################
     public static final String TEST_USER_COLLECTION = "test_users";
     public static final String APP_VERSION_KEY = "app_version";
-    public static final String APP_VERSION_VALUE = "21.05.28-1";
+    public static final String APP_VERSION_VALUE = "21.05.28-2";
     public static final String UPDATE_TIME = "update_timestamp";
     public static final String INITIAL_TIME = "initial_timestamp";
     public static final String LAST_LAUNCH_TIME = "last_launch_timestamp";
     public static final String USER_DEVICE_ID = "device_id";
     public static final String USER_PHONE_ID = "phone_id";
+    public static final String PUSH_MEDIA_SELECTION = "push_media_selection";
+    public static final String MEDIA_BAR_ORDER = "media_bar_order";
+    public static final String USER_SURVEY_NUMBER = "user_survey_number";
     //MEDIA
     public static final String MEDIA_COLLECTION = "medias";
     public static final String NEWS_COLLECTION = "news";
@@ -140,10 +143,11 @@ public class Constants {
 //    public static final String NOTIFICATION_BAR_DIARY_COLLECTION = "notification_bar_diary";
 //    //NOTIFICATION BAR SERVICE
 //    public static final String NOTIFICATION_BAR_SERVICE_COLLECTION = "notification_bar_my_news";
-    public static final String NOTIFICATION_BAR_TITLE = "title";
-    public static final String NOTIFICATION_BAR_TEXT = "text";
-    public static final String NOTIFICATION_BAR_NOTI_TIME = "noti_timestamp";
-    public static final String NOTIFICATION_BAR_SOURCE = "media";
+    public static final String NOTIFICATION_BAR_NEWS_TITLE = "title";
+    public static final String NOTIFICATION_BAR_NEWS_TEXT = "text";
+    public static final String NOTIFICATION_BAR_NEWS_NOTI_TIME = "noti_timestamp";
+    public static final String NOTIFICATION_BAR_NEWS_PACKAGE_ID = "package_id";
+    public static final String NOTIFICATION_BAR_NEWS_SOURCE = "media";
     //COMPARE RESULT
     public static final String COMPARE_RESULT_COLLECTION = "compare_result";
     public static final String COMPARE_RESULT_PUBDATE = "pubdate";
@@ -175,6 +179,9 @@ public class Constants {
 
     //READING BEHAVIOR
     public static final String READING_BEHAVIOR_COLLECTION = "reading_behaviors";
+    public static final String READING_BEHAVIOR_DEVICE_ID = "device_id";
+    public static final String READING_BEHAVIOR_FONT_SIZE = "font_size";
+    public static final String READING_BEHAVIOR_USER_ID = "user_id";
     public static final String READING_BEHAVIOR_SHARE = "share";
     public static final String READING_BEHAVIOR_CATEGORY = "category";
     public static final String READING_BEHAVIOR_TRIGGER_BY = "trigger_by";
@@ -202,6 +209,8 @@ public class Constants {
     public static final String PUSH_NEWS_MEDIA = "media";
     public static final String PUSH_NEWS_ID = "id";
     public static final String PUSH_NEWS_TYPE = "type";
+    public static final String PUSH_NEWS_DEVICE_ID = "device_id";
+    public static final String PUSH_NEWS_USER_ID = "user_id";
     //PUSH ESM
     public static final String PUSH_ESM_COLLECTION = "push_esm";
     public static final String PUSH_ESM_SAMPLE = "sample";

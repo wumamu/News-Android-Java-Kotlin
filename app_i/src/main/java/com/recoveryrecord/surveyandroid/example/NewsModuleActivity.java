@@ -90,8 +90,18 @@ import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_COLLE
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_OPEN_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_READING_BEHAVIOR_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_DEVICE_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_FONT_SIZE;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_IN_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_OUT_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_SHARE;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_TIME_ON_PAGE;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_TITLE;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_TRIGGER_BY;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_TRIGGER_BY_SELF_TRIGGER;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_TEST_SIZE;
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.TRIGGER_BY_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.TRIGGER_BY_VALUE_SELF_TRIGGER;
@@ -110,7 +120,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
     long in_time = System.currentTimeMillis();
     private ScreenStateReceiver mReceiver;//screen on or off
     boolean first_in = true;
-    int char_num_total = 0;
+//    int char_num_total = 0;
     Timestamp enter_timestamp, mPubdate;
 
     String tmp_time_series = "";//time series
@@ -362,7 +372,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         String time_now = formatter.format(date);
         myReadingBehavior.setKEY_TIME_IN(time_now);
         //open database ############################################################################
-        dbHandler = new TestReadingBehaviorDbHelper(NewsModuleActivity.this);
+//        dbHandler = new TestReadingBehaviorDbHelper(NewsModuleActivity.this);
         //check trigger from #######################################################################
         if (getIntent().getExtras() != null) {
             Bundle b = getIntent().getExtras();
@@ -377,14 +387,14 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
             if(b.getString(TRIGGER_BY_KEY)!=null){
                 myReadingBehavior.setKEY_TRIGGER_BY(b.getString(TRIGGER_BY_KEY));
             }
-            if(myReadingBehavior.getKEY_TRIGGER_BY().equals(TRIGGER_BY_VALUE_SELF_TRIGGER)){
+            if(myReadingBehavior.getKEY_TRIGGER_BY().equals(READING_BEHAVIOR_TRIGGER_BY_SELF_TRIGGER)){
                 self_trigger = true;
             } else {
                 //mark as click (push news)
                 db.collection(TEST_USER_COLLECTION)
                         .document(device_id)
                         .collection(PUSH_NEWS_COLLECTION)
-                        .document(news_id)
+                        .document(device_id + " " + news_id)
                         .update(PUSH_NEWS_CLICK, 1,
                                 PUSH_NEWS_OPEN_TIME, Timestamp.now(),
                                 PUSH_NEWS_READING_BEHAVIOR_ID, myReadingBehavior.getKEY_TIME_IN())
@@ -806,7 +816,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                                 }
                             }
                         }
-                        myReadingBehavior.setKEY_CHAR_NUM_TOTAL(char_num_total);
+//                        myReadingBehavior.setKEY_CHAR_NUM_TOTAL(char_num_total);
                         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                         params.setMargins(10, 10, 10, 10);
                         //set viewport number ######################################################
@@ -1531,27 +1541,32 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
     @SuppressLint("MissingPermission")
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void addReadingBehavior() {
+        final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         List<String> in_tt = new ArrayList<String>(Arrays.asList(myReadingBehavior.getKEY_TIME_IN().split(" ")));
         // [START add_ada_lovelace]
         // Create a new user with a first and last name
         Map<String, Object> readingBehavior = new HashMap<>();
         readingBehavior.put("id",  "NA");
+        readingBehavior.put("id",  "NA");
+        readingBehavior.put(READING_BEHAVIOR_DEVICE_ID,  device_id);
+        readingBehavior.put(READING_BEHAVIOR_USER_ID,  sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+        readingBehavior.put(READING_BEHAVIOR_FONT_SIZE,  text_size_string);
         readingBehavior.put("pubdate",  Timestamp.now());
         readingBehavior.put("media",  "NA");
-        readingBehavior.put("trigger_by", myReadingBehavior.getKEY_TRIGGER_BY());
+        readingBehavior.put(READING_BEHAVIOR_TRIGGER_BY, myReadingBehavior.getKEY_TRIGGER_BY());
         readingBehavior.put("select", false);
         readingBehavior.put("has_img", has_img);
 //        readingBehavior.put("time_in", myReadingBehavior.getKEY_TIME_IN());
-        readingBehavior.put("in_timestamp", enter_timestamp);
+        readingBehavior.put(READING_BEHAVIOR_IN_TIME, enter_timestamp);
         readingBehavior.put("in_date", in_tt.get(0));
         readingBehavior.put("in_time", in_tt.get(2));
-        readingBehavior.put("out_timestamp", Timestamp.now());
+        readingBehavior.put(READING_BEHAVIOR_OUT_TIME, Timestamp.now());
         readingBehavior.put("out_date", "NA");
         readingBehavior.put("out_time", "NA");
         readingBehavior.put("content_length(dp)", "NA");
         readingBehavior.put("display_width(dp)", myReadingBehavior.getKEY_DISPLAY_WIDTH());
         readingBehavior.put("display_height(dp)", myReadingBehavior.getKEY_DISPLAY_HEIGHT());
-        readingBehavior.put("time_on_page(s)", myReadingBehavior.getKEY_TIME_ON_PAGE());
+        readingBehavior.put(READING_BEHAVIOR_TIME_ON_PAGE, myReadingBehavior.getKEY_TIME_ON_PAGE());
         readingBehavior.put("pause_count", myReadingBehavior.getKEY_PAUSE_ON_PAGE());
         readingBehavior.put("viewport_num", "NA");
         readingBehavior.put("viewport_record", Arrays.asList("NA"));
@@ -1559,26 +1574,26 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         readingBehavior.put("fling_record", Arrays.asList("NA"));
         readingBehavior.put("drag_num", myReadingBehavior.getKEY_DRAG_NUM());
         readingBehavior.put("drag_record", Arrays.asList("NA"));
-        readingBehavior.put("share", Arrays.asList("NA"));
-        readingBehavior.put("title","NA");
-        readingBehavior.put("category",categoryArray);
+        readingBehavior.put(READING_BEHAVIOR_SHARE, Arrays.asList("NA"));
+        readingBehavior.put(READING_BEHAVIOR_TITLE,"NA");
+//        readingBehavior.put(READING_BEHAVIOR_CATEGORY,categoryArray);
 //        readingBehavior.put("share_via", "none");
         readingBehavior.put("time_series(s)", Arrays.asList("NA"));
         readingBehavior.put("byte_per_line", "NA");
-        readingBehavior.put("char_num_total", "NA");
+//        readingBehavior.put("char_num_total", "NA");
         readingBehavior.put("row_spacing(dp)", "NA");
 
         db.collection(TEST_USER_COLLECTION)
                 .document(device_id)
                 .collection(READING_BEHAVIOR_COLLECTION)
-                .document(myReadingBehavior.getKEY_TIME_IN())
+                .document(device_id + " " +  myReadingBehavior.getKEY_TIME_IN())
                 .set(readingBehavior);
         document_create = true;
         //connect reading behavior with push news
         db.collection(TEST_USER_COLLECTION)
                 .document(device_id)
                 .collection(PUSH_NEWS_COLLECTION)
-                .document(news_id)
+                .document(device_id + " " + news_id)
                 .update(PUSH_NEWS_CLICK, 1, PUSH_NEWS_OPEN_TIME, Timestamp.now())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -1594,12 +1609,9 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                 });
     }
     public void updateReadingBehavior(){
-        TelephonyManager telephonyManager;
-        telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-//        DocumentReference rbRef = db.collection(Build.ID).document(String.valueOf(l_date)).collection("reading_behaviors").document(myReadingBehavior.getKEY_TIME_IN());
         @SuppressLint("MissingPermission")
 //        String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-                DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(READING_BEHAVIOR_COLLECTION).document(myReadingBehavior.getKEY_TIME_IN());
+        DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(READING_BEHAVIOR_COLLECTION).document(device_id + " " +  myReadingBehavior.getKEY_TIME_IN());
 
         List<String> time_series_list = new ArrayList<String>(Arrays.asList(myReadingBehavior.getKEY_TIME_SERIES().split("#")));
         List<String> viewport_record_list = new ArrayList<String>(Arrays.asList(myReadingBehavior.getKEY_VIEW_PORT_RECORD().split("#")));
@@ -1617,9 +1629,9 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         // Set the "isCapital" field of the city 'DC'
         rbRef.update("content_length(dp)", myReadingBehavior.getKEY_CONTENT_LENGTH(),
                 "byte_per_line", myReadingBehavior.getKEY_BYTE_PER_LINE(),
-                "category", categoryArray,
+//                "category", categoryArray,
                 "has_img", has_img,
-                "char_num_total", myReadingBehavior.getKEY_CHAR_NUM_TOTAL(),
+//                "char_num_total", myReadingBehavior.getKEY_CHAR_NUM_TOTAL(),
                 "id",  myReadingBehavior.getKEY_NEWS_ID(),
                 "media",media,
                 "pubdate",mPubdate,

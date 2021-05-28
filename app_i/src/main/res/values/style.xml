@@ -5,7 +5,7 @@
         <item name="colorPrimary">@color/LightcolorPrimary</item>
         <item name="colorPrimaryDark">@color/LightcolorPrimaryDark</item>
         <item name="colorAccent">@color/LightcolorAccent</item>
-<!--        <item name="android:forceDarkAllowed">true</item>-->
+        <!--        <item name="android:forceDarkAllowed">true</item>-->
     </style>
 
     <style name="NoActionBarDark" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -21,7 +21,7 @@
         <item name="colorPrimary">@color/LightcolorPrimary</item>
         <item name="colorPrimaryDark">@color/LightcolorPrimaryDark</item>
         <item name="colorAccent">@color/LightcolorAccent</item>
-<!--        <item name="android:forceDarkAllowed">true</item>-->
+        <!--        <item name="android:forceDarkAllowed">true</item>-->
     </style>
 
     <style name="ActionBarDark" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -33,8 +33,8 @@
     </style>
 
     <style name="AppTheme.AppBarOverlayLight" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-<!--    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />-->
+    <!-- survey -->
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
     <!-- tab layout font -->
     <style name="TabLayoutTextStyle">
         <item name="android:textSize">16sp</item>
@@ -50,7 +50,7 @@
     <style name="DialogTheme" parent="Theme.AppCompat.Light.Dialog">
         <item name="colorAccent">@color/LightcolorPrimary</item>
         <item name="colorControlNormal">#ffffff</item>
-<!--        <item name="android:forceDarkAllowed">true</item>-->
+        <!--        <item name="android:forceDarkAllowed">true</item>-->
     </style>
     <!-- alarm -->
     <style name="settings_item_layout">
@@ -91,3 +91,5 @@
         <item name="trackTint">@color/track_color</item>
     </style>
 </resources>
+
+

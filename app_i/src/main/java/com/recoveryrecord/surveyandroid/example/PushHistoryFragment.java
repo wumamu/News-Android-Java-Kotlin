@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_HISTORY_LIMIT_PER_PAGE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_NOTI_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_RECEIEVE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_TYPE;
 import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
 
@@ -102,7 +103,7 @@ public class PushHistoryFragment extends Fragment {
         db.collection(TEST_USER_COLLECTION)
                 .document(device_id)
                 .collection(PUSH_NEWS_COLLECTION)
-                .orderBy(PUSH_NEWS_NOTI_TIME, Query.Direction.DESCENDING)
+                .orderBy(PUSH_NEWS_RECEIEVE_TIME, Query.Direction.DESCENDING)
                 .limit(PUSH_HISTORY_LIMIT_PER_PAGE)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
