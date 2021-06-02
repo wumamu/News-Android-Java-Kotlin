@@ -19,6 +19,7 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
@@ -31,7 +32,8 @@ import static android.app.AppOpsManager.MODE_ALLOWED;
 import static android.app.AppOpsManager.OPSTR_GET_USAGE_STATS;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
 
-public class AppUsageReceiver extends Service {
+public class
+AppUsageReceiver extends Service {
     private Context context;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private String device_id;
@@ -63,12 +65,25 @@ public class AppUsageReceiver extends Service {
                     .collection("AppUsage")
                     .document(time_now)
                     .set(sensordb);
-            if(foregroundActivityName == "com.recoveryrecord.surveyandroid"){
-                Log.e("Using NewsMoment ?", "YES");
-
-            }else{
-                Log.e("Using NewsMoment ?", "NO");
-            }
+//            DocumentReference ref = db.collection("test_users")
+//                    .document(device_id)
+//                    .collection("Sensor collection")
+//                    .document("Sensor");
+//
+//            if(foregroundActivityName.equals("com.recoveryrecord.surveyandroid") == true){
+//                Log.e("Using NewsMoment?", "YES");
+//                sensordb.put("Using APP", "Y");
+//
+//            }else{
+//                Log.e("Using NewsMoment?", "NO ");
+//                sensordb.put("Using APP", "N");
+//            }
+//            ref.collection("BlueTooth").document(time_now).set(sensordb);
+//            ref.collection("LightSensor").document(time_now).set(sensordb);
+//            ref.collection("Network").document(time_now).set(sensordb);
+//            ref.collection("RingMode").document(time_now).set(sensordb);
+//            ref.collection("Screen").document(time_now).set(sensordb);
+//            ref.collection("Activity Recognition").document(time_now).set(sensordb);
         }
     };
     @Override

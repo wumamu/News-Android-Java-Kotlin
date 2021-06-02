@@ -55,7 +55,7 @@ public class RingModeReceiver implements StreamGenerator{
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         final String time_now = formatter.format(date);
         sensordb.put("Time", time_now);
-        sensordb.put("Screen", RingerState);
+        sensordb.put("RingMode", RingerState);
         db.collection("test_users")
                 .document(device_id)
                 .collection("Sensor collection")
