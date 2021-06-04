@@ -3,6 +3,7 @@ package com.recoveryrecord.surveyandroid.example;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TARGET_TITLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_OUT_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_TITLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.READ_HISTORY_LIMIT_PER_PAGE;
@@ -98,9 +100,14 @@ public class ReadingHistoryFragment extends Fragment {
     }
 
     private void loadrecyclerViewData() {
-        db.collection(TEST_USER_COLLECTION)
-                .document(device_id)
-                .collection(READING_BEHAVIOR_COLLECTION)
+//        db.collection(TEST_USER_COLLECTION)
+//                .document(device_id)
+//                .collection(READING_BEHAVIOR_COLLECTION)
+//                .orderBy(READING_BEHAVIOR_OUT_TIME, Query.Direction.DESCENDING)
+//                .limit(READ_HISTORY_LIMIT_PER_PAGE)
+//                .get()
+        db.collection(READING_BEHAVIOR_COLLECTION)
+                .whereEqualTo(READING_BEHAVIOR_DEVICE_ID, device_id)
                 .orderBy(READING_BEHAVIOR_OUT_TIME, Query.Direction.DESCENDING)
                 .limit(READ_HISTORY_LIMIT_PER_PAGE)
                 .get()
@@ -122,6 +129,7 @@ public class ReadingHistoryFragment extends Fragment {
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                Log.d("lognewsselect", String.valueOf(e));
                 // if we do not get any data or any error we are displaying
                 // a toast message that we do not get any data
 //                Toast.makeText(TestNewsOneActivity.this, "Fail to get the data.", Toast.LENGTH_SHORT).show();

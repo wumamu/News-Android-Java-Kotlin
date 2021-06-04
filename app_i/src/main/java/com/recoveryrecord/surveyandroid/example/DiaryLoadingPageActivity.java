@@ -6,10 +6,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,15 +49,17 @@ import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TY
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_OPTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_NOTI_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_READ_EXIST;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_SAMPLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_SAMPLE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TARGET_IN_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TARGET_NEWS_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TARGET_PLACE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TARGET_SITUATION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TARGET_TITLE;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TARGET_TITLE_DIARY;
+//import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TARGET_TITLE_DIARY;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_IN_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.SURVEY_PAGE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
@@ -70,6 +74,11 @@ public class DiaryLoadingPageActivity extends AppCompatActivity {
     Boolean exist_esm_sample = false;
 //    TextView who;
     List<String> diary_option_array = new ArrayList<>();
+    List<String> diary_option_array_server = new ArrayList<>();
+    private ProgressBar pgsBar;
+    private int i = 0;
+    private TextView txtView;
+    private Handler hdlr = new Handler();
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +95,7 @@ public class DiaryLoadingPageActivity extends AppCompatActivity {
             back.setClass(getApplicationContext(), NewsHybridActivity.class);
             startActivity(back);
         }
+        pgsBar = (ProgressBar) findViewById(R.id.pBar);
         //initial
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPrefs.edit();
@@ -100,6 +110,37 @@ public class DiaryLoadingPageActivity extends AppCompatActivity {
                 openDiary();
             }
         });
+
+        button.setEnabled(false);
+        txtView = (TextView) findViewById(R.id.textView);
+        i = pgsBar.getProgress();
+        new Thread(new Runnable() {
+            public void run() {
+                while (i < 100) {
+                    i += 1;
+                    // Update the progress bar and display the current value in text view
+                    hdlr.post(new Runnable() {
+                        public void run() {
+                            pgsBar.setProgress(i);
+//                            txtView.setText(i+"/"+pgsBar.getMax());
+                            if(i==100){
+                                txtView.setText("資料匯入完成");
+                                button.setEnabled(true);
+                            }
+
+                        }
+                    });
+                    try {
+                        // Sleep for 100 milliseconds to show the progress slowly.
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+//                button.setEnabled(true);
+
+            }
+        }).start();
     }
 
 
@@ -109,13 +150,14 @@ public class DiaryLoadingPageActivity extends AppCompatActivity {
         intent_diary.putExtra(SURVEY_PAGE_ID, diary_id);//******************
         intent_diary.putExtra(NOTIFICATION_TYPE_KEY, NOTIFICATION_TYPE_VALUE_DIARY);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String diary_option = sharedPrefs.getString(DIARY_READ_HISTORY_CANDIDATE, ZERO_RESULT_STRING);
-        final List<String> diary_option_array = new ArrayList<String>(Arrays.asList(diary_option.split("#")));
+//        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+//        String diary_option = sharedPrefs.getString(DIARY_READ_HISTORY_CANDIDATE, ZERO_RESULT_STRING);
+//        final List<String> diary_option_array = new ArrayList<String>(Arrays.asList(diary_option.split("#")));
         @SuppressLint("HardwareIds")
         String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         if (!diary_id.equals("")){
-            final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(PUSH_DIARY_COLLECTION).document(diary_id);
+//            final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(PUSH_DIARY_COLLECTION).document(diary_id);
+            final DocumentReference rbRef = db.collection(PUSH_DIARY_COLLECTION).document(device_id + " " + diary_id);
             rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -137,7 +179,7 @@ public class DiaryLoadingPageActivity extends AppCompatActivity {
                                         }
                                     });
                         } else {
-                            Log.d("lognewsselect", "No such document");
+                            Log.d("lognewsselect", "DiaryLoadingPageActivity No such document");
                         }
                     } else {
                         Log.d("lognewsselect", "get failed with ", task.getException());
@@ -157,9 +199,13 @@ public class DiaryLoadingPageActivity extends AppCompatActivity {
 //        c.setTimeInMillis(now);
         final Timestamp now_time_stamp = Timestamp.now();
         @SuppressLint("HardwareIds") final String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-        task3 =  db.collection(TEST_USER_COLLECTION)
-                .document(device_id)
-                .collection(PUSH_ESM_COLLECTION)
+//        task3 =  db.collection(TEST_USER_COLLECTION)
+//                .document(device_id)
+//                .collection(PUSH_ESM_COLLECTION)
+//                .whereEqualTo(PUSH_ESM_SAMPLE, 2)
+//                .get();
+        task3 =  db.collection(PUSH_ESM_COLLECTION)
+                .whereEqualTo(PUSH_ESM_DEVICE_ID, device_id)
                 .whereEqualTo(PUSH_ESM_SAMPLE, 2)
                 .get();
         task3.addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -175,18 +221,37 @@ public class DiaryLoadingPageActivity extends AppCompatActivity {
                                 String news_time = "NA";
                                 String news_situation = "NA";
                                 String news_place = "NA";
-                                news_title = d.getString(PUSH_ESM_TARGET_TITLE_DIARY);
+                                String news_id = "NA";
+                                news_title = d.getString(PUSH_ESM_TARGET_TITLE);
                                 news_time = d.getString(PUSH_ESM_TARGET_IN_TIME);
                                 news_situation = d.getString(PUSH_ESM_TARGET_SITUATION);
                                 news_place = d.getString(PUSH_ESM_TARGET_PLACE);
-                                diary_option_array.add(news_title + "\n" + news_time + "\n" + news_situation + "\n" + news_place);
+                                news_id = d.getString(PUSH_ESM_TARGET_NEWS_ID);
+                                diary_option_array.add(news_title + "\n" + news_time + "\n" + news_situation + "\n" + news_place + "\n" + news_id);
+//                                diary_option_array_server.add(news_title + "\n" + news_time + "\n" + news_situation + "\n" + news_place + "\n" + news_id);
+//                                diary_option_array.add(news_title + "\n" + news_time + "\n" + news_situation + "\n" + news_place);
                                 exist_esm_sample = true;
                             }
                         }
                         //mark as check
-                        db.collection(TEST_USER_COLLECTION)
-                                .document(device_id)
-                                .collection(PUSH_ESM_COLLECTION)
+//                        db.collection(TEST_USER_COLLECTION)
+//                                .document(device_id)
+//                                .collection(PUSH_ESM_COLLECTION)
+//                                .document(d.getId())
+//                                .update(PUSH_ESM_SAMPLE, 3, PUSH_ESM_SAMPLE_ID, diary_id)
+//                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                    @Override
+//                                    public void onSuccess(Void aVoid) {
+//                                        Log.d("lognewsselect", "DocumentSnapshot successfully updated!");
+//                                    }
+//                                })
+//                                .addOnFailureListener(new OnFailureListener() {
+//                                    @Override
+//                                    public void onFailure(@NonNull Exception e) {
+//                                        Log.w("lognewsselect", "Error updating document", e);
+//                                    }
+//                                });
+                        db.collection(PUSH_ESM_COLLECTION)
                                 .document(d.getId())
                                 .update(PUSH_ESM_SAMPLE, 3, PUSH_ESM_SAMPLE_ID, diary_id)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {

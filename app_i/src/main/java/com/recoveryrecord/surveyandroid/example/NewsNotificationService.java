@@ -73,6 +73,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_MEDIA_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_VALUE_SERVICE_PAGE;
+import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_VALUE_INITIAL;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_TIME;
@@ -121,9 +122,6 @@ public class NewsNotificationService extends Service {
     }
     @RequiresApi(Build.VERSION_CODES.O)
     private void startMyOwnForeground() {
-
-
-
         Log.d("lognewsselect", "startMyOwnForeground");
         String NOTIFICATION_CHANNEL_ID = "example.permanence";
         String channelName = "Background Service";
@@ -148,6 +146,9 @@ public class NewsNotificationService extends Service {
                 .setContentTitle("App is running in background")
                 .setPriority(NotificationManager.IMPORTANCE_MIN)
                 .setCategory(Notification.CATEGORY_SERVICE)
+                .setNotificationSilent()
+                .setSmallIcon(R.drawable.ic_launcher_foreground, 0)
+
 //                .setGroup(GROUP_NEWS_SERVICE)
 //                .setGroupSummary(true)
                 .build();
@@ -165,7 +166,7 @@ public class NewsNotificationService extends Service {
         return START_STICKY;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void add_ServiceChecker() {
         try {
             Thread.sleep(200);
@@ -195,16 +196,21 @@ public class NewsNotificationService extends Service {
         service_check.put(NEWS_SERVICE_STATUS_KEY, NEWS_SERVICE_STATUS_VALUE_INITIAL);
         service_check.put(NEWS_SERVICE_TIME, Timestamp.now());
         service_check.put(NEWS_SERVICE_CYCLE_KEY, NEWS_SERVICE_CYCLE_VALUE_SERVICE_PAGE);
+        service_check.put(NEWS_SERVICE_DEVICE_ID, device_id);
 
         Date date = new Date(System.currentTimeMillis());
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 
-        db.collection(TEST_USER_COLLECTION)
-                .document(device_id)
-                .collection(NEWS_SERVICE_COLLECTION)
+//        db.collection(TEST_USER_COLLECTION)
+//                .document(device_id)
+//                .collection(NEWS_SERVICE_COLLECTION)
+////                .document(String.valueOf(Timestamp.now().toDate()))
+//                .document(formatter.format(date))
+//                .set(service_check);
+        db.collection(NEWS_SERVICE_COLLECTION)
 //                .document(String.valueOf(Timestamp.now().toDate()))
-                .document(formatter.format(date))
+                .document(device_id + " " + formatter.format(date))
                 .set(service_check);
 
         db.collection(TEST_USER_COLLECTION)
@@ -254,10 +260,10 @@ public class NewsNotificationService extends Service {
                                         record_noti.put(PUSH_NEWS_TYPE, "not target");
                                         record_noti.put(COMPARE_RESULT_CLICK, 3);
                                     }
-//                                    record_noti.put(PUSH_NEWS_MEDIA, dc.getDocument().getString(COMPARE_RESULT_MEDIA));
+                                    record_noti.put(PUSH_NEWS_MEDIA, dc.getDocument().getString(COMPARE_RESULT_MEDIA));
                                     record_noti.put(PUSH_NEWS_TITLE, dc.getDocument().getString(COMPARE_RESULT_NEW_TITLE));
                                     record_noti.put(PUSH_NEWS_ID, dc.getDocument().getString(COMPARE_RESULT_ID));
-//                                    record_noti.put(PUSH_NEWS_PUBDATE, dc.getDocument().getTimestamp(COMPARE_RESULT_PUBDATE));
+                                    record_noti.put(PUSH_NEWS_PUBDATE, dc.getDocument().getTimestamp(COMPARE_RESULT_PUBDATE));
                                     record_noti.put(PUSH_NEWS_NOTI_TIME, Timestamp.now());
                                     record_noti.put(PUSH_NEWS_DEVICE_ID,  device_id);
                                     record_noti.put(PUSH_NEWS_USER_ID,  sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
@@ -265,11 +271,14 @@ public class NewsNotificationService extends Service {
 
 
 
-                                    db.collection(TEST_USER_COLLECTION)
-                                            .document(device_id)
-                                            .collection(PUSH_NEWS_COLLECTION)
-                                            .document(device_id + " " + news_id)
-//                                            .document(dc.getDocument().getId())
+//                                    db.collection(TEST_USER_COLLECTION)
+//                                            .document(device_id)
+//                                            .collection(PUSH_NEWS_COLLECTION)
+//                                            .document(device_id + " " + dc.getDocument().getString(COMPARE_RESULT_ID))
+////                                            .document(dc.getDocument().getId())
+//                                            .set(record_noti);
+                                    db.collection(PUSH_NEWS_COLLECTION)
+                                            .document(device_id + " " + dc.getDocument().getString(COMPARE_RESULT_ID))
                                             .set(record_noti);
 
                                     //delete

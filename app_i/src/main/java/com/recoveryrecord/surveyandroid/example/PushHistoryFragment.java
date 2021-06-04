@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_HISTORY_LIMIT_PER_PAGE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_NOTI_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_RECEIEVE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_TYPE;
@@ -100,9 +101,14 @@ public class PushHistoryFragment extends Fragment {
 
     private void loadrecyclerViewData() {
 //.orderBy("name").limit(3)//                db.collectionGroup("news") //
-        db.collection(TEST_USER_COLLECTION)
-                .document(device_id)
-                .collection(PUSH_NEWS_COLLECTION)
+//        db.collection(TEST_USER_COLLECTION)
+//                .document(device_id)
+//                .collection(PUSH_NEWS_COLLECTION)
+//                .orderBy(PUSH_NEWS_RECEIEVE_TIME, Query.Direction.DESCENDING)
+//                .limit(PUSH_HISTORY_LIMIT_PER_PAGE)
+//                .get()
+        db.collection(PUSH_NEWS_COLLECTION)
+                .whereEqualTo(PUSH_NEWS_DEVICE_ID, device_id)
                 .orderBy(PUSH_NEWS_RECEIEVE_TIME, Query.Direction.DESCENDING)
                 .limit(PUSH_HISTORY_LIMIT_PER_PAGE)
                 .get()
@@ -125,6 +131,7 @@ public class PushHistoryFragment extends Fragment {
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                Log.d("lognewsselect", String.valueOf(e));
                 // if we do not get any data or any error we are displaying
                 // a toast message that we do not get any data
 //                Toast.makeText(TestNewsOneActivity.this, "Fail to get the data.", Toast.LENGTH_SHORT).show();

@@ -25,6 +25,8 @@ import java.util.Objects;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_COLLECTION;
+
 public class ApplicationSelectorReceiver extends BroadcastReceiver {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -52,7 +54,8 @@ public class ApplicationSelectorReceiver extends BroadcastReceiver {
                 Log.d("log: Selected App Name", appName);
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
 //                final DocumentReference rbRef = db.collection(Build.ID).document(doc_date).collection("reading_behaviors").document(doc_time);
-                final DocumentReference rbRef = db.collection("test_users").document(device_id).collection("reading_behaviors").document(doc_time);
+//                final DocumentReference rbRef = db.collection("test_users").document(device_id).collection("reading_behaviors").document(doc_time);
+                final DocumentReference rbRef = db.collection(READING_BEHAVIOR_COLLECTION).document(device_id + " " + doc_time);
 //                rbRef.update("share", FieldValue.arrayRemove(share_field));
 //                rbRef.update("share", FieldValue.arrayUnion(share_field + " " + appName));
                 rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

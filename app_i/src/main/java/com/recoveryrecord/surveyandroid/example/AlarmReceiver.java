@@ -89,6 +89,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CY
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_VALUE_ALARM;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_VALUE_FAILED_RESTART;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_VALUE_MAIN_PAGE;
+import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_VALUE_RESTART;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_VALUE_RUNNING;
@@ -97,6 +98,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TY
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_DIARY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_ESM;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_DONE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_NOTI_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_SCHEDULE_SOURCE;
@@ -104,6 +106,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_TRIG
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_TRIGGER_BY_ALARM;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_TRIGGER_BY_SELF;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_NOTI_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_SAMPLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_SCHEDULE_ID;
@@ -113,6 +116,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TRIGGE
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TRIGGER_BY_NOTIFICATION;
 import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_ACTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_MAX_ESM;
 import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_SURVEY_END;
 import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_SURVEY_START;
@@ -140,7 +144,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             isServiceAlive(context);
         }
         if(action.equals(ESM_ALARM_ACTION) && set_once) {
-            String esm_name = "777", esm_source = "888";
+            String esm_name = "NA", esm_source = "NA";
             if (intent.getExtras().getString(ESM_SCHEDULE_ID) != null && intent.getExtras().getString(SCHEDULE_SOURCE) != null ) {
                 esm_name = intent.getExtras().getString(ESM_SCHEDULE_ID);
                 esm_source = intent.getExtras().getString(SCHEDULE_SOURCE);
@@ -148,7 +152,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             scheduleNotification_esm(context, getNotification_esm(context, esm_name, esm_source), 1000);
         }
         if(action.equals(DIARY_ALARM_ACTION) && set_once){
-            String diary_source = "777";
+            String diary_source = "NA";
             if (intent.getExtras().getString(SCHEDULE_SOURCE) != null ) {
                 diary_source = intent.getExtras().getString(SCHEDULE_SOURCE);
             }
@@ -214,18 +218,24 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
         service_check.put(NEWS_SERVICE_TIME, Timestamp.now());
         service_check.put(NEWS_SERVICE_CYCLE_KEY, NEWS_SERVICE_CYCLE_VALUE_ALARM);
+        @SuppressLint("HardwareIds")
+        String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        service_check.put(NEWS_SERVICE_DEVICE_ID, device_id);
 
         Date date = new Date(System.currentTimeMillis());
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 
-        @SuppressLint("HardwareIds")
-        String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-        db.collection(TEST_USER_COLLECTION)
-            .document(device_id)
-            .collection(NEWS_SERVICE_COLLECTION)
+
+//        db.collection(TEST_USER_COLLECTION)
+//                .document(device_id)
+//                .collection(NEWS_SERVICE_COLLECTION)
+////            .document(String.valueOf(Timestamp.now().toDate()))
+//                .document(formatter.format(date))
+//                .set(service_check);
+        db.collection(NEWS_SERVICE_COLLECTION)
 //            .document(String.valueOf(Timestamp.now().toDate()))
-            .document(formatter.format(date))
+            .document(device_id + " " + formatter.format(date))
             .set(service_check);
         add_ServiceChecker(context);
     }
@@ -401,12 +411,17 @@ public class AlarmReceiver extends BroadcastReceiver {
         my_alarm.put(SCHEDULE_ALARM_SURVEY_END, EndHour);
         my_alarm.put(SCHEDULE_ALARM_TRIGGER_TIME, Timestamp.now().toDate());
         my_alarm.put(SCHEDULE_ALARM_MAX_ESM, max_esm);
+        my_alarm.put(SCHEDULE_ALARM_DEVICE_ID, device_id);
 
-        db.collection(TEST_USER_COLLECTION)
-                .document(device_id)
-                .collection(SCHEDULE_ALARM_COLLECTION)
-//                .document(String.valueOf(Timestamp.now().toDate()))
-                .document(formatter.format(date))
+//        db.collection(TEST_USER_COLLECTION)
+//                .document(device_id)
+//                .collection(SCHEDULE_ALARM_COLLECTION)
+////                .document(String.valueOf(Timestamp.now().toDate()))
+//                .document(formatter.format(date))
+//                .set(my_alarm);
+
+        db.collection(SCHEDULE_ALARM_COLLECTION)
+                .document(device_id + " " + formatter.format(date))
                 .set(my_alarm);
     }
 
@@ -580,14 +595,18 @@ public class AlarmReceiver extends BroadcastReceiver {
         Map<String, Object> esm = new HashMap<>();
         esm.put(PUSH_ESM_NOTI_TIME, Timestamp.now());
         esm.put(PUSH_ESM_SAMPLE, 0);
-        esm.put(PUSH_ESM_TRIGGER_BY, PUSH_ESM_TRIGGER_BY_ALARM);
+//        esm.put(PUSH_ESM_TRIGGER_BY, PUSH_ESM_TRIGGER_BY_ALARM);
         esm.put(PUSH_ESM_SCHEDULE_ID, esm_schedule_name);
         esm.put(PUSH_ESM_SCHEDULE_SOURCE, esm_schedule_source);
-        db.collection(TEST_USER_COLLECTION)
-                .document(device_id)
-                .collection(PUSH_ESM_COLLECTION)
-                .document(esm_id)
+        esm.put(PUSH_ESM_DEVICE_ID, device_id);
+        db.collection(PUSH_ESM_COLLECTION)
+                .document(device_id + " " + esm_id)
                 .set(esm);
+//        db.collection(TEST_USER_COLLECTION)
+//                .document(device_id)
+//                .collection(PUSH_ESM_COLLECTION)
+//                .document(device_id + esm_id)
+//                .set(esm);
         return builder.build();
     }
 
@@ -651,12 +670,16 @@ public class AlarmReceiver extends BroadcastReceiver {
         Map<String, Object> diary = new HashMap<>();
         diary.put(PUSH_DIARY_NOTI_TIME, Timestamp.now());
         diary.put(PUSH_DIARY_DONE, 0);
-        diary.put(PUSH_DIARY_TRIGGER_BY, PUSH_DIARY_TRIGGER_BY_ALARM);
+//        diary.put(PUSH_DIARY_TRIGGER_BY, PUSH_DIARY_TRIGGER_BY_ALARM);
         diary.put(PUSH_DIARY_SCHEDULE_SOURCE, diary_schedule_source);
-        db.collection(TEST_USER_COLLECTION)
-                .document(device_id)
-                .collection(PUSH_DIARY_COLLECTION)
-                .document(diary_id)
+        diary.put(PUSH_DIARY_DEVICE_ID, device_id);
+//        db.collection(TEST_USER_COLLECTION)
+//                .document(device_id)
+//                .collection(PUSH_DIARY_COLLECTION)
+//                .document(diary_id)
+//                .set(diary);
+        db.collection(PUSH_DIARY_COLLECTION)
+                .document(device_id + " " + diary_id)
                 .set(diary);
         return builder.build();
     }

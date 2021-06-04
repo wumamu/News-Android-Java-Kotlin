@@ -22,6 +22,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -94,9 +95,11 @@ import javax.annotation.Nullable;
 import static com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_VALUE;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_ALARM_ACTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_ALARM_ACTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.GROUP_NEWS;
 import static com.recoveryrecord.surveyandroid.example.Constants.GROUP_NEWS_SERVICE;
 import static com.recoveryrecord.surveyandroid.example.Constants.MEDIA_BAR_ORDER;
+import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_MEDIA_SELECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_CLEAR_CACHE;
 //import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_PARCELABLE;
@@ -117,6 +120,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENC
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.UPDATE_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_PHONE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_SURVEY_NUMBER;
@@ -192,65 +196,64 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         //first in app
         final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         boolean clear = sharedPrefs.getBoolean(SHARE_PREFERENCE_CLEAR_CACHE, true);
-        final DocumentReference docIdRef = db.collection(TEST_USER_COLLECTION).document(device_id);
+//        final DocumentReference docIdRef = db.collection(TEST_USER_COLLECTION).document(device_id);
+//        final DocumentReference docIdRef = db.collection(USER_COLLECTION).document(device_id);
 
         if (clear) {
             SharedPreferences.Editor editor = sharedPrefs.edit();
             editor.putString(SHARE_PREFERENCE_DEVICE_ID, device_id);
-            editor.apply();
-            clear = false;
-//            SharedPreferences.Editor editor = sharedPrefs.edit();
             editor.putBoolean(SHARE_PREFERENCE_CLEAR_CACHE, false);
             editor.apply();
-            docIdRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        assert document != null;
-                        if (document.exists()) {
-                            Log.d(TAG, "Document exists!");
-                            docIdRef.update(APP_VERSION_KEY, APP_VERSION_VALUE,
-                                    UPDATE_TIME, Timestamp.now(),
-                                    LAST_LAUNCH_TIME, Timestamp.now(),
-                                    PUSH_MEDIA_SELECTION, sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, Collections.<String>emptySet()).toString(),
-                                    MEDIA_BAR_ORDER, sharedPrefs.getStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, Collections.<String>emptySet()).toString(),
-                                    USER_SURVEY_NUMBER, sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號")
-                            )//another field
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            Log.d("lognewsselect", "DocumentSnapshot successfully updated!");
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Log.w("lognewsselect", "Error updating document", e);
-                                        }
-                                    });
-                        } else {
-                            Log.d(TAG, "Document does not exist!");
-                            Map<String, Object> first = new HashMap<>();
-                            first.put(INITIAL_TIME, Timestamp.now());
-                            first.put(UPDATE_TIME, Timestamp.now());
-                            first.put(LAST_LAUNCH_TIME, Timestamp.now());
-                            first.put(USER_DEVICE_ID, device_id);
-                            first.put(USER_PHONE_ID, Build.MODEL);
-                            first.put(APP_VERSION_KEY, APP_VERSION_VALUE);
-                            first.put(USER_SURVEY_NUMBER, sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
-                            first.put(PUSH_MEDIA_SELECTION, sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, Collections.<String>emptySet()).toString());
-                            first.put(MEDIA_BAR_ORDER, sharedPrefs.getStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, Collections.<String>emptySet()).toString());
-                            db.collection(TEST_USER_COLLECTION)
-                                    .document(device_id)
-                                    .set(first);
-                        }
-                    } else {
-                        Log.d(TAG, "Failed with: ", task.getException());
-                    }
-                }
-            });
-            showStartDialog();
+            clear = false;
+//            docIdRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//                @Override
+//                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                    if (task.isSuccessful()) {
+//                        DocumentSnapshot document = task.getResult();
+//                        assert document != null;
+//                        if (document.exists()) {
+//                            Log.d(TAG, "Document exists!");
+//                            docIdRef.update(APP_VERSION_KEY, APP_VERSION_VALUE,
+//                                    UPDATE_TIME, Timestamp.now(),
+//                                    LAST_LAUNCH_TIME, Timestamp.now(),
+//                                    PUSH_MEDIA_SELECTION, sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, Collections.<String>emptySet()).toString(),
+//                                    MEDIA_BAR_ORDER, sharedPrefs.getStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, Collections.<String>emptySet()).toString(),
+//                                    USER_SURVEY_NUMBER, sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號")
+//                            )//another field
+//                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                        @Override
+//                                        public void onSuccess(Void aVoid) {
+//                                            Log.d("lognewsselect", "DocumentSnapshot successfully updated!");
+//                                        }
+//                                    })
+//                                    .addOnFailureListener(new OnFailureListener() {
+//                                        @Override
+//                                        public void onFailure(@NonNull Exception e) {
+//                                            Log.w("lognewsselect", "Error updating document", e);
+//                                        }
+//                                    });
+//                        } else {
+//                            Log.d(TAG, "Document does not exist!");
+//                            Map<String, Object> first = new HashMap<>();
+//                            first.put(INITIAL_TIME, Timestamp.now());
+//                            first.put(UPDATE_TIME, Timestamp.now());
+//                            first.put(LAST_LAUNCH_TIME, Timestamp.now());
+//                            first.put(USER_DEVICE_ID, device_id);
+//                            first.put(USER_PHONE_ID, Build.MODEL);
+//                            first.put(APP_VERSION_KEY, APP_VERSION_VALUE);
+//                            first.put(USER_SURVEY_NUMBER, sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+//                            first.put(PUSH_MEDIA_SELECTION, sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, Collections.<String>emptySet()).toString());
+//                            first.put(MEDIA_BAR_ORDER, sharedPrefs.getStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, Collections.<String>emptySet()).toString());
+//                            db.collection(TEST_USER_COLLECTION)
+//                                    .document(device_id)
+//                                    .set(first);
+//                        }
+//                    } else {
+//                        Log.d(TAG, "Failed with: ", task.getException());
+//                    }
+//                }
+//            });
+//            showStartDialog();
 
             //initial media list
             Set<String> ranking = sharedPrefs.getStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, Collections.<String>emptySet());
@@ -269,59 +272,19 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 edit.clear();
                 edit.putStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, set);
                 edit.apply();
-//                Toast.makeText(this, "帳號設定可以調整首頁媒體排序喔~", Toast.LENGTH_SHORT).show();
             }
-
-        } else {
-            docIdRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        assert document != null;
-                        if (document.exists()) {
-                            Log.d(TAG, "Document exists!");
-                            docIdRef.update(APP_VERSION_KEY, APP_VERSION_VALUE,
-                                    UPDATE_TIME, Timestamp.now(),
-                                    LAST_LAUNCH_TIME, Timestamp.now(),
-                                    PUSH_MEDIA_SELECTION, sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, Collections.<String>emptySet()).toString(),
-                                    MEDIA_BAR_ORDER, sharedPrefs.getStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, Collections.<String>emptySet()).toString(),
-                                    USER_SURVEY_NUMBER, sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號")
-                            )//another field
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            Log.d("lognewsselect", "DocumentSnapshot successfully updated!");
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Log.w("lognewsselect", "Error updating document", e);
-                                        }
-                                    });
-                        } else {
-                            Log.d(TAG, "Document does not exist!");
-                            Map<String, Object> first = new HashMap<>();
-                            first.put(INITIAL_TIME, Timestamp.now());
-                            first.put(UPDATE_TIME, Timestamp.now());
-                            first.put(LAST_LAUNCH_TIME, Timestamp.now());
-                            first.put(USER_DEVICE_ID, device_id);
-                            first.put(USER_PHONE_ID, Build.MODEL);
-                            first.put(APP_VERSION_KEY, APP_VERSION_VALUE);
-                            first.put(USER_SURVEY_NUMBER, sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
-                            first.put(PUSH_MEDIA_SELECTION, sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, Collections.<String>emptySet()).toString());
-                            first.put(MEDIA_BAR_ORDER, sharedPrefs.getStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, Collections.<String>emptySet()).toString());
-                            db.collection(TEST_USER_COLLECTION)
-                                    .document(device_id)
-                                    .set(first);
-                        }
-                    } else {
-                        Log.d(TAG, "Failed with: ", task.getException());
-                    }
-                }
-            });
         }
+        Map<String, Object> first = new HashMap<>();
+        first.put(UPDATE_TIME, Timestamp.now());
+        first.put(USER_DEVICE_ID, device_id);
+        first.put(USER_PHONE_ID, Build.MODEL);
+        first.put(APP_VERSION_KEY, APP_VERSION_VALUE);
+        first.put(USER_SURVEY_NUMBER, sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+        first.put(PUSH_MEDIA_SELECTION, sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, Collections.<String>emptySet()).toString());
+        first.put(MEDIA_BAR_ORDER, sharedPrefs.getStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, Collections.<String>emptySet()).toString());
+        db.collection(USER_COLLECTION)
+                .document(device_id)
+                .set(first);
         //notification media_select
 //        Set<String> selections = sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, Collections.<String>emptySet());
 //        if (selections==null){
@@ -347,7 +310,8 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         user_id.setText(device_id);
         user_name = (TextView) header.findViewById(R.id.textView_user_name);
         signature = sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號");
-        if (signature.equals("尚未設定實驗編號")){
+        if(signature.equals("尚未設定實驗編號")){
+            showStartDialog();
             user_name.setText("尚未設定實驗編號");
         } else {
             user_name.setText(signature);
@@ -381,17 +345,19 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 //            Toast.makeText(this, "service running", Toast.LENGTH_SHORT).show();
         }
         log_service.put(NEWS_SERVICE_TIME, Timestamp.now());
-
-
+        log_service.put(NEWS_SERVICE_DEVICE_ID, device_id);
         Date date = new Date(System.currentTimeMillis());
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 
-        db.collection(TEST_USER_COLLECTION)
-                .document(device_id)
-                .collection(NEWS_SERVICE_COLLECTION)
-//                .document(String.valueOf(Timestamp.now().toDate()))
-                .document(formatter.format(date))
+//        db.collection(TEST_USER_COLLECTION)
+//                .document(device_id)
+//                .collection(NEWS_SERVICE_COLLECTION)
+////                .document(String.valueOf(Timestamp.now().toDate()))
+//                .document(formatter.format(date))
+//                .set(log_service);
+        db.collection(NEWS_SERVICE_COLLECTION)
+                .document(device_id + " " + formatter.format(date))
                 .set(log_service);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),this);
         mViewPager = (ViewPager) findViewById(R.id.container_hy);
@@ -531,17 +497,41 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         super.onDestroy();
     }
     private void showStartDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle("注意事項(必做)")
-//                .setMessage("1.帳號設定把通知存取打開\n2.帳號設定可以調整首頁媒體排序喔~\n3.帳號設定選擇想要收到推播的媒體吧~")
-                .setMessage("去帳號設定\n1.把通知存取打開\n2.問卷推播時間設定並按儲存~")
-                .setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .create().show();
+        final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        AlertDialog.Builder editDialog = new AlertDialog.Builder(this);
+        editDialog.setTitle("請輸入您的實驗編號");
+        final EditText editText = new EditText(this);
+        editText.setText("");
+        editDialog.setView(editText);
+
+        editDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            // do something when the button is clicked
+            public void onClick(DialogInterface arg0, int arg1) {
+                signature = editText.getText().toString();
+                SharedPreferences.Editor editor = sharedPrefs.edit();
+                editor.putString(SHARE_PREFERENCE_USER_ID, signature);
+                editor.apply();
+//                textOut.setText(editText.getText().toString());
+            }
+        });
+        editDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            // do something when the button is clicked
+            public void onClick(DialogInterface arg0, int arg1) {
+//...
+            }
+        });
+        editDialog.show();
+//        new AlertDialog.Builder(this)
+//                .setTitle("注意事項(必做)")
+////                .setMessage("1.帳號設定把通知存取打開\n2.帳號設定可以調整首頁媒體排序喔~\n3.帳號設定選擇想要收到推播的媒體吧~")
+//                .setMessage("去帳號設定\n1.把通知存取打開\n2.問卷推播時間設定並按儲存~")
+//                .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.dismiss();
+//                    }
+//                })
+//                .create().show();
     }
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @SuppressLint("NonConstantResourceId")
@@ -587,25 +577,27 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                     Toast.makeText(this,"Gmail App is not installed",Toast.LENGTH_LONG).show();
 
                 drawerLayout.closeDrawer(GravityCompat.START);
+                return true;//////////////////////////////////////////////////
+
+            case R.id.nav_contactt :
+                Intent intent_esm = new Intent(context, AlarmReceiver.class);
+                intent_esm.setAction(ESM_ALARM_ACTION);
+                PendingIntent pendingIntent_esm = PendingIntent.getBroadcast(context, 77, intent_esm, 0);
+                AlarmManager alarmManager_esm = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+                Calendar cal_esm = Calendar.getInstance();
+                cal_esm.add(Calendar.SECOND, 2);
+                assert alarmManager_esm != null;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    alarmManager_esm.setExact(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_esm);
+                }else {
+                    alarmManager_esm.set(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_esm);
+                }
+                drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
-//            case R.id.nav_contact :
-//                Intent intent_esm = new Intent(context, AlarmReceiver.class);
-//                intent_esm.setAction(ESM_ALARM_ACTION);
-//                PendingIntent pendingIntent_esm = PendingIntent.getBroadcast(context, 77, intent_esm, 0);
-//                AlarmManager alarmManager_esm = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-//                Calendar cal_esm = Calendar.getInstance();
-//                cal_esm.add(Calendar.SECOND, 2);
-//                assert alarmManager_esm != null;
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//                    alarmManager_esm.setExact(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_esm);
-//                }else {
-//                    alarmManager_esm.set(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_esm);
-//                }
-//                drawerLayout.closeDrawer(GravityCompat.START);
-//                return true;
             case R.id.nav_tmp :
                 Intent intent_diary = new Intent(context, AlarmReceiver.class);
                 intent_diary.setAction(DIARY_ALARM_ACTION);
+//                intent_diary.setAction(ESM_ALARM_ACTION);
                 PendingIntent pendingIntent_diary = PendingIntent.getBroadcast(context, 78, intent_diary, 0);
                 AlarmManager alarmManager_diary = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
                 Calendar cal_diary = Calendar.getInstance();

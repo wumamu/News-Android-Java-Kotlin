@@ -113,7 +113,8 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
 //        Log.d("lognewsselect", "//+++++++++type" + type);
         //temp
         if (is_esm){
-            final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(PUSH_ESM_COLLECTION).document(esm_id);
+//            final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(PUSH_ESM_COLLECTION).document(esm_id);
+            final DocumentReference rbRef = db.collection(PUSH_ESM_COLLECTION).document(device_id + " " + esm_id);
             rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -143,7 +144,8 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 }
             });
         } else if(is_diary){
-            final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(PUSH_DIARY_COLLECTION).document(diary_id);
+//            final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(PUSH_DIARY_COLLECTION).document(diary_id);
+            final DocumentReference rbRef = db.collection(PUSH_DIARY_COLLECTION).document(device_id + " " + diary_id);
             rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -311,7 +313,8 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
         @SuppressLint("HardwareIds")
         String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         if (is_esm){
-            final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(PUSH_ESM_COLLECTION).document(esm_id);
+//            final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(PUSH_ESM_COLLECTION).document(esm_id);
+            final DocumentReference rbRef = db.collection(PUSH_ESM_COLLECTION).document(device_id + " " + esm_id);
             rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -341,7 +344,8 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 }
             });
         } else if(is_diary){
-            final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(PUSH_DIARY_COLLECTION).document(diary_id);
+//            final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(PUSH_DIARY_COLLECTION).document(diary_id);
+            final DocumentReference rbRef = db.collection(PUSH_DIARY_COLLECTION).document(device_id + " " + diary_id);
             rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -382,7 +386,11 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 if(diary_option_string_list_array_json.get(0).equals(ZERO_RESULT_STRING)){
                     break;
                 }
-                option_arr.put(diary_option_string_list_array_json.get(x));
+                String origin_tmp = diary_option_string_list_array_json.get(x);
+                List<String> tmp_array = new ArrayList<String>(Arrays.asList(origin_tmp.split("\n")));
+                origin_tmp = x + "\n" + tmp_array.get(0) + "\n" + tmp_array.get(1)  + "\n" + tmp_array.get(2)  + "\n" + tmp_array.get(3);
+                option_arr.put(origin_tmp);
+//                option_arr.put(diary_option_string_list_array_json.get(x));
             }
             option_arr.put("無");
             JSONObject jsonRootObject = new JSONObject(loadJSONFromAsset("diary.json"));
@@ -498,7 +506,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 List<String> history_list_title = new ArrayList<String>(Arrays.asList(target_history.split("#")));
                 for(int i = 0; i<history_list_title.size();i++){
                     List<String> very_tmp = new ArrayList<String>(Arrays.asList(history_list_title.get(i).split("¢")));
-                    if(very_tmp.size()==5){
+                    if(very_tmp.size()==6){
                         HistoryNewsTitleObjListArray.add(new NewsCompareObj(parseInt(very_tmp.get(1)), parseInt(very_tmp.get(2)), very_tmp.get(3), i, history_list_title.get(i),0));
                     } else {
                         Log.d("lognewsselect", "======================OLD==================================very_tmp" + very_tmp.size());
@@ -509,7 +517,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 if(read_news_title_array_json.size()>0 && !read_news_title_array_json.get(0).equals(ZERO_RESULT_STRING)){
                     for(int i = 0; i<read_news_title_array_json.size();i++){
                         List<String> very_tmp = new ArrayList<String>(Arrays.asList(read_news_title_array_json.get(i).split("¢")));
-                        if(very_tmp.size()==5){
+                        if(very_tmp.size()==6){
                             MyNewsTitleObjListArray.add(new NewsCompareObj(parseInt(very_tmp.get(1)), parseInt(very_tmp.get(2)), very_tmp.get(3), i, read_news_title_array_json.get(i),0));
                         } else {
                             Log.d("lognewsselect", "======================NEW=================================very_tmp" + very_tmp.size());

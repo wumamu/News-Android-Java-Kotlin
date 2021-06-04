@@ -44,7 +44,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_READ_E
 public class NewsRecycleViewAdapter extends RecyclerView.Adapter<NewsRecycleViewAdapter.ViewHolder> {
     private ArrayList<NewsModel> dataModelArrayList;
     private Context context;
-
+    String my_media = "";
     // constructor class for our Adapter
     public NewsRecycleViewAdapter(ArrayList<NewsModel> dataModalArrayList, Context context) {
         this.dataModelArrayList = dataModalArrayList;
@@ -64,39 +64,44 @@ public class NewsRecycleViewAdapter extends RecyclerView.Adapter<NewsRecycleView
         // setting data to our views in Recycler view items.
         final NewsModel model = dataModelArrayList.get(position);
         holder.newsTitle.setText(model.getTitle());
-        if(model.getPubdate()==null){
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            DocumentReference docRef = db.collection("server_push_notifications").document(model.getId());
-            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        assert document != null;
-                        if (document.exists()) {
-                            Date date = document.getTimestamp("pubdate").toDate();
-                            @SuppressLint("SimpleDateFormat")
-                            SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-                            List<String> my_tt = new ArrayList<String>(Arrays.asList(formatter.format(date).split(" ")));
-                            holder.newsPubTime.setText(String.format("%s %s", my_tt.get(0), my_tt.get(2)));
-                            holder.newsMedia.setText(document.getString("media"));
-                        } else {
-                            Log.d("lognewsselect", "No such document");
-                        }
-                    } else {
-                        Log.d("lognewsselect", "get failed with ", task.getException());
-                    }
-                }
-            });
-        } else {
-            Date date = model.getPubdate().toDate();
-            @SuppressLint("SimpleDateFormat")
-            SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-            List<String> my_tt = new ArrayList<String>(Arrays.asList(formatter.format(date).split(" ")));
-            holder.newsPubTime.setText(String.format("%s %s", my_tt.get(0), my_tt.get(2)));
-//        holder.newsPubTime.setText("123");
-            holder.newsMedia.setText(model.getMedia());
-        }
+        Date date = model.getPubdate().toDate();
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+        List<String> my_tt = new ArrayList<String>(Arrays.asList(formatter.format(date).split(" ")));
+        holder.newsPubTime.setText(String.format("%s %s", my_tt.get(0), my_tt.get(2)));
+        holder.newsMedia.setText(model.getMedia());
+//        if(model.getPubdate()==null){
+//            FirebaseFirestore db = FirebaseFirestore.getInstance();
+//            DocumentReference docRef = db.collection("server_push_notifications").document(model.getId());
+//            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//                @Override
+//                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                    if (task.isSuccessful()) {
+//                        DocumentSnapshot document = task.getResult();
+//                        assert document != null;
+//                        if (document.exists()) {
+//                            Date date = document.getTimestamp("pubdate").toDate();
+//                            @SuppressLint("SimpleDateFormat")
+//                            SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+//                            List<String> my_tt = new ArrayList<String>(Arrays.asList(formatter.format(date).split(" ")));
+//                            holder.newsPubTime.setText(String.format("%s %s", my_tt.get(0), my_tt.get(2)));
+//                            holder.newsMedia.setText(document.getString("media"));
+//                        } else {
+//                            Log.d("lognewsselect", "No such document");
+//                        }
+//                    } else {
+//                        Log.d("lognewsselect", "get failed with ", task.getException());
+//                    }
+//                }
+//            });
+//        } else {
+//            Date date = model.getPubdate().toDate();
+//            @SuppressLint("SimpleDateFormat")
+//            SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+//            List<String> my_tt = new ArrayList<String>(Arrays.asList(formatter.format(date).split(" ")));
+//            holder.newsPubTime.setText(String.format("%s %s", my_tt.get(0), my_tt.get(2)));
+//            holder.newsMedia.setText(model.getMedia());
+//        }
 
 
         // we are using Picasso to load images
@@ -137,14 +142,44 @@ public class NewsRecycleViewAdapter extends RecyclerView.Adapter<NewsRecycleView
                 @Override
                 public void onClick(View view) {
 //                    Toast.makeText(view.getContext(), "click " +getAdapterPosition(),Toast.LENGTH_SHORT).show();
-                    NewsModel model = dataModelArrayList.get(getAdapterPosition());
-                    Intent intent = new Intent();
+                    final NewsModel model = dataModelArrayList.get(getAdapterPosition());
+                    final Intent intent = new Intent();
                     intent.setClass(context, NewsModuleActivity.class);
                     intent.putExtra("trigger_by", "self_trigger");
                     intent.putExtra("news_id", model.getId());
                     intent.putExtra("media", model.getMedia());
+//                    Log.d("lognewsselect", "MY ID  " +  model.getId());
+//                    if(model.getMedia()==null){
+////                        String my_media = "";
+//                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//                        DocumentReference docRef = db.collection("server_push_notifications").document(model.getId());
+//                        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//                            @Override
+//                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                                if (task.isSuccessful()) {
+//                                    DocumentSnapshot document = task.getResult();
+//                                    assert document != null;
+//                                    if (document.exists()) {
+//                                        my_media = document.getString("media");
+//                                        Log.d("lognewsselect", "my_media " +  my_media);
+////                                        intent.putExtra("media", document.getString("media"));
+//                                    } else {
+//                                        Log.d("lognewsselect", "No such document");
+//                                    }
+//                                } else {
+//                                    Log.d("lognewsselect", "get failed with ", task.getException());
+//                                }
+//                            }
+//                        });
+//                        Log.d("lognewsselect", "MY MEDIA " +  my_media);
+//                        intent.putExtra("media", my_media);
+//                    } else {
+//                        Log.d("lognewsselect", "MY MEDIA ** " +  model.getMedia());
+//                        intent.putExtra("media", model.getMedia());
+//                    }
 
-                    Log.d("log: onClick", model.getTitle());
+
+//                    Log.d("log: onClick", model.getTitle());
 //                    Toast.makeText(view.getContext(), "click " +model.getTitle(),Toast.LENGTH_SHORT).show();
                     context.startActivity(intent);
                     //TestActivityRecognitionActivity.this.finish();

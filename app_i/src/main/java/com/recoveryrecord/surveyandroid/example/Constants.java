@@ -103,8 +103,11 @@ public class Constants {
     //FIRESTORE FIELD###############################################################################
     //FIRESTORE FIELD###############################################################################
     public static final String TEST_USER_COLLECTION = "test_users";
+
+
+    public static final String USER_COLLECTION = "user";
     public static final String APP_VERSION_KEY = "app_version";
-    public static final String APP_VERSION_VALUE = "21.05.28-2";
+    public static final String APP_VERSION_VALUE = "21.06.05-1";
     public static final String UPDATE_TIME = "update_timestamp";
     public static final String INITIAL_TIME = "initial_timestamp";
     public static final String LAST_LAUNCH_TIME = "last_launch_timestamp";
@@ -148,6 +151,7 @@ public class Constants {
     public static final String NOTIFICATION_BAR_NEWS_NOTI_TIME = "noti_timestamp";
     public static final String NOTIFICATION_BAR_NEWS_PACKAGE_ID = "package_id";
     public static final String NOTIFICATION_BAR_NEWS_SOURCE = "media";
+    public static final String NOTIFICATION_BAR_NEWS_DEVICE_ID = "device_id";
     //COMPARE RESULT
     public static final String COMPARE_RESULT_COLLECTION = "compare_result";
     public static final String COMPARE_RESULT_PUBDATE = "pubdate";
@@ -162,8 +166,10 @@ public class Constants {
     public static final String SCHEDULE_ALARM_SURVEY_START = "survey_start_hour";
     public static final String SCHEDULE_ALARM_SURVEY_END = "survey_end_hour";
     public static final String SCHEDULE_ALARM_MAX_ESM = "max_esm";
+    public static final String SCHEDULE_ALARM_DEVICE_ID = "device_id";
     //NEWS SERVICE CHECKER
     public static final String NEWS_SERVICE_COLLECTION = "news_service";
+    public static final String NEWS_SERVICE_DEVICE_ID = "device_id";
     public static final String NEWS_SERVICE_TIME = "service_timestamp";
     public static final String NEWS_SERVICE_STATUS_KEY = "service_status";
     public static final String NEWS_SERVICE_STATUS_VALUE_RESTART = "service_restart";
@@ -179,18 +185,23 @@ public class Constants {
 
     //READING BEHAVIOR
     public static final String READING_BEHAVIOR_COLLECTION = "reading_behaviors";
+//    public static final String READING_BEHAVIOR_MID = " RB ";
+    public static final String READING_BEHAVIOR_NEWS_ID = "news_id";
     public static final String READING_BEHAVIOR_DEVICE_ID = "device_id";
-    public static final String READING_BEHAVIOR_FONT_SIZE = "font_size";
     public static final String READING_BEHAVIOR_USER_ID = "user_id";
+    public static final String READING_BEHAVIOR_FONT_SIZE = "font_size";
     public static final String READING_BEHAVIOR_SHARE = "share";
+    public static final String READING_BEHAVIOR_TITLE = "title";
+    public static final String READING_BEHAVIOR_MEDIA = "media";
+    public static final String READING_BEHAVIOR_HAS_IMAGE = "has_img";
     public static final String READING_BEHAVIOR_CATEGORY = "category";
     public static final String READING_BEHAVIOR_TRIGGER_BY = "trigger_by";
     public static final String READING_BEHAVIOR_TRIGGER_BY_NOTIFICATION = "Notification";
     public static final String READING_BEHAVIOR_TRIGGER_BY_SELF_TRIGGER = "self_trigger";
     public static final String READING_BEHAVIOR_TIME_ON_PAGE = "time_on_page(s)";
-    public static final String READING_BEHAVIOR_TITLE = "title";
     public static final String READING_BEHAVIOR_IN_TIME = "in_timestamp";
     public static final String READING_BEHAVIOR_OUT_TIME = "out_timestamp";
+    public static final String READING_BEHAVIOR_CHECK_MARK = "check_mark";
     public static final String READING_BEHAVIOR_SAMPLE_CHECK = "select";
     public static final String READING_BEHAVIOR_SAMPLE_CHECK_ID = "select_esm_id";
     //PUSH NEWS
@@ -207,12 +218,13 @@ public class Constants {
     public static final String PUSH_NEWS_SELECTION = "selections";
     public static final String PUSH_NEWS_TITLE = "title";
     public static final String PUSH_NEWS_MEDIA = "media";
-    public static final String PUSH_NEWS_ID = "id";
+    public static final String PUSH_NEWS_ID = "news_id";
     public static final String PUSH_NEWS_TYPE = "type";
     public static final String PUSH_NEWS_DEVICE_ID = "device_id";
     public static final String PUSH_NEWS_USER_ID = "user_id";
     //PUSH ESM
     public static final String PUSH_ESM_COLLECTION = "push_esm";
+    public static final String PUSH_ESM_DEVICE_ID = "device_id";
     public static final String PUSH_ESM_SAMPLE = "sample";
     public static final String PUSH_ESM_SAMPLE_ID = "sample_diary_id";
     public static final String PUSH_ESM_TRIGGER_BY_NOTIFICATION = "notification_service";
@@ -237,12 +249,14 @@ public class Constants {
     public static final String PUSH_ESM_NOT_SAMPLE_READ_FAR = "NotSampleReadFar";
     public static final String PUSH_ESM_NOT_SAMPLE_NOTIFICATION_FAR = "NotSampleNotificationFar";
     public static final String PUSH_ESM_TARGET_TITLE = "target_read_title";
-    public static final String PUSH_ESM_TARGET_TITLE_DIARY = "target_read_title_diary";
+    public static final String PUSH_ESM_TARGET = "target";
     public static final String PUSH_ESM_TARGET_IN_TIME = "target_in_time";
     public static final String PUSH_ESM_TARGET_SITUATION = "target_situation";
     public static final String PUSH_ESM_TARGET_PLACE = "target_place";
+    public static final String PUSH_ESM_TARGET_NEWS_ID = "target_news_id";
     //PUSH DIARY
     public static final String PUSH_DIARY_COLLECTION = "push_diary";
+    public static final String PUSH_DIARY_DEVICE_ID = "device_id";
     public static final String PUSH_DIARY_OPTION = "target_history_candidate";
     public static final String PUSH_DIARY_REMOVE_TIME = "remove_timestamp";
     public static final String PUSH_DIARY_REMOVE_TYPE = "remove_type";
@@ -268,6 +282,7 @@ public class Constants {
     public static final String NOTIFICATION_BAR_REMOVE_TYPE = "remove_type";
     public static final String NOTIFICATION_BAR_PACKAGE_NAME = "package_name";
     public static final String NOTIFICATION_BAR_PACKAGE_ID = "package_id";
+    public static final String NOTIFICATION_BAR_DEVICE_ID = "device_id";
     //SHARE PREFERENCE #############################################################################
     //SHARE PREFERENCE #############################################################################
     //SHARE PREFERENCE #############################################################################

@@ -54,9 +54,18 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
     String target_read_title = "NA";
     String target_read_current_title = "NA";
     String target_read_title_in_time = "NA";
+    String target_read_title_id = "NA";
     String target_read_title_situation = "NA";
     String target_read_title_place = "NA";
+
     List<String> sample_read_Array = new ArrayList<>();
+
+    String target_opportune = "NA";
+    String target_opportune_news_id = "NA";
+    String target_opportune_title = "NA";
+    String target_inopportune = "NA";
+    String target_inopportune_news_id = "NA";
+    String target_inopportune_title = "NA";
 
     String DOC_ID_KEY = "id";
     String SURVEY_PAGE_ID = "id";
@@ -78,8 +87,9 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
     String PUSH_ESM_SAMPLE = "sample";
     String PUSH_ESM_RESULT = "result";
     String PUSH_ESM_TARGET_TITLE = "target_read_title";
-    String PUSH_ESM_TARGET_TITLE_DIARY = "target_read_title_diary";
+    String PUSH_ESM_TARGET_TITLE_DIARY = "target";
     String PUSH_ESM_TARGET_IN_TIME = "target_in_time";
+    String PUSH_ESM_TARGET_NEWS_ID = "target_news_id";
     String PUSH_ESM_TARGET_SITUATION = "target_situation";
     String PUSH_ESM_TARGET_PLACE = "target_place";
 
@@ -90,6 +100,16 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
     String PUSH_DIARY_DONE = "done";
     String PUSH_DIARY_SUBMIT_TIME = "submit_timestamp";
     String PUSH_DIARY_RESULT = "result";
+    String PUSH_DIARY_OPPORTUNE_TARGET = "opportune_target";
+    String PUSH_DIARY_OPPORTUNE_TARGET_TITLE = "opportune_target_title";
+    String PUSH_DIARY_OPPORTUNE_TARGET_NEWS_ID = "opportune_target_news_id";
+    String PUSH_DIARY_INOPPORTUNE_TARGET = "inopportune_target";
+    String PUSH_DIARY_INOPPORTUNE_TARGET_TITLE = "inopportune_target_title";
+    String PUSH_DIARY_INOPPORTUNE_TARGET_NEWS_ID = "inopportune_target_news_id";
+
+    String DIARY_READ_HISTORY_CANDIDATE = "DiaryTargetOptionArray";
+    String ZERO_RESULT_STRING = "zero_result";
+
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     public SubmitViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -131,16 +151,19 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                     editor.putInt(ESM_DONE_TOTAL, esm_done+1);
                     editor.putInt(ESM_DAY_DONE_PREFIX + day_index, esm_day_done+1);
                     editor.apply();
-                    DocumentReference docRef = db.collection("test_users").document(device_id).collection("push_esm").document(esm_id);
+//                    DocumentReference docRef = db.collection("test_users").document(device_id).collection("push_esm").document(esm_id);
+                    DocumentReference docRef = db.collection("push_esm").document(device_id + " " + esm_id);
+                    //result without title so we have to trace
                     docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>(){
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             if (task.isSuccessful()) {
                                 DocumentSnapshot document = task.getResult();
                                 if (document.exists()) {
-                                    if(document.get("ReadNewsTitle")!=null){
+                                    if(document.get("ExistReadSample")!=null){
                                         sample_read_Array = (List<String>) document.get("ReadNewsTitle");
-                                        if(!sample_read_Array.get(0).equals("zero_result")){
+//                                        if(!sample_read_Array.get(0).equals("zero_result")){
+                                        if(document.getBoolean("ExistReadSample")){
                                             try {
                                                 assert result_json != null;
                                                 JSONObject jsonRootObject = new JSONObject(result_json);
@@ -184,7 +207,8 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                     });
 
                     final Timestamp current = Timestamp.now();
-                    final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(PUSH_ESM_COLLECTION).document(esm_id);
+//                    final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(PUSH_ESM_COLLECTION).document(esm_id);
+                    final DocumentReference rbRef = db.collection(PUSH_ESM_COLLECTION).document(device_id + " " + esm_id);
                     rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -192,7 +216,7 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                                 DocumentSnapshot document = task.getResult();
                                 if (document.exists()) {
                                     int sample = 1;
-                                    String diary_title = "";
+                                    String diary_title = "NA";
                                     if(!target_read_title.equals("NA")){
                                         sample = 2;
                                         String TARGET_NEWS_TITLE = "TargetNewsTitleArray";
@@ -205,13 +229,15 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                                         }
                                         List<String> tmp = new ArrayList<String>(Arrays.asList(target_read_title.split("¢")));
                                         target_read_title_in_time = tmp.get(4);
+                                        target_read_title_id = tmp.get(5);
                                         diary_title = tmp.get(0);
                                     }
 
                                     rbRef.update(PUSH_ESM_SAMPLE, sample,
-                                            PUSH_ESM_TARGET_TITLE_DIARY, diary_title,
-                                            PUSH_ESM_TARGET_TITLE, target_read_title,
+                                            PUSH_ESM_TARGET_TITLE_DIARY, target_read_title,
+                                            PUSH_ESM_TARGET_TITLE,  diary_title,
                                             PUSH_ESM_TARGET_IN_TIME, target_read_title_in_time,
+                                            PUSH_ESM_TARGET_NEWS_ID, target_read_title_id,
                                             PUSH_ESM_TARGET_SITUATION, target_read_title_situation,
                                             PUSH_ESM_TARGET_PLACE, target_read_title_place,
                                             PUSH_ESM_SUBMIT_TIME, current,
@@ -246,7 +272,42 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                     editor.putInt(DIARY_DAY_DONE_PREFIX + day_index, diary_day_done+1);
                     editor.apply();
                     final Timestamp current = Timestamp.now();
-                    final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(PUSH_DIARY_COLLECTION).document(diary_id);
+//                    final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(PUSH_DIARY_COLLECTION).document(diary_id);
+                    final DocumentReference rbRef = db.collection(PUSH_DIARY_COLLECTION).document(device_id + " " + diary_id);
+                    String diary_option_string_list = sharedPrefs.getString(DIARY_READ_HISTORY_CANDIDATE, ZERO_RESULT_STRING);
+                    List<String> diary_option_array = new ArrayList<String>(Arrays.asList(diary_option_string_list.split("#")));
+                    if(!diary_option_string_list.equals(ZERO_RESULT_STRING)){
+                        try {
+                            assert result_json != null;
+                            JSONObject jsonRootObject = new JSONObject(result_json);
+                            JSONObject jsonAnswerObject = jsonRootObject.getJSONObject("answers");
+                            if (jsonAnswerObject.has("inopportune_1")) {
+                                if(!jsonAnswerObject.getString("inopportune_1").equals("無")){
+                                    List<String> tmp_array = new ArrayList<String>(Arrays.asList(jsonAnswerObject.getString("inopportune_1").split("\n")));
+                                    int index = Integer.parseInt(tmp_array.get(0));
+                                    List<String> new_tmp_array = new ArrayList<String>(Arrays.asList(diary_option_array.get(index).split("\n")));
+                                    target_inopportune_news_id = new_tmp_array.get(4);
+                                    target_inopportune_title = new_tmp_array.get(0);
+                                    target_inopportune = diary_option_array.get(index);
+                                }
+
+                            }
+                            if (jsonAnswerObject.has("opportune_1")) {
+                                if(!jsonAnswerObject.getString("opportune_1").equals("無")){
+                                    List<String> tmp_array = new ArrayList<String>(Arrays.asList(jsonAnswerObject.getString("opportune_1").split("\n")));
+                                    int index = Integer.parseInt(tmp_array.get(0));
+                                    List<String> new_tmp_array = new ArrayList<String>(Arrays.asList(diary_option_array.get(index).split("\n")));
+                                    target_opportune_news_id = new_tmp_array.get(4);
+                                    target_opportune_title = new_tmp_array.get(0);
+                                    target_opportune = diary_option_array.get(index);
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+
                     rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -255,7 +316,13 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                                 if (document.exists()) {
                                     rbRef.update(PUSH_DIARY_DONE, 1,
                                             PUSH_DIARY_SUBMIT_TIME, current,
-                                            PUSH_DIARY_RESULT, result_json)//another field
+                                            PUSH_DIARY_RESULT, result_json,
+                                            PUSH_DIARY_INOPPORTUNE_TARGET, target_inopportune,
+                                            PUSH_DIARY_INOPPORTUNE_TARGET_TITLE, target_inopportune_title,
+                                            PUSH_DIARY_INOPPORTUNE_TARGET_NEWS_ID, target_inopportune_news_id,
+                                            PUSH_DIARY_OPPORTUNE_TARGET, target_opportune,
+                                            PUSH_DIARY_OPPORTUNE_TARGET_TITLE, target_opportune_title,
+                                            PUSH_DIARY_OPPORTUNE_TARGET_NEWS_ID, target_opportune_news_id)//another field
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {

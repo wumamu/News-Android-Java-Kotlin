@@ -24,6 +24,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.CANCEL_ALARM_AC
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_VALUE_BOOT_UP;
+import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_VALUE_RESTART;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_TIME;
@@ -69,11 +70,17 @@ public class BootUpReceiver extends BroadcastReceiver {
             log_service.put(NEWS_SERVICE_TIME, Timestamp.now());
             log_service.put(NEWS_SERVICE_STATUS_KEY, NEWS_SERVICE_STATUS_VALUE_RESTART);
             log_service.put(NEWS_SERVICE_CYCLE_KEY, NEWS_SERVICE_CYCLE_VALUE_BOOT_UP);
-            db.collection(TEST_USER_COLLECTION)
-                    .document(Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID))
-                    .collection(NEWS_SERVICE_COLLECTION)
-//                    .document(String.valueOf(Timestamp.now().toDate()))
-                    .document(formatter.format(date))
+            @SuppressLint("HardwareIds")
+            String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+            log_service.put(NEWS_SERVICE_DEVICE_ID, device_id);
+//            db.collection(TEST_USER_COLLECTION)
+//                    .document(Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID))
+//                    .collection(NEWS_SERVICE_COLLECTION)
+////                    .document(String.valueOf(Timestamp.now().toDate()))
+//                    .document(formatter.format(date))
+//                    .set(log_service);
+            db.collection(NEWS_SERVICE_COLLECTION)
+                    .document(device_id + " " + formatter.format(date))
                     .set(log_service);
         }
     }
