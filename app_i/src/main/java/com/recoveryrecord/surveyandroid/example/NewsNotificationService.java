@@ -139,20 +139,38 @@ public class NewsNotificationService extends Service {
         extras.putString(NOTIFICATION_TYPE_KEY, NOTIFICATION_TYPE_VALUE_SERVICE);
         notificationBuilder.setExtras(extras);
 
-
-
-        Notification notification = notificationBuilder
-                .setOngoing(true)
-                .setContentTitle("App is running in background")
-                .setPriority(NotificationManager.IMPORTANCE_MIN)
-                .setCategory(Notification.CATEGORY_SERVICE)
-                .setNotificationSilent()
-                .setSmallIcon(R.drawable.ic_launcher_foreground, 0)
-
-//                .setGroup(GROUP_NEWS_SERVICE)
+        if(first_group){
+            first_group = false;
+            SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editor = sharedPrefs.edit();
+            editor.putBoolean(SHARE_NOTIFICATION_FIRST_CREATE, false);
+            editor.apply();
+            Notification notification = notificationBuilder
+                    .setOngoing(true)
+                    .setContentTitle("App is running in background")
+                    .setPriority(NotificationManager.IMPORTANCE_MIN)
+                    .setCategory(Notification.CATEGORY_SERVICE)
+                    .setNotificationSilent()
+                    .setSmallIcon(R.drawable.ic_launcher_foreground, 0)
+                    .setGroup(GROUP_NEWS_SERVICE)
+                    .setGroupSummary(true)
+                    .build();
+            startForeground(2, notification);
+        } else {
+            Notification notification = notificationBuilder
+                    .setOngoing(true)
+                    .setContentTitle("App is running in background")
+                    .setPriority(NotificationManager.IMPORTANCE_MIN)
+                    .setCategory(Notification.CATEGORY_SERVICE)
+                    .setNotificationSilent()
+                    .setSmallIcon(R.drawable.ic_launcher_foreground, 0)
+                    .setGroup(GROUP_NEWS_SERVICE)
 //                .setGroupSummary(true)
-                .build();
-        startForeground(2, notification);
+                    .build();
+            startForeground(2, notification);
+        }
+
+
     }
     @SuppressLint("HardwareIds")
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -369,14 +387,14 @@ public class NewsNotificationService extends Service {
         builder.setVibrate(VIBRATE_EFFECT);              //震動模式
         builder.setPriority(NotificationManager.IMPORTANCE_HIGH);
         builder.setCategory(Notification.CATEGORY_RECOMMENDATION);
-        builder.setGroup(GROUP_NEWS);
-        if(first_group){
-            builder.setGroupSummary(true);
-            first_group = false;
-//            SharedPreferences.Editor editor = sharedPrefs.edit();
-//            editor.putBoolean(SHARE_NOTIFICATION_FIRST_CREATE, false);
-//            editor.apply();
-        }
+//        builder.setGroup(GROUP_NEWS);
+//        if(first_group){
+//            builder.setGroupSummary(true);
+//            first_group = false;
+////            SharedPreferences.Editor editor = sharedPrefs.edit();
+////            editor.putBoolean(SHARE_NOTIFICATION_FIRST_CREATE, false);
+////            editor.apply();
+//        }
         Bundle extras = new Bundle();
         extras.putString(DOC_ID_KEY, news_id);
         extras.putString(NOTIFICATION_TYPE_KEY, NOTIFICATION_TYPE_VALUE_NEWS);

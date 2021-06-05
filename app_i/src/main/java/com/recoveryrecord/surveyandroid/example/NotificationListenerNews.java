@@ -8,10 +8,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_NEWS_CHANNEL_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_NEWS_NOTIFICATION;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_CHANNEL_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.GROUP_NEWS;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_CHANNEL_ID;
 import static com.recoveryrecord.surveyandroid.example.TestBasicActivity.NOTIFICATION_CHANNEL_ID;
 
@@ -22,6 +25,8 @@ public class NotificationListenerNews extends BroadcastReceiver {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel notificationChannel = new NotificationChannel( NEWS_CHANNEL_ID , "NEWS_CHANNEL" , NotificationManager.IMPORTANCE_HIGH) ;
+//            notificationChannel.setGroup(GROUP_NEWS);
+//            notificationChannel.setDescription("新聞通知");
 //            NotificationChannel notificationChannel = new NotificationChannel( ESM_CHANNEL_ID , "NEWS_CHANNEL" , importance) ;
             assert notificationManager != null;
             notificationManager.createNotificationChannel(notificationChannel) ;
@@ -29,5 +34,16 @@ public class NotificationListenerNews extends BroadcastReceiver {
         assert notificationManager != null;
         notificationManager.notify((int) System.currentTimeMillis() , notification) ;
 //        NotificationManagerCompat.from(context).notify((int) System.currentTimeMillis() , notification);
+//        Notification summaryNotification = new NotificationCompat.Builder(context, DEFAULT_NEWS_CHANNEL_ID)
+//                .setSmallIcon(R.drawable.ic_launcher_foreground)
+//                .setStyle(new NotificationCompat.InboxStyle()
+//                        .setBigContentTitle("2 new messages")
+//                        .setSummaryText("user@example.com"))
+//                .setPriority(NotificationCompat.PRIORITY_LOW)
+//                .setGroup(GROUP_NEWS)
+//                .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
+//                .setGroupSummary(true)
+//                .build();
+//        notificationManager.notify(501, summaryNotification);
     }
 }
