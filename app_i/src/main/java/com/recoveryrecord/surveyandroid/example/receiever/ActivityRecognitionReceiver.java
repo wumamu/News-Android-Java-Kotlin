@@ -78,13 +78,13 @@ public class ActivityRecognitionReceiver extends IntentService implements Stream
         device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         sensordb.put("Time", time_now);
         sensordb.put("Activity Recognition", "NA");
-//        db.collection("test_users")
-//                .document(device_id)
-//                .collection("Sensor collection")
-//                .document("Sensor")
-//                .collection("Activity Recognition")
-//                .document(time_now)
-//                .set(sensordb);
+        db.collection("test_users")
+                .document(device_id)
+                .collection("Sensor collection")
+                .document("Sensor")
+                .collection("Activity Recognition")
+                .document(time_now)
+                .set(sensordb);
 
         ActivityRecognitionResult result = ActivityRecognitionResult.extractResult(intent);
 //        handleDetectedActivities(result.getProbableActivities());
@@ -105,13 +105,13 @@ public class ActivityRecognitionReceiver extends IntentService implements Stream
         sensordb.put("Activity Recognition 6", "Tilting: " + Tilting);
         sensordb.put("Activity Recognition 7", "Walking: " + Walking);
         sensordb.put("Activity Recognition 8", "Unknown: " + Unknown);
-//        db.collection("test_users")
-//                .document(device_id)
-//                .collection("Sensor collection")
-//                .document("Sensor")
-//                .collection("Activity Recognition")
-//                .document(time_now)
-//                .set(sensordb);
+        db.collection("test_users")
+                .document(device_id)
+                .collection("Sensor collection")
+                .document("Sensor")
+                .collection("Activity Recognition")
+                .document(time_now)
+                .set(sensordb);
     }
     private void handleDetectedActivities(List<DetectedActivity> probableActivities) {
         device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
