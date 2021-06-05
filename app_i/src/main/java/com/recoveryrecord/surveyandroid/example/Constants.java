@@ -5,6 +5,7 @@ import java.util.HashSet;
 public class Constants {
     //email
     public static final String OUR_EMAIL = "wcclevi1225@gmail.com";
+    public static final String MY_DEVICE = "564da153307f5547";
     //action
     public static final String CHECK_SERVICE_ACTION = "CheckService";//request code 50 60
     public static final String ESM_ALARM_ACTION = "EsmAlarm";//request code 0-15
@@ -107,7 +108,7 @@ public class Constants {
 
     public static final String USER_COLLECTION = "user";
     public static final String APP_VERSION_KEY = "app_version";
-    public static final String APP_VERSION_VALUE = "21.06.06-1";
+    public static final String APP_VERSION_VALUE = "21.06.06-2";
     public static final String UPDATE_TIME = "update_timestamp";
     public static final String INITIAL_TIME = "initial_timestamp";
     public static final String LAST_LAUNCH_TIME = "last_launch_timestamp";
