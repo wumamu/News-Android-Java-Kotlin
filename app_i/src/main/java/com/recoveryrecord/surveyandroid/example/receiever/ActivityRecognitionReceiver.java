@@ -1,5 +1,6 @@
 package com.recoveryrecord.surveyandroid.example.receiever;
 
+import android.annotation.SuppressLint;
 import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -35,7 +36,7 @@ import static com.recoveryrecord.surveyandroid.example.NotificationScheduler.TAG
 
 public class ActivityRecognitionReceiver extends IntentService implements StreamGenerator{
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
-    public static String device_id;
+    public static String device_id = "NA";
 
     public ActivityRecognitionReceiver() {
         super("ActivityRecognitionReceiver");
@@ -68,24 +69,31 @@ public class ActivityRecognitionReceiver extends IntentService implements Stream
     private static int Tilting = 0;
     private static int Walking = 0;
     private static int Unknown = 0;
+    @SuppressLint("HardwareIds")
     public void onCreate() {
         super.onCreate();
         device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
+    @SuppressLint("HardwareIds")
     @Override
     protected void onHandleIntent(Intent intent) {
 
         device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         sensordb.put("Time", time_now);
         sensordb.put("Activity Recognition", "NA");
-        db.collection("test_users")
-                .document(device_id)
-                .collection("Sensor collection")
+        sensordb.put("device_id", device_id);
+//        db.collection("test_users")
+//                .document(device_id)
+//                .collection("Sensor collection")
+//                .document("Sensor")
+//                .collection("Activity Recognition")
+//                .document(time_now)
+//                .set(sensordb);
+        db.collection("Sensor collection")
                 .document("Sensor")
                 .collection("Activity Recognition")
-                .document(time_now)
+                .document(device_id + " " + time_now)
                 .set(sensordb);
-
         ActivityRecognitionResult result = ActivityRecognitionResult.extractResult(intent);
 //        handleDetectedActivities(result.getProbableActivities());
     }
@@ -105,14 +113,28 @@ public class ActivityRecognitionReceiver extends IntentService implements Stream
         sensordb.put("Activity Recognition 6", "Tilting: " + Tilting);
         sensordb.put("Activity Recognition 7", "Walking: " + Walking);
         sensordb.put("Activity Recognition 8", "Unknown: " + Unknown);
-        db.collection("test_users")
-                .document(device_id)
-                .collection("Sensor collection")
+//        db.collection("test_users")
+//                .document(device_id)
+//                .collection("Sensor collection")
+//                .document("Sensor")
+//                .collection("Activity Recognition")
+//                .document(time_now)
+//                .set(sensordb);
+        sensordb.put("device_id", device_id);
+//        db.collection("test_users")
+//                .document(device_id)
+//                .collection("Sensor collection")
+//                .document("Sensor")
+//                .collection("Activity Recognition")
+//                .document(time_now)
+//                .set(sensordb);
+        db.collection("Sensor collection")
                 .document("Sensor")
                 .collection("Activity Recognition")
-                .document(time_now)
+                .document(device_id + " " + time_now)
                 .set(sensordb);
     }
+    @SuppressLint("HardwareIds")
     private void handleDetectedActivities(List<DetectedActivity> probableActivities) {
         device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         final DocumentReference ref = db.collection("test_users")
