@@ -28,6 +28,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
 import static java.security.AccessController.getContext;
 
 //import static com.recoveryrecord.surveyandroid.example.NetworkCheckerActivity.dialog;
@@ -61,12 +63,13 @@ public class NetworkChangeReceiver implements StreamGenerator{
         final String time_now = formatter.format(date);
         sensordb.put("Time", time_now);
         sensordb.put("Network", NetworkState);
-        db.collection("test_users")
-                .document(device_id)
-                .collection("Sensor collection")
+        sensordb.put("Using APP", UsingApp);
+        sensordb.put("device_id", device_id);
+        sensordb.put("period", DetectTime);
+        db.collection("Sensor collection")
                 .document("Sensor")
                 .collection("Network")
-                .document(time_now)
+                .document(device_id + " " + time_now)
                 .set(sensordb);
     }
 
@@ -120,12 +123,13 @@ public class NetworkChangeReceiver implements StreamGenerator{
                     sensordb.put("Time", time_now);
                     sensordb.put("Network", "Disconnected");
                 }
-                db.collection("test_users")
-                        .document(device_id)
-                        .collection("Sensor collection")
+                sensordb.put("Using APP", UsingApp);
+                sensordb.put("device_id", device_id);
+                sensordb.put("period", "Trigger Event");
+                db.collection("Sensor collection")
                         .document("Sensor")
                         .collection("Network")
-                        .document(time_now)
+                        .document(device_id + " " + time_now)
                         .set(sensordb);
             } catch (NullPointerException e) {
                 e.printStackTrace();

@@ -21,6 +21,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
+import static java.security.AccessController.getContext;
+
 public class LightSensorReceiver implements StreamGenerator{
     private static final boolean DEBUG = true;
     private static final String TAG = "LightSensor";
@@ -77,6 +81,8 @@ public class LightSensorReceiver implements StreamGenerator{
         }
         return -1.0f;
     }
+
+
     @Override
 
     public void updateStream() {
@@ -87,14 +93,21 @@ public class LightSensorReceiver implements StreamGenerator{
         final String time_now = formatter.format(date);
         sensordb.put("Time", time_now);
         sensordb.put("Light Sensor", LightState);
-
-        db.collection("test_users")
-                .document(device_id)
-                .collection("Sensor collection")
+        sensordb.put("Using APP", UsingApp);
+        sensordb.put("device_id", device_id);
+        sensordb.put("period", DetectTime);
+        db.collection("Sensor collection")
                 .document("Sensor")
-                .collection("LightSensor")
-                .document(time_now)
+                .collection("Light Sensor")
+                .document(device_id + " " + time_now)
                 .set(sensordb);
+//        db.collection("test_users")
+//                .document(device_id)
+//                .collection("Sensor collection")
+//                .document("Sensor")
+//                .collection("LightSensor")
+//                .document(time_now)
+//                .set(sensordb);
     }
 
     private class LightSensorListener implements SensorEventListener{
@@ -113,13 +126,6 @@ public class LightSensorReceiver implements StreamGenerator{
                 //sensordb.put("Light Sensor", lux);
                 LightState = lux;
             }
-//            db.collection("test_users")
-//                    .document(device_id)
-//                    .collection("Sensor collection")
-//                    .document("Sensor")
-//                    .collection("LightSensor")
-//                    .document(time_now)
-//                    .set(sensordb);
         }
 
         @Override

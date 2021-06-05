@@ -21,6 +21,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
+
 public class ScreenStateReceiver implements StreamGenerator{
     private static final String TAG = "Main";
     private ScreenStateReceiver.ScreenStateBroadcastReceiver mReceiver;
@@ -72,12 +75,13 @@ public class ScreenStateReceiver implements StreamGenerator{
                 sensordb.put("Time", time_now);
                 sensordb.put("Screen", "Screen Off");
             }
-            db.collection("test_users")
-                    .document(device_id)
-                    .collection("Sensor collection")
+            sensordb.put("Using APP", UsingApp);
+            sensordb.put("device_id", device_id);
+            sensordb.put("period", "Trigger Event");
+            db.collection("Sensor collection")
                     .document("Sensor")
                     .collection("Screen")
-                    .document(time_now)
+                    .document(device_id + " " + time_now)
                     .set(sensordb);
         }
     }
@@ -88,12 +92,13 @@ public class ScreenStateReceiver implements StreamGenerator{
         final String time_now = formatter.format(date);
         sensordb.put("Time", time_now);
         sensordb.put("Screen", ScreenState);
-        db.collection("test_users")
-                .document(device_id)
-                .collection("Sensor collection")
+        sensordb.put("Using APP", UsingApp);
+        sensordb.put("device_id", device_id);
+        sensordb.put("period", DetectTime);
+        db.collection("Sensor collection")
                 .document("Sensor")
                 .collection("Screen")
-                .document(time_now)
+                .document(device_id + " " + time_now)
                 .set(sensordb);
     }
     public void unregisterScreenStateReceiver(Context context){

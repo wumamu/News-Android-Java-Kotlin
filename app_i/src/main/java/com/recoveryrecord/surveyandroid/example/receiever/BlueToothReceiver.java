@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static androidx.core.app.ActivityCompat.startActivityForResult;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
 
 public class BlueToothReceiver implements StreamGenerator{
     private static final String TAG = "Main";
@@ -101,13 +103,14 @@ public class BlueToothReceiver implements StreamGenerator{
             }
             Log.e("Device number", String.valueOf(devicecount));
             sensordb.put("BlueTooth Device Number", devicecount);
+            sensordb.put("Using APP", UsingApp);
             if(BlueToothState == "Stop Detect BlueTooth") {
-                db.collection("test_users")
-                        .document(device_id)
-                        .collection("Sensor collection")
+                sensordb.put("device_id", device_id);
+                sensordb.put("period", "Trigger Event");
+                db.collection("Sensor collection")
                         .document("Sensor")
                         .collection("BlueTooth")
-                        .document(time_now)
+                        .document(device_id + " " + time_now)
                         .set(sensordb);
             }
         }
@@ -131,12 +134,13 @@ public class BlueToothReceiver implements StreamGenerator{
         final String time_now = formatter.format(date);
         sensordb.put("Time", time_now);
         sensordb.put("BlueTooth", BlueToothState);
-        db.collection("test_users")
-                .document(device_id)
-                .collection("Sensor collection")
+        sensordb.put("Using APP", UsingApp);
+        sensordb.put("device_id", device_id);
+        sensordb.put("period", DetectTime);
+        db.collection("Sensor collection")
                 .document("Sensor")
                 .collection("BlueTooth")
-                .document(time_now)
+                .document(device_id + " " + time_now)
                 .set(sensordb);
     }
 

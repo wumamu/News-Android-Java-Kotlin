@@ -31,13 +31,13 @@ import java.util.Map;
 import static android.app.AppOpsManager.MODE_ALLOWED;
 import static android.app.AppOpsManager.OPSTR_GET_USAGE_STATS;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
 
 public class
 AppUsageReceiver extends Service {
     private Context context;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private String device_id;
-
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -58,26 +58,28 @@ AppUsageReceiver extends Service {
             sensordb.put("AppUsage", foregroundActivityName);
 //            Toast.makeText(getApplicationContext(), foregroundActivityName, Toast.LENGTH_SHORT).show();
             handler.postDelayed(r, DetectTime);
-            db.collection("test_users")
-                    .document(device_id)
-                    .collection("Sensor collection")
+            sensordb.put("device_id", device_id);
+            sensordb.put("period", DetectTime);
+            db.collection("Sensor collection")
                     .document("Sensor")
-                    .collection("AppUsage")
-                    .document(time_now)
+                    .collection("App Usage")
+                    .document(device_id + " " + time_now)
                     .set(sensordb);
 //            DocumentReference ref = db.collection("test_users")
 //                    .document(device_id)
 //                    .collection("Sensor collection")
 //                    .document("Sensor");
 //
-//            if(foregroundActivityName.equals("com.recoveryrecord.surveyandroid") == true){
-//                Log.e("Using NewsMoment?", "YES");
+            if(foregroundActivityName.equals("com.recoveryrecord.surveyandroid") == true){
+                Log.e("Using NewsMoment?", "YES");
+                UsingApp = "Using APP";
 //                sensordb.put("Using APP", "Y");
-//
-//            }else{
-//                Log.e("Using NewsMoment?", "NO ");
+
+            }else{
+                Log.e("Using NewsMoment?", "NO ");
+                UsingApp = "Not Using APP";
 //                sensordb.put("Using APP", "N");
-//            }
+            }
 //            ref.collection("BlueTooth").document(time_now).set(sensordb);
 //            ref.collection("LightSensor").document(time_now).set(sensordb);
 //            ref.collection("Network").document(time_now).set(sensordb);
@@ -105,12 +107,12 @@ AppUsageReceiver extends Service {
         sensordb.put("Time", time_now);
         sensordb.put("AppUsage", foregroundActivityName);
 //            Toast.makeText(getApplicationContext(), foregroundActivityName, Toast.LENGTH_SHORT).show();
-        db.collection("test_users")
-                .document(device_id)
-                .collection("Sensor collection")
+        sensordb.put("device_id", device_id);
+        sensordb.put("period", "Trigger Event");
+        db.collection("Sensor collection")
                 .document("Sensor")
-                .collection("AppUsage")
-                .document(time_now)
+                .collection("App Usage")
+                .document(device_id + " " + time_now)
                 .set(sensordb);
         return START_STICKY;
     }

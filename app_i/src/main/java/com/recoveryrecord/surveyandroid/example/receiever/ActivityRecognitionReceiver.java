@@ -33,6 +33,7 @@ import javax.annotation.Nullable;
 
 import static android.icu.lang.UCharacter.IndicPositionalCategory.NA;
 import static com.recoveryrecord.surveyandroid.example.NotificationScheduler.TAG;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
 
 public class ActivityRecognitionReceiver extends IntentService implements StreamGenerator{
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -95,7 +96,7 @@ public class ActivityRecognitionReceiver extends IntentService implements Stream
                 .document(device_id + " " + time_now)
                 .set(sensordb);
         ActivityRecognitionResult result = ActivityRecognitionResult.extractResult(intent);
-//        handleDetectedActivities(result.getProbableActivities());
+        handleDetectedActivities(result.getProbableActivities());
     }
     @Override
     public void updateStream() {
@@ -121,6 +122,7 @@ public class ActivityRecognitionReceiver extends IntentService implements Stream
 //                .document(time_now)
 //                .set(sensordb);
         sensordb.put("device_id", device_id);
+        sensordb.put("period", DetectTime);
 //        db.collection("test_users")
 //                .document(device_id)
 //                .collection("Sensor collection")
@@ -137,13 +139,19 @@ public class ActivityRecognitionReceiver extends IntentService implements Stream
     @SuppressLint("HardwareIds")
     private void handleDetectedActivities(List<DetectedActivity> probableActivities) {
         device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
-        final DocumentReference ref = db.collection("test_users")
-                .document(device_id)
-                .collection("Sensor collection")
+        sensordb.put("device_id", device_id);
+//        sensordb.put("period", "GPS Connected");
+//        final DocumentReference ref = db.collection("test_users")
+//                .document(device_id)
+//                .collection("Sensor collection")
+//                .document("Sensor")
+//                .collection("Activity Recognition")
+//                .document(time_now);
+        final DocumentReference ref = db.collection("Sensor collection")
                 .document("Sensor")
                 .collection("Activity Recognition")
-                .document(time_now);
-//        ref.update("Activity Recognition", "開始偵測");
+                .document(device_id + " " + time_now);
+        ref.update("period", "GPS Connected");
         Handler handler = new Handler(Looper.getMainLooper());
         for (final DetectedActivity activity : probableActivities) {
             handler.post(new Runnable(){

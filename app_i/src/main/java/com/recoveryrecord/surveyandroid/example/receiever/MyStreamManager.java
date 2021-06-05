@@ -25,7 +25,7 @@ public class MyStreamManager{
 ////    Intent intent = new Intent(context, ScreenStateReceiver.class);
 
     StreamGenerator streamGenerator1 = new ScreenStateReceiver();
-    StreamGenerator streamGenerator2 = new BlueToothReceiver();
+//    StreamGenerator streamGenerator2 = new BlueToothReceiver();
     StreamGenerator streamGenerator3 = new RingModeReceiver();
     StreamGenerator streamGenerator4 = new NetworkChangeReceiver();
     StreamGenerator streamGenerator5 = new ActivityRecognitionReceiver();
@@ -49,7 +49,7 @@ public class MyStreamManager{
     }
     public void updateStreamGenerators() {
         streamGenerator1.updateStream();
-        streamGenerator2.updateStream();
+//        streamGenerator2.updateStream();
         streamGenerator3.updateStream();
         streamGenerator4.updateStream();
         streamGenerator5.updateStream();

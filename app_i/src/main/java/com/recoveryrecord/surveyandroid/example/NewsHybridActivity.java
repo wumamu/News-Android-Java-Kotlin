@@ -369,31 +369,31 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 
         //sensor
         //BLUETOOTH
-        _BluetoothReceiver = new BlueToothReceiver();
-        _BluetoothReceiver.registerBluetoothReceiver(this);
-        //BLUETOOTH--要偵測附近裝置需要啟動位置權限
-        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.M){
-            //Android M Permission check
-            if(this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
-                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//                builder.setTitle("This app needs location access");
-//                builder.setMessage("Please grant location access so this app can detect beacons.");
-//                builder.setPositiveButton(android.R.string.ok, null);
-                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialogInterface) {
-                        requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-                    }
-                });
-                builder.show();
-            }
-        }
-        //若沒開啟藍芽則跳出要求
-        BluetoothAdapter mBtAdapter = BluetoothAdapter.getDefaultAdapter( );
-        if( !mBtAdapter.isEnabled( ) ) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, 1);
-        }
+//        _BluetoothReceiver = new BlueToothReceiver();
+//        _BluetoothReceiver.registerBluetoothReceiver(this);
+//        //BLUETOOTH--要偵測附近裝置需要啟動位置權限
+//        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.M){
+//            //Android M Permission check
+//            if(this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
+//                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+////                builder.setTitle("This app needs location access");
+////                builder.setMessage("Please grant location access so this app can detect beacons.");
+////                builder.setPositiveButton(android.R.string.ok, null);
+//                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//                    @Override
+//                    public void onDismiss(DialogInterface dialogInterface) {
+//                        requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+//                    }
+//                });
+//                builder.show();
+//            }
+//        }
+//        //若沒開啟藍芽則跳出要求
+//        BluetoothAdapter mBtAdapter = BluetoothAdapter.getDefaultAdapter( );
+//        if( !mBtAdapter.isEnabled( ) ) {
+//            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+//            startActivityForResult(enableBtIntent, 1);
+//        }
         //Detected Activity
 
         mApiClient = new GoogleApiClient.Builder(this)
@@ -441,8 +441,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         //AppUsage
         startService(new Intent(getApplicationContext(), AppUsageReceiver.class));
 
-        //regular timestated period
-        startService(new Intent(getApplicationContext(), MyBackgroudService.class));
+
 
         //Session - timer
 //        timer = new Timer();
@@ -475,6 +474,8 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         Log.d("log: activity cycle", "NewsHybridActivity On Start");
         Log.d("log: activity cycle", String.valueOf(Timestamp.now()));
         super.onStart();
+        //regular timestated period
+        startService(new Intent(getApplicationContext(), MyBackgroudService.class));
     }
 
     @Override

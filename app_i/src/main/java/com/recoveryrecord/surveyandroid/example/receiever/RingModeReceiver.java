@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static androidx.core.content.ContextCompat.getSystemService;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
 
 public class RingModeReceiver implements StreamGenerator{
         private static final String TAG = "Main";
@@ -56,12 +58,13 @@ public class RingModeReceiver implements StreamGenerator{
         final String time_now = formatter.format(date);
         sensordb.put("Time", time_now);
         sensordb.put("RingMode", RingerState);
-        db.collection("test_users")
-                .document(device_id)
-                .collection("Sensor collection")
+        sensordb.put("Using APP", UsingApp);
+        sensordb.put("device_id", device_id);
+        sensordb.put("period", DetectTime);
+        db.collection("Sensor collection")
                 .document("Sensor")
-                .collection("RingMode")
-                .document(time_now)
+                .collection("Ring Mode")
+                .document(device_id + " " + time_now)
                 .set(sensordb);
     }
 
@@ -99,12 +102,13 @@ public class RingModeReceiver implements StreamGenerator{
                     sensordb.put("Time", time_now);
                     sensordb.put("RingMode", "VIBRATE");
                 }
-                db.collection("test_users")
-                        .document(device_id)
-                        .collection("Sensor collection")
+                sensordb.put("Using APP", UsingApp);
+                sensordb.put("device_id", device_id);
+                sensordb.put("period", "Trigger Event");
+                db.collection("Sensor collection")
                         .document("Sensor")
-                        .collection("RingMode")
-                        .document(time_now)
+                        .collection("Ring Mode")
+                        .document(device_id + " " + time_now)
                         .set(sensordb);
             }
         };
