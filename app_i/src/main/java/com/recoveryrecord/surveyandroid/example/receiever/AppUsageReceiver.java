@@ -31,6 +31,7 @@ import java.util.Map;
 import static android.app.AppOpsManager.MODE_ALLOWED;
 import static android.app.AppOpsManager.OPSTR_GET_USAGE_STATS;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
 
 public class
@@ -108,6 +109,10 @@ AppUsageReceiver extends Service {
         sensordb.put("AppUsage", foregroundActivityName);
 //            Toast.makeText(getApplicationContext(), foregroundActivityName, Toast.LENGTH_SHORT).show();
         sensordb.put("device_id", device_id);
+        if(UsingApp == "Using APP")
+            sensordb.put("Session", SessionID);
+        else
+            sensordb.put("Session", -1);
         sensordb.put("period", "Trigger Event");
         db.collection("Sensor collection")
                 .document("Sensor")

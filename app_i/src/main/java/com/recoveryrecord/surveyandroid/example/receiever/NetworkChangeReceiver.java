@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
 import static java.security.AccessController.getContext;
 
@@ -64,6 +65,10 @@ public class NetworkChangeReceiver implements StreamGenerator{
         sensordb.put("Time", time_now);
         sensordb.put("Network", NetworkState);
         sensordb.put("Using APP", UsingApp);
+        if(UsingApp == "Using APP")
+            sensordb.put("Session", SessionID);
+        else
+            sensordb.put("Session", -1);
         sensordb.put("device_id", device_id);
         sensordb.put("period", DetectTime);
         db.collection("Sensor collection")
@@ -124,6 +129,10 @@ public class NetworkChangeReceiver implements StreamGenerator{
                     sensordb.put("Network", "Disconnected");
                 }
                 sensordb.put("Using APP", UsingApp);
+                if(UsingApp == "Using APP")
+                    sensordb.put("Session", SessionID);
+                else
+                    sensordb.put("Session", -1);
                 sensordb.put("device_id", device_id);
                 sensordb.put("period", "Trigger Event");
                 db.collection("Sensor collection")
