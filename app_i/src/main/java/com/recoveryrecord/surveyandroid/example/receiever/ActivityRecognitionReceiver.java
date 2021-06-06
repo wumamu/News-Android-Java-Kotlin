@@ -34,6 +34,8 @@ import javax.annotation.Nullable;
 import static android.icu.lang.UCharacter.IndicPositionalCategory.NA;
 import static com.recoveryrecord.surveyandroid.example.NotificationScheduler.TAG;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
 
 public class ActivityRecognitionReceiver extends IntentService implements StreamGenerator{
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -74,14 +76,18 @@ public class ActivityRecognitionReceiver extends IntentService implements Stream
     public void onCreate() {
         super.onCreate();
         device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+
     }
     @SuppressLint("HardwareIds")
     @Override
     protected void onHandleIntent(Intent intent) {
-
         device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         sensordb.put("Time", time_now);
-        sensordb.put("Activity Recognition", "NA");
+        sensordb.put("Using APP", UsingApp);
+        if(UsingApp == "Using APP")
+            sensordb.put("Session", SessionID);
+        else
+            sensordb.put("Session", -1);
         sensordb.put("device_id", device_id);
 //        db.collection("test_users")
 //                .document(device_id)
@@ -122,6 +128,11 @@ public class ActivityRecognitionReceiver extends IntentService implements Stream
 //                .document(time_now)
 //                .set(sensordb);
         sensordb.put("device_id", device_id);
+        sensordb.put("Using APP", UsingApp);
+        if(UsingApp == "Using APP")
+            sensordb.put("Session", SessionID);
+        else
+            sensordb.put("Session", -1);
         sensordb.put("period", DetectTime);
 //        db.collection("test_users")
 //                .document(device_id)
@@ -140,6 +151,11 @@ public class ActivityRecognitionReceiver extends IntentService implements Stream
     private void handleDetectedActivities(List<DetectedActivity> probableActivities) {
         device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         sensordb.put("device_id", device_id);
+        sensordb.put("Using APP", UsingApp);
+        if(UsingApp == "Using APP")
+            sensordb.put("Session", SessionID);
+        else
+            sensordb.put("Session", -1);
 //        sensordb.put("period", "GPS Connected");
 //        final DocumentReference ref = db.collection("test_users")
 //                .document(device_id)

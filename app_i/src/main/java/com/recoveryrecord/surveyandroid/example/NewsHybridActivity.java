@@ -14,6 +14,7 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
@@ -118,6 +119,9 @@ import static com.recoveryrecord.surveyandroid.example.Constants.USER_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_PHONE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_SURVEY_NUMBER;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.SeesionCountDown;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.TimeLeftInMillis;
 
 //public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener , GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
@@ -174,11 +178,11 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     LightSensorReceiver _LightSensorReceiver;
 
     //session
-    //計session數量
-    public int SessionIDcounter = 0;
     //計時離開app的區間
-    Timer timer;
-    int tt = 3 * 60;
+    private CountDownTimer countDownTimer;
+    private boolean TimerRunning;
+    //private long TimeLeftInMillis = SeesionCountDown;
+
     @SuppressLint("HardwareIds")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -405,7 +409,6 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 //            startActivityForResult(enableBtIntent, 1);
 //        }
         //Detected Activity
-
         mApiClient = new GoogleApiClient.Builder(this)
                 .addApi(ActivityRecognition.API)
                 .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
@@ -451,32 +454,22 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         //AppUsage
         startService(new Intent(getApplicationContext(), AppUsageReceiver.class));
 
-
-
-        //Session - timer
-//        timer = new Timer();
-//        final TimerTask task = new TimerTask() {
-//            @Override
-//            public void run() {
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        tt--;
-//                        if(tt < 1){
-//                            tt = 3 * 60;
-//                        }
-//                    }
-//                });
-//            }
-//        }
     }
     @Override
     protected void onResume() {
         super.onResume();
+
         //Sessions
-//        Toast.makeText(this, "OnResume", Toast.LENGTH_SHORT).show();
-        SessionIDcounter = SessionIDcounter + 1;
-//        Toast.makeText(this, "SeesionId" + SessionIDcounter, Toast.LENGTH_SHORT).show();
+        if(TimerRunning == true) {
+            pauseTimer();
+        }else{
+//            Log.e("TimerRunning", "FALSE");
+//            Log.e("TimeLeftInMillis", String.valueOf(TimeLeftInMillis));
+            if(TimeLeftInMillis < 1000){
+                SessionID++;
+            }
+        }
+//        Toast.makeText(this, "SESSION:"+SessionID, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -492,6 +485,8 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     protected void onPause() {
         Log.d("log: activity cycle", "NewsHybridActivity On Pause");
         super.onPause();
+        resetTimer();
+        startTimer();
     }
 
     @Override
@@ -977,6 +972,25 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
     }
+    public void startTimer(){
+        countDownTimer = new CountDownTimer(TimeLeftInMillis, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                TimeLeftInMillis = millisUntilFinished;
+            }
 
-
+            @Override
+            public void onFinish() {
+                TimerRunning = false;
+            }
+        }.start();
+        TimerRunning = true;
+    }
+    public void pauseTimer(){
+        countDownTimer.cancel();
+        TimerRunning = false;
+    }
+    public void resetTimer(){
+        TimeLeftInMillis = SeesionCountDown;
+    }
 }

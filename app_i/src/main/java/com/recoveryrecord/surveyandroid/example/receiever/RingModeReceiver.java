@@ -25,6 +25,7 @@ import java.util.Map;
 
 import static androidx.core.content.ContextCompat.getSystemService;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
 
 public class RingModeReceiver implements StreamGenerator{
@@ -59,6 +60,10 @@ public class RingModeReceiver implements StreamGenerator{
         sensordb.put("Time", time_now);
         sensordb.put("RingMode", RingerState);
         sensordb.put("Using APP", UsingApp);
+        if(UsingApp == "Using APP")
+            sensordb.put("Session", SessionID);
+        else
+            sensordb.put("Session", -1);
         sensordb.put("device_id", device_id);
         sensordb.put("period", DetectTime);
         db.collection("Sensor collection")
@@ -103,6 +108,10 @@ public class RingModeReceiver implements StreamGenerator{
                     sensordb.put("RingMode", "VIBRATE");
                 }
                 sensordb.put("Using APP", UsingApp);
+                if(UsingApp == "Using APP")
+                    sensordb.put("Session", SessionID);
+                else
+                    sensordb.put("Session", -1);
                 sensordb.put("device_id", device_id);
                 sensordb.put("period", "Trigger Event");
                 db.collection("Sensor collection")
