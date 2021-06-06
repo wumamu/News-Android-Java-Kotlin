@@ -4,10 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -31,16 +28,12 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.ActivityRecognition;
 import com.google.android.gms.location.ActivityRecognitionClient;
 import com.google.android.gms.location.ActivityTransition;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.recoveryrecord.surveyandroid.example.chinatimes.ChinatimesMainFragment;
 import com.recoveryrecord.surveyandroid.example.cna.CnaMainFragment;
@@ -80,8 +73,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -96,9 +87,12 @@ import javax.annotation.Nullable;
 import static com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_VALUE;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_ALARM_ACTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_LAST_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_TIME_OUT;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_ALARM_ACTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.GROUP_NEWS;
-import static com.recoveryrecord.surveyandroid.example.Constants.GROUP_NEWS_SERVICE;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_INTERVAL;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_LAST_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TIME_OUT;
 import static com.recoveryrecord.surveyandroid.example.Constants.MEDIA_BAR_ORDER;
 import static com.recoveryrecord.surveyandroid.example.Constants.MY_DEVICE;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_DEVICE_ID;
@@ -106,8 +100,6 @@ import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_MEDIA_SELE
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_CLEAR_CACHE;
 //import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_PARCELABLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.OUR_EMAIL;
-import static com.recoveryrecord.surveyandroid.example.Constants.INITIAL_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.LAST_LAUNCH_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_VALUE_FAILED_RESTART;
@@ -120,7 +112,6 @@ import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENC
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.UPDATE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_DEVICE_ID;
@@ -153,6 +144,8 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     private NewsNotificationService mYourService;
 
     String device_id = "";
+
+//    boolean esm_range_flag = false, diary_range_flag = false;
 
     private static final HashMap<String, String> media_hash = new HashMap<String, String>();
     static{
@@ -199,9 +192,25 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         //first in app
         final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         boolean clear = sharedPrefs.getBoolean(SHARE_PREFERENCE_CLEAR_CACHE, true);
-//        final DocumentReference docIdRef = db.collection(TEST_USER_COLLECTION).document(device_id);
-//        final DocumentReference docIdRef = db.collection(USER_COLLECTION).document(device_id);
+//        long esm_time = sharedPrefs.getLong(ESM_LAST_TIME, 0);
+//        long diary_time = sharedPrefs.getLong(DIARY_LAST_TIME, 0);
+//        Timestamp now_time_stamp = Timestamp.now();
+//        Log.d("lognewsselect", String.valueOf(now_time_stamp.getSeconds()));
+//        Log.d("lognewsselect", now_time_stamp.toString());
+//        Log.d("lognewsselect", String.valueOf(esm_time));
 
+//        Boolean esm_not_done = sharedPrefs.getBoolean(ESM_LAST_TIME, false);
+//        Boolean diary_not_done = sharedPrefs.getBoolean(DIARY_LAST_TIME, false);
+//        Log.d("lognewsselect", String.valueOf(esm_not_done));
+//        Log.d("lognewsselect", String.valueOf(diary_not_done));
+//        if(esm_not_done){
+////            esm_range_flag = true;
+//            Toast.makeText(this, "您有一則ESM尚未填寫", Toast.LENGTH_SHORT).show();
+//        }
+//        if(diary_not_done){
+////            diary_range_flag = true;
+//            Toast.makeText(this, "您有一則DIARY尚未填寫", Toast.LENGTH_SHORT).show();
+//        }
         if (clear) {
             SharedPreferences.Editor editor = sharedPrefs.edit();
             editor.putString(SHARE_PREFERENCE_DEVICE_ID, device_id);
@@ -546,6 +555,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         switch (item.getItemId()) {
             case R.id.nav_setting :
 //                Log.d("log: navigation", "nav_setting " + item.getItemId());
@@ -588,41 +598,50 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             case R.id.nav_contactt :
-                if(device_id.equals(MY_DEVICE)){
-                    Intent intent_esm = new Intent(context, AlarmReceiver.class);
-                    intent_esm.setAction(ESM_ALARM_ACTION);
-                    PendingIntent pendingIntent_esm = PendingIntent.getBroadcast(context, 77, intent_esm, 0);
-                    AlarmManager alarmManager_esm = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-                    Calendar cal_esm = Calendar.getInstance();
-                    cal_esm.add(Calendar.SECOND, 1);
-                    assert alarmManager_esm != null;
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        alarmManager_esm.setExact(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_esm);
-                    }else {
-                        alarmManager_esm.set(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_esm);
-                    }
-                } else {
-                    Toast.makeText(this,"permission denied",Toast.LENGTH_LONG).show();
-                }
+//                long esm_time = sharedPrefs.getLong(ESM_LAST_TIME, 0);
+//                Boolean esm_not_done = sharedPrefs.getBoolean(ESM_LAST_TIME, false);
+//                Log.d("lognewsselect", String.valueOf(esm_not_done));
+//
+//                if(esm_not_done){
+//                    Intent intent_esm = new Intent(context, AlarmReceiver.class);
+//                    intent_esm.setAction(ESM_ALARM_ACTION);
+//                    PendingIntent pendingIntent_esm = PendingIntent.getBroadcast(context, 77, intent_esm, 0);
+//                    AlarmManager alarmManager_esm = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+//                    Calendar cal_esm = Calendar.getInstance();
+//                    cal_esm.add(Calendar.SECOND, 1);
+//                    assert alarmManager_esm != null;
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//                        alarmManager_esm.setExact(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_esm);
+//                    }else {
+//                        alarmManager_esm.set(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_esm);
+//                    }
+//                } else {
+//                    Toast.makeText(this,"目前不在填答時間",Toast.LENGTH_LONG).show();
+////                    Toast.makeText(this,"permission denied",Toast.LENGTH_LONG).show();
+//                }
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             case R.id.nav_tmp :
-                if(device_id.equals(MY_DEVICE)){
-                    Intent intent_diary = new Intent(context, AlarmReceiver.class);
-                    intent_diary.setAction(DIARY_ALARM_ACTION);
-                    PendingIntent pendingIntent_diary = PendingIntent.getBroadcast(context, 78, intent_diary, 0);
-                    AlarmManager alarmManager_diary = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-                    Calendar cal_diary = Calendar.getInstance();
-                    cal_diary.add(Calendar.SECOND, 1);
-                    assert alarmManager_diary != null;
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        alarmManager_diary.setExact(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent_diary);
-                    }else {
-                        alarmManager_diary.set(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent_diary);
-                    }
-                } else {
-                    Toast.makeText(this,"permission denied",Toast.LENGTH_LONG).show();
-                }
+//                long diary_time = sharedPrefs.getLong(DIARY_LAST_TIME, 0);
+//                Boolean diary_not_done = sharedPrefs.getBoolean(DIARY_LAST_TIME, false);
+//                Log.d("lognewsselect", String.valueOf(diary_not_done));
+//                if(diary_not_done){
+//                    Intent intent_diary = new Intent(context, AlarmReceiver.class);
+//                    intent_diary.setAction(DIARY_ALARM_ACTION);
+//                    PendingIntent pendingIntent_diary = PendingIntent.getBroadcast(context, 78, intent_diary, 0);
+//                    AlarmManager alarmManager_diary = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+//                    Calendar cal_diary = Calendar.getInstance();
+//                    cal_diary.add(Calendar.SECOND, 1);
+//                    assert alarmManager_diary != null;
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//                        alarmManager_diary.setExact(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent_diary);
+//                    }else {
+//                        alarmManager_diary.set(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent_diary);
+//                    }
+//                } else {
+//                    Toast.makeText(this,"目前不在填答時間",Toast.LENGTH_LONG).show();
+////                    Toast.makeText(this,"permission denied",Toast.LENGTH_LONG).show();
+//                }
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             default :

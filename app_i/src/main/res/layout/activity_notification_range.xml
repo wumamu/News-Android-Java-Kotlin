@@ -5,15 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:id="@+id/coordinatorLayout"
     tools:context=".NotificationRangeActivity">
 
     <LinearLayout
+        android:paddingLeft="40dp"
         android:id="@+id/llReminder"
         style="@style/settings_item_layout">
 
         <TextView
             android:id="@+id/tv_reminder_header"
-            android:layout_gravity="center_horizontal"
+            android:paddingTop="30dp"
+            android:paddingLeft="5dp"
             style="@style/settings_header"
             android:text="@string/sett_reminder_header" />
 
@@ -21,7 +24,7 @@
         <TextView
             android:id="@+id/tv_reminder_desc"
             style="@style/settings_details"
-            android:layout_gravity="center_horizontal"
+            android:paddingLeft="5dp"
             android:paddingTop="@dimen/items_top_padding"
             android:paddingBottom="@dimen/items_inbetween_space"
             android:text="@string/sett_reminder_desc" />
@@ -35,12 +38,12 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
                 android:layout_marginTop="@dimen/items_inbetween_space">
 
                 <TextView
+
                     android:id="@+id/tv_reminder_time_label"
-                    android:layout_gravity="center_horizontal"
+                    android:paddingLeft="5dp"
                     style="@style/settings_sub_header"
                     android:text="@string/sett_reminder_time_label"/>
 
@@ -49,8 +52,8 @@
 
             <TextView
                 android:id="@+id/tv_reminder_time_desc"
-                android:layout_gravity="center_horizontal"
                 style="@style/settings_details"
+                android:paddingLeft="5dp"
                 android:paddingTop="@dimen/items_top_padding"
                 android:paddingBottom="@dimen/items_inbetween_space"
                 android:text="@string/sett_reminder_time_content" />
@@ -65,12 +68,11 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
                 android:layout_marginTop="@dimen/items_inbetween_space">
 
                 <TextView
+                    android:paddingLeft="5dp"
                     android:id="@+id/tv_reminder_time_label_e"
-                    android:layout_gravity="center_horizontal"
                     style="@style/settings_sub_header"
                     android:text="@string/sett_reminder_time_label_ee"/>
 
@@ -79,131 +81,26 @@
 
             <TextView
                 android:id="@+id/ee_tv_reminder_time_desc"
-                android:layout_gravity="center_horizontal"
                 style="@style/settings_details"
+                android:paddingLeft="5dp"
                 android:paddingTop="@dimen/items_top_padding"
                 android:paddingBottom="@dimen/items_inbetween_space"
                 android:text="@string/sett_reminder_time_content" />
 
         </LinearLayout>
+
         <Button
             android:id="@+id/button_s"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+
             android:text="儲存設定" />
+
         <Button
             android:id="@+id/button_restart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="重置問卷發送時間" />
+            android:text="重置問卷" />
     </LinearLayout>
 
-<!--    <View-->
-<!--        android:background="@color/textColorSecondary"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="0.5dp"/>-->
-
-<!--    <LinearLayout-->
-<!--        style="@style/settings_item_layout">-->
-<!--        <TextView-->
-<!--            android:id="@+id/tv_agree_header"-->
-<!--            style="@style/settings_header"-->
-<!--            android:paddingBottom="@dimen/items_inbetween_space"-->
-<!--            android:text="Agreement" />-->
-
-<!--        <LinearLayout-->
-<!--            android:id="@+id/ll_terms"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:paddingBottom="@dimen/items_inbetween_space"-->
-<!--            android:paddingTop="@dimen/items_inbetween_space">-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/tv_agree_terms_label"-->
-<!--                style="@style/settings_sub_header"-->
-<!--                android:text="Terms &amp; conditions" />-->
-
-<!--        </LinearLayout>-->
-
-<!--        <LinearLayout-->
-<!--            android:id="@+id/ll_privacy"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:paddingBottom="@dimen/items_inbetween_space"-->
-<!--            android:paddingTop="@dimen/items_inbetween_space">-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/tv_agree_privacy_label"-->
-<!--                style="@style/settings_sub_header"-->
-<!--                android:text="Privacy policy" />-->
-
-<!--        </LinearLayout>-->
-
-<!--    </LinearLayout>-->
-
 </LinearLayout>
-<!--<?xml version="1.0" encoding="utf-8"?>-->
-<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
-<!--    xmlns:tools="http://schemas.android.com/tools"-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:layout_height="match_parent"-->
-<!--    tools:context=".NotificationRangeActivity">-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/textView_s"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_above="@id/button_s"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        android:layout_marginBottom="31dp"-->
-<!--        android:text="time"-->
-<!--        android:textSize="30sp" />-->
-
-<!--    <Button-->
-<!--        android:id="@+id/button_s"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_above="@id/textView_e"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        android:layout_centerVertical="true"-->
-<!--        android:text="設定每日開始時間" />-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/textView_e"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_above="@id/button_e"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        android:layout_marginBottom="31dp"-->
-<!--        android:text="time"-->
-<!--        android:textSize="30sp" />-->
-
-<!--    <Button-->
-<!--        android:id="@+id/button_e"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        android:layout_centerVertical="true"-->
-<!--        android:text="設定每日結束時間" />-->
-
-<!--</RelativeLayout>-->
-
-<!--<?xml version="1.0" encoding="utf-8"?>-->
-<!--<androidx.constraintlayout.widget.ConstraintLayout-->
-<!--    xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    xmlns:tools="http://schemas.android.com/tools"-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:layout_height="match_parent">-->
-<!--    <TextView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:textAppearance="?android:attr/textAppearanceMedium"-->
-<!--        android:text="通知時間挑整現在是空的喔"-->
-<!--        android:gravity="left"-->
-<!--        android:textSize="8dp"-->
-<!--        android:id="@+id/tmp"-->
-<!--        tools:ignore="MissingConstraints" />-->
-<!--</androidx.constraintlayout.widget.ConstraintLayout>-->

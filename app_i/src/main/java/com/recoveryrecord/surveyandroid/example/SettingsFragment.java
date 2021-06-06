@@ -1,14 +1,19 @@
 package com.recoveryrecord.surveyandroid.example;
 
 import android.app.ActivityManager;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.preference.DialogPreference;
@@ -18,11 +23,13 @@ import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreferenceCompat;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_CLEAR_CACHE;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
     Intent mServiceIntent;
     private NewsNotificationService mYourService;
+    private Handler mHandler = new Handler();
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
@@ -47,7 +54,23 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
                                 sharedPrefs.edit().clear().apply();
-                                Toast.makeText(getContext(), "清除成功請重啟app", Toast.LENGTH_SHORT).show();
+//                                Snackbar.make(view, "清除成功正在重啟app", Snackbar.LENGTH_LONG)
+//                                        .setAction("Action", null).show();
+                                Toast.makeText(getContext(), "清除成功正在重啟app", Toast.LENGTH_SHORT).show();
+//                                Intent intent = new Intent(context, SplashScreenActivity.class);
+//                                intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+//                                intent.putExtra(KEY_RESTART_INTENT, nextIntent);
+//                                context.startActivity(intent);
+//                                if (context instanceof Activity) {
+//                                    ((Activity) context).finish();
+//                                }
+                                mHandler.postDelayed(new Runnable() {
+                                    public void run() {
+                                        System.exit(0);
+                                    }
+                                }, 3000);
+//                                System.exit(0);
+//                                Runtime.getRuntime().exit(0);
                             }})
                         .setNegativeButton("取消", null).show();
                 return true;

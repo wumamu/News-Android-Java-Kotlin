@@ -40,6 +40,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_DAY_PUSH_
 //import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_NOT_IN_PUSH_RANGE;
 //import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_OUT_OF_INTERVAL_LIMIT;
 //import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_PUSH;
+import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_LAST_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_PUSH_TOTAL;
 //import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_STATUS;
 import static com.recoveryrecord.surveyandroid.example.Constants.DOC_ID_KEY;
@@ -48,6 +49,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.ESM_DAY_PUSH_PR
 //import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOT_IN_PUSH_RANGE;
 //import static com.recoveryrecord.surveyandroid.example.Constants.ESM_OUT_OF_INTERVAL_LIMIT;
 //import static com.recoveryrecord.surveyandroid.example.Constants.ESM_PUSH;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_LAST_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_PUSH_TOTAL;
 //import static com.recoveryrecord.surveyandroid.example.Constants.ESM_STATUS;
 import static com.recoveryrecord.surveyandroid.example.Constants.ETTODAY_PACKAGE_NAME;
@@ -191,6 +193,7 @@ public class NotificationListenerService extends android.service.notification.No
                         int day_index = calendar.get(Calendar.DAY_OF_YEAR);
                         int esm_sum = sharedPrefs.getInt(ESM_PUSH_TOTAL, 0);
                         int esm_day_sum = sharedPrefs.getInt(ESM_DAY_PUSH_PREFIX + day_index, 0);
+//                        editor.putBoolean(ESM_LAST_TIME, true);
                         editor.putInt(ESM_PUSH_TOTAL, esm_sum + 1);
                         editor.putInt(ESM_DAY_PUSH_PREFIX + day_index, esm_day_sum + 1);
                         editor.apply();
@@ -213,6 +216,7 @@ public class NotificationListenerService extends android.service.notification.No
                         int day_index = calendar.get(Calendar.DAY_OF_YEAR);
                         int diary_sum = sharedPrefs.getInt(DIARY_PUSH_TOTAL, 0);
                         int diary_day_sum = sharedPrefs.getInt(DIARY_DAY_PUSH_PREFIX + day_index, 0);
+//                        editor.putBoolean(DIARY_LAST_TIME, true);
                         editor.putInt(DIARY_PUSH_TOTAL, diary_sum + 1);
                         editor.putInt(DIARY_DAY_PUSH_PREFIX + day_index, diary_day_sum + 1);
                         editor.apply();
@@ -457,6 +461,8 @@ public class NotificationListenerService extends android.service.notification.No
                 String remove_field = "";
                 String remove_type_field = "";
                 Boolean mark = false;
+                SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+                SharedPreferences.Editor editor = sharedPrefs.edit();
                 switch (type) {
                     case NOTIFICATION_TYPE_VALUE_ESM:
                         collection_id = PUSH_ESM_COLLECTION;
@@ -464,6 +470,10 @@ public class NotificationListenerService extends android.service.notification.No
                         remove_type_field = PUSH_ESM_REMOVE_TYPE;
                         doc_id = device_id + " " + doc_id;
                         mark = true;
+//                        if(reason==19 || reason==1){
+//                            editor.putBoolean(ESM_LAST_TIME, false);
+//                            editor.apply();
+//                        }
                         break;
                     case NOTIFICATION_TYPE_VALUE_NEWS:
                         collection_id = PUSH_NEWS_COLLECTION;
@@ -478,6 +488,11 @@ public class NotificationListenerService extends android.service.notification.No
                         remove_type_field = PUSH_DIARY_REMOVE_TYPE;
                         doc_id = device_id + " " + doc_id;
                         mark = true;
+//                        if(reason==19 || reason==1){
+//                            editor.putBoolean(DIARY_LAST_TIME, false);
+//                            editor.apply();
+//                        }
+
                         break;
                 }
                 Log.i(TAG,"********** onNOtificationRemoved type" + collection_id);

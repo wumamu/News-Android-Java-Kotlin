@@ -19,8 +19,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static android.content.Context.MODE_PRIVATE;
-import static com.recoveryrecord.surveyandroid.example.Constants.CANCEL_ALARM_ACTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.RESTART_ALARM_ACTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_VALUE_BOOT_UP;
@@ -28,8 +27,6 @@ import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_DE
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_VALUE_RESTART;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_ACTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
 
 public class BootUpReceiver extends BroadcastReceiver {
     private SharedPreferences pref;
@@ -54,7 +51,7 @@ public class BootUpReceiver extends BroadcastReceiver {
             context.startService(new Intent(context, NewsNotificationService.class));
 
             Intent intent_restart = new Intent(context, AlarmReceiver.class);
-            intent_restart.setAction(CANCEL_ALARM_ACTION);
+            intent_restart.setAction(RESTART_ALARM_ACTION);
             AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1050, intent_restart, 0);
             Calendar cal_r = Calendar.getInstance();

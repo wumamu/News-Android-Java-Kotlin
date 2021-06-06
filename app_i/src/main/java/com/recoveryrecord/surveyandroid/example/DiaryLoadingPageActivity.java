@@ -37,6 +37,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_EXIST_ESM_SAMPLE;
+import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_LAST_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_READ_HISTORY_CANDIDATE;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_TARGET_RANGE;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_EXIST_READ_SAMPLE;
@@ -100,6 +101,7 @@ public class DiaryLoadingPageActivity extends AppCompatActivity {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putString(DIARY_READ_HISTORY_CANDIDATE, ZERO_RESULT_STRING);
+//        editor.putBoolean(DIARY_LAST_TIME, false);
         editor.apply();
 
         select_news_title_candidate();

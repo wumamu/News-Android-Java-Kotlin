@@ -15,12 +15,9 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import org.json.JSONException;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,7 +25,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -37,9 +33,9 @@ import androidx.core.app.NotificationCompat;
 import androidx.preference.PreferenceManager;
 
 import static android.content.Context.ALARM_SERVICE;
-import static com.recoveryrecord.surveyandroid.example.Constants.ALARM_SERVICE_COLLECTION;
 //import static com.recoveryrecord.surveyandroid.example.Constants.DAIRY_ALARM_ACTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.CANCEL_ALARM_ACTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.RESTART_ALARM_ACTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.CHECK_SERVICE_ACTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_DIARY_CHANNEL_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_DIARY_NOTIFICATION;
@@ -50,7 +46,6 @@ import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_NOT
 //import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_PARCELABLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_ALARM_ACTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_CHANNEL_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_INTERVAL;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_NOTIFICATION_CONTENT_TEXT;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_NOTIFICATION_CONTENT_TITLE;
 //import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_NOT_IN_PUSH_RANGE;
@@ -63,8 +58,6 @@ import static com.recoveryrecord.surveyandroid.example.Constants.ESM_ALARM_ACTIO
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_CHANNEL_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_END_TIME_HOUR;
 //import static com.recoveryrecord.surveyandroid.example.Constants.ESM_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_END_TIME_MIN;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_INTERVAL;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOTIFICATION_CONTENT_TEXT;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOTIFICATION_CONTENT_TITLE;
 //import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOT_IN_PUSH_RANGE;
@@ -74,12 +67,8 @@ import static com.recoveryrecord.surveyandroid.example.Constants.ESM_SCHEDULE_ID
 //import static com.recoveryrecord.surveyandroid.example.Constants.ESM_SCHEDULE_SOURCE;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_SET_ONCE;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_START_TIME_HOUR;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_START_TIME_MIN;
 //import static com.recoveryrecord.surveyandroid.example.Constants.ESM_STATUS;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TIME_OUT;
-import static com.recoveryrecord.surveyandroid.example.Constants.GROUP_NEWS;
-import static com.recoveryrecord.surveyandroid.example.Constants.LAST_DIARY_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.LAST_ESM_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_DIARY;
 import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_ESM;
@@ -87,8 +76,6 @@ import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TY
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_VALUE_ALARM;
-import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_VALUE_FAILED_RESTART;
-import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_VALUE_MAIN_PAGE;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_VALUE_RESTART;
@@ -102,19 +89,14 @@ import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_DEVI
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_DONE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_NOTI_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_SCHEDULE_SOURCE;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_TRIGGER_BY;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_TRIGGER_BY_ALARM;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_TRIGGER_BY_SELF;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_NOTI_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_SAMPLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_SCHEDULE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_SCHEDULE_SOURCE;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TRIGGER_BY;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TRIGGER_BY_ALARM;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TRIGGER_BY_NOTIFICATION;
 import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_ACTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_ACTION_TYPE;
 import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_MAX_ESM;
@@ -123,9 +105,6 @@ import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_
 import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_TRIGGER_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_SOURCE;
 import static com.recoveryrecord.surveyandroid.example.Constants.SERVICE_CHECKER_INTERVAL;
-import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_NOTIFICATION_FIRST_CREATE;
-import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_CLEAR_CACHE;
-import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.VIBRATE_EFFECT;
 
 public class AlarmReceiver extends BroadcastReceiver {
@@ -136,6 +115,8 @@ public class AlarmReceiver extends BroadcastReceiver {
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onReceive(Context context, Intent intent) {
+        @SuppressLint("HardwareIds")
+        String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
         final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         Boolean set_once = sharedPrefs.getBoolean(ESM_SET_ONCE, false);
         String action = intent.getAction();
@@ -173,10 +154,19 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
         if(action.equals(SCHEDULE_ALARM_ACTION) && set_once){
 //            Log.d("AlarmReceiver", action);
+            Map<String, Object> my_alarm = new HashMap<>();
+            Date date = new Date(System.currentTimeMillis());
+            @SuppressLint("SimpleDateFormat")
+            SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+            my_alarm.put(SCHEDULE_ALARM_ACTION_TYPE, "schedule");
+            my_alarm.put(SCHEDULE_ALARM_DEVICE_ID, device_id);
+            db.collection(SCHEDULE_ALARM_COLLECTION)
+                    .document(device_id + " schedule " + formatter.format(date))
+                    .set(my_alarm);
             schedule_alarm(context);
-//            scheduleNotification_diary(context, getNotification_diary(context, "Please fill out the questionnaire" ),  1000 );
+
         }
-        if(action.equals(CANCEL_ALARM_ACTION) && set_once){
+        if(action.equals(RESTART_ALARM_ACTION) && set_once){
             //cancel diary request code 100
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             Intent updateDiaryServiceIntent = new Intent(context, AlarmReceiver.class);
@@ -198,9 +188,51 @@ public class AlarmReceiver extends BroadcastReceiver {
 //                Log.e(TAG, "AlarmManager update was not canceled. " + e.toString());
                 }
             }
+            Map<String, Object> my_alarm = new HashMap<>();
+            Date date = new Date(System.currentTimeMillis());
+            @SuppressLint("SimpleDateFormat")
+            SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+            my_alarm.put(SCHEDULE_ALARM_ACTION_TYPE, "restart");
+            my_alarm.put(SCHEDULE_ALARM_DEVICE_ID, device_id);
+            db.collection(SCHEDULE_ALARM_COLLECTION)
+                    .document(device_id + " restart " + formatter.format(date))
+                    .set(my_alarm);
             //regenerate new alarm
             schedule_alarm(context);
         }
+        if(action.equals(CANCEL_ALARM_ACTION)){
+            //cancel diary request code 100
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            Intent updateDiaryServiceIntent = new Intent(context, AlarmReceiver.class);
+            updateDiaryServiceIntent.setAction(DIARY_ALARM_ACTION);
+            PendingIntent pendingUpdateIntent = PendingIntent.getService(context, 100, updateDiaryServiceIntent, 0);
+            try {
+                alarmManager.cancel(pendingUpdateIntent);
+            } catch (Exception e) {
+//                Log.e(TAG, "AlarmManager update was not canceled. " + e.toString());
+            }
+            //cancel esm request code 0-15
+            for(int i=0; i<16;i++){
+                Intent updateEsmServiceIntent = new Intent(context, AlarmReceiver.class);
+                updateEsmServiceIntent.setAction(ESM_ALARM_ACTION);
+                PendingIntent pendingEsmUpdateIntent = PendingIntent.getService(context, i, updateEsmServiceIntent, 0);
+                try {
+                    alarmManager.cancel(pendingEsmUpdateIntent);
+                } catch (Exception e) {
+//                Log.e(TAG, "AlarmManager update was not canceled. " + e.toString());
+                }
+            }
+            Map<String, Object> my_alarm = new HashMap<>();
+            Date date = new Date(System.currentTimeMillis());
+            @SuppressLint("SimpleDateFormat")
+            SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+            my_alarm.put(SCHEDULE_ALARM_ACTION_TYPE, "cancel");
+            my_alarm.put(SCHEDULE_ALARM_DEVICE_ID, device_id);
+            db.collection(SCHEDULE_ALARM_COLLECTION)
+                    .document(device_id + " cancel " + formatter.format(date))
+                    .set(my_alarm);
+        }
+
 
     }
 
@@ -583,6 +615,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         builder.setTimeoutAfter(ESM_TIME_OUT);           //自動消失 15*60*1000
         builder.setPriority(NotificationManager.IMPORTANCE_MAX);
         builder.setCategory(Notification.CATEGORY_REMINDER);
+        builder.setOngoing(true);
 //        builder.setGroup(GROUP_NEWS);
 //        builder.setGroupSummary(true);
         Bundle extras = new Bundle();
@@ -652,6 +685,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         builder.setTimeoutAfter(DIARY_TIME_OUT);           //自動消失 120 min
         builder.setPriority(NotificationManager.IMPORTANCE_MAX);
         builder.setCategory(Notification.CATEGORY_REMINDER);
+        builder.setOngoing(true);
 
         Bundle extras = new Bundle();
         extras.putString(DOC_ID_KEY, diary_id);

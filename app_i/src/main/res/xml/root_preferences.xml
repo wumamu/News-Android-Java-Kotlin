@@ -31,7 +31,8 @@
 
         <Preference
             app:key="SharePreferenceClear"
-            android:title="清除暫存"/>
+            android:title="清除暫存"
+            app:summary="清除本地端設定資料"/>
     <PreferenceCategory app:title="偏好">
         <MultiSelectListPreference
             app:key="media_select"

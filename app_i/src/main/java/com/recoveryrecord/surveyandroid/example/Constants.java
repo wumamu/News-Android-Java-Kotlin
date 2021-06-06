@@ -12,6 +12,7 @@ public class Constants {
     public static final String ESM_SCHEDULE_ID = "esm_schedule_id";
     public static final String SCHEDULE_SOURCE = "schedule_source";
     public static final String DIARY_ALARM_ACTION = "DiaryAlarm";//request code 100
+    public static final String RESTART_ALARM_ACTION = "RestartAlarm";//request code 1050
     public static final String CANCEL_ALARM_ACTION = "CancelAlarm";//request code 1050
     public static final String SCHEDULE_ALARM_ACTION = "ScheduleAlarm";//request code 1000 1001
 
@@ -108,7 +109,7 @@ public class Constants {
 
     public static final String USER_COLLECTION = "user";
     public static final String APP_VERSION_KEY = "app_version";
-    public static final String APP_VERSION_VALUE = "21.06.06-2";
+    public static final String APP_VERSION_VALUE = "21.06.06-4";
     public static final String UPDATE_TIME = "update_timestamp";
     public static final String INITIAL_TIME = "initial_timestamp";
     public static final String LAST_LAUNCH_TIME = "last_launch_timestamp";
@@ -168,6 +169,7 @@ public class Constants {
     public static final String SCHEDULE_ALARM_SURVEY_END = "survey_end_hour";
     public static final String SCHEDULE_ALARM_MAX_ESM = "max_esm";
     public static final String SCHEDULE_ALARM_DEVICE_ID = "device_id";
+    public static final String SCHEDULE_ALARM_ACTION_TYPE = "action";
     //NEWS SERVICE CHECKER
     public static final String NEWS_SERVICE_COLLECTION = "news_service";
     public static final String NEWS_SERVICE_DEVICE_ID = "device_id";
@@ -316,6 +318,10 @@ public class Constants {
     //OTHER
 
     //ESM DIARY COUNT
+    public static final String ESM_LAST_TIME = "ESMLastTime";
+    public static final String DIARY_LAST_TIME = "DiaryLastTime";
+
+
     public static final String ESM_PUSH_TOTAL = "ESMPushTotal";
     public static final String ESM_DONE_TOTAL = "ESMDoneTotal";
     public static final String ESM_DAY_PUSH_PREFIX = "ESMDayPush_";

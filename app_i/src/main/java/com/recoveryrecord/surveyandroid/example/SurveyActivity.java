@@ -46,9 +46,11 @@ import java.util.Objects;
 
 //import static com.recoveryrecord.surveyandroid.example.Constants.ESM_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_EXIST_ESM_SAMPLE;
+import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_LAST_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_READ_HISTORY_CANDIDATE;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_EXIST_NOTIFICATION_SAMPLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_EXIST_READ_SAMPLE;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_LAST_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_DIARY;
 import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_ESM;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_CLOSE_TIME;
@@ -94,6 +96,10 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
             Bundle b = getIntent().getExtras();
             type = Objects.requireNonNull(b.getString(NOTIFICATION_TYPE_KEY));
             if (type.equals(LOADING_PAGE_TYPE_ESM)){
+//                SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+//                SharedPreferences.Editor editor = sharedPrefs.edit();
+//                editor.putLong(ESM_LAST_TIME, 0);
+//                editor.apply();
                 esm_id = Objects.requireNonNull(b.getString(SURVEY_PAGE_ID));
                 if(!esm_id.equals("")){
                     is_esm = true;
@@ -101,6 +107,10 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                     exist_notification = Objects.requireNonNull(b.getBoolean(ESM_EXIST_NOTIFICATION_SAMPLE));
                 }
             } else if (type.equals(LOADING_PAGE_TYPE_DIARY)){
+//                SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+//                SharedPreferences.Editor editor = sharedPrefs.edit();
+//                editor.putLong(DIARY_LAST_TIME, 0);
+//                editor.apply();
                 diary_id = Objects.requireNonNull(b.getString(SURVEY_PAGE_ID));
                 if(!diary_id.equals("")){
                     is_diary = true;
