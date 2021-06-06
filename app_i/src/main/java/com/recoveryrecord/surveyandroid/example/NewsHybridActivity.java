@@ -460,7 +460,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 SessionID++;
             }
         }
-        Toast.makeText(this, "SESSION:"+SessionID, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "SESSION:"+SessionID, Toast.LENGTH_SHORT).show();
     }
 
     @Override
