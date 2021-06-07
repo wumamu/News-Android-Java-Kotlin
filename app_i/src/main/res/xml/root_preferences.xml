@@ -11,7 +11,7 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="基礎設置">
+    <PreferenceCategory app:title="權限設定">
         <Preference
             app:title="通知存取權"
             app:summary="進入系統通知頁面打開">
@@ -22,6 +22,9 @@
             app:summary="進入系統通知頁面打開">
             <intent android:action="android.settings.USAGE_ACCESS_SETTINGS"/>
         </Preference>
+    </PreferenceCategory>
+    <PreferenceCategory app:title="基礎設置">
+
 <!--        <SwitchPreferenceCompat-->
 <!--            app:key="news_notification"-->
 <!--            app:defaultValue="false"-->
@@ -33,11 +36,11 @@
             app:summary="記得按下儲存">
             <intent android:action="com.recoveryrecord.surveyandroid.example.NotificationRangeActivity"/>
         </PreferenceScreen>
-
         <Preference
             app:key="SharePreferenceClear"
             android:title="清除暫存"
             app:summary="清除本地端設定資料"/>
+    </PreferenceCategory>
     <PreferenceCategory app:title="偏好">
         <MultiSelectListPreference
             app:key="media_select"
@@ -61,7 +64,6 @@
             android:defaultValue="1"
             android:entries="@array/text_entries"
             android:entryValues="@array/text_values"/>
-
 <!--        <SwitchPreference-->
 <!--            android:defaultValue="false"-->
 <!--            app:key="dark_mode"-->
@@ -77,8 +79,6 @@
         <!--                android:action="android.intent.action.VIEW"-->
         <!--                android:data="http://codepath.com/" />-->
         <!--        </Preference>-->
-
-
     </PreferenceCategory>
 <!--        <Preference-->
 <!--            app:fragment="com.example.SyncFragment"-->
@@ -100,7 +100,4 @@
 <!--            app:summaryOff="@string/attachment_summary_off"-->
 <!--            app:summaryOn="@string/attachment_summary_on"-->
 <!--            app:title="@string/attachment_title" />-->
-
-    </PreferenceCategory>
-
 </PreferenceScreen>

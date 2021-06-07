@@ -115,6 +115,8 @@ public class Constants {
     public static final String LAST_LAUNCH_TIME = "last_launch_timestamp";
     public static final String USER_DEVICE_ID = "device_id";
     public static final String USER_PHONE_ID = "phone_id";
+    public static final String USER_ANDROID_SDK = "android_sdk";
+    public static final String USER_ANDROID_RELEASE = "android_release";
     public static final String PUSH_MEDIA_SELECTION = "push_media_selection";
     public static final String MEDIA_BAR_ORDER = "media_bar_order";
     public static final String USER_SURVEY_NUMBER = "user_survey_number";
