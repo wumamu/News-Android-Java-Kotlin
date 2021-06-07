@@ -88,13 +88,13 @@ public class ForegroundAppUtil{
             UsageStatsManager manager = (UsageStatsManager) context.getApplicationContext().getSystemService(Context.USAGE_STATS_SERVICE);
 
             List<UsageStats> usageStatses = manager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, startTime, endTime);
-            if (usageStatses == null || usageStatses.size() == 0) {//沒有權限無法獲取app
-                Toast.makeText(context, "請勾選允許存取「使用量存取資料」", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.getApplicationContext().startActivity(intent);
-                return null;
-            }
+//            if (usageStatses == null || usageStatses.size() == 0) {//沒有權限無法獲取app
+//                Toast.makeText(context, "請勾選允許存取「使用量存取資料」", Toast.LENGTH_LONG).show();
+//                Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                context.getApplicationContext().startActivity(intent);
+//                return null;
+//            }
             return usageStatses;
         }
         return null;

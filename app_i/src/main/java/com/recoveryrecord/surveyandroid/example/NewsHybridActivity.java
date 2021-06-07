@@ -364,11 +364,12 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         _LightSensorReceiver.registerLightSensorReceiver(this);
 
         //ActivityRecognition
-        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.Q){
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
-                // Permission is not granted
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 1);
-            }
+//        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.Q) {
+//            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
+//                // Permission is not granted
+//                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 1);
+//            }
+//        }
 //            //Android Q Permission check
 //            if(this.checkSelfPermission(Manifest.permission.ACTIVITY_RECOGNITION)!= PackageManager.PERMISSION_GRANTED){
 //                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -384,7 +385,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 //                });
 //                builder.show();
 //            }
-        }
+//        }
 
 
         //AppUsage
