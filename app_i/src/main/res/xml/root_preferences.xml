@@ -17,6 +17,11 @@
             app:summary="進入系統通知頁面打開">
             <intent android:action="android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"/>
         </Preference>
+        <Preference
+            app:title="使用紀錄存取權"
+            app:summary="進入系統通知頁面打開">
+            <intent android:action="android.settings.USAGE_ACCESS_SETTINGS"/>
+        </Preference>
 <!--        <SwitchPreferenceCompat-->
 <!--            app:key="news_notification"-->
 <!--            app:defaultValue="false"-->

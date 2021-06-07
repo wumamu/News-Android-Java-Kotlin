@@ -74,6 +74,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -259,7 +261,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         user_name = (TextView) header.findViewById(R.id.textView_user_name);
         signature = sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號");
         if(signature.equals("尚未設定實驗編號")){
-            showStartDialog();
+//            showStartDialog();
             user_name.setText("尚未設定實驗編號");
         } else {
             user_name.setText(signature);
@@ -363,21 +365,25 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 
         //ActivityRecognition
         if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.Q){
-            //Android Q Permission check
-            if(this.checkSelfPermission(Manifest.permission.ACTIVITY_RECOGNITION)!= PackageManager.PERMISSION_GRANTED){
-                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//                builder.setTitle("This app needs activity recognition access");
-//                builder.setMessage("Please g
-//                rant activity recognition access so this app can detect physical activity.");
-//                builder.setPositiveButton(android.R.string.ok, null);
-                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialogInterface) {
-                        requestPermissions(new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 1);
-                    }
-                });
-                builder.show();
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
+                // Permission is not granted
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 1);
             }
+//            //Android Q Permission check
+//            if(this.checkSelfPermission(Manifest.permission.ACTIVITY_RECOGNITION)!= PackageManager.PERMISSION_GRANTED){
+//                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+////                builder.setTitle("This app needs activity recognition access");
+////                builder.setMessage("Please g
+////                rant activity recognition access so this app can detect physical activity.");
+////                builder.setPositiveButton(android.R.string.ok, null);
+//                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//                    @Override
+//                    public void onDismiss(DialogInterface dialogInterface) {
+//                        requestPermissions(new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 1);
+//                    }
+//                });
+//                builder.show();
+//            }
         }
 
 
