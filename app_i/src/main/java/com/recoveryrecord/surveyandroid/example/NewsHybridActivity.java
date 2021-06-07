@@ -116,6 +116,9 @@ import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENC
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.UPDATE_TIME;
+//import static com.recoveryrecord.surveyandroid.example.Constants.USER_ANDROID;
+import static com.recoveryrecord.surveyandroid.example.Constants.USER_ANDROID_RELEASE;
+import static com.recoveryrecord.surveyandroid.example.Constants.USER_ANDROID_SDK;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_PHONE_ID;
@@ -228,6 +231,8 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         first.put(UPDATE_TIME, Timestamp.now());
         first.put(USER_DEVICE_ID, device_id);
         first.put(USER_PHONE_ID, Build.MODEL);
+        first.put(USER_ANDROID_SDK, Build.VERSION.SDK_INT);
+        first.put(USER_ANDROID_RELEASE, Build.VERSION.RELEASE);
         first.put(APP_VERSION_KEY, APP_VERSION_VALUE);
         first.put(USER_SURVEY_NUMBER, sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
         first.put(PUSH_MEDIA_SELECTION, sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, Collections.<String>emptySet()).toString());
