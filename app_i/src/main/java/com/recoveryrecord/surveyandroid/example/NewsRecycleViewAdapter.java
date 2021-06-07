@@ -148,6 +148,8 @@ public class NewsRecycleViewAdapter extends RecyclerView.Adapter<NewsRecycleView
                     intent.putExtra("trigger_by", "self_trigger");
                     intent.putExtra("news_id", model.getId());
                     intent.putExtra("media", model.getMedia());
+                    Log.d("lognewsselect", "MY ID  " +  model.getId());
+                    Log.d("lognewsselect", "MY IDddd  " +  model.getMedia());
 //                    Log.d("lognewsselect", "MY ID  " +  model.getId());
 //                    if(model.getMedia()==null){
 ////                        String my_media = "";

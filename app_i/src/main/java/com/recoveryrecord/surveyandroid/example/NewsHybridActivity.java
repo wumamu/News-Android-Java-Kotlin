@@ -196,80 +196,12 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         //first in app
         final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         boolean clear = sharedPrefs.getBoolean(SHARE_PREFERENCE_CLEAR_CACHE, true);
-//        long esm_time = sharedPrefs.getLong(ESM_LAST_TIME, 0);
-//        long diary_time = sharedPrefs.getLong(DIARY_LAST_TIME, 0);
-//        Timestamp now_time_stamp = Timestamp.now();
-//        Log.d("lognewsselect", String.valueOf(now_time_stamp.getSeconds()));
-//        Log.d("lognewsselect", now_time_stamp.toString());
-//        Log.d("lognewsselect", String.valueOf(esm_time));
-
-//        Boolean esm_not_done = sharedPrefs.getBoolean(ESM_LAST_TIME, false);
-//        Boolean diary_not_done = sharedPrefs.getBoolean(DIARY_LAST_TIME, false);
-//        Log.d("lognewsselect", String.valueOf(esm_not_done));
-//        Log.d("lognewsselect", String.valueOf(diary_not_done));
-//        if(esm_not_done){
-////            esm_range_flag = true;
-//            Toast.makeText(this, "您有一則ESM尚未填寫", Toast.LENGTH_SHORT).show();
-//        }
-//        if(diary_not_done){
-////            diary_range_flag = true;
-//            Toast.makeText(this, "您有一則DIARY尚未填寫", Toast.LENGTH_SHORT).show();
-//        }
         if (clear) {
             SharedPreferences.Editor editor = sharedPrefs.edit();
             editor.putString(SHARE_PREFERENCE_DEVICE_ID, device_id);
             editor.putBoolean(SHARE_PREFERENCE_CLEAR_CACHE, false);
             editor.apply();
             clear = false;
-//            docIdRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                @Override
-//                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                    if (task.isSuccessful()) {
-//                        DocumentSnapshot document = task.getResult();
-//                        assert document != null;
-//                        if (document.exists()) {
-//                            Log.d(TAG, "Document exists!");
-//                            docIdRef.update(APP_VERSION_KEY, APP_VERSION_VALUE,
-//                                    UPDATE_TIME, Timestamp.now(),
-//                                    LAST_LAUNCH_TIME, Timestamp.now(),
-//                                    PUSH_MEDIA_SELECTION, sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, Collections.<String>emptySet()).toString(),
-//                                    MEDIA_BAR_ORDER, sharedPrefs.getStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, Collections.<String>emptySet()).toString(),
-//                                    USER_SURVEY_NUMBER, sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號")
-//                            )//another field
-//                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                        @Override
-//                                        public void onSuccess(Void aVoid) {
-//                                            Log.d("lognewsselect", "DocumentSnapshot successfully updated!");
-//                                        }
-//                                    })
-//                                    .addOnFailureListener(new OnFailureListener() {
-//                                        @Override
-//                                        public void onFailure(@NonNull Exception e) {
-//                                            Log.w("lognewsselect", "Error updating document", e);
-//                                        }
-//                                    });
-//                        } else {
-//                            Log.d(TAG, "Document does not exist!");
-//                            Map<String, Object> first = new HashMap<>();
-//                            first.put(INITIAL_TIME, Timestamp.now());
-//                            first.put(UPDATE_TIME, Timestamp.now());
-//                            first.put(LAST_LAUNCH_TIME, Timestamp.now());
-//                            first.put(USER_DEVICE_ID, device_id);
-//                            first.put(USER_PHONE_ID, Build.MODEL);
-//                            first.put(APP_VERSION_KEY, APP_VERSION_VALUE);
-//                            first.put(USER_SURVEY_NUMBER, sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
-//                            first.put(PUSH_MEDIA_SELECTION, sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, Collections.<String>emptySet()).toString());
-//                            first.put(MEDIA_BAR_ORDER, sharedPrefs.getStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, Collections.<String>emptySet()).toString());
-//                            db.collection(TEST_USER_COLLECTION)
-//                                    .document(device_id)
-//                                    .set(first);
-//                        }
-//                    } else {
-//                        Log.d(TAG, "Failed with: ", task.getException());
-//                    }
-//                }
-//            });
-//            showStartDialog();
 
             //initial media list
             Set<String> ranking = sharedPrefs.getStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, Collections.<String>emptySet());
@@ -350,15 +282,12 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         mServiceIntent = new Intent(this, NewsNotificationService.class);
         Map<String, Object> log_service = new HashMap<>();
         if (!isMyServiceRunning(mYourService.getClass())) {
-//            log_service.put("status", "failed(start)");
             log_service.put(NEWS_SERVICE_STATUS_KEY, NEWS_SERVICE_STATUS_VALUE_RESTART);
             log_service.put(NEWS_SERVICE_CYCLE_KEY, NEWS_SERVICE_CYCLE_VALUE_FAILED_RESTART);
-//            Toast.makeText(this, "service failed", Toast.LENGTH_SHORT).show();
             startService(mServiceIntent);
         } else {
             log_service.put(NEWS_SERVICE_STATUS_KEY, NEWS_SERVICE_STATUS_VALUE_RUNNING);
             log_service.put(NEWS_SERVICE_CYCLE_KEY, NEWS_SERVICE_CYCLE_VALUE_MAIN_PAGE);
-//            Toast.makeText(this, "service running", Toast.LENGTH_SHORT).show();
         }
         log_service.put(NEWS_SERVICE_TIME, Timestamp.now());
         log_service.put(NEWS_SERVICE_DEVICE_ID, device_id);
@@ -450,6 +379,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 builder.show();
             }
         }
+
 
         //AppUsage
         startService(new Intent(getApplicationContext(), AppUsageReceiver.class));
@@ -592,53 +522,53 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 }
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
-            case R.id.nav_contactt :
-//                long esm_time = sharedPrefs.getLong(ESM_LAST_TIME, 0);
-//                Boolean esm_not_done = sharedPrefs.getBoolean(ESM_LAST_TIME, false);
-//                Log.d("lognewsselect", String.valueOf(esm_not_done));
-//
-//                if(esm_not_done){
-//                    Intent intent_esm = new Intent(context, AlarmReceiver.class);
-//                    intent_esm.setAction(ESM_ALARM_ACTION);
-//                    PendingIntent pendingIntent_esm = PendingIntent.getBroadcast(context, 77, intent_esm, 0);
-//                    AlarmManager alarmManager_esm = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-//                    Calendar cal_esm = Calendar.getInstance();
-//                    cal_esm.add(Calendar.SECOND, 1);
-//                    assert alarmManager_esm != null;
-//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//                        alarmManager_esm.setExact(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_esm);
-//                    }else {
-//                        alarmManager_esm.set(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_esm);
-//                    }
-//                } else {
-//                    Toast.makeText(this,"目前不在填答時間",Toast.LENGTH_LONG).show();
-////                    Toast.makeText(this,"permission denied",Toast.LENGTH_LONG).show();
-//                }
-                drawerLayout.closeDrawer(GravityCompat.START);
-                return true;
-            case R.id.nav_tmp :
-//                long diary_time = sharedPrefs.getLong(DIARY_LAST_TIME, 0);
-//                Boolean diary_not_done = sharedPrefs.getBoolean(DIARY_LAST_TIME, false);
-//                Log.d("lognewsselect", String.valueOf(diary_not_done));
-//                if(diary_not_done){
-//                    Intent intent_diary = new Intent(context, AlarmReceiver.class);
-//                    intent_diary.setAction(DIARY_ALARM_ACTION);
-//                    PendingIntent pendingIntent_diary = PendingIntent.getBroadcast(context, 78, intent_diary, 0);
-//                    AlarmManager alarmManager_diary = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-//                    Calendar cal_diary = Calendar.getInstance();
-//                    cal_diary.add(Calendar.SECOND, 1);
-//                    assert alarmManager_diary != null;
-//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//                        alarmManager_diary.setExact(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent_diary);
-//                    }else {
-//                        alarmManager_diary.set(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent_diary);
-//                    }
-//                } else {
-//                    Toast.makeText(this,"目前不在填答時間",Toast.LENGTH_LONG).show();
-////                    Toast.makeText(this,"permission denied",Toast.LENGTH_LONG).show();
-//                }
-                drawerLayout.closeDrawer(GravityCompat.START);
-                return true;
+//            case R.id.nav_contactt :
+////                long esm_time = sharedPrefs.getLong(ESM_LAST_TIME, 0);
+////                Boolean esm_not_done = sharedPrefs.getBoolean(ESM_LAST_TIME, false);
+////                Log.d("lognewsselect", String.valueOf(esm_not_done));
+////
+////                if(esm_not_done){
+////                    Intent intent_esm = new Intent(context, AlarmReceiver.class);
+////                    intent_esm.setAction(ESM_ALARM_ACTION);
+////                    PendingIntent pendingIntent_esm = PendingIntent.getBroadcast(context, 77, intent_esm, 0);
+////                    AlarmManager alarmManager_esm = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+////                    Calendar cal_esm = Calendar.getInstance();
+////                    cal_esm.add(Calendar.SECOND, 1);
+////                    assert alarmManager_esm != null;
+////                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+////                        alarmManager_esm.setExact(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_esm);
+////                    }else {
+////                        alarmManager_esm.set(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_esm);
+////                    }
+////                } else {
+////                    Toast.makeText(this,"目前不在填答時間",Toast.LENGTH_LONG).show();
+//////                    Toast.makeText(this,"permission denied",Toast.LENGTH_LONG).show();
+////                }
+//                drawerLayout.closeDrawer(GravityCompat.START);
+//                return true;
+//            case R.id.nav_tmp :
+////                long diary_time = sharedPrefs.getLong(DIARY_LAST_TIME, 0);
+////                Boolean diary_not_done = sharedPrefs.getBoolean(DIARY_LAST_TIME, false);
+////                Log.d("lognewsselect", String.valueOf(diary_not_done));
+////                if(diary_not_done){
+////                    Intent intent_diary = new Intent(context, AlarmReceiver.class);
+////                    intent_diary.setAction(DIARY_ALARM_ACTION);
+////                    PendingIntent pendingIntent_diary = PendingIntent.getBroadcast(context, 78, intent_diary, 0);
+////                    AlarmManager alarmManager_diary = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+////                    Calendar cal_diary = Calendar.getInstance();
+////                    cal_diary.add(Calendar.SECOND, 1);
+////                    assert alarmManager_diary != null;
+////                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+////                        alarmManager_diary.setExact(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent_diary);
+////                    }else {
+////                        alarmManager_diary.set(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent_diary);
+////                    }
+////                } else {
+////                    Toast.makeText(this,"目前不在填答時間",Toast.LENGTH_LONG).show();
+//////                    Toast.makeText(this,"permission denied",Toast.LENGTH_LONG).show();
+////                }
+//                drawerLayout.closeDrawer(GravityCompat.START);
+//                return true;
             default :
                 return false;
         }

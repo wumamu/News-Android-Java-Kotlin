@@ -109,7 +109,7 @@ public class Constants {
 
     public static final String USER_COLLECTION = "user";
     public static final String APP_VERSION_KEY = "app_version";
-    public static final String APP_VERSION_VALUE = "21.06.06-4";
+    public static final String APP_VERSION_VALUE = "21.06.07-1";
     public static final String UPDATE_TIME = "update_timestamp";
     public static final String INITIAL_TIME = "initial_timestamp";
     public static final String LAST_LAUNCH_TIME = "last_launch_timestamp";
@@ -189,7 +189,7 @@ public class Constants {
     //READING BEHAVIOR
     public static final String READING_BEHAVIOR_COLLECTION = "reading_behaviors";
 //    public static final String READING_BEHAVIOR_MID = " RB ";
-    public static final String READING_BEHAVIOR_NEWS_ID = "news_id";
+    public static final String READING_BEHAVIOR_NEWS_ID = "id";
     public static final String READING_BEHAVIOR_DEVICE_ID = "device_id";
     public static final String READING_BEHAVIOR_USER_ID = "user_id";
     public static final String READING_BEHAVIOR_FONT_SIZE = "font_size";
@@ -221,7 +221,7 @@ public class Constants {
     public static final String PUSH_NEWS_SELECTION = "selections";
     public static final String PUSH_NEWS_TITLE = "title";
     public static final String PUSH_NEWS_MEDIA = "media";
-    public static final String PUSH_NEWS_ID = "news_id";
+    public static final String PUSH_NEWS_ID = "id";
     public static final String PUSH_NEWS_TYPE = "type";
     public static final String PUSH_NEWS_DEVICE_ID = "device_id";
     public static final String PUSH_NEWS_USER_ID = "user_id";

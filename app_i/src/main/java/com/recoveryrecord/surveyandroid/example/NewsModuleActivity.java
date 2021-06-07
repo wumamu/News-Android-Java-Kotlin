@@ -507,7 +507,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         doc_id = list.get(rand.nextInt(list.size()));
 //        Log.d("log: firebase news", doc_id);
         DocumentReference docRef;
-        if (news_id.equals("") || media_name .equals("")){
+        if (news_id.equals("") || media_name.equals("")){
             media_name = "ettoday";
             news_id = "0143b739b1c33d46cd18b6af12b2d5b2";
             docRef = db.collection(MEDIA_COLLECTION).document(media_name).collection(NEWS_COLLECTION).document(news_id);

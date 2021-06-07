@@ -36,11 +36,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 //        String model = "MODEL : " + Build.MODEL;
         SwitchPreferenceCompat switchPref = findPreference("news_notification");
         Preference clearPref = findPreference(SHARE_PREFERENCE_CLEAR_CACHE);
-//        DialogPreference clearPref = findPreference("clear_cache");
-//        clearPref.setDialogTitle("清除站存");
-//        clearPref.setDialogMessage("請勿在非指示下刪除資料!");
-//        clearPref.setPositiveButtonText("確認刪除");
-//        clearPref.setNegativeButtonText("取消");
 
         clearPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -54,16 +49,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
                                 sharedPrefs.edit().clear().apply();
-//                                Snackbar.make(view, "清除成功正在重啟app", Snackbar.LENGTH_LONG)
-//                                        .setAction("Action", null).show();
                                 Toast.makeText(getContext(), "清除成功正在重啟app", Toast.LENGTH_SHORT).show();
-//                                Intent intent = new Intent(context, SplashScreenActivity.class);
-//                                intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-//                                intent.putExtra(KEY_RESTART_INTENT, nextIntent);
-//                                context.startActivity(intent);
-//                                if (context instanceof Activity) {
-//                                    ((Activity) context).finish();
-//                                }
+
                                 mHandler.postDelayed(new Runnable() {
                                     public void run() {
                                         System.exit(0);
