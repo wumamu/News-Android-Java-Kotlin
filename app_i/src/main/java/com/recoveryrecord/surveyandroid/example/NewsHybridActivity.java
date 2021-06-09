@@ -124,6 +124,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.USER_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_PHONE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_SURVEY_NUMBER;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.LastPauseTime;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.SeesionCountDown;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.TimeLeftInMillis;
@@ -395,13 +396,29 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 
         //AppUsage
         startService(new Intent(getApplicationContext(), AppUsageReceiver.class));
-
+        //Sessions
+        Map<String, Object> sessiontime = new HashMap<>();
+        if(SessionID == 1){
+            sessiontime.put("session", SessionID);
+            sessiontime.put("state", 0);
+            sessiontime.put("time", formatter.format(date));
+            sessiontime.put("device_id", device_id);
+            db.collection("Session_List")
+                    .document(device_id + " " + formatter.format(date))
+                    .set(sessiontime);
+        }
     }
     @Override
     protected void onResume() {
         super.onResume();
-
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+        device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        Map<String, Object> sessiontime = new HashMap<>();
+        Date date = new Date(System.currentTimeMillis());
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         //Sessions
+
         if(TimerRunning == true) {
             pauseTimer();
         }else{
@@ -409,15 +426,22 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 //            Log.e("TimeLeftInMillis", String.valueOf(TimeLeftInMillis));
             if(TimeLeftInMillis < 1000){
                 SessionID++;
+                sessiontime.put("session", SessionID);
+                sessiontime.put("state", 0);
+                sessiontime.put("time", formatter.format(date));
+                sessiontime.put("device_id", device_id);
+                db.collection("Session_List")
+                        .document(device_id + " " + formatter.format(date))
+                        .set(sessiontime);
             }
         }
+
 //        Toast.makeText(this, "SESSION:"+SessionID, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void onStart() {
         Log.d("log: activity cycle", "NewsHybridActivity On Start");
-        Log.d("log: activity cycle", String.valueOf(Timestamp.now()));
         super.onStart();
         //regular timestated period
         startService(new Intent(getApplicationContext(), MyBackgroudService.class));
@@ -427,8 +451,15 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     protected void onPause() {
         Log.d("log: activity cycle", "NewsHybridActivity On Pause");
         super.onPause();
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+        device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        Map<String, Object> sessiontime = new HashMap<>();
+        Date date = new Date(System.currentTimeMillis());
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         resetTimer();
         startTimer();
+        LastPauseTime = formatter;
     }
 
     @Override
@@ -915,6 +946,11 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
     }
     public void startTimer(){
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+        device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        final Map<String, Object> sessiontime = new HashMap<>();
+        final Date date = new Date(System.currentTimeMillis());
+        @SuppressLint("SimpleDateFormat") final SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         countDownTimer = new CountDownTimer(TimeLeftInMillis, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -924,6 +960,13 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
             @Override
             public void onFinish() {
                 TimerRunning = false;
+                sessiontime.put("session", SessionID);
+                sessiontime.put("state", 1);
+                sessiontime.put("time", formatter.format(date));
+                sessiontime.put("device_id", device_id);
+                db.collection("Session_List")
+                        .document(device_id + " " + formatter.format(date))
+                        .set(sessiontime);
             }
         }.start();
         TimerRunning = true;
