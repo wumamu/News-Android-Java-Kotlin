@@ -82,9 +82,8 @@ public class Chinatimes12Fragment extends Fragment {
     }
     private void loadrecyclerViewData() {
 //.orderBy("name").limit(3)//                db.collectionGroup("news") //
-        db.collection("medias")
-                .document("chinatimes")
-                .collection("news")
+        db.collection("news")
+                .whereEqualTo("media", "chinatimes")
                 .whereEqualTo("category", "運勢")
                 .orderBy("pubdate", Query.Direction.DESCENDING)
                 .limit(NEWS_LIMIT_PER_PAGE)

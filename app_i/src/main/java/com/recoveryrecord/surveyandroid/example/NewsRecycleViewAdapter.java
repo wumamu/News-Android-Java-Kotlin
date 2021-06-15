@@ -69,7 +69,43 @@ public class NewsRecycleViewAdapter extends RecyclerView.Adapter<NewsRecycleView
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         List<String> my_tt = new ArrayList<String>(Arrays.asList(formatter.format(date).split(" ")));
         holder.newsPubTime.setText(String.format("%s %s", my_tt.get(0), my_tt.get(2)));
-        holder.newsMedia.setText(model.getMedia());
+
+
+        String media_name = model.getMedia();//from data base
+        switch (media_name) {
+            case "cna":
+                media_name = "中央社";
+                break;
+            case "chinatimes":
+                media_name = "中時";
+                break;
+            case "cts":
+                media_name = "華視";
+                break;
+            case "ebc":
+                media_name = "東森";
+                break;
+            case "ltn":
+                media_name = "自由時報";
+                break;
+            case "storm":
+                media_name = "風傳媒";
+                break;
+            case "udn":
+                media_name = "聯合";
+                break;
+            case "ettoday":
+                media_name = "ettoday";
+                break;
+            case "setn":
+                media_name = "三立";
+                break;
+            default:
+//                media_name = "";
+                break;
+
+        }
+        holder.newsMedia.setText(media_name);
 //        if(model.getPubdate()==null){
 //            FirebaseFirestore db = FirebaseFirestore.getInstance();
 //            DocumentReference docRef = db.collection("server_push_notifications").document(model.getId());

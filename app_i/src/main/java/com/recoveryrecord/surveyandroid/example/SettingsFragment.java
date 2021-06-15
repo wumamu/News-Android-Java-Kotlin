@@ -77,11 +77,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             public boolean onPreferenceClick(Preference preference) {
                 // handle click here
                 if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.Q) {
-            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
-                // Permission is not granted
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 1);
-            }
-        }else{
+                    if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
+                        // Permission is not granted
+                        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 1);
+                    } else {
+                        Toast.makeText(getContext(), "權限已經開啟", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
                     Toast.makeText(getContext(), "Android 10 以下版本不需要開此權限", Toast.LENGTH_SHORT).show();
                 }
                 return true;

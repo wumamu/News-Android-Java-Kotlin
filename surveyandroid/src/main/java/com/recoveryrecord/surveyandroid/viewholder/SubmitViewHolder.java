@@ -110,6 +110,8 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
     String DIARY_READ_HISTORY_CANDIDATE = "DiaryTargetOptionArray";
     String ZERO_RESULT_STRING = "zero_result";
 
+    String TO_DIARY_LIST = "DiaryList";
+
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     public SubmitViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -181,6 +183,10 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                                                             if (jsonAnswerObject.has("read_15")) {
                                                                 target_read_title_place =  jsonAnswerObject.getString("read_15");
                                                             }
+//                                                            SharedPreferences.Editor editor = sharedPrefs.edit();
+//                                                            String tmp_list = sharedPrefs.getString(TO_DIARY_LIST, "");
+//                                                            editor.putString(TO_DIARY_LIST, tmp_list + );
+//                                                            editor.apply();
                                                             break;
                                                         }
                                                     } catch (JSONException e) {
@@ -219,14 +225,15 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                                     String diary_title = "NA";
                                     if(!target_read_title.equals("NA")){
                                         sample = 2;
-                                        String TARGET_NEWS_TITLE = "TargetNewsTitleArray";
-                                        String target_read_title_array_string = sharedPrefs.getString(TARGET_NEWS_TITLE, "");
-                                        SharedPreferences.Editor editor = sharedPrefs.edit();
-                                        if(target_read_title_array_string.equals("")){//no history
-                                            editor.putString(TARGET_NEWS_TITLE, target_read_title);
-                                        } else {
-                                            editor.putString(TARGET_NEWS_TITLE, target_read_title_array_string + "#" + target_read_title );
-                                        }
+//                                        String TARGET_NEWS_TITLE = "TargetNewsTitleArray";
+//                                        String target_read_title_array_string = sharedPrefs.getString(TARGET_NEWS_TITLE, "");
+//                                        SharedPreferences.Editor editor = sharedPrefs.edit();
+//                                        if(target_read_title_array_string.equals("")){//no history
+//                                            editor.putString(TARGET_NEWS_TITLE, target_read_title);
+//                                        } else {
+//                                            editor.putString(TARGET_NEWS_TITLE, target_read_title_array_string + "#" + target_read_title );
+//                                        }
+//                                        editor.apply();
                                         List<String> tmp = new ArrayList<String>(Arrays.asList(target_read_title.split("¢")));
                                         target_read_title_in_time = tmp.get(4);
                                         target_read_title_id = tmp.get(5);
@@ -276,6 +283,8 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                     final DocumentReference rbRef = db.collection(PUSH_DIARY_COLLECTION).document(device_id + " " + diary_id);
                     String diary_option_string_list = sharedPrefs.getString(DIARY_READ_HISTORY_CANDIDATE, ZERO_RESULT_STRING);
                     List<String> diary_option_array = new ArrayList<String>(Arrays.asList(diary_option_string_list.split("#")));
+                    //DiaryLoadingPage
+                    //{news_title}\n{news_time}\n{news_situation}\n{news_place}\n{news_id}#
                     if(!diary_option_string_list.equals(ZERO_RESULT_STRING)){
                         try {
                             assert result_json != null;
@@ -283,23 +292,46 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                             JSONObject jsonAnswerObject = jsonRootObject.getJSONObject("answers");
                             if (jsonAnswerObject.has("inopportune_1")) {
                                 if(!jsonAnswerObject.getString("inopportune_1").equals("無")){
-                                    List<String> tmp_array = new ArrayList<String>(Arrays.asList(jsonAnswerObject.getString("inopportune_1").split("\n")));
-                                    int index = Integer.parseInt(tmp_array.get(0));
-                                    List<String> new_tmp_array = new ArrayList<String>(Arrays.asList(diary_option_array.get(index).split("\n")));
-                                    target_inopportune_news_id = new_tmp_array.get(4);
-                                    target_inopportune_title = new_tmp_array.get(0);
-                                    target_inopportune = diary_option_array.get(index);
+                                    List<String> view_array = new ArrayList<String>(Arrays.asList(jsonAnswerObject.getString("inopportune_1").split("\n")));
+                                    //{news_title}\n{news_time}\n{news_situation}\n{news_place}#
+                                    for (int j=0; j<diary_option_array.size(); j++){
+                                        List<String> data_array = new ArrayList<String>(Arrays.asList(diary_option_array.get(j).split("\n")));
+                                        //把標題分出來
+                                        if(data_array.get(0).equals(view_array.get(0))){
+//                                            List<String> to_result_tmp_array = new ArrayList<String>(Arrays.asList(diary_option_array.get(j).split("\n")));
+                                            target_inopportune_news_id = data_array.get(4);
+                                            target_inopportune_title = data_array.get(0);
+                                            target_inopportune = diary_option_array.get(j);
+                                            break;
+                                        }
+                                    }
+//
+//                                    int index = Integer.parseInt(tmp_array.get(0));
+//                                    List<String> new_tmp_array = new ArrayList<String>(Arrays.asList(diary_option_array.get(index).split("\n")));
+//                                    target_inopportune_news_id = new_tmp_array.get(4);
+//                                    target_inopportune_title = new_tmp_array.get(0);
+//                                    target_inopportune = diary_option_array.get(index);
                                 }
 
                             }
                             if (jsonAnswerObject.has("opportune_1")) {
                                 if(!jsonAnswerObject.getString("opportune_1").equals("無")){
-                                    List<String> tmp_array = new ArrayList<String>(Arrays.asList(jsonAnswerObject.getString("opportune_1").split("\n")));
-                                    int index = Integer.parseInt(tmp_array.get(0));
-                                    List<String> new_tmp_array = new ArrayList<String>(Arrays.asList(diary_option_array.get(index).split("\n")));
-                                    target_opportune_news_id = new_tmp_array.get(4);
-                                    target_opportune_title = new_tmp_array.get(0);
-                                    target_opportune = diary_option_array.get(index);
+                                    List<String> view_array = new ArrayList<String>(Arrays.asList(jsonAnswerObject.getString("opportune_1").split("\n")));
+                                    for (int j=0; j<diary_option_array.size(); j++){
+                                        List<String> data_array = new ArrayList<String>(Arrays.asList(diary_option_array.get(j).split("\n")));
+                                        if(data_array.get(0).equals(view_array.get(0))){
+                                            target_opportune_news_id = data_array.get(4);
+                                            target_opportune_title = data_array.get(0);
+                                            target_opportune = diary_option_array.get(j);
+                                            break;
+                                        }
+                                    }
+//                                    List<String> tmp_array = new ArrayList<String>(Arrays.asList(jsonAnswerObject.getString("opportune_1").split("\n")));
+//                                    int index = Integer.parseInt(tmp_array.get(0));
+//                                    List<String> new_tmp_array = new ArrayList<String>(Arrays.asList(diary_option_array.get(index).split("\n")));
+//                                    target_opportune_news_id = new_tmp_array.get(4);
+//                                    target_opportune_title = new_tmp_array.get(0);
+//                                    target_opportune = diary_option_array.get(index);
                                 }
                             }
                         } catch (JSONException e) {

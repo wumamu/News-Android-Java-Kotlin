@@ -82,9 +82,8 @@ public class Udn12Fragment extends Fragment {
     }
     private void loadrecyclerViewData() {
 //.orderBy("name").limit(3)//                db.collectionGroup("news") //
-        db.collection("medias")
-                .document("udn")
-                .collection("news")
+        db.collection("news")
+                .whereEqualTo("media", "udn")
                 .whereEqualTo("category", "數位")
                 .orderBy("pubdate", Query.Direction.DESCENDING)
                 .limit(NEWS_LIMIT_PER_PAGE)

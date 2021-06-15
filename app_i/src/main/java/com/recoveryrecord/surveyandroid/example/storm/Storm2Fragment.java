@@ -1,6 +1,7 @@
 package com.recoveryrecord.surveyandroid.example.storm;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,9 +83,8 @@ public class Storm2Fragment extends Fragment {
     }
     private void loadrecyclerViewData() {
 //.orderBy("name").limit(3)//                db.collectionGroup("news") //
-        db.collection("medias")
-                .document("storm")
-                .collection("news")
+        db.collection("news")
+                .whereEqualTo("media", "storm")
                 .whereArrayContains("category", "華爾街日報選文")
                 .orderBy("pubdate", Query.Direction.DESCENDING)
                 .limit(NEWS_LIMIT_PER_PAGE)
@@ -114,6 +114,7 @@ public class Storm2Fragment extends Fragment {
                             // method to notify that data has been changed in recycler view.
                             dataRVAdapter.notifyDataSetChanged();
                         } else {
+                            Log.d("lognewsselect", "Adddddds}");
                             // if the snapshot is empty we are
                             // displaying a toast message.
 //                            Toast.makeText(TestNewsOneActivity.this, "No data found in Database", Toast.LENGTH_SHORT).show();
@@ -122,6 +123,7 @@ public class Storm2Fragment extends Fragment {
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                Log.d("lognewsselect", String.valueOf(e));
                 // if we do not get any data or any error we are displaying
                 // a toast message that we do not get any data
 //                Toast.makeText(TestNewsOneActivity.this, "Fail to get the data.", Toast.LENGTH_SHORT).show();

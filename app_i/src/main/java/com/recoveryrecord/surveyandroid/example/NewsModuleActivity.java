@@ -16,7 +16,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -74,7 +73,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
 import static com.recoveryrecord.surveyandroid.example.Constants.MEDIA_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_CATEGORY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_CONTENT;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_ID;
@@ -89,7 +87,6 @@ import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_CLICK
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_OPEN_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_READING_BEHAVIOR_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_CHECK_MARK;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_FONT_SIZE;
@@ -106,13 +103,10 @@ import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIO
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_TITLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_TRIGGER_BY;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_TRIGGER_BY_NOTIFICATION;
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_TRIGGER_BY_SELF_TRIGGER;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_TEST_SIZE;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.TRIGGER_BY_KEY;
-import static com.recoveryrecord.surveyandroid.example.Constants.TRIGGER_BY_VALUE_SELF_TRIGGER;
 //import android.support.v7.widget.Toolbar;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
@@ -134,7 +128,8 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
     String tmp_time_series = "";//time series
     String tmp_record = "";//viewport
     String news_id = "";
-    String media_name = "", media = "";
+    String media_eng = "";
+    String media_ch = "";
 
     private String mUrl, mImg, mTitle, mDate, mSource;
 
@@ -389,8 +384,8 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                 news_id = b.getString(NEWS_ID_KEY);
             }
             if (b.getString(NEWS_MEDIA_KEY)!= null){
-                media_name = b.getString(NEWS_MEDIA_KEY);
-                media = media_name;
+                media_eng = b.getString(NEWS_MEDIA_KEY);
+                media_ch = media_eng;
             }
             if(b.getString(TRIGGER_BY_KEY)!=null){
                 myReadingBehavior.setKEY_TRIGGER_BY(b.getString(TRIGGER_BY_KEY));
@@ -424,41 +419,73 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         }
 //        Log.d("log: trigger_by", myReadingBehavior.getKEY_TRIGGER_BY());
 //        Log.d("log: news_id", news_id);
-//        Log.d("log: media", media_name);
-        switch (media_name) {
+//        Log.d("lognewsselect", media_eng);
+        switch (media_eng) {
             case "中央社":
-                media_name = "cna";
+                media_eng = "cna";
                 break;
             case "中時":
-                media_name = "chinatimes";
+                media_eng = "chinatimes";
                 break;
             case "華視":
-                media_name = "cts";
+                media_eng = "cts";
                 break;
             case "東森":
-                media_name = "ebc";
+                media_eng = "ebc";
                 break;
             case "自由時報":
-                media_name = "ltn";
+                media_eng = "ltn";
                 break;
             case "風傳媒":
-                media_name = "storm";
+                media_eng = "storm";
                 break;
             case "聯合":
-                media_name = "udn";
+                media_eng = "udn";
                 break;
             case "ettoday":
-                media_name = "ettoday";
+                media_eng = "ettoday";
                 break;
             case "三立":
-                media_name = "setn";
+                media_eng = "setn";
                 break;
             default:
 //                media_name = "";
                 break;
 
         }
+        switch (media_ch) {
+            case "cna":
+                media_ch = "中央社";
+                break;
+            case "chinatimes":
+                media_ch = "中時";
+                break;
+            case "cts":
+                media_ch = "華視";
+                break;
+            case "ebc":
+                media_ch = "東森";
+                break;
+            case "ltn":
+                media_ch = "自由時報";
+                break;
+            case "storm":
+                media_ch = "風傳媒";
+                break;
+            case "udn":
+                media_ch = "聯合";
+                break;
+            case "ettoday":
+                media_ch = "ettoday";
+                break;
+            case "setn":
+                media_ch = "三立";
+                break;
+            default:
+//                media_name = "";
+                break;
 
+        }
 //        Log.d("log: media_name", media_name);
 //        Log.d("log: time_in", myReadingBehavior.getKEY_TIME_IN());
         enter_timestamp = Timestamp.now();//new Timestamp(System.currentTimeMillis());
@@ -507,13 +534,14 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         doc_id = list.get(rand.nextInt(list.size()));
 //        Log.d("log: firebase news", doc_id);
         DocumentReference docRef;
-        if (news_id.equals("") || media_name.equals("")){
-            media_name = "ettoday";
+        if (news_id.equals("") || media_eng.equals("")){
+            media_eng = "ettoday";
             news_id = "0143b739b1c33d46cd18b6af12b2d5b2";
-            docRef = db.collection(MEDIA_COLLECTION).document(media_name).collection(NEWS_COLLECTION).document(news_id);
+            docRef = db.collection(MEDIA_COLLECTION).document(media_eng).collection(NEWS_COLLECTION).document(news_id);
             Toast.makeText(getApplicationContext(), "沒有資料qq", Toast.LENGTH_SHORT).show();
         } else {
-            docRef = db.collection(MEDIA_COLLECTION).document(media_name).collection(NEWS_COLLECTION).document(news_id);
+//            docRef = db.collection(MEDIA_COLLECTION).document(media_name).collection(NEWS_COLLECTION).document(news_id);
+            docRef = db.collection(NEWS_COLLECTION).document(news_id);
             Toast.makeText(getApplicationContext(), "努力loading中!!", Toast.LENGTH_SHORT).show();
             myReadingBehavior.setKEY_NEWS_ID(news_id);
         }
@@ -544,18 +572,18 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                         if(document.getTimestamp(NEWS_PUBDATE)!=null){
                             mPubdate = document.getTimestamp(NEWS_PUBDATE);
                         }
-                        if(document.get(NEWS_CATEGORY)!=null){
-                            if(media_name.equals("storm")){
-                                categoryArray =  (List<String>) document.get("category");
-//                                document.get("category")
-//                                Log.d("log: firebase", String.valueOf(categoryArray));
-                            } else {
-                                categoryArray.add(document.getString(NEWS_CATEGORY));
-//                                Log.d("log: firebase", categoryArray.get(0));
-                            }
-                        } else {
-//                            Log.d("log: firebase", "123");
-                        }
+//                        if(document.get(NEWS_CATEGORY)!=null){
+//                            if(media_name.equals("storm")){
+//                                categoryArray =  (List<String>) document.get("category");
+////                                document.get("category")
+////                                Log.d("log: firebase", String.valueOf(categoryArray));
+//                            } else {
+//                                categoryArray.add(document.getString(NEWS_CATEGORY));
+////                                Log.d("log: firebase", categoryArray.get(0));
+//                            }
+//                        } else {
+////                            Log.d("log: firebase", "123");
+//                        }
 
 
                         Date my_date = mPubdate.toDate();
@@ -563,7 +591,8 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
                         List<String> my_tt = new ArrayList<String>(Arrays.asList(formatter.format(my_date).split(" ")));
                         mDate = String.format("%s %s", my_tt.get(0), my_tt.get(2));
-                        mSource = document.getString(NEWS_MEDIA);
+//                        mSource = document.getString(NEWS_MEDIA);
+                        mSource = media_ch;
                         myReadingBehavior.setKEY_NEWS_ID(document.getString(NEWS_ID));
 //                        ArrayList<String> c_list = null;
                         ArrayList<String> c_list = new ArrayList<>();
@@ -1630,7 +1659,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                 "has_img", has_img,
 //                "char_num_total", myReadingBehavior.getKEY_CHAR_NUM_TOTAL(),
                 READING_BEHAVIOR_NEWS_ID,  myReadingBehavior.getKEY_NEWS_ID(),
-                READING_BEHAVIOR_MEDIA, media,
+                READING_BEHAVIOR_MEDIA, media_ch,
                 "pubdate",mPubdate,
                 "row_spacing(dp)", myReadingBehavior.getKEY_ROW_SPACING(),
                 "viewport_num", myReadingBehavior.getKEY_VIEW_PORT_NUM(),

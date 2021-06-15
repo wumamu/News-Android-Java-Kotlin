@@ -82,9 +82,8 @@ public class Ettoday9Fragment extends Fragment {
     }
     private void loadrecyclerViewData() {
 //.orderBy("name").limit(3)//                db.collectionGroup("news") //
-        db.collection("medias")
-                .document("ettoday")
-                .collection("news")
+        db.collection("news")
+                .whereEqualTo("media", "ettoday")
                 .whereEqualTo("category", "寵物動物")
                 .orderBy("pubdate", Query.Direction.DESCENDING)
                 .limit(NEWS_LIMIT_PER_PAGE)

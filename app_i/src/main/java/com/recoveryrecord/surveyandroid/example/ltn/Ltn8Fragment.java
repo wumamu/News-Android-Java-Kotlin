@@ -82,9 +82,8 @@ public class Ltn8Fragment extends Fragment {
     }
     private void loadrecyclerViewData() {
 //.orderBy("name").limit(3)//                db.collectionGroup("news") //
-        db.collection("medias")
-                .document("ltn")
-                .collection("news")
+        db.collection("news")
+                .whereEqualTo("media", "ltn")
                 .whereEqualTo("category", "3C科技")
                 .orderBy("pubdate", Query.Direction.DESCENDING)
                 .limit(NEWS_LIMIT_PER_PAGE)

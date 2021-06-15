@@ -109,7 +109,7 @@ public class Constants {
 
     public static final String USER_COLLECTION = "user";
     public static final String APP_VERSION_KEY = "app_version";
-    public static final String APP_VERSION_VALUE = "21.06.07-1";
+    public static final String APP_VERSION_VALUE = "21.06.10-1";
     public static final String UPDATE_TIME = "update_timestamp";
     public static final String INITIAL_TIME = "initial_timestamp";
     public static final String LAST_LAUNCH_TIME = "last_launch_timestamp";
@@ -303,6 +303,8 @@ public class Constants {
 
 
 
+
+
     //ESM
     public static final String ESM_NOTIFICATION_UNCLICKED_CANDIDATE = "PushNotificationNewsTitleArray";
     public static final String ESM_READ_HISTORY_CANDIDATE = "ReadingBehaviorNewsTitleArray";
@@ -315,8 +317,12 @@ public class Constants {
     public static final String LAST_ESM_TIME = "LastEsmTime";
     public static final String LAST_DIARY_TIME = "LastDiaryTime";
 
+
+
     //DIARY
     public static final String DIARY_READ_HISTORY_CANDIDATE = "DiaryTargetOptionArray";
+    //{news_title}\n{news_time}\n{news_situation}\n{news_place}\n{news_id}#
+    public static final String TO_DIARY_LIST = "DiaryList";
     //OTHER
 
     //ESM DIARY COUNT

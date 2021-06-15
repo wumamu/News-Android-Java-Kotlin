@@ -398,7 +398,8 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 }
                 String origin_tmp = diary_option_string_list_array_json.get(x);
                 List<String> tmp_array = new ArrayList<String>(Arrays.asList(origin_tmp.split("\n")));
-                origin_tmp = x + "\n" + tmp_array.get(0) + "\n" + tmp_array.get(1)  + "\n" + tmp_array.get(2)  + "\n" + tmp_array.get(3);
+//                origin_tmp = x + "\n" + tmp_array.get(0) + "\n" + tmp_array.get(1)  + "\n" + tmp_array.get(2)  + "\n" + tmp_array.get(3);
+                origin_tmp = tmp_array.get(0) + "\n" + tmp_array.get(1)  + "\n" + tmp_array.get(2)  + "\n" + tmp_array.get(3);
                 option_arr.put(origin_tmp);
 //                option_arr.put(diary_option_string_list_array_json.get(x));
             }
@@ -578,8 +579,8 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                         "          },\n" +
                         "          {\n" +
                         "            \"id\": \"base_1\",\n" +
-                        "            \"operation\": \"equals\",\n" +
-                        "            \"value\": \"有\"\n" +
+                        "            \"operation\": \"not equals\",\n" +
+                        "            \"value\": \"沒有\"\n" +
                         "          }\n" +
                         "        ]\n" +
                         "      }\n" +
@@ -600,8 +601,8 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                         n_condi_single = new JSONObject();
                     }
                     n_condi_single.putOpt("id", "base_1");
-                    n_condi_single.putOpt("operation", "equals");
-                    n_condi_single.putOpt("value", "有");
+                    n_condi_single.putOpt("operation", "not equals");
+                    n_condi_single.putOpt("value", "沒有");
                     n_condi_for_ques.put(n_condi_single);
                     tmp_jsonObject.optJSONObject("show_if").putOpt("subconditions", n_condi_for_ques);
 //                    Log.d("lognewsselect", "new object " + i + " " + tmp_jsonObject);
@@ -642,8 +643,8 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                         condi_single = new JSONObject();
                     }
                     condi_single.putOpt("id", "base_1");
-                    condi_single.putOpt("operation", "equals");
-                    condi_single.putOpt("value", "有");
+                    condi_single.putOpt("operation", "not equals");
+                    condi_single.putOpt("value", "沒有");
                     condi_for_ques.put(condi_single);
                     one.optJSONObject("show_if").putOpt("subconditions", condi_for_ques);
 //                    Log.d("lognewsselect", "new for title add1" + one);
@@ -714,8 +715,8 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                         tt = new JSONObject();
                     }
                     tt.putOpt("id", "base_1");
-                    tt.putOpt("operation", "equals");
-                    tt.putOpt("value", "有");
+                    tt.putOpt("operation", "not equals");
+                    tt.putOpt("value", "沒有");
                     my.put(tt);
                     one.optJSONObject("show_if").putOpt("subconditions", my);
 //                    Log.d("lognewsselect", "new for title 45" + one);

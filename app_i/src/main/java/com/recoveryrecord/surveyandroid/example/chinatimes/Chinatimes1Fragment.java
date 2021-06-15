@@ -1,6 +1,7 @@
 package com.recoveryrecord.surveyandroid.example.chinatimes;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,10 +82,14 @@ public class Chinatimes1Fragment extends Fragment {
         return view;
     }
     private void loadrecyclerViewData() {
-//.orderBy("name").limit(3)//                db.collectionGroup("news") //
-        db.collection("medias")
-                .document("chinatimes")
-                .collection("news")
+//        db.collection("medias")
+//                .document("chinatimes")
+//                .collection("news")
+//                .whereEqualTo("category", "政治")
+//                .orderBy("pubdate", Query.Direction.DESCENDING)
+//                .limit(NEWS_LIMIT_PER_PAGE)
+        db.collection("news")
+                .whereEqualTo("media", "chinatimes")
                 .whereEqualTo("category", "政治")
                 .orderBy("pubdate", Query.Direction.DESCENDING)
                 .limit(NEWS_LIMIT_PER_PAGE)
@@ -124,6 +129,7 @@ public class Chinatimes1Fragment extends Fragment {
             public void onFailure(@NonNull Exception e) {
                 // if we do not get any data or any error we are displaying
                 // a toast message that we do not get any data
+                Log.d("lognewsselect", String.valueOf(e));
 //                Toast.makeText(TestNewsOneActivity.this, "Fail to get the data.", Toast.LENGTH_SHORT).show();
             }
         });

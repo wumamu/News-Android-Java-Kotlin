@@ -7,7 +7,8 @@
       "question_type": "single_select",
       "options": [
         "有",
-        "沒有"
+        "沒有",
+        "不確定"
       ]
     },
     {
@@ -17,7 +18,8 @@
       "question_type": "single_select",
       "options": [
         "有",
-        "沒有"
+        "沒有",
+        "不確定"
       ],
       "show_if": {
         "id": "base_1",
@@ -206,8 +208,8 @@
           },
           {
             "id": "not_read_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           }
         ]
       }
@@ -238,8 +240,8 @@
           },
           {
             "id": "not_read_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_title_1",
@@ -275,8 +277,8 @@
           },
           {
             "id": "not_read_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_title_1",
@@ -317,8 +319,8 @@
           },
           {
             "id": "not_read_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_title_1",
@@ -364,8 +366,8 @@
           },
           {
             "id": "not_read_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_title_1",
@@ -419,8 +421,8 @@
           },
           {
             "id": "not_read_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_title_1",
@@ -476,8 +478,8 @@
           },
           {
             "id": "not_read_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_title_1",
@@ -539,8 +541,8 @@
           },
           {
             "id": "not_read_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_title_1",
@@ -606,8 +608,8 @@
           },
           {
             "id": "not_read_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_title_1",
@@ -671,8 +673,8 @@
           },
           {
             "id": "not_read_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_title_1",
@@ -750,8 +752,8 @@
           },
           {
             "id": "not_read_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_title_1",
@@ -833,8 +835,8 @@
           },
           {
             "id": "not_read_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_title_1",
@@ -915,8 +917,8 @@
           },
           {
             "id": "not_read_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_title_1",
@@ -1005,8 +1007,8 @@
           },
           {
             "id": "not_read_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_title_1",
@@ -1042,8 +1044,8 @@
           },
           {
             "id": "not_read_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_title_1",
@@ -1085,8 +1087,8 @@
           },
           {
             "id": "not_read_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_title_1",
@@ -1132,8 +1134,8 @@
           },
           {
             "id": "not_read_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_title_1",
@@ -1169,8 +1171,8 @@
       ],
       "show_if": {
         "id": "base_1",
-        "operation": "equals",
-        "value": "有"
+        "operation": "not equals",
+        "value": "沒有"
       }
     },
     {
@@ -1192,8 +1194,8 @@
           },
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           }
         ]
       }
@@ -1241,8 +1243,8 @@
         "subconditions": [
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "add_0",
@@ -1264,15 +1266,16 @@
       "question_type": "single_select",
       "options": [
         "有",
-        "沒有"
+        "沒有",
+        "不確定"
       ],
       "show_if": {
         "operation": "and",
         "subconditions": [
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "forget_or_seen_0",
@@ -1306,8 +1309,8 @@
         "subconditions": [
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "forget_or_seen_0",
@@ -1343,8 +1346,8 @@
         "subconditions": [
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "forget_or_seen_0",
@@ -1386,8 +1389,8 @@
         "subconditions": [
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "forget_or_seen_0",
@@ -1433,8 +1436,8 @@
         "subconditions": [
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "forget_or_seen_0",
@@ -1478,8 +1481,8 @@
         "subconditions": [
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "forget_or_seen_0",
@@ -1488,8 +1491,8 @@
           },
           {
             "id": "45",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           }
         ]
       }
@@ -1515,8 +1518,8 @@
         "subconditions": [
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "forget_or_seen_0",
@@ -1525,8 +1528,8 @@
           },
           {
             "id": "45",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "46",
@@ -1557,8 +1560,8 @@
         "subconditions": [
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "forget_or_seen_0",
@@ -1567,8 +1570,8 @@
           },
           {
             "id": "45",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "46",
@@ -1604,8 +1607,8 @@
         "subconditions": [
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "forget_or_seen_0",
@@ -1614,8 +1617,8 @@
           },
           {
             "id": "45",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "46",
@@ -1656,8 +1659,8 @@
         "subconditions": [
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "forget_or_seen_0",
@@ -1666,8 +1669,8 @@
           },
           {
             "id": "45",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "46",
@@ -1716,8 +1719,8 @@
         "subconditions": [
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "forget_or_seen_0",
@@ -1726,8 +1729,8 @@
           },
           {
             "id": "45",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "46",
@@ -1778,8 +1781,8 @@
         "subconditions": [
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "forget_or_seen_0",
@@ -1788,8 +1791,8 @@
           },
           {
             "id": "45",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "46",
@@ -1846,8 +1849,8 @@
         "subconditions": [
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "forget_or_seen_0",
@@ -1856,8 +1859,8 @@
           },
           {
             "id": "45",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "46",
@@ -1918,8 +1921,8 @@
         "subconditions": [
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "forget_or_seen_0",
@@ -1928,8 +1931,8 @@
           },
           {
             "id": "45",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "46",
@@ -1988,8 +1991,8 @@
         "subconditions": [
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "forget_or_seen_0",
@@ -1998,8 +2001,8 @@
           },
           {
             "id": "45",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "46",
@@ -2072,8 +2075,8 @@
         "subconditions": [
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "forget_or_seen_0",
@@ -2082,8 +2085,8 @@
           },
           {
             "id": "45",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "46",
@@ -2160,8 +2163,8 @@
         "subconditions": [
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "forget_or_seen_0",
@@ -2170,8 +2173,8 @@
           },
           {
             "id": "45",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "46",
@@ -2247,8 +2250,8 @@
         "subconditions": [
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "forget_or_seen_0",
@@ -2257,8 +2260,8 @@
           },
           {
             "id": "45",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "46",
@@ -2342,8 +2345,8 @@
         "subconditions": [
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "forget_or_seen_0",
@@ -2352,8 +2355,8 @@
           },
           {
             "id": "45",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "46",
@@ -2384,8 +2387,8 @@
         "subconditions": [
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "forget_or_seen_0",
@@ -2394,8 +2397,8 @@
           },
           {
             "id": "45",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "46",
@@ -2432,8 +2435,8 @@
         "subconditions": [
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "forget_or_seen_0",
@@ -2442,8 +2445,8 @@
           },
           {
             "id": "45",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "46",
@@ -2484,8 +2487,8 @@
         "subconditions": [
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "forget_or_seen_0",
@@ -2494,8 +2497,8 @@
           },
           {
             "id": "45",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "46",
@@ -2573,8 +2576,8 @@
           },
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           }
         ]
       }
@@ -2605,8 +2608,8 @@
           },
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_1",
@@ -2642,8 +2645,8 @@
           },
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_1",
@@ -2684,8 +2687,8 @@
           },
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_1",
@@ -2731,8 +2734,8 @@
           },
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_1",
@@ -2783,8 +2786,8 @@
           },
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_1",
@@ -2840,8 +2843,8 @@
           },
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_1",
@@ -2902,8 +2905,8 @@
           },
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_1",
@@ -2969,8 +2972,8 @@
           },
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_1",
@@ -3038,8 +3041,8 @@
           },
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_1",
@@ -3115,8 +3118,8 @@
           },
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_1",
@@ -3197,8 +3200,8 @@
           },
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_1",
@@ -3283,8 +3286,8 @@
           },
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_1",
@@ -3375,8 +3378,8 @@
           },
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_1",
@@ -3473,8 +3476,8 @@
           },
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_1",
@@ -3575,8 +3578,8 @@
           },
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_1",
@@ -3675,8 +3678,8 @@
           },
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_1",
@@ -3789,8 +3792,8 @@
           },
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_1",
@@ -3907,8 +3910,8 @@
           },
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_1",
@@ -4024,8 +4027,8 @@
           },
           {
             "id": "base_1",
-            "operation": "equals",
-            "value": "有"
+            "operation": "not equals",
+            "value": "沒有"
           },
           {
             "id": "read_1",
