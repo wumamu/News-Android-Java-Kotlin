@@ -2,7 +2,7 @@
   "questions": [
     {
       "id": "base_1",
-      "header": "Question base_1(1)",
+      "header": "Question 1",
       "question": "以上是您今天填答問卷的情況，以下問題請依照「該篇新聞閱讀時機」回答，並簡單說明原因。題目皆無標準答案，請依您主觀感受作答。",
       "question_type": "single_select",
       "options": [
@@ -11,7 +11,7 @@
     },
     {
       "id": "opportune_1",
-      "header": "Question opportune_1(2)",
+      "header": "Question 2",
       "question": "請參考今天的閱讀行為，選擇一則對你來說「最適合推播新聞通知的時機」，若無則選無。",
       "question_type": "single_select",
       "options": [
@@ -20,7 +20,7 @@
     },
     {
       "id": "opportune_2",
-      "header": "Question opportune_2(3)",
+      "header": "Question 3",
       "question": "關於這次「最適合推播新聞通知時機」，你最在乎甚麼因素？(可複選，最多2項)",
       "question_type": "multi_select",
       "options": [
@@ -38,7 +38,7 @@
     },
     {
       "id": "inopportune_1",
-      "header": "Question inopportune_1(4)",
+      "header": "Question 4",
       "question": "請參考今天的閱讀行為，選擇一則對你來說「最不適合推播新聞通知的時機」，若無則選無。",
       "question_type": "single_select",
       "options": [
@@ -47,7 +47,7 @@
     },
     {
       "id": "inopportune_2",
-      "header": "Question inopportune_2(5)",
+      "header": "Question 5",
       "question": "關於這次「最不適合推播新聞通知時機」，你最在乎甚麼因素？(可複選，最多2項)",
       "question_type": "multi_select",
       "options": [
@@ -62,6 +62,37 @@
           "type": "freeform"
         }
       ]
+    },
+    {
+      "id": "base_2",
+      "header": "Question 6",
+      "question": "請問您除了NewsMoment，今天是否還有從以下任一管道接觸新聞？",
+      "question_type": "multi_select",
+      "options": [
+        "各媒體新聞推薦入口網站/app\n(ex: yahoo,google news, google now)",
+        "新聞媒體app\n(ex: 中時、華視、東森等)",
+        "彙整各媒體新聞之入口網站/app\n(類似NewsMoment設計 ex:台灣報紙)",
+        "電視",
+        "社群媒體\n(ex: Facebook, Instagram, Twitter)",
+        "影音平台\n(ex: YouTube, Podcast, Clubhouse)",
+        "通訊軟體\n(ex: Line, Telegram, Messenger),",
+        "無",
+        {
+          "title": "其他",
+          "type": "freeform"
+        }
+      ]
+    },
+    {
+      "id": "base_3",
+      "header": "Question 7",
+      "question": "請簡答您選擇該管道接觸新聞原因為何。\n(ex: 想看熱門新聞, 想查看特定媒體內容, 想獲得客製化推薦功能, 從多元觀點切入議題, 想閱讀特定新聞主題內容, 想深入了解某議題論點)",
+      "question_type": "single_text_area",
+      "show_if": {
+        "id": "base_2",
+        "operation": "not equals",
+        "value": "無"
+      }
     }
   ],
   "submit": {
