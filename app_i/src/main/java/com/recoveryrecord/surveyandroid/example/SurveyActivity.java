@@ -473,6 +473,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                     one.putOpt("options", notifications_arr);
                     if(notifications_arr.length()==1){
                         one.putOpt("header", one.optString("header")+"(無推播紀錄)");
+                        one.putOpt("question", "資料庫無閱讀紀錄，麻煩直接填選-沒有印象");
                     } else {
                         one.putOpt("header", one.optString("header")+"(>1推播紀錄)");
                     }
@@ -483,6 +484,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                     one.putOpt("options", notifications_arr);
                     if(notifications_arr.length()==1){
                         one.putOpt("header", one.optString("header")+"(無推播紀錄)");
+                        one.putOpt("question", "資料庫無閱讀紀錄，麻煩直接填選-沒有印象");
                     } else {
                         one.putOpt("header", one.optString("header")+"(>1推播紀錄)");
                     }
@@ -563,11 +565,11 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 String strJsons="    {\n" +
                         "      \"id\": \"add_2\",\n" +
                         "      \"header\": \"Question add_2(2_2)\",\n" +
-                        "      \"question\": \"您對於「某某news title」這篇新聞，是否曾有印象閱讀過，且未看過其它媒體或平台「引用相同新聞稿，闡述字句幾乎相同」的新聞？\",\n" +
+                        "      \"question\": \"您對於「某某news title」這篇新聞，是否有點進來閱讀新聞內文，且未看過其它媒體或平台「引用相同新聞稿，闡述字句幾乎相同」的新聞？\",\n" +
                         "      \"question_type\": \"single_select\",\n" +
                         "      \"options\": [\n" +
-                        "        \"有印象，且沒看過相同的新聞\",\n" +
-                        "        \"沒有印象或有看過相同的新聞\"\n" +
+                        "        \"有點入閱讀，且沒看過相同的新聞\",\n" +
+                        "        \"沒有點入閱讀過或有看過相同的新聞\"\n" +
                         "      ],\n" +
                         "      \"show_if\": {\n" +
                         "        \"operation\": \"and\",\n" +
@@ -575,7 +577,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                         "          {\n" +
                         "            \"id\": \"add_0\",\n" +
                         "            \"operation\": \"equals\",\n" +
-                        "            \"value\": \"沒有印象或有看過相同的新聞\"\n" +
+                        "            \"value\": \"沒有點入閱讀過或有看過相同的新聞\"\n" +
                         "          },\n" +
                         "          {\n" +
                         "            \"id\": \"base_1\",\n" +
@@ -589,7 +591,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                     JSONObject tmp_jsonObject = new JSONObject(strJsons);
                     tmp_jsonObject.putOpt("id", "add_" + i);
                     List<String> tmp_array = new ArrayList<String>(Arrays.asList(final_news_title_array.get(i).split("¢")));
-                    tmp_jsonObject.putOpt("question", "您對於「" + tmp_array.get(0) + "」這篇新聞，是否曾有印象閱讀過，且未看過其它媒體或平台「引用相同新聞稿，闡述字句幾乎相同」的新聞？");
+                    tmp_jsonObject.putOpt("question", "您對於「" + tmp_array.get(0) + "」這篇新聞，是否有點進來閱讀新聞內文，且未看過其它媒體或平台「引用相同新聞稿，闡述字句幾乎相同」的新聞？");
                     tmp_jsonObject.putOpt("header", "add_" + i);
                     JSONArray n_condi_for_ques = new JSONArray();
                     JSONObject n_condi_single = new JSONObject();
@@ -622,7 +624,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 if(title_count>=1 && one.optString("id").equals("add_0")){
                     one.putOpt("id", "add_0");
                     List<String> tmp_array = new ArrayList<String>(Arrays.asList(final_news_title_array.get(0).split("¢")));
-                    one.putOpt("question", "您對於「"+ tmp_array.get(0) +"」這篇新聞，是否曾有印象閱讀過，且未看過其它媒體或平台「引用相同新聞稿，闡述字句幾乎相同」的新聞？");
+                    one.putOpt("question", "您對於「"+ tmp_array.get(0) +"」這篇新聞，是否有點進來閱讀新聞內文，且未看過其它媒體或平台「引用相同新聞稿，闡述字句幾乎相同」的新聞？");
                     one.putOpt("header", "add_0");
                     continue;
                 }
@@ -630,7 +632,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 if(title_count>=2 && one.optString("id").equals("add_1")){
                     one.putOpt("id", "add_1");
                     List<String> tmp_array = new ArrayList<String>(Arrays.asList(final_news_title_array.get(1).split("¢")));
-                    one.putOpt("question", "您對於「"+ tmp_array.get(0) +"」這篇新聞，是否曾有印象閱讀過，且未看過其它媒體或平台「引用相同新聞稿，闡述字句幾乎相同」的新聞？");
+                    one.putOpt("question", "您對於「"+ tmp_array.get(0) +"」這篇新聞，是否有點進來閱讀新聞內文，且未看過其它媒體或平台「引用相同新聞稿，闡述字句幾乎相同」的新聞？");
                     one.putOpt("header", "add_1");
 //                    Log.d("lognewsselect", "old for title add1" + one);
                     JSONArray condi_for_ques = new JSONArray();
@@ -669,6 +671,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                     one.putOpt("options", notifications_arr);
                     if(notifications_arr.length()==1){
                         one.putOpt("header", one.optString("header")+"(無推播紀錄)");
+                        one.putOpt("question", "資料庫無閱讀紀錄，麻煩直接填選-沒有印象");
                     } else {
                         one.putOpt("header", one.optString("header")+"(>1推播紀錄)");
                     }
@@ -679,13 +682,14 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                     one.putOpt("options", notifications_arr);
                     if(notifications_arr.length()==1){
                         one.putOpt("header", one.optString("header")+"(無推播紀錄)");
+                        one.putOpt("question", "資料庫無閱讀紀錄，麻煩直接填選-沒有印象");
                     } else {
                         one.putOpt("header", one.optString("header")+"(>1推播紀錄)");
                     }
                     continue;
                 }
-                //for 0
-                if(one.optString("id").equals("read_0")){
+                //for read
+                if(one.optString("id").equals("base_3_2")){
 //                    Log.d("lognewsselect", "old for title 0" + one);
                     JSONArray my = new JSONArray();
                     JSONObject tt = new JSONObject();
@@ -701,8 +705,8 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
 //                    one.optJSONObject("show_if").optJSONObject("subconditions");
                     continue;
                 }
-                //for title 45
-                if(one.optString("id").equals("forget_or_seen_0")){
+                //for not read
+                if(one.optString("id").equals("base_3_1")){
 //                    JSONArray tmp = one.optJSONObject("show_if").getJSONArray("subconditions");
 //                    Log.d("lognewsselect", "old for title 45" + one);
                     JSONArray my = new JSONArray();

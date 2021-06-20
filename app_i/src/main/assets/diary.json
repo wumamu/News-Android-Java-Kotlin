@@ -71,16 +71,7 @@
       "options": [
         "各媒體新聞推薦入口網站/app\n(ex: yahoo,google news, google now)",
         "新聞媒體app\n(ex: 中時、華視、東森等)",
-        "彙整各媒體新聞之入口網站/app\n(類似NewsMoment設計 ex:台灣報紙)",
-        "電視",
-        "社群媒體\n(ex: Facebook, Instagram, Twitter)",
-        "影音平台\n(ex: YouTube, Podcast, Clubhouse)",
-        "通訊軟體\n(ex: Line, Telegram, Messenger),",
-        "無",
-        {
-          "title": "其他",
-          "type": "freeform"
-        }
+        "彙整各媒體新聞之入口網站/app\n(類似NewsMoment設計 ex:台灣報紙)"
       ]
     },
     {

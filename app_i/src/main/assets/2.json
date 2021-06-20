@@ -2,8 +2,8 @@
   "questions": [
     {
       "id": "base_1",
-      "header": "Question 1(>1閱讀紀錄)",
-      "question": "請問您最近1小時內有印象在 NewsMoment 上閱讀新聞嗎？",
+      "header": "Question 0(>1閱讀紀錄)",
+      "question": "請問您最近1小時有印象在 NewsMoment 上閱讀新聞嗎？",
       "question_type": "single_select",
       "options": [
         "有",
@@ -29,13 +29,14 @@
     },
     {
       "id": "not_read_title_1",
-      "header": "Question 38",
+      "header": "Question 37",
       "question": "開始填答前，與填答期間您是否正在從事以下活動？",
       "question_type": "single_select",
       "options": [
         "處理家務",
         "移動中",
         "工作或學習",
+        "開會",
         "用餐",
         "從事娛樂或休閒運動",
         "上廁所",
@@ -65,7 +66,7 @@
     },
     {
       "id": "not_read_title_2",
-      "header": "Question 39",
+      "header": "Question 38",
       "question": "承上題，該項您閱讀時或閱讀前從事的活動，對您來說，該活動的複雜程度為何？\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)",
       "question_type": "segment_select",
       "low_tag": "非常不複雜",
@@ -102,7 +103,7 @@
     },
     {
       "id": "not_read_title_3",
-      "header": "Question 40",
+      "header": "Question 39",
       "question": "請選擇最符合您閱讀當下所處地點",
       "question_type": "single_select",
       "options": [
@@ -145,8 +146,8 @@
     },
     {
       "id": "not_read_title_4",
-      "header": "Question 41",
-      "question": "對我來說，這是個好的新聞通知時機。請選擇您對此句描述的感受。",
+      "header": "Question 40",
+      "question": "對我來說，這是個好的新聞「通知」時機。請選擇您對此句描述的感受為何。",
       "question_type": "segment_select",
       "low_tag": "非常不同意",
       "high_tag": "非常同意",
@@ -402,6 +403,7 @@
         "處理家務",
         "移動中",
         "工作或學習",
+        "開會",
         "用餐",
         "從事娛樂或休閒運動",
         "上廁所",
@@ -587,7 +589,7 @@
     {
       "id": "read_title_9",
       "header": "Question 32",
-      "question": "對我來說，這是個好的新聞通知時機。請選擇您對此句描述的感受。",
+      "question": "對我來說，這是個好的新聞「通知」時機。請選擇您對此句描述的感受為何。",
       "question_type": "segment_select",
       "low_tag": "非常不同意",
       "high_tag": "非常同意",
@@ -984,7 +986,7 @@
     {
       "id": "not_read_title_forget_1",
       "header": "Question 41",
-      "question": "填答前，您是否正在從事以下活動？",
+      "question": "開始填答前，與填答期間您是否正在從事以下活動？",
       "question_type": "single_select",
       "options": [
         "處理家務",
@@ -1115,7 +1117,7 @@
     {
       "id": "not_read_title_forget_4",
       "header": "Question 44",
-      "question": "對我來說，這是個好的新聞通知時機。請選擇您對此句描述的感受。",
+      "question": "對我來說，這是個好的新聞「通知」時機。請選擇您對此句描述的感受為何。",
       "question_type": "segment_select",
       "low_tag": "非常不同意",
       "high_tag": "非常同意",
@@ -1166,12 +1168,12 @@
     },
     {
       "id": "add_0",
-      "header": "Question 2-1",
-      "question": "您對於「某某news title」這篇新聞，是否曾有印象閱讀過，且未看過其它媒體或平台「引用相同新聞稿，闡述字句幾乎相同」的新聞？",
+      "header": "Question 1-1",
+      "question": "資料庫無閱讀紀錄，麻煩直接填選-沒有點入閱讀過或有看過相同的新聞",
       "question_type": "single_select",
       "options": [
-        "有印象，且沒看過相同的新聞",
-        "沒有印象或有看過相同的新聞"
+        "有點入閱讀，且沒看過相同的新聞",
+        "沒有點入閱讀過或有看過相同的新聞"
       ],
       "show_if": {
         "id": "base_1",
@@ -1181,36 +1183,36 @@
     },
     {
       "id": "add_1",
-      "header": "Question 2-2",
-      "question": "您對於「某某news title」這篇新聞，是否曾有印象閱讀過，且未看過其它媒體或平台「引用相同新聞稿，闡述字句幾乎相同」的新聞？",
+      "header": "Question 1-2",
+      "question": "資料庫無閱讀紀錄，麻煩直接填選-沒有點入閱讀過或有看過相同的新聞",
       "question_type": "single_select",
       "options": [
-        "有印象，且沒看過相同的新聞",
-        "沒有印象或有看過相同的新聞"
+        "有點入閱讀，且沒看過相同的新聞",
+        "沒有點入閱讀過或有看過相同的新聞"
       ],
       "show_if": {
         "operation": "and",
         "subconditions": [
           {
-            "id": "add_0",
-            "operation": "equals",
-            "value": "沒有印象或有看過相同的新聞"
-          },
-          {
             "id": "base_1",
             "operation": "not equals",
             "value": "沒有"
+          },
+          {
+            "id": "add_0",
+            "operation": "equals",
+            "value": "沒有點入閱讀過或有看過相同的新聞"
           }
         ]
       }
     },
     {
-      "id": "forget_or_seen_0",
-      "header": "Question 45-0",
-      "question": "請按確定繼續作答(點擊確認後請不要再回朔更改答案!)",
+      "id": "base_3_1",
+      "header": "Question 2 not read",
+      "question": "點擊了解以繼續作答。(請不要再回朔更改答案!)",
       "question_type": "single_select",
       "options": [
-        "確定"
+        "了解"
       ],
       "show_if": {
         "operation": "and",
@@ -1223,12 +1225,12 @@
           {
             "id": "add_0",
             "operation": "equals",
-            "value": "沒有印象或有看過相同的新聞"
+            "value": "沒有點入閱讀過或有看過相同的新聞"
           },
           {
             "id": "add_1",
-            "operation": "equals",
-            "value": "沒有印象或有看過相同的新聞"
+            "operation": "not equals",
+            "value": "沒有點入閱讀過或有看過相同的新聞"
           }
         ]
       }
@@ -1252,9 +1254,9 @@
             "value": "沒有"
           },
           {
-            "id": "forget_or_seen_0",
+            "id": "base_3_1",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           }
         ]
       }
@@ -1262,7 +1264,7 @@
     {
       "id": "59",
       "header": "Question 59",
-      "question": "填答前，您是否正在從事以下活動？",
+      "question": "開始填答前，與填答期間您是否正在從事以下活動？",
       "question_type": "single_select",
       "options": [
         "處理家務",
@@ -1288,9 +1290,9 @@
             "value": "沒有"
           },
           {
-            "id": "forget_or_seen_0",
+            "id": "base_3_1",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "45",
@@ -1325,9 +1327,9 @@
             "value": "沒有"
           },
           {
-            "id": "forget_or_seen_0",
+            "id": "base_3_1",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "45",
@@ -1368,9 +1370,9 @@
             "value": "沒有"
           },
           {
-            "id": "forget_or_seen_0",
+            "id": "base_3_1",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "45",
@@ -1393,7 +1395,7 @@
     {
       "id": "62",
       "header": "Question 62",
-      "question": "對我來說，這是個好的新聞通知時機。請選擇您對此句描述的感受。",
+      "question": "對我來說，這是個好的新聞「通知」時機。請選擇您對此句描述的感受為何。",
       "question_type": "segment_select",
       "low_tag": "非常不同意",
       "high_tag": "非常同意",
@@ -1415,9 +1417,9 @@
             "value": "沒有"
           },
           {
-            "id": "forget_or_seen_0",
+            "id": "base_3_1",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "45",
@@ -1460,9 +1462,9 @@
             "value": "沒有"
           },
           {
-            "id": "forget_or_seen_0",
+            "id": "base_3_1",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "45",
@@ -1497,9 +1499,9 @@
             "value": "沒有"
           },
           {
-            "id": "forget_or_seen_0",
+            "id": "base_3_1",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "45",
@@ -1539,9 +1541,9 @@
             "value": "沒有"
           },
           {
-            "id": "forget_or_seen_0",
+            "id": "base_3_1",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "45",
@@ -1586,9 +1588,9 @@
             "value": "沒有"
           },
           {
-            "id": "forget_or_seen_0",
+            "id": "base_3_1",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "45",
@@ -1638,9 +1640,9 @@
             "value": "沒有"
           },
           {
-            "id": "forget_or_seen_0",
+            "id": "base_3_1",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "45",
@@ -1673,7 +1675,7 @@
     {
       "id": "51",
       "header": "Question 51",
-      "question": "填答前，您是否正在從事以下活動？",
+      "question": "看到通知前，或是查看通知期間您是否正在從事以下活動？",
       "question_type": "single_select",
       "options": [
         "處理家務",
@@ -1699,9 +1701,9 @@
             "value": "沒有"
           },
           {
-            "id": "forget_or_seen_0",
+            "id": "base_3_1",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "45",
@@ -1761,9 +1763,9 @@
             "value": "沒有"
           },
           {
-            "id": "forget_or_seen_0",
+            "id": "base_3_1",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "45",
@@ -1829,9 +1831,9 @@
             "value": "沒有"
           },
           {
-            "id": "forget_or_seen_0",
+            "id": "base_3_1",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "45",
@@ -1901,9 +1903,9 @@
             "value": "沒有"
           },
           {
-            "id": "forget_or_seen_0",
+            "id": "base_3_1",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "45",
@@ -1971,9 +1973,9 @@
             "value": "沒有"
           },
           {
-            "id": "forget_or_seen_0",
+            "id": "base_3_1",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "45",
@@ -2055,9 +2057,9 @@
             "value": "沒有"
           },
           {
-            "id": "forget_or_seen_0",
+            "id": "base_3_1",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "45",
@@ -2143,9 +2145,9 @@
             "value": "沒有"
           },
           {
-            "id": "forget_or_seen_0",
+            "id": "base_3_1",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "45",
@@ -2231,9 +2233,9 @@
             "value": "沒有"
           },
           {
-            "id": "forget_or_seen_0",
+            "id": "base_3_1",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "45",
@@ -2301,7 +2303,7 @@
     {
       "id": "63",
       "header": "Question 63",
-      "question": "填答前，您是否正在從事以下活動？",
+      "question": "開始填答前，與填答期間您是否正在從事以下活動？",
       "question_type": "single_select",
       "options": [
         "處理家務",
@@ -2327,9 +2329,9 @@
             "value": "沒有"
           },
           {
-            "id": "forget_or_seen_0",
+            "id": "base_3_1",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "45",
@@ -2369,9 +2371,9 @@
             "value": "沒有"
           },
           {
-            "id": "forget_or_seen_0",
+            "id": "base_3_1",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "45",
@@ -2417,9 +2419,9 @@
             "value": "沒有"
           },
           {
-            "id": "forget_or_seen_0",
+            "id": "base_3_1",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "45",
@@ -2447,7 +2449,7 @@
     {
       "id": "66",
       "header": "Question 66",
-      "question": "對我來說，這是個好的新聞通知時機。請選擇您對此句描述的感受。",
+      "question": "對我來說，這是個好的新聞「通知」時機。請選擇您對此句描述的感受為何。",
       "question_type": "segment_select",
       "low_tag": "非常不同意",
       "high_tag": "非常同意",
@@ -2469,9 +2471,9 @@
             "value": "沒有"
           },
           {
-            "id": "forget_or_seen_0",
+            "id": "base_3_1",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "45",
@@ -2502,12 +2504,12 @@
       }
     },
     {
-      "id": "read_0",
-      "header": "Question 2",
-      "question": "請按確定繼續作答(點擊確認後請不要再回朔更改答案!)",
+      "id": "base_3_2",
+      "header": "Question 2 read",
+      "question": "以下問題請根據你「閱讀該篇新聞當下狀況」進行回答，而非填答問卷當下。(點擊了解後請不要再回朔更改答案!)",
       "question_type": "single_select",
       "options": [
-        "確定"
+        "了解"
       ],
       "show_if": {
         "operation": "or",
@@ -2515,12 +2517,12 @@
           {
             "id": "add_0",
             "operation": "equals",
-            "value": "有印象，且沒看過相同的新聞"
+            "value": "有點入閱讀，且沒看過相同的新聞"
           },
           {
             "id": "add_1",
             "operation": "equals",
-            "value": "有印象，且沒看過相同的新聞"
+            "value": "有點入閱讀，且沒看過相同的新聞"
           }
         ]
       }
@@ -2548,9 +2550,9 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "read_0",
+            "id": "base_3_2",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "base_1",
@@ -2580,9 +2582,9 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "read_0",
+            "id": "base_3_2",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "base_1",
@@ -2617,9 +2619,9 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "read_0",
+            "id": "base_3_2",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "base_1",
@@ -2659,9 +2661,9 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "read_0",
+            "id": "base_3_2",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "base_1",
@@ -2706,9 +2708,9 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "read_0",
+            "id": "base_3_2",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "base_1",
@@ -2758,9 +2760,9 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "read_0",
+            "id": "base_3_2",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "base_1",
@@ -2798,26 +2800,26 @@
     {
       "id": "read_7",
       "header": "Question 9",
-      "question": "對您來說，這篇新聞是真實的。\n(無法判斷或沒意見請選擇4)",
-      "question_type": "segment_select",
-      "low_tag": "非常不符合",
-      "high_tag": "非常符合",
-      "values": [
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7"
+      "question": "請問您點入該(媒體)的新聞進行閱讀主要之動機為何？",
+      "question_type": "multi_select",
+      "options": [
+        "平時習慣看該家媒體",
+        "通知推播",
+        "想看多元立場觀點",
+        "標題吸引人",
+        "未有特定動機",
+        {
+          "title": "其他",
+          "type": "freeform"
+        }
       ],
       "show_if": {
         "operation": "and",
         "subconditions": [
           {
-            "id": "read_0",
+            "id": "base_3_2",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "base_1",
@@ -2860,7 +2862,7 @@
     {
       "id": "read_8",
       "header": "Question 10",
-      "question": "對您來說，這篇新聞是正確的。\n(無法判斷或沒意見請選擇4)",
+      "question": "對您來說，這篇新聞是真實的。\n(無法判斷或沒意見請選擇4)",
       "question_type": "segment_select",
       "low_tag": "非常不符合",
       "high_tag": "非常符合",
@@ -2877,9 +2879,9 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "read_0",
+            "id": "base_3_2",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "base_1",
@@ -2927,7 +2929,7 @@
     {
       "id": "read_9",
       "header": "Question 11",
-      "question": "對您來說，這則新聞是可信任的。\n(無法判斷或沒意見請選擇4)",
+      "question": "對您來說，這篇新聞是正確的。\n(無法判斷或沒意見請選擇4)",
       "question_type": "segment_select",
       "low_tag": "非常不符合",
       "high_tag": "非常符合",
@@ -2944,9 +2946,9 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "read_0",
+            "id": "base_3_2",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "base_1",
@@ -2999,23 +3001,26 @@
     {
       "id": "read_10",
       "header": "Question 12",
-      "question": "關於這次的新聞閱讀的時段，對您來說屬於何種性質的閱讀？",
-      "question_type": "single_select",
-      "options": [
-        "固定/規律的閱讀活動(平時習慣於此時刻閱讀，如早晨起床後)",
-        "未預期、意外地閱讀活動(突發的閱讀時刻，如：突然看到新聞通知)",
-        {
-          "title": "其他",
-          "type": "freeform"
-        }
+      "question": "對您來說，這則新聞是可信任的。\n(無法判斷或沒意見請選擇4)",
+      "question_type": "segment_select",
+      "low_tag": "非常不符合",
+      "high_tag": "非常符合",
+      "values": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
       ],
       "show_if": {
         "operation": "and",
         "subconditions": [
           {
-            "id": "read_0",
+            "id": "base_3_2",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "base_1",
@@ -3073,14 +3078,11 @@
     {
       "id": "read_11",
       "header": "Question 13",
-      "question": "關於這次新聞閱讀，您的閱讀目標最接近以下何種？",
-      "question_type": "multi_select",
+      "question": "關於這次的新聞閱讀的時機，對您來說屬於何種性質？",
+      "question_type": "single_select",
       "options": [
-        "了解整個新聞事件細節",
-        "鎖定文章特定段落",
-        "想看新聞圖片",
-        "大致掌握新聞事件概要",
-        "無",
+        "規劃/習慣閱讀新聞的時機(不一定同時段，而是有固定模式，如：早上起床後、或是工作休息空檔、滑手機習慣看一下新聞)",
+        "未規劃/未習慣的要閱讀新聞的時機(如：突然看到新聞通知、突然想看新聞)",
         {
           "title": "其他",
           "type": "freeform"
@@ -3090,9 +3092,9 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "read_0",
+            "id": "base_3_2",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "base_1",
@@ -3155,26 +3157,26 @@
     {
       "id": "read_12",
       "header": "Question 14",
-      "question": "承上題，甚麼因素讓你採取此閱讀方式(策略)？",
+      "question": "關於這次新聞閱讀，您的閱讀目標最接近以下何種？",
       "question_type": "multi_select",
       "options": [
-        "當下可花費時間多寡",
-        "內容吸引我程度",
-        "當下注意力(認知資源)多寡",
-        "新聞內容類型",
+        "想看新聞圖片",
+        "大致掌握新聞事件概要",
+        "鎖定文章特定段落",
+        "了解整個新聞事件細節",
+        "無",
         {
           "title": "其他",
           "type": "freeform"
-        },
-        "無"
+        }
       ],
       "show_if": {
         "operation": "and",
         "subconditions": [
           {
-            "id": "read_0",
+            "id": "base_3_2",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "base_1",
@@ -3242,30 +3244,27 @@
     {
       "id": "read_13",
       "header": "Question 15",
-      "question": "請問您當下約有多少時間可以閱讀新聞？\n(請以分鐘為單位回答)",
-      "question_type": "single_text_field",
-      "label": "Mins",
-      "input_type": "number",
-      "max_chars": "2",
-      "validations": [
+      "question": "承上題，甚麼因素讓你採取此閱讀方式(策略)？",
+      "question_type": "multi_select",
+      "options": [
+        "當下可花費時間多寡",
+        "內容吸引我程度",
+        "當下注意力(認知資源)多寡",
+        "新聞內容類型",
+        "想上廁所",
+        "無",
         {
-          "operation": "greater than",
-          "value": 1,
-          "on_fail_message": "time must be at least 1"
-        },
-        {
-          "operation": "less than",
-          "value": 99,
-          "on_fail_message": "time must smaller than 99"
+          "title": "其他",
+          "type": "freeform"
         }
       ],
       "show_if": {
         "operation": "and",
         "subconditions": [
           {
-            "id": "read_0",
+            "id": "base_3_2",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "base_1",
@@ -3338,26 +3337,30 @@
     {
       "id": "read_14",
       "header": "Question 16",
-      "question": "開始閱讀該篇新聞之前與閱讀期間，您是否正在從事以下活動？",
-      "question_type": "single_select",
-      "options": [
-        "處理家務",
-        "移動中",
-        "工作或學習",
-        "用餐",
-        "從事娛樂或休閒運動",
-        "上廁所",
-        "與親友聊天",
-        "休息",
-        "未從事特定活動"
+      "question": "請問您當下約有多少時間可以閱讀新聞？\n(請以分鐘為單位回答)",
+      "question_type": "single_text_field",
+      "label": "Mins",
+      "input_type": "number",
+      "max_chars": "2",
+      "validations": [
+        {
+          "operation": "greater than",
+          "value": 1,
+          "on_fail_message": "time must be at least 1"
+        },
+        {
+          "operation": "less than",
+          "value": 61,
+          "on_fail_message": "time must <= 60"
+        }
       ],
       "show_if": {
         "operation": "and",
         "subconditions": [
           {
-            "id": "read_0",
+            "id": "base_3_2",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "base_1",
@@ -3435,26 +3438,27 @@
     {
       "id": "read_15",
       "header": "Question 17",
-      "question": "承上題，該項您閱讀時或閱讀前從事的活動，對您來說，該活動的複雜程度為何？\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)",
-      "question_type": "segment_select",
-      "low_tag": "非常不複雜",
-      "high_tag": "非常複雜",
-      "values": [
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7"
+      "question": "開始閱讀該篇新聞之前與閱讀期間，您是否正在從事以下活動？",
+      "question_type": "single_select",
+      "options": [
+        "處理家務",
+        "移動中",
+        "工作或學習",
+        "開會",
+        "用餐",
+        "從事娛樂或休閒運動",
+        "上廁所",
+        "與親友聊天",
+        "休息",
+        "未從事特定活動"
       ],
       "show_if": {
         "operation": "and",
         "subconditions": [
           {
-            "id": "read_0",
+            "id": "base_3_2",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "base_1",
@@ -3536,28 +3540,27 @@
     },
     {
       "id": "read_16",
-      "header": "Question 18",
-      "question": "請選擇最符合您閱讀該篇新聞當下所處地點",
-      "question_type": "single_select",
-      "options": [
-        "住所",
-        "運動場所",
-        "用餐地點(如：咖啡廳、餐廳)",
-        "工作學校場所",
-        "公眾場所(如：電影院、大賣場)",
-        "移動中",
-        {
-          "title": "其他",
-          "type": "freeform"
-        }
+      "header": "Question read_18",
+      "question": "承上題，該項您閱讀時或閱讀前從事的活動，對您來說，該活動的複雜程度為何？\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)",
+      "question_type": "segment_select",
+      "low_tag": "非常不複雜",
+      "high_tag": "非常複雜",
+      "values": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
       ],
       "show_if": {
         "operation": "and",
         "subconditions": [
           {
-            "id": "read_0",
+            "id": "base_3_2",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "base_1",
@@ -3644,27 +3647,28 @@
     },
     {
       "id": "read_17",
-      "header": "Question read_19",
-      "question": "對我來說，閱讀這篇新聞當下，是個好的新聞通知時機。\n請選擇您對此句描述的感受。",
-      "question_type": "segment_select",
-      "low_tag": "非常不同意",
-      "high_tag": "非常同意",
-      "values": [
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7"
+      "header": "Question 19",
+      "question": "請選擇最符合您閱讀該篇新聞當下所處地點",
+      "question_type": "single_select",
+      "options": [
+        "住所",
+        "運動場所",
+        "用餐地點(如：咖啡廳、餐廳)",
+        "工作學校場所",
+        "公眾場所(如：電影院、大賣場)",
+        "移動中",
+        {
+          "title": "其他",
+          "type": "freeform"
+        }
       ],
       "show_if": {
         "operation": "and",
         "subconditions": [
           {
-            "id": "read_0",
+            "id": "base_3_2",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "base_1",
@@ -3757,19 +3761,26 @@
     {
       "id": "read_18",
       "header": "Question 20",
-      "question": "關於這篇新聞，您是否有分享給其他人？",
-      "question_type": "single_select",
-      "options": [
-        "有",
-        "沒有"
+      "question": "對我來說，這是個好的新聞「通知」時機。請選擇您對此句描述的感受為何。",
+      "question_type": "segment_select",
+      "low_tag": "非常不同意",
+      "high_tag": "非常同意",
+      "values": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
       ],
       "show_if": {
         "operation": "and",
         "subconditions": [
           {
-            "id": "read_0",
+            "id": "base_3_2",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "base_1",
@@ -3865,30 +3876,28 @@
       }
     },
     {
-      "id": "not_share_1",
-      "header": "Question 23",
-      "question": "不分享此則新聞原因為何？",
-      "question_type": "single_select",
-      "options": [
-        "看起來不太可信",
-        "無聊",
-        "不重要",
-        "跟我無關",
-        "已過時",
-        "不想表達立場",
-        "覺得麻煩",
-        {
-          "title": "其他",
-          "type": "freeform"
-        }
+      "id": "read_19",
+      "header": "Question 21",
+      "question": "對我來說，這是個好的新聞「閱讀」時機。請選擇您對此句描述的感受。",
+      "question_type": "segment_select",
+      "low_tag": "非常不同意",
+      "high_tag": "非常同意",
+      "values": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
       ],
       "show_if": {
         "operation": "and",
         "subconditions": [
           {
-            "id": "read_0",
+            "id": "base_3_2",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "base_1",
@@ -3982,6 +3991,262 @@
           },
           {
             "id": "read_18",
+            "operation": "not equals",
+            "value": "***"
+          }
+        ]
+      }
+    },
+    {
+      "id": "read_20",
+      "header": "Question 22",
+      "question": "關於這篇新聞，您是否有分享給其他人？",
+      "question_type": "single_select",
+      "options": [
+        "有",
+        "沒有"
+      ],
+      "show_if": {
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "base_3_2",
+            "operation": "equals",
+            "value": "了解"
+          },
+          {
+            "id": "base_1",
+            "operation": "not equals",
+            "value": "沒有"
+          },
+          {
+            "id": "read_1",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_2",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_3",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_4",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_5",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_6",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_7",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_8",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_9",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_10",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_11",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_12",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_13",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_14",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_15",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_16",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_17",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_18",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_19",
+            "operation": "not equals",
+            "value": "***"
+          }
+        ]
+      }
+    },
+    {
+      "id": "not_share_1",
+      "header": "Question 25",
+      "question": "不分享此則新聞原因為何？",
+      "question_type": "single_select",
+      "options": [
+        "看起來不太可信",
+        "無聊",
+        "不重要",
+        "跟我無關",
+        "已過時",
+        "不想表達立場",
+        "覺得麻煩",
+        "沒空分享或是正在忙",
+        "事件仍在發展中",
+        {
+          "title": "其他",
+          "type": "freeform"
+        }
+      ],
+      "show_if": {
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "base_3_2",
+            "operation": "equals",
+            "value": "了解"
+          },
+          {
+            "id": "base_1",
+            "operation": "not equals",
+            "value": "沒有"
+          },
+          {
+            "id": "read_1",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_2",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_3",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_4",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_5",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_6",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_7",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_8",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_9",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_10",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_11",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_12",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_13",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_14",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_15",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_16",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_17",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_18",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_19",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_20",
             "operation": "equals",
             "value": "沒有"
           }
@@ -3990,7 +4255,7 @@
     },
     {
       "id": "share_1",
-      "header": "Question 21",
+      "header": "Question 23",
       "question": "您分享方式為何？",
       "question_type": "multi_select",
       "options": [
@@ -4009,9 +4274,9 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "read_0",
+            "id": "base_3_2",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "base_1",
@@ -4105,6 +4370,16 @@
           },
           {
             "id": "read_18",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_19",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_20",
             "operation": "equals",
             "value": "有"
           }
@@ -4113,7 +4388,7 @@
     },
     {
       "id": "share_2",
-      "header": "Question 22",
+      "header": "Question 24",
       "question": "分享此則新聞原因為何？",
       "question_type": "single_select",
       "options": [
@@ -4132,9 +4407,9 @@
         "operation": "and",
         "subconditions": [
           {
-            "id": "read_0",
+            "id": "base_3_2",
             "operation": "equals",
-            "value": "確定"
+            "value": "了解"
           },
           {
             "id": "base_1",
@@ -4228,6 +4503,16 @@
           },
           {
             "id": "read_18",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_19",
+            "operation": "not equals",
+            "value": "***"
+          },
+          {
+            "id": "read_20",
             "operation": "equals",
             "value": "有"
           },

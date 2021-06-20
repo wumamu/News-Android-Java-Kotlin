@@ -6,6 +6,8 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import com.recoveryrecord.surveyandroid.example.DbHelper.ESMDbHelper;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -17,7 +19,7 @@ public class TestESMDbViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_esm_db_view);
-        TestESMDbHelper db = new TestESMDbHelper(this);
+        ESMDbHelper db = new ESMDbHelper(this);
         ArrayList<HashMap<String, String>> esmList = db.GetESMs();
         ListView lv = (ListView) findViewById(R.id.esm_list);
         ListAdapter adapter = new SimpleAdapter(

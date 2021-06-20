@@ -37,7 +37,7 @@ public class Constants {
     //GENERATE ESM
 
     public static final int REPEAT_ALARM_CHECKER = 10 * 60 * 1000;//10 min
-    public static final int ESM_TIME_ON_PAGE_THRESHOLD = 5;//5 seconds
+    public static final int ESM_TIME_ON_PAGE_THRESHOLD = 1;//5 seconds
     public static final int ESM_INTERVAL = 60 * 60 * 1000;//one hour
     public static final int DIARY_INTERVAL = 23 * 60 * 60 * 1000;//23 hour
     public static final int ESM_TARGET_RANGE = 60 * 60;//60 min (seconds)
@@ -66,8 +66,8 @@ public class Constants {
     public static final String DEFAULT_DIARY_NOTIFICATION = "notification";
 
     //SUBMIT ESM CHECK
-    public static final String TARGET_READ_NEWS_TITLE_ANSWER = "有印象，且沒看過相同的新聞";
-    public static final String NOT_TARGET_READ_NEWS_TITLE_ANSWER = "沒有印象或有看過相同的新聞";
+    public static final String TARGET_READ_NEWS_TITLE_ANSWER = "有點入閱讀，且沒看過相同的新聞";
+    public static final String NOT_TARGET_READ_NEWS_TITLE_ANSWER = "沒有點入閱讀過或有看過相同的新聞";
     public static final String NOTI_UNCLICK_LAST_ONE = "沒有印象";
     //INTENT PUT EXTRA
     //NEWS NewsModuleActivity
@@ -109,7 +109,7 @@ public class Constants {
 
     public static final String USER_COLLECTION = "user";
     public static final String APP_VERSION_KEY = "app_version";
-    public static final String APP_VERSION_VALUE = "21.06.10-1";
+    public static final String APP_VERSION_VALUE = "21.06.21-1";
     public static final String UPDATE_TIME = "update_timestamp";
     public static final String INITIAL_TIME = "initial_timestamp";
     public static final String LAST_LAUNCH_TIME = "last_launch_timestamp";

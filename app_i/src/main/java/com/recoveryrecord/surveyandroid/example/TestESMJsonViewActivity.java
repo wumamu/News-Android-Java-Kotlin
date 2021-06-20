@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.recoveryrecord.surveyandroid.example.DbHelper.ESMDbHelper;
 import com.recoveryrecord.surveyandroid.example.sqlite.ESM;
 
 import org.json.JSONArray;
@@ -180,8 +181,8 @@ public class TestESMJsonViewActivity extends AppCompatActivity {
                 Date date = new Date(System.currentTimeMillis());
                 SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
                 String time_now = formatter.format(date);
-                TestESMDbHelper dbHandler = new TestESMDbHelper(TestESMJsonViewActivity.this);
-                dbHandler.insertESMDetails(ESM_answer, time_now);
+                ESMDbHelper dbHandler = new ESMDbHelper(TestESMJsonViewActivity.this);
+//                dbHandler.insertESMDetails(ESM_answer, time_now);
                 Toast.makeText(getApplicationContext(), "Details Inserted Successfully", Toast.LENGTH_SHORT).show();
             }
         });

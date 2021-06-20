@@ -3,6 +3,7 @@ package com.recoveryrecord.surveyandroid.example;
 import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -28,6 +29,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -42,6 +44,7 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.recoveryrecord.surveyandroid.example.DbHelper.ReadingBehaviorDbHelper;
 import com.recoveryrecord.surveyandroid.example.sqlite.DragObj;
 import com.recoveryrecord.surveyandroid.example.sqlite.FlingObj;
 import com.recoveryrecord.surveyandroid.example.sqlite.ReadingBehavior;
@@ -69,6 +72,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
@@ -78,7 +82,6 @@ import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_CONTENT;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_ID_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_IMAGE;
-import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_MEDIA;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_MEDIA_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_PUBDATE;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_TITLE;
@@ -130,6 +133,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
     String news_id = "";
     String media_eng = "";
     String media_ch = "";
+//    String my_news_id = "";
 
     private String mUrl, mImg, mTitle, mDate, mSource;
 
@@ -139,7 +143,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
     List<String> categoryArray = new ArrayList<>();//cat
 
     ReadingBehavior myReadingBehavior = new ReadingBehavior();//sqlite
-    TestReadingBehaviorDbHelper dbHandler;
+    ReadingBehaviorDbHelper dbHandler;
 
 //    private Toolbar toolbar;
 
@@ -375,7 +379,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         String time_now = formatter.format(date);
         myReadingBehavior.setKEY_TIME_IN(time_now);
         //open database ############################################################################
-//        dbHandler = new TestReadingBehaviorDbHelper(NewsModuleActivity.this);
+//        dbHandler = new ReadingBehaviorDbHelper(NewsModuleActivity.this);
         //check trigger from #######################################################################
         if (getIntent().getExtras() != null) {
             Bundle b = getIntent().getExtras();
@@ -390,6 +394,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
             if(b.getString(TRIGGER_BY_KEY)!=null){
                 myReadingBehavior.setKEY_TRIGGER_BY(b.getString(TRIGGER_BY_KEY));
             }
+
             if(myReadingBehavior.getKEY_TRIGGER_BY().equals(READING_BEHAVIOR_TRIGGER_BY_NOTIFICATION)){
                 //mark as click (push news)
 //                db.collection(TEST_USER_COLLECTION)
@@ -1530,6 +1535,41 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         } else if (id == android.R.id.home){
             Intent intent_back = new Intent(NewsModuleActivity.this, NewsHybridActivity.class);
             startActivity(intent_back);
+        } else if (id == R.id.label) {
+            AlertDialog.Builder editDialog = new AlertDialog.Builder(this);
+            editDialog.setTitle("請輸入您的實驗編號");
+            final EditText editText = new EditText(this);
+            editText.setText("");
+            editDialog.setView(editText);
+
+            editDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                // do something when the button is clicked
+                public void onClick(DialogInterface arg0, int arg1) {
+                    DocumentReference rbRef = db.collection(NEWS_COLLECTION).document(news_id);
+                    List<String> out_tt = new ArrayList<String>(Arrays.asList(myReadingBehavior.getKEY_TIME_OUT().split(" ")));
+                    // Set the "isCapital" field of the city 'DC'
+                    rbRef.update("label", editText.getText().toString())//auto
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d("log: firebase update", "DocumentSnapshot successfully updated!");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w("log: firebase update", "Error updating document", e);
+                                }
+                            });
+                }
+            });
+            editDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                // do something when the button is clicked
+                public void onClick(DialogInterface arg0, int arg1) {
+//...
+                }
+            });
+            editDialog.show();
         }
         return super.onOptionsItemSelected(item);
     }

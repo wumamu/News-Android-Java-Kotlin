@@ -300,7 +300,7 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
                     List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
                     for (DocumentSnapshot d : list) {
                         if(!(d.getString(READING_BEHAVIOR_TITLE) ==null) && !d.getString(READING_BEHAVIOR_TITLE).equals("NA")){
-//                            if (d.getDouble(READING_BEHAVIOR_TIME_ON_PAGE)>= ESM_TIME_ON_PAGE_THRESHOLD) {
+                            if (d.getDouble(READING_BEHAVIOR_TIME_ON_PAGE)>= ESM_TIME_ON_PAGE_THRESHOLD) {
                                 if (Math.abs(now_time_stamp.getSeconds() - d.getTimestamp(READING_BEHAVIOR_IN_TIME).getSeconds()) <= ESM_TARGET_RANGE) {
 //                                    news_title_target_array.add(d.getString(READING_BEHAVIOR_TITLE));
                                     //define share arrary trigger by category
@@ -328,9 +328,9 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
                                 } else {
                                     not_sample_far.add(d.getString(READING_BEHAVIOR_TITLE));
                                 }
-//                            } else {
-//                                not_sample_short.add(d.getString(READING_BEHAVIOR_TITLE));
-//                            }
+                            } else {
+                                not_sample_short.add(d.getString(READING_BEHAVIOR_TITLE));
+                            }
                         }
 //                        if(tmp_esm_id.equals("")){
 //                            tmp_esm_id = "NA";

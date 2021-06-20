@@ -60,7 +60,7 @@ public class TestBasicActivity extends AppCompatActivity {
     @Override
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        TestESMDbHelper esmDbHelper = new TestESMDbHelper(this);
+//        ESMDbHelper esmDbHelper = new ESMDbHelper(this);
         setTitle("Homepage");
 //        addAdaLovelace();
         setContentView(R.layout.activity_basic);

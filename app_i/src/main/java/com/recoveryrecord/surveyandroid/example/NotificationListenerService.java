@@ -18,6 +18,10 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import com.google.firebase.Timestamp;
+import com.recoveryrecord.surveyandroid.example.DbHelper.PushNewsDbHelper;
+import com.recoveryrecord.surveyandroid.example.sqlite.PushNews;
+import com.recoveryrecord.surveyandroid.example.sqlite.ReadingBehavior;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -171,6 +175,9 @@ public class NotificationListenerService extends android.service.notification.No
         }
         //MY APP
         if(sbn.getPackageName().equals(MY_APP_PACKAGE_NAME)){
+            //ADD TO SQLITE
+//            PushNews myPushNews = new PushNews();//sqlite
+
             final Timestamp current_now = Timestamp.now();
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             @SuppressLint("HardwareIds")
@@ -205,6 +212,7 @@ public class NotificationListenerService extends android.service.notification.No
                         receieve_field = PUSH_NEWS_RECEIEVE_TIME;
                         mark = true;
                         doc_id = device_id + " " + doc_id;
+                        //insert
                         break;
                     case NOTIFICATION_TYPE_VALUE_DIARY: {//diary
                         collection_id = PUSH_DIARY_COLLECTION;
@@ -281,6 +289,7 @@ public class NotificationListenerService extends android.service.notification.No
             receieve_notification.put(NOTIFICATION_BAR_NEWS_NOTI_TIME, mytimestamp);
             receieve_notification.put(NOTIFICATION_BAR_NEWS_PACKAGE_ID, sbn.getKey());
             receieve_notification.put(NOTIFICATION_BAR_NEWS_DEVICE_ID, device_id);
+
             if (extras.containsKey("android.title")) {
                 if(extras.getString("android.title")!=null){
                     receieve_notification.put(NOTIFICATION_BAR_NEWS_TITLE, Objects.requireNonNull(extras.getString("android.title")));
@@ -323,7 +332,6 @@ public class NotificationListenerService extends android.service.notification.No
                         .document(device_id + " " + sbn.getPostTime())
                         .set(receieve_notification);
             }
-
         } else {//other
             @SuppressLint("HardwareIds")
             String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);

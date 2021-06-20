@@ -31,6 +31,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.recoveryrecord.surveyandroid.example.DbHelper.PushNewsDbHelper;
+import com.recoveryrecord.surveyandroid.example.sqlite.PushNews;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -258,6 +260,7 @@ public class NewsNotificationService extends Service {
 //                                    String doc_name = device_id + " " + formatter.format(date);
                                     Map<String, Object> record_noti = new HashMap<>();
                                     String news_id = "", media = "", title = "", doc_id = "";
+                                    PushNews myPushNews = new PushNews();//sqlite//add new to db
                                     if(selections.contains(dc.getDocument().getString(COMPARE_RESULT_MEDIA))){
                                         if(count<20){
                                             Log.d("lognewsselect", "New doc: " + dc.getDocument().getData());
@@ -269,14 +272,21 @@ public class NewsNotificationService extends Service {
                                             Log.d("lognewsselect", "doc id" + doc_id);
                                             record_noti.put(PUSH_NEWS_TYPE, "target add");
                                             record_noti.put(COMPARE_RESULT_CLICK, 0);
+
+                                            myPushNews.setKEY_TYPE("target add");
+                                            myPushNews.setKEY_CLICK(0);
                                             count++;
                                         } else {
                                             record_noti.put(PUSH_NEWS_TYPE, "target too much");
                                             record_noti.put(COMPARE_RESULT_CLICK, 2);
+                                            myPushNews.setKEY_TYPE("target too much");
+                                            myPushNews.setKEY_CLICK(2);
                                         }
                                     } else {
                                         record_noti.put(PUSH_NEWS_TYPE, "not target");
                                         record_noti.put(COMPARE_RESULT_CLICK, 3);
+                                        myPushNews.setKEY_TYPE("not target");
+                                        myPushNews.setKEY_CLICK(3);
                                     }
                                     record_noti.put(PUSH_NEWS_MEDIA, dc.getDocument().getString(COMPARE_RESULT_MEDIA));
                                     record_noti.put(PUSH_NEWS_TITLE, dc.getDocument().getString(COMPARE_RESULT_NEW_TITLE));
@@ -285,16 +295,16 @@ public class NewsNotificationService extends Service {
                                     record_noti.put(PUSH_NEWS_NOTI_TIME, Timestamp.now());
                                     record_noti.put(PUSH_NEWS_DEVICE_ID,  device_id);
                                     record_noti.put(PUSH_NEWS_USER_ID,  sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
-//                                    record_noti.put(PUSH_NEWS_SELECTION, Arrays.toString(new Set[]{selections}));
+                                    myPushNews.setKEY_MEDIA(dc.getDocument().getString(COMPARE_RESULT_MEDIA));
+                                    myPushNews.setKEY_TITLE(dc.getDocument().getString(COMPARE_RESULT_NEW_TITLE));
+                                    myPushNews.setKEY_NEWS_ID(dc.getDocument().getString(COMPARE_RESULT_ID));
+                                    myPushNews.setKEY_PUBDATE(dc.getDocument().getTimestamp(COMPARE_RESULT_PUBDATE).getSeconds());
+                                    myPushNews.setKEY_NOTI_TIMESTAMP(Timestamp.now().getSeconds());
+                                    myPushNews.setKEY_DEVICE_ID(device_id);
+                                    myPushNews.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+                                    PushNewsDbHelper dbHandler = new PushNewsDbHelper(getApplicationContext());
+                                    dbHandler.insertPushNewsDetailsCreate(myPushNews);
 
-
-
-//                                    db.collection(TEST_USER_COLLECTION)
-//                                            .document(device_id)
-//                                            .collection(PUSH_NEWS_COLLECTION)
-//                                            .document(device_id + " " + dc.getDocument().getString(COMPARE_RESULT_ID))
-////                                            .document(dc.getDocument().getId())
-//                                            .set(record_noti);
                                     db.collection(PUSH_NEWS_COLLECTION)
                                             .document(device_id + " " + dc.getDocument().getString(COMPARE_RESULT_ID))
                                             .set(record_noti);
