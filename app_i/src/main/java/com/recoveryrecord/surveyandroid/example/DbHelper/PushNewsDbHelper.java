@@ -2,6 +2,7 @@ package com.recoveryrecord.surveyandroid.example.DbHelper;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -74,6 +75,25 @@ public class PushNewsDbHelper extends SQLiteOpenHelper {
         // Insert the new row, returning the primary key value of the new row
         long newRowId = db.insert(TABLE_NAME_READING_BEHAVIOR,null, cValues);
         db.close();
+    }
+
+    public Cursor getNotiDataForESM(long now_timestamp) {
+        SQLiteDatabase db = this.getReadableDatabase();
+//        Cursor res =  db.rawQuery( "select * from contacts where id="+id+"", null );
+        Cursor res =  db.rawQuery( "SELECT tmp.news_id, tmp.title\n" +
+                        "                FROM\n" +
+                        "                        (\n" +
+                        "                                SELECT DISTINCT pn.news_id,\n" +
+                        "                                pn.title,\n" +
+                        "                                pn.noti_timestamp,\n" +
+                        "                                (" + now_timestamp + "-pn.noti_timestamp) as diff\n" +
+                        "                                FROM push_news pn\n" +
+                        "                                WHERE pn.type = 'target add'" +
+                        "                        ) as tmp\n" +
+                        "                WHERE tmp.diff <= 3600\n" +
+                        "                ORDER BY tmp.noti_timestamp DESC;"
+        , null );
+        return res;
     }
 
 //    public void insertPushNewsDetailsCreate(PushNews pushnews){

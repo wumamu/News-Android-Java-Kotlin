@@ -75,8 +75,8 @@ public class DiaryDbHelper extends SQLiteOpenHelper {
         ContentValues cValues = new ContentValues();
         cValues.put(KEY_NEWS_ID, readingBehavior.getKEY_NEWS_ID());
         cValues.put(KEY_TRIGGER_BY, readingBehavior.getKEY_TRIGGER_BY());
-        cValues.put(KEY_TIME_IN, readingBehavior.getKEY_TIME_IN());
-        cValues.put(KEY_TIME_OUT, readingBehavior.getKEY_TIME_OUT());
+        cValues.put(KEY_TIME_IN, readingBehavior.getKEY_IN_TIMESTAMP());
+        cValues.put(KEY_TIME_OUT, readingBehavior.getKEY_OUT_TIMESTAMP());
         cValues.put(KEY_CONTENT_LENGTH, readingBehavior.getKEY_CONTENT_LENGTH());
         cValues.put(KEY_DISPLAY_WIDTH, readingBehavior.getKEY_DISPLAY_WIDTH());
         cValues.put(KEY_DISPLAY_HEIGHT, readingBehavior.getKEY_DISPLAY_HEIGHT());

@@ -473,7 +473,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                     one.putOpt("options", notifications_arr);
                     if(notifications_arr.length()==1){
                         one.putOpt("header", one.optString("header")+"(無推播紀錄)");
-                        one.putOpt("question", "資料庫無閱讀紀錄，麻煩直接填選-沒有印象");
+                        one.putOpt("question", "資料庫無推播紀錄，麻煩直接填選-沒有印象");
                     } else {
                         one.putOpt("header", one.optString("header")+"(>1推播紀錄)");
                     }
@@ -484,7 +484,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                     one.putOpt("options", notifications_arr);
                     if(notifications_arr.length()==1){
                         one.putOpt("header", one.optString("header")+"(無推播紀錄)");
-                        one.putOpt("question", "資料庫無閱讀紀錄，麻煩直接填選-沒有印象");
+                        one.putOpt("question", "資料庫無推播紀錄，麻煩直接填選-沒有印象");
                     } else {
                         one.putOpt("header", one.optString("header")+"(>1推播紀錄)");
                     }
@@ -671,7 +671,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                     one.putOpt("options", notifications_arr);
                     if(notifications_arr.length()==1){
                         one.putOpt("header", one.optString("header")+"(無推播紀錄)");
-                        one.putOpt("question", "資料庫無閱讀紀錄，麻煩直接填選-沒有印象");
+                        one.putOpt("question", "資料庫無推播紀錄，麻煩直接填選-沒有印象");
                     } else {
                         one.putOpt("header", one.optString("header")+"(>1推播紀錄)");
                     }
@@ -682,7 +682,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                     one.putOpt("options", notifications_arr);
                     if(notifications_arr.length()==1){
                         one.putOpt("header", one.optString("header")+"(無推播紀錄)");
-                        one.putOpt("question", "資料庫無閱讀紀錄，麻煩直接填選-沒有印象");
+                        one.putOpt("question", "資料庫無推播紀錄，麻煩直接填選-沒有印象");
                     } else {
                         one.putOpt("header", one.optString("header")+"(>1推播紀錄)");
                     }

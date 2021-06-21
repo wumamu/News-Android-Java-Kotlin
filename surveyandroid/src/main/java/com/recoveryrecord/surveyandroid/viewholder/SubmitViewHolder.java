@@ -153,7 +153,7 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                     editor.putInt(ESM_DONE_TOTAL, esm_done+1);
                     editor.putInt(ESM_DAY_DONE_PREFIX + day_index, esm_day_done+1);
                     editor.apply();
-//                    DocumentReference docRef = db.collection("test_users").document(device_id).collection("push_esm").document(esm_id);
+
                     DocumentReference docRef = db.collection("push_esm").document(device_id + " " + esm_id);
                     //result without title so we have to trace
                     docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>(){
@@ -174,14 +174,14 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                                                 while(keys.hasNext()) {
                                                     String key = keys.next();
                                                     try {
-                                                        if(jsonAnswerObject.get(key).equals("有印象，且沒看過相同的新聞")){
+                                                        if(jsonAnswerObject.get(key).equals("有點入閱讀，且沒看過相同的新聞")){
                                                             List<String> add_what = new ArrayList<String>(Arrays.asList(key.split("_")));
                                                             target_read_title = sample_read_Array.get(Integer.parseInt(add_what.get(1)));
-                                                            if (jsonAnswerObject.has("read_14")) {
-                                                                target_read_title_situation = jsonAnswerObject.getString("read_14");
+                                                            if (jsonAnswerObject.has("read_15")) {
+                                                                target_read_title_situation = jsonAnswerObject.getString("read_15");
                                                             }
-                                                            if (jsonAnswerObject.has("read_16")) {
-                                                                target_read_title_place =  jsonAnswerObject.getString("read_16");
+                                                            if (jsonAnswerObject.has("read_17")) {
+                                                                target_read_title_place =  jsonAnswerObject.getString("read_17");
                                                             }
 //                                                            SharedPreferences.Editor editor = sharedPrefs.edit();
 //                                                            String tmp_list = sharedPrefs.getString(TO_DIARY_LIST, "");
@@ -225,15 +225,6 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                                     String diary_title = "NA";
                                     if(!target_read_title.equals("NA")){
                                         sample = 2;
-//                                        String TARGET_NEWS_TITLE = "TargetNewsTitleArray";
-//                                        String target_read_title_array_string = sharedPrefs.getString(TARGET_NEWS_TITLE, "");
-//                                        SharedPreferences.Editor editor = sharedPrefs.edit();
-//                                        if(target_read_title_array_string.equals("")){//no history
-//                                            editor.putString(TARGET_NEWS_TITLE, target_read_title);
-//                                        } else {
-//                                            editor.putString(TARGET_NEWS_TITLE, target_read_title_array_string + "#" + target_read_title );
-//                                        }
-//                                        editor.apply();
                                         List<String> tmp = new ArrayList<String>(Arrays.asList(target_read_title.split("¢")));
                                         target_read_title_in_time = tmp.get(4);
                                         target_read_title_id = tmp.get(5);

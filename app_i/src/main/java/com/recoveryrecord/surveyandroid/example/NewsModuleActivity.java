@@ -44,6 +44,7 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.recoveryrecord.surveyandroid.example.DbHelper.PushNewsDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.ReadingBehaviorDbHelper;
 import com.recoveryrecord.surveyandroid.example.sqlite.DragObj;
 import com.recoveryrecord.surveyandroid.example.sqlite.FlingObj;
@@ -135,7 +136,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
     String media_ch = "";
 //    String my_news_id = "";
 
-    private String mUrl, mImg, mTitle, mDate, mSource;
+    private String mUrl = "NA", mImg = "NA", mTitle = "NA", mDate = "NA", mSource = "NA";
 
     private static final String DEBUG_TAG = "Gestures";
     private GestureListener detector;
@@ -377,7 +378,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         String time_now = formatter.format(date);
-        myReadingBehavior.setKEY_TIME_IN(time_now);
+        myReadingBehavior.setKEY_IN_TIMESTAMP(Timestamp.now().getSeconds());
         //open database ############################################################################
 //        dbHandler = new ReadingBehaviorDbHelper(NewsModuleActivity.this);
         //check trigger from #######################################################################
@@ -405,7 +406,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                         .document(device_id + " " + news_id)
                         .update(PUSH_NEWS_CLICK, 1,
                                 PUSH_NEWS_OPEN_TIME, Timestamp.now(),
-                                PUSH_NEWS_READING_BEHAVIOR_ID, myReadingBehavior.getKEY_TIME_IN())
+                                PUSH_NEWS_READING_BEHAVIOR_ID, myReadingBehavior.getKEY_IN_TIMESTAMP())
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
@@ -491,6 +492,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                 break;
 
         }
+        myReadingBehavior.setKEY_MEDIA(media_ch);
 //        Log.d("log: media_name", media_name);
 //        Log.d("log: time_in", myReadingBehavior.getKEY_TIME_IN());
         enter_timestamp = Timestamp.now();//new Timestamp(System.currentTimeMillis());
@@ -509,8 +511,8 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         float density = getResources().getDisplayMetrics().density;
         float dpHeight = outMetrics.heightPixels / density;
         final float dpWidth = outMetrics.widthPixels / density;
-        myReadingBehavior.setKEY_DISPLAY_HEIGHT(String.valueOf(dpHeight));
-        myReadingBehavior.setKEY_DISPLAY_WIDTH(String.valueOf(dpWidth));
+        myReadingBehavior.setKEY_DISPLAY_HEIGHT(dpHeight);
+        myReadingBehavior.setKEY_DISPLAY_WIDTH(dpWidth);
 //        Log.d("log: display_width_dp", myReadingBehavior.getKEY_DISPLAY_WIDTH());
 //        Log.d("log: display_height_dp", myReadingBehavior.getKEY_DISPLAY_HEIGHT());
         //whether is chinese #######################################################################
@@ -559,15 +561,16 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                     if (document.exists()) {
 //                        Log.d("log: firebase", "Success");
 //                        Log.d("log: firebase", "DocumentSnapshot data: " + document.getData());
-                        mUrl = "";
+//                        mUrl = "";
                         if(document.getString(NEWS_URL)!=null){
                             mUrl = document.getString(NEWS_URL);
                         }
-                        mTitle = "";
+//                        mTitle = "";
                         if(document.getString(NEWS_TITLE)!=null){
                             mTitle = document.getString(NEWS_TITLE);
+                            myReadingBehavior.setKEY_TITLE(mTitle);
                         }
-                        mImg = "NA";
+//                        mImg = "NA";
 //                        if(document.getString("media").equals("聯合")){
                             if(document.getString(NEWS_IMAGE)!=null){
                                 mImg = document.getString(NEWS_IMAGE);
@@ -946,7 +949,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                                     int viewWidth = content_view.getWidth();
                                     int viewHeight = content_view.getHeight();
                                     int dp_unit = pxToDp(viewHeight, content_view.getContext());
-                                    myReadingBehavior.setKEY_CONTENT_LENGTH(String.valueOf(dp_unit));
+                                    myReadingBehavior.setKEY_CONTENT_LENGTH(dp_unit);
 //                                    Log.d("log: content_length_dp", myReadingBehavior.getKEY_CONTENT_LENGTH());
                                 }
                             });
@@ -1206,7 +1209,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
 //        Log.d("log: pause count", String.valueOf(myReadingBehavior.getKEY_PAUSE_ON_PAGE()));
         Date date = new Date(System.currentTimeMillis());
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-        myReadingBehavior.setKEY_TIME_OUT(formatter.format(date));
+//        myReadingBehavior.setKEY_TIME_OUT(formatter.format(date));
 //        Log.d("log: time_out", myReadingBehavior.getKEY_TIME_OUT());
 
         myReadingBehavior.setKEY_TIME_SERIES(tmp_time_series);
@@ -1348,7 +1351,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onDestroy() {
-//        Log.d("log: activity cycle", "NewsHybridActivity On destroy");
+        Log.d("log: activity cycle", "NewsHybridActivity On destroy");
 //        Map<String, Object> log_service = new HashMap<>();
 //        log_service.put("service_timestamp", Timestamp.now());
 //        log_service.put("flag", false);
@@ -1435,13 +1438,8 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         if (id == R.id.share){
             String share_field = "";
 //            final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(READING_BEHAVIOR_COLLECTION).document(myReadingBehavior.getKEY_TIME_IN());
-            final DocumentReference rbRef = db.collection(READING_BEHAVIOR_COLLECTION).document(device_id + " " + myReadingBehavior.getKEY_TIME_IN());
+            final DocumentReference rbRef = db.collection(READING_BEHAVIOR_COLLECTION).document(device_id + " " + myReadingBehavior.getKEY_IN_TIMESTAMP());
             if(share_clicked){
-//                Date date = new Date(System.currentTimeMillis());
-//                SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-//                String time_now = formatter.format(date);
-//                share_field = time_now;
-//                rbRef.update("share", FieldValue.arrayUnion(share_field));
                 rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -1519,7 +1517,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                 Intent receiver = new Intent(this, ApplicationSelectorReceiver.class);
 //                String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
                 receiver.putExtra("device_id", device_id);
-                receiver.putExtra("doc_time", myReadingBehavior.getKEY_TIME_IN());
+                receiver.putExtra("doc_time", String.valueOf(myReadingBehavior.getKEY_IN_TIMESTAMP()));
                 receiver.putExtra("doc_date", String.valueOf(l_date));
                 receiver.putExtra("share_field", share_field);
 //                receiver.putExtra("sh", String.valueOf(l_date));
@@ -1537,7 +1535,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
             startActivity(intent_back);
         } else if (id == R.id.label) {
             AlertDialog.Builder editDialog = new AlertDialog.Builder(this);
-            editDialog.setTitle("請輸入您的實驗編號");
+            editDialog.setTitle("sentiment evluate pos 1 neu 0 neg -1");
             final EditText editText = new EditText(this);
             editText.setText("");
             editDialog.setView(editText);
@@ -1546,7 +1544,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                 // do something when the button is clicked
                 public void onClick(DialogInterface arg0, int arg1) {
                     DocumentReference rbRef = db.collection(NEWS_COLLECTION).document(news_id);
-                    List<String> out_tt = new ArrayList<String>(Arrays.asList(myReadingBehavior.getKEY_TIME_OUT().split(" ")));
+//                    List<String> out_tt = new ArrayList<String>(Arrays.asList(myReadingBehavior.getKEY_TIME_OUT().split(" ")));
                     // Set the "isCapital" field of the city 'DC'
                     rbRef.update("label", editText.getText().toString())//auto
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -1585,6 +1583,9 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         myReadingBehavior.setKEY_FLING_NUM(myReadingBehavior.getKEY_FLING_NUM()+1);
         flingObj.setFLING_ID(myReadingBehavior.getKEY_FLING_NUM());
         String str_fling = myReadingBehavior.getKEY_FLING_RECORD();
+        if(str_fling.equals("NA")){
+            str_fling = "";
+        }
 //        str_fling+="fling num:" + flingObj.getFLING_ID() + "/";
         str_fling+="(" + flingObj.getPOINT_ONE_X() + "," + flingObj.getPOINT_ONE_Y() + ")/";
         str_fling+="(" + flingObj.getPOINT_TWO_X() + "," + flingObj.getPOINT_TWO_Y() + ")/";
@@ -1597,8 +1598,6 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         direction_f += flingObj.getPOINT_ONE_X() < flingObj.getPOINT_TWO_X() ? "E" : flingObj.getPOINT_ONE_X() > flingObj.getPOINT_TWO_X() ? "W" : "";
         str_fling+=direction_f + "#";
         myReadingBehavior.setKEY_FLING_RECORD(str_fling);
-//        Toast.makeText(this, str_fling, Toast.LENGTH_SHORT).show();
-//        Log.d("log: per_fling_record", myReadingBehavior.getKEY_FLING_RECORD());
     }
 
     @Override
@@ -1619,16 +1618,16 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void addReadingBehavior() {
         final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        List<String> in_tt = new ArrayList<String>(Arrays.asList(myReadingBehavior.getKEY_TIME_IN().split(" ")));
+//        List<String> in_tt = new ArrayList<String>(Arrays.asList(myReadingBehavior.getKEY__IN_TIMESTAMP().split(" ")));
         // [START add_ada_lovelace]
         // Create a new user with a first and last name
         Map<String, Object> readingBehavior = new HashMap<>();
-        readingBehavior.put(READING_BEHAVIOR_NEWS_ID,  "NA");
+        readingBehavior.put(READING_BEHAVIOR_NEWS_ID,  news_id);
         readingBehavior.put(READING_BEHAVIOR_DEVICE_ID,  device_id);
         readingBehavior.put(READING_BEHAVIOR_USER_ID,  sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
         readingBehavior.put(READING_BEHAVIOR_FONT_SIZE,  text_size_string);
 //        readingBehavior.put("pubdate",  Timestamp.now());
-        readingBehavior.put(READING_BEHAVIOR_MEDIA,  "NA");
+        readingBehavior.put(READING_BEHAVIOR_MEDIA, myReadingBehavior.getKEY_MEDIA());
         readingBehavior.put(READING_BEHAVIOR_TRIGGER_BY, myReadingBehavior.getKEY_TRIGGER_BY());
 //        readingBehavior.put(READING_BEHAVIOR_SAMPLE_CHECK, device_id);
 //        readingBehavior.put(READING_BEHAVIOR_CHECK_MARK, device_id);
@@ -1637,11 +1636,11 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         readingBehavior.put(READING_BEHAVIOR_HAS_IMAGE, has_img);
 //        readingBehavior.put("time_in", myReadingBehavior.getKEY_TIME_IN());
         readingBehavior.put(READING_BEHAVIOR_IN_TIME, enter_timestamp);
-        readingBehavior.put("in_date", in_tt.get(0));
-        readingBehavior.put("in_time", in_tt.get(2));
+//        readingBehavior.put("in_date", in_tt.get(0));
+//        readingBehavior.put("in_time", in_tt.get(2));
         readingBehavior.put(READING_BEHAVIOR_OUT_TIME, Timestamp.now());
-        readingBehavior.put("out_date", "NA");
-        readingBehavior.put("out_time", "NA");
+//        readingBehavior.put("out_date", "NA");
+//        readingBehavior.put("out_time", "NA");
         readingBehavior.put("content_length(dp)", "NA");
         readingBehavior.put("display_width(dp)", myReadingBehavior.getKEY_DISPLAY_WIDTH());
         readingBehavior.put("display_height(dp)", myReadingBehavior.getKEY_DISPLAY_HEIGHT());
@@ -1654,7 +1653,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         readingBehavior.put("drag_num", myReadingBehavior.getKEY_DRAG_NUM());
         readingBehavior.put("drag_record", Arrays.asList("NA"));
         readingBehavior.put(READING_BEHAVIOR_SHARE, Arrays.asList("NA"));
-        readingBehavior.put(READING_BEHAVIOR_TITLE,"NA");
+        readingBehavior.put(READING_BEHAVIOR_TITLE,myReadingBehavior.getKEY_TITLE());
 //        readingBehavior.put(READING_BEHAVIOR_CATEGORY,categoryArray);
 //        readingBehavior.put("share_via", "none");
         readingBehavior.put("time_series(s)", Arrays.asList("NA"));
@@ -1662,22 +1661,19 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
 //        readingBehavior.put("char_num_total", "NA");
         readingBehavior.put("row_spacing(dp)", "NA");
 
+        myReadingBehavior.setKEY_DOC_ID(device_id + " " + myReadingBehavior.getKEY_IN_TIMESTAMP());
 
-//        db.collection(TEST_USER_COLLECTION)
-//                .document(device_id)
-//                .collection(READING_BEHAVIOR_COLLECTION)
-//                .document(device_id + " " +  myReadingBehavior.getKEY_TIME_IN())
-//                .set(readingBehavior);
+        ReadingBehaviorDbHelper dbHandler = new ReadingBehaviorDbHelper(getApplicationContext());
+        dbHandler.insertReadingBehaviorDetailsCreate(myReadingBehavior);
+
         db.collection(READING_BEHAVIOR_COLLECTION)
-                .document(device_id + " " + myReadingBehavior.getKEY_TIME_IN())
+                .document(device_id + " " + myReadingBehavior.getKEY_IN_TIMESTAMP())
                 .set(readingBehavior);
         document_create = true;
     }
     public void updateReadingBehavior(){
         @SuppressLint("MissingPermission")
-//        String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-//        DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(READING_BEHAVIOR_COLLECTION).document(device_id + " " +  myReadingBehavior.getKEY_TIME_IN());
-        DocumentReference rbRef = db.collection(READING_BEHAVIOR_COLLECTION).document(device_id + " " +  myReadingBehavior.getKEY_TIME_IN());
+        DocumentReference rbRef = db.collection(READING_BEHAVIOR_COLLECTION).document(device_id + " " +  myReadingBehavior.getKEY_IN_TIMESTAMP());
 
         List<String> time_series_list = new ArrayList<String>(Arrays.asList(myReadingBehavior.getKEY_TIME_SERIES().split("#")));
         List<String> viewport_record_list = new ArrayList<String>(Arrays.asList(myReadingBehavior.getKEY_VIEW_PORT_RECORD().split("#")));
@@ -1691,15 +1687,18 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
 ////            System.out.println(time_series_list.get(i));
 //            Log.d("log: firebase", drag_record_list.get(i));
 //        }
-        List<String> out_tt = new ArrayList<String>(Arrays.asList(myReadingBehavior.getKEY_TIME_OUT().split(" ")));
+//        List<String> out_tt = new ArrayList<String>(Arrays.asList(myReadingBehavior.getKEY_TIME_OUT().split(" ")));
         // Set the "isCapital" field of the city 'DC'
+        myReadingBehavior.setKEY_OUT_TIMESTAMP(Timestamp.now().getSeconds());
+        myReadingBehavior.setKEY_TITLE(mTitle);
+
         rbRef.update("content_length(dp)", myReadingBehavior.getKEY_CONTENT_LENGTH(),
                 "byte_per_line", myReadingBehavior.getKEY_BYTE_PER_LINE(),
 //                "category", categoryArray,
                 "has_img", has_img,
 //                "char_num_total", myReadingBehavior.getKEY_CHAR_NUM_TOTAL(),
                 READING_BEHAVIOR_NEWS_ID,  myReadingBehavior.getKEY_NEWS_ID(),
-                READING_BEHAVIOR_MEDIA, media_ch,
+                READING_BEHAVIOR_MEDIA, myReadingBehavior.getKEY_MEDIA(),
                 "pubdate",mPubdate,
                 "row_spacing(dp)", myReadingBehavior.getKEY_ROW_SPACING(),
                 "viewport_num", myReadingBehavior.getKEY_VIEW_PORT_NUM(),
@@ -1712,10 +1711,10 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
 //                "share_via", "none",//none
                 "time_on_page(s)", myReadingBehavior.getKEY_TIME_ON_PAGE(),//auto
 //                "time_out", myReadingBehavior.getKEY_TIME_OUT(),
-                "out_timestamp", Timestamp.now(),
-                "out_time", out_tt.get(2),
-                "out_date", out_tt.get(0),
-                "title", mTitle,
+                "out_timestamp", myReadingBehavior.getKEY_OUT_TIMESTAMP(),
+//                "out_time", out_tt.get(2),
+//                "out_date", out_tt.get(0),
+                READING_BEHAVIOR_TITLE, myReadingBehavior.getKEY_TITLE(),
                 "time_series(s)", time_series_list,//auto
                 "viewport_record", viewport_record_list)//auto
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -1730,6 +1729,11 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                         Log.w("log: firebase update", "Error updating document", e);
                     }
                 });
+        myReadingBehavior.setKEY_OUT_TIMESTAMP(Timestamp.now().getSeconds());
+
+        ReadingBehaviorDbHelper dbHandler = new ReadingBehaviorDbHelper(getApplicationContext());
+        dbHandler.UpdateReadingBehaviorDetails(myReadingBehavior);
+
     }
 
 
