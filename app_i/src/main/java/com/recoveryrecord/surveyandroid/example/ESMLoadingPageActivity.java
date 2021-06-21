@@ -181,15 +181,17 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
         news_title_target_array.clear();
 //        ArrayList<String> my_noti_list = new ArrayList<>();
         Cursor cursor = dbHandler.getReadingDataForESM(my_time.getSeconds());
-        cursor.moveToFirst();
-        while (cursor.moveToNext()){
-            String title = cursor.getString(cursor.getColumnIndex("title"));
-            String news_id = cursor.getString(cursor.getColumnIndex("news_id"));
-            String media = cursor.getString(cursor.getColumnIndex("media"));
-            if(!title.equals("NA")){
-                exist_read = true;
-                int share_var = 0, trigger_var = 0;
-                String cat_var = "種類";
+        if (cursor.moveToFirst()) {
+            while(!cursor.isAfterLast()) {
+                // If you use c.moveToNext() here, you will bypass the first row, which is WRONG
+                String title = cursor.getString(cursor.getColumnIndex("title"));
+                String news_id = cursor.getString(cursor.getColumnIndex("news_id"));
+                String media = cursor.getString(cursor.getColumnIndex("media"));
+                Log.d("lognewsselect", title);
+                if(!title.equals("NA")){
+                    exist_read = true;
+                    int share_var = 0, trigger_var = 0;
+                    String cat_var = "種類";
 //                tmp_share_Array = (List<String>) d.get(READING_BEHAVIOR_SHARE);
 //                for (int i=0; i< tmp_share_Array.size(); i++){
 //                    if(!tmp_share_Array.get(i).equals(NA_STRING) && !tmp_share_Array.get(i).equals(NONE_STRING)){
@@ -201,17 +203,52 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
 //                    trigger_var = 1;
 //                }
 //                                    tmp_category_Array = (List<String>) d.get(READING_BEHAVIOR_CATEGORY);
-                tmp_category_Array.add("暫無");
-                cat_var = tmp_category_Array.get(0);
+                    tmp_category_Array.add("暫無");
+                    cat_var = tmp_category_Array.get(0);
 //                L timestamp = cursor.getLong(cursor.getColumnIndex("news_id");
-                long in_time = cursor.getLong(cursor.getColumnIndex("in_timestamp"));
-                Date date = new Date ();
-                date.setTime(in_time*1000);
-                @SuppressLint("SimpleDateFormat")
-                SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-                news_title_target_array.add(title + "(" + media + ")" + "¢" + share_var + "¢" + trigger_var + "¢" + cat_var + "¢" + formatter.format(date) + "¢" + news_id);
+                    long in_time = cursor.getLong(cursor.getColumnIndex("in_timestamp"));
+                    Date date = new Date ();
+                    date.setTime(in_time*1000);
+                    @SuppressLint("SimpleDateFormat")
+                    SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+                    news_title_target_array.add(title + "(" + media + ")" + "¢" + share_var + "¢" + trigger_var + "¢" + cat_var + "¢" + formatter.format(date) + "¢" + news_id);
+                }
+                cursor.moveToNext();
             }
         }
+//        cursor.moveToFirst();
+//        while (cursor.moveToNext()){
+//
+//            String title = cursor.getString(cursor.getColumnIndex("title"));
+//            String news_id = cursor.getString(cursor.getColumnIndex("news_id"));
+//            String media = cursor.getString(cursor.getColumnIndex("media"));
+//            Log.d("lognewsselect", title);
+//            if(!title.equals("NA")){
+//                exist_read = true;
+//                int share_var = 0, trigger_var = 0;
+//                String cat_var = "種類";
+////                tmp_share_Array = (List<String>) d.get(READING_BEHAVIOR_SHARE);
+////                for (int i=0; i< tmp_share_Array.size(); i++){
+////                    if(!tmp_share_Array.get(i).equals(NA_STRING) && !tmp_share_Array.get(i).equals(NONE_STRING)){
+////                        share_var = 1;
+////                        break;
+////                    }
+////                }
+////                if(d.getString(READING_BEHAVIOR_TRIGGER_BY).equals(READING_BEHAVIOR_TRIGGER_BY_NOTIFICATION)){
+////                    trigger_var = 1;
+////                }
+////                                    tmp_category_Array = (List<String>) d.get(READING_BEHAVIOR_CATEGORY);
+//                tmp_category_Array.add("暫無");
+//                cat_var = tmp_category_Array.get(0);
+////                L timestamp = cursor.getLong(cursor.getColumnIndex("news_id");
+//                long in_time = cursor.getLong(cursor.getColumnIndex("in_timestamp"));
+//                Date date = new Date ();
+//                date.setTime(in_time*1000);
+//                @SuppressLint("SimpleDateFormat")
+//                SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+//                news_title_target_array.add(title + "(" + media + ")" + "¢" + share_var + "¢" + trigger_var + "¢" + cat_var + "¢" + formatter.format(date) + "¢" + news_id);
+//            }
+//        }
         if (!cursor.isClosed())  {
             cursor.close();
         }
@@ -235,16 +272,29 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
         notification_unclick_array.clear();
 //        ArrayList<String> my_noti_list = new ArrayList<>();
         Cursor cursor = dbHandler.getNotiDataForESM(my_time.getSeconds());
-        cursor.moveToFirst();
-        while (cursor.moveToNext()){
-            String title = cursor.getString(cursor.getColumnIndex("title"));
-            String news_id = cursor.getString(cursor.getColumnIndex("news_id"));
-            if(!title.equals("NA")){
-//                my_noti_list.add(title + "¢" + news_id + "#");
-                notification_unclick_array.add(title);
-                exist_notification = true;
+        if (cursor.moveToFirst()) {
+            while(!cursor.isAfterLast()) {
+                // If you use c.moveToNext() here, you will bypass the first row, which is WRONG
+                String title = cursor.getString(cursor.getColumnIndex("title"));
+                String news_id = cursor.getString(cursor.getColumnIndex("news_id"));
+                if(!title.equals("NA")){
+    //                my_noti_list.add(title + "¢" + news_id + "#");
+                    notification_unclick_array.add(title);
+                    exist_notification = true;
+                }
+                cursor.moveToNext();
             }
         }
+//        cursor.moveToFirst();
+//        while (cursor.moveToNext()){
+//            String title = cursor.getString(cursor.getColumnIndex("title"));
+//            String news_id = cursor.getString(cursor.getColumnIndex("news_id"));
+//            if(!title.equals("NA")){
+////                my_noti_list.add(title + "¢" + news_id + "#");
+//                notification_unclick_array.add(title);
+//                exist_notification = true;
+//            }
+//        }
         if (!cursor.isClosed())  {
             cursor.close();
         }
@@ -354,7 +404,7 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 //                        List<String> news_title_array_add = new ArrayList<>();
                 if (!queryDocumentSnapshots.isEmpty()) {
-                    news_title_target_array.clear();
+//                    news_title_target_array.clear();
                     List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
                     for (DocumentSnapshot d : list) {
                         if(!(d.getString(READING_BEHAVIOR_TITLE) ==null) && !d.getString(READING_BEHAVIOR_TITLE).equals("NA")){
@@ -434,7 +484,7 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
         task2.addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                notification_unclick_array.clear();
+//                notification_unclick_array.clear();
                 if (!queryDocumentSnapshots.isEmpty()) {
                     List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
                     for (DocumentSnapshot d : list) {

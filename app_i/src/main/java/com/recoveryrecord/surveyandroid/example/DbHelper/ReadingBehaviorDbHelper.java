@@ -137,7 +137,7 @@ public class ReadingBehaviorDbHelper extends SQLiteOpenHelper {
                         "(\n" +
                         "\tSELECT DISTINCT rb.news_id, \n" +
                         "\t\t\t\t\trb.title, \n" +
-                        "\t\t\t\t\trb.media, \n" +
+                        "\t\t\t\t\trb.media,\n" +
                         "\t\t\t\t\trb.share,\n" +
                         "\t\t\t\t\trb.trigger_by,\n" +
                         "\t\t\t\t\trb.in_timestamp,\n" +
