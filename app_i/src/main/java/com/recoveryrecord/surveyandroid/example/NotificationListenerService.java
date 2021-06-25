@@ -212,6 +212,11 @@ public class NotificationListenerService extends android.service.notification.No
                         receieve_field = PUSH_NEWS_RECEIEVE_TIME;
                         mark = true;
                         doc_id = device_id + " " + doc_id;
+                        PushNews myPushNews = new PushNews();
+                        myPushNews.setKEY_DOC_ID(doc_id);
+                        myPushNews.setKEY_RECEIEVE_TIMESTAMP(Timestamp.now().getSeconds());
+                        PushNewsDbHelper dbHandler = new PushNewsDbHelper(getApplicationContext());
+                        dbHandler.UpdatePushNewsDetailsReceieve(myPushNews);
                         //insert
                         break;
                     case NOTIFICATION_TYPE_VALUE_DIARY: {//diary
@@ -478,10 +483,6 @@ public class NotificationListenerService extends android.service.notification.No
                         remove_type_field = PUSH_ESM_REMOVE_TYPE;
                         doc_id = device_id + " " + doc_id;
                         mark = true;
-//                        if(reason==19 || reason==1){
-//                            editor.putBoolean(ESM_LAST_TIME, false);
-//                            editor.apply();
-//                        }
                         break;
                     case NOTIFICATION_TYPE_VALUE_NEWS:
                         collection_id = PUSH_NEWS_COLLECTION;
@@ -489,6 +490,12 @@ public class NotificationListenerService extends android.service.notification.No
                         remove_type_field = PUSH_NEWS_REMOVE_TYPE;
                         doc_id = device_id + " " + doc_id;
                         mark = true;
+                        PushNews myPushNews = new PushNews();
+                        myPushNews.setKEY_DOC_ID(doc_id);
+                        myPushNews.setKEY_REMOVE_TIMESTAMP(Timestamp.now().getSeconds());
+                        myPushNews.setKEY_REMOVE_TYPE(remove_type_field);
+                        PushNewsDbHelper dbHandler = new PushNewsDbHelper(getApplicationContext());
+                        dbHandler.UpdatePushNewsDetailsRemove(myPushNews);
                         break;
                     case NOTIFICATION_TYPE_VALUE_DIARY:
                         collection_id = PUSH_DIARY_COLLECTION;
@@ -496,17 +503,14 @@ public class NotificationListenerService extends android.service.notification.No
                         remove_type_field = PUSH_DIARY_REMOVE_TYPE;
                         doc_id = device_id + " " + doc_id;
                         mark = true;
-//                        if(reason==19 || reason==1){
-//                            editor.putBoolean(DIARY_LAST_TIME, false);
-//                            editor.apply();
-//                        }
-
                         break;
                 }
                 Log.i(TAG,"********** onNOtificationRemoved type" + collection_id);
                 Log.i(TAG,"********** onNOtificationRemoved id" + doc_id);
                 if(mark){
 //                    final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(collection_id).document(doc_id);
+
+
                     final DocumentReference rbRef = db.collection(collection_id).document(doc_id);
                     final String finalRemove_field = remove_field;
                     final String finalRemove_reason = remove_reason;

@@ -295,13 +295,17 @@ public class NewsNotificationService extends Service {
                                     record_noti.put(PUSH_NEWS_NOTI_TIME, Timestamp.now());
                                     record_noti.put(PUSH_NEWS_DEVICE_ID,  device_id);
                                     record_noti.put(PUSH_NEWS_USER_ID,  sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
-                                    myPushNews.setKEY_MEDIA(dc.getDocument().getString(COMPARE_RESULT_MEDIA));
-                                    myPushNews.setKEY_TITLE(dc.getDocument().getString(COMPARE_RESULT_NEW_TITLE));
-                                    myPushNews.setKEY_NEWS_ID(dc.getDocument().getString(COMPARE_RESULT_ID));
-                                    myPushNews.setKEY_PUBDATE(dc.getDocument().getTimestamp(COMPARE_RESULT_PUBDATE).getSeconds());
-                                    myPushNews.setKEY_NOTI_TIMESTAMP(Timestamp.now().getSeconds());
+
+
+                                    myPushNews.setKEY_DOC_ID(device_id + " " + dc.getDocument().getString(COMPARE_RESULT_ID));
                                     myPushNews.setKEY_DEVICE_ID(device_id);
                                     myPushNews.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+                                    myPushNews.setKEY_NEWS_ID(dc.getDocument().getString(COMPARE_RESULT_ID));
+                                    myPushNews.setKEY_TITLE(dc.getDocument().getString(COMPARE_RESULT_NEW_TITLE));
+                                    myPushNews.setKEY_MEDIA(dc.getDocument().getString(COMPARE_RESULT_MEDIA));
+                                    myPushNews.setKEY_PUBDATE(dc.getDocument().getTimestamp(COMPARE_RESULT_PUBDATE).getSeconds());
+                                    myPushNews.setKEY_NOTI_TIMESTAMP(Timestamp.now().getSeconds());
+
                                     PushNewsDbHelper dbHandler = new PushNewsDbHelper(getApplicationContext());
                                     dbHandler.insertPushNewsDetailsCreate(myPushNews);
 
