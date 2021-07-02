@@ -162,14 +162,6 @@ public class ReadingBehaviorDbHelper extends SQLiteOpenHelper {
         return db.update(TABLE_NAME_READING_BEHAVIOR, cValues, KEY_DOC_ID+" = ?",  new String[]{String.valueOf(readingBehavior.getKEY_DOC_ID())}) >0;
     }
 
-//    // Update User Details
-//    public boolean UpdateReadingBehaviorShare(ReadingBehavior readingBehavior){
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        ContentValues cValues = new ContentValues();
-//        cValues.put(KEY_SHARE, readingBehavior.getKEY_SHARE());
-//        return db.update(TABLE_NAME_READING_BEHAVIOR, cValues, KEY_DOC_ID+" = ?",  new String[]{String.valueOf(readingBehavior.getKEY_DOC_ID())}) >0;
-//    }
-
     public Cursor getReadingDataForESM(long now_timestamp) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res =  db.rawQuery( "SELECT tmp.news_id, tmp.title, tmp.media, tmp.share, tmp.trigger_by, tmp.in_timestamp\n" +

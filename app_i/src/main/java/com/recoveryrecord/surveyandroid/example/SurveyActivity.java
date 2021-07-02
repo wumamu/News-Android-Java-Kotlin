@@ -25,6 +25,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.recoveryrecord.surveyandroid.Answer;
 import com.recoveryrecord.surveyandroid.R;
 import com.recoveryrecord.surveyandroid.condition.CustomConditionHandler;
+import com.recoveryrecord.surveyandroid.example.DbHelper.ESMDbHelper;
+import com.recoveryrecord.surveyandroid.example.sqlite.ESM;
 import com.recoveryrecord.surveyandroid.example.sqlite.NewsCompareObj;
 
 import org.json.JSONArray;
@@ -96,10 +98,6 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
             Bundle b = getIntent().getExtras();
             type = Objects.requireNonNull(b.getString(NOTIFICATION_TYPE_KEY));
             if (type.equals(LOADING_PAGE_TYPE_ESM)){
-//                SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-//                SharedPreferences.Editor editor = sharedPrefs.edit();
-//                editor.putLong(ESM_LAST_TIME, 0);
-//                editor.apply();
                 esm_id = Objects.requireNonNull(b.getString(SURVEY_PAGE_ID));
                 if(!esm_id.equals("")){
                     is_esm = true;
@@ -107,10 +105,6 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                     exist_notification = Objects.requireNonNull(b.getBoolean(ESM_EXIST_NOTIFICATION_SAMPLE));
                 }
             } else if (type.equals(LOADING_PAGE_TYPE_DIARY)){
-//                SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-//                SharedPreferences.Editor editor = sharedPrefs.edit();
-//                editor.putLong(DIARY_LAST_TIME, 0);
-//                editor.apply();
                 diary_id = Objects.requireNonNull(b.getString(SURVEY_PAGE_ID));
                 if(!diary_id.equals("")){
                     is_diary = true;
@@ -118,12 +112,13 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 }
             }
         }
-//        Log.d("lognewsselect", "//+++++++++esm_id" + esm_id);
-//        Log.d("lognewsselect", "//+++++++++diary_id" + diary_id);
-//        Log.d("lognewsselect", "//+++++++++type" + type);
-        //temp
         if (is_esm){
-//            final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(PUSH_ESM_COLLECTION).document(esm_id);
+            ESM myesm = new ESM();
+            myesm.setKEY_DOC_ID(device_id + " " + esm_id);
+            myesm.setKEY_OPEN_TIMESTAMP(Timestamp.now().getSeconds());
+            ESMDbHelper dbHandler = new ESMDbHelper(getApplicationContext());
+            dbHandler.UpdatePushESMDetailsOpen(myesm);
+
             final DocumentReference rbRef = db.collection(PUSH_ESM_COLLECTION).document(device_id + " " + esm_id);
             rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -154,7 +149,6 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 }
             });
         } else if(is_diary){
-//            final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(PUSH_DIARY_COLLECTION).document(diary_id);
             final DocumentReference rbRef = db.collection(PUSH_DIARY_COLLECTION).document(device_id + " " + diary_id);
             rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -218,52 +212,53 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected String getJsonFilename() {
-        String file_name = "1.json";
+        String file_name = "noti.json";
         if (getIntent().getExtras() != null) {
             Bundle b = getIntent().getExtras();
-            if (Objects.requireNonNull(b.getString(NOTIFICATION_TYPE_KEY)).equals(NOTIFICATION_TYPE_VALUE_ESM)){
-                final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-                String ReadNewsTitle = sharedPrefs.getString(ESM_READ_HISTORY_CANDIDATE, ZERO_RESULT_STRING);
-                String NotiNewTitle = sharedPrefs.getString(ESM_NOTIFICATION_UNCLICKED_CANDIDATE, ZERO_RESULT_STRING);
-                if(!ReadNewsTitle.equals(ZERO_RESULT_STRING)){
-                    Log.d("lognewsselect", "exist rb");
-                    try {
-                        file_name = generate_esm_json(ReadNewsTitle, NotiNewTitle, "2.json");
-
-                    } catch (JSONException | InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    Log.d("lognewsselect", "zero_result here");
-                    try {
-                        file_name = generate_esm_json(ReadNewsTitle, NotiNewTitle, "0.json");
-                    } catch (JSONException | InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                return file_name;
-            } else if (Objects.requireNonNull(b.getString(NOTIFICATION_TYPE_KEY)).equals(NOTIFICATION_TYPE_VALUE_DIARY)){
-                final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-                String diary_option_string_list = sharedPrefs.getString(DIARY_READ_HISTORY_CANDIDATE, ZERO_RESULT_STRING);
-                Log.d("lognewsselect", "DIARY&&&&&&&&&&&&&&&&&&&&&&&&&&");
-                if(!diary_option_string_list.equals(ZERO_RESULT_STRING)){
-                    Log.d("lognewsselect", "exist rb");
-                    try {
-                        file_name = generate_diary_json(diary_option_string_list, "diary.json", true);
-
-                    } catch (JSONException | InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    Log.d("lognewsselect", "zero_result here");
-                    try {
-                        file_name = generate_diary_json(diary_option_string_list, "diary.json", false);
-                    } catch (JSONException | InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                return file_name;
-            }
+            return "test.json";
+//            if (Objects.requireNonNull(b.getString(NOTIFICATION_TYPE_KEY)).equals(NOTIFICATION_TYPE_VALUE_ESM)){
+//                final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+//                String ReadNewsTitle = sharedPrefs.getString(ESM_READ_HISTORY_CANDIDATE, ZERO_RESULT_STRING);
+//                String NotiNewTitle = sharedPrefs.getString(ESM_NOTIFICATION_UNCLICKED_CANDIDATE, ZERO_RESULT_STRING);
+//                if(!ReadNewsTitle.equals(ZERO_RESULT_STRING)){
+//                    Log.d("lognewsselect", "exist rb");
+//                    try {
+//                        file_name = generate_esm_json(ReadNewsTitle, NotiNewTitle, "2.json");
+//
+//                    } catch (JSONException | InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                } else {
+//                    Log.d("lognewsselect", "zero_result here");
+//                    try {
+//                        file_name = generate_esm_json(ReadNewsTitle, NotiNewTitle, "0.json");
+//                    } catch (JSONException | InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                return file_name;
+//            } else if (Objects.requireNonNull(b.getString(NOTIFICATION_TYPE_KEY)).equals(NOTIFICATION_TYPE_VALUE_DIARY)){
+//                final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+//                String diary_option_string_list = sharedPrefs.getString(DIARY_READ_HISTORY_CANDIDATE, ZERO_RESULT_STRING);
+//                Log.d("lognewsselect", "DIARY&&&&&&&&&&&&&&&&&&&&&&&&&&");
+//                if(!diary_option_string_list.equals(ZERO_RESULT_STRING)){
+//                    Log.d("lognewsselect", "exist rb");
+//                    try {
+//                        file_name = generate_diary_json(diary_option_string_list, "diary.json", true);
+//
+//                    } catch (JSONException | InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                } else {
+//                    Log.d("lognewsselect", "zero_result here");
+//                    try {
+//                        file_name = generate_diary_json(diary_option_string_list, "diary.json", false);
+//                    } catch (JSONException | InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                return file_name;
+//            }
         }
         return "diary.json";
     }
@@ -323,7 +318,12 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
         @SuppressLint("HardwareIds")
         String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         if (is_esm){
-//            final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(PUSH_ESM_COLLECTION).document(esm_id);
+            ESM myesm = new ESM();
+            myesm.setKEY_DOC_ID(device_id + " " + esm_id);
+            myesm.setKEY_CLOSE_TIMESTAMP(Timestamp.now().getSeconds());
+            ESMDbHelper dbHandler = new ESMDbHelper(getApplicationContext());
+            dbHandler.UpdatePushESMDetailsClose(myesm);
+
             final DocumentReference rbRef = db.collection(PUSH_ESM_COLLECTION).document(device_id + " " + esm_id);
             rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -354,7 +354,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 }
             });
         } else if(is_diary){
-//            final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(PUSH_DIARY_COLLECTION).document(diary_id);
+
             final DocumentReference rbRef = db.collection(PUSH_DIARY_COLLECTION).document(device_id + " " + diary_id);
             rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -728,28 +728,19 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                     continue;
                 }
             }
-//            Log.d("lognewsselect", "jsonRootObject" + jsonRootObject.toString());
-//            Map<String, Object> record_noti = new HashMap<>();
-//            record_noti.put("click", jsonRootObject.toString());
-//            FirebaseFirestore db = FirebaseFirestore.getInstance();
-//            db.collection("123")
-//                    .document(String.valueOf(Timestamp.now()))
-//                    .set(record_noti);
+
             File file;
             file = new File(getFilesDir(), "diary.json");
-//            file = new File(getFilesDir(),"diary.json");
             try{
                 FileOutputStream fos = new FileOutputStream(file);//创建一个文件输出流
                 fos.write(jsonRootObject.toString().getBytes());//将生成的JSON数据写出
                 fos.close();//关闭输出流
-//                Toast.makeText(getApplicationContext(),"创建閱讀紀錄成功！",Toast.LENGTH_SHORT).show();
-//                Log.d("lognewsselect", "!!!!!!!!!!!!!!!!!!!()" + file.getAbsolutePath());
+
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-//            finish = true;
             return file.getAbsolutePath();
 
         }

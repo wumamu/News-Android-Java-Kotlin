@@ -26,8 +26,10 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.recoveryrecord.surveyandroid.example.DbHelper.ESMDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.PushNewsDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.ReadingBehaviorDbHelper;
+import com.recoveryrecord.surveyandroid.example.sqlite.ESM;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,21 +48,16 @@ import androidx.preference.PreferenceManager;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_EXIST_NOTIFICATION_SAMPLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_EXIST_READ_SAMPLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_NOTIFICATION_EXIST;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_NOT_SAMPLE_NOTIFICATION_FAR;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_NOT_SAMPLE_READ_FAR;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_READ_EXIST;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_SAMPLE_CHECK_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_DEVICE_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_NEWS_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_SAMPLE_CHECK_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.SURVEY_PAGE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TARGET_RANGE;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TIME_ON_PAGE_THRESHOLD;
 import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_KEY;
-import static com.recoveryrecord.surveyandroid.example.Constants.NA_STRING;
-import static com.recoveryrecord.surveyandroid.example.Constants.NONE_STRING;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TARGET_RANGE;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_ESM;
@@ -76,42 +73,39 @@ import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIO
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_IN_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_OUT_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_SAMPLE_CHECK;
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_SHARE;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_TIME_ON_PAGE;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_TITLE;
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_TRIGGER_BY;
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_TRIGGER_BY_NOTIFICATION;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_READ_HISTORY_CANDIDATE;
 import static com.recoveryrecord.surveyandroid.example.Constants.ZERO_RESULT_STRING;
 
 public class ESMLoadingPageActivity extends AppCompatActivity {
     private Button button;
-    String output_file_name = "2.json";
     Task task, task2, task3;
     Boolean exist_read = false, exist_notification = false;
     String esm_id = "", type ="";
-    List<String> news_title_target_array = new ArrayList<>();
+    List<String> rb_query = new ArrayList<>();
+    String rb_sample = "NA";
+    String noti_sample = "NA";
+    List<String> noti_query = new ArrayList<>();
     List<String> not_sample_short = new ArrayList<>();
     List<String> not_sample_far = new ArrayList<>();
     List<String> not_sample_far_noti = new ArrayList<>();
-    List<String> notification_unclick_array = new ArrayList<>();
-    String result_json = "";
-    String sample_title = "";
-    String target_read_title = "NA";
-    List<String> tmp_share_Array = new ArrayList<>();
+
+    String device_id = "NA";
     List<String> tmp_category_Array = new ArrayList<>();
     Timestamp my_time;
-//    TextView who;
-//    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
+
     private ProgressBar pgsBar;
     private int i = 0;
     private TextView txtView;
     private Handler hdlr = new Handler();
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    @SuppressLint("HardwareIds")
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading_page_esm);
+        device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         if (getIntent().getExtras() != null) {
             Bundle b = getIntent().getExtras();
             esm_id = Objects.requireNonNull(b.getString(LOADING_PAGE_ID));
@@ -129,13 +123,12 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putString(ESM_READ_HISTORY_CANDIDATE, ZERO_RESULT_STRING);
         editor.putString(ESM_NOTIFICATION_UNCLICKED_CANDIDATE, ZERO_RESULT_STRING);
-//        editor.putBoolean(ESM_LAST_TIME, false);
         my_time = Timestamp.now();
         editor.apply();
         //find
-        select_news_title_candidate(esm_id);
-        query_database_noti();
-        query_database_rb();
+        firestore_query(esm_id);
+        sql_query_noti();
+        sql_query_rb();
         button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,133 +169,91 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
         }).start();
     }
 
-    private void query_database_rb() {
+    private void sql_query_rb() {
+        rb_query.clear();
         ReadingBehaviorDbHelper dbHandler = new ReadingBehaviorDbHelper(getApplicationContext());
-        news_title_target_array.clear();
-//        ArrayList<String> my_noti_list = new ArrayList<>();
         Cursor cursor = dbHandler.getReadingDataForESM(my_time.getSeconds());
+
         if (cursor.moveToFirst()) {
             while(!cursor.isAfterLast()) {
-                // If you use c.moveToNext() here, you will bypass the first row, which is WRONG
                 String title = cursor.getString(cursor.getColumnIndex("title"));
                 String news_id = cursor.getString(cursor.getColumnIndex("news_id"));
                 String media = cursor.getString(cursor.getColumnIndex("media"));
-                Log.d("lognewsselect", title);
-                if(!title.equals("NA")){
-                    exist_read = true;
-                    int share_var = 0, trigger_var = 0;
-                    String cat_var = "種類";
-//                tmp_share_Array = (List<String>) d.get(READING_BEHAVIOR_SHARE);
-//                for (int i=0; i< tmp_share_Array.size(); i++){
-//                    if(!tmp_share_Array.get(i).equals(NA_STRING) && !tmp_share_Array.get(i).equals(NONE_STRING)){
-//                        share_var = 1;
-//                        break;
-//                    }
-//                }
-//                if(d.getString(READING_BEHAVIOR_TRIGGER_BY).equals(READING_BEHAVIOR_TRIGGER_BY_NOTIFICATION)){
-//                    trigger_var = 1;
-//                }
-//                                    tmp_category_Array = (List<String>) d.get(READING_BEHAVIOR_CATEGORY);
-                    tmp_category_Array.add("暫無");
-                    cat_var = tmp_category_Array.get(0);
-//                L timestamp = cursor.getLong(cursor.getColumnIndex("news_id");
-                    long in_time = cursor.getLong(cursor.getColumnIndex("in_timestamp"));
-                    Date date = new Date ();
-                    date.setTime(in_time*1000);
-                    @SuppressLint("SimpleDateFormat")
-                    SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-                    news_title_target_array.add(title + "(" + media + ")" + "¢" + share_var + "¢" + trigger_var + "¢" + cat_var + "¢" + formatter.format(date) + "¢" + news_id);
+                long in_time = cursor.getLong(cursor.getColumnIndex("in_timestamp"));
+                Date date = new Date();
+                date.setTime(in_time*1000);
+                @SuppressLint("SimpleDateFormat")
+                SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+                if(!news_id.equals("NA") && !title.equals("NA") && !media.equals("NA")){
+                    rb_query.add(news_id + "¢" + title+ "¢" + media + "¢" + formatter.format(date) + "#");
+                    rb_query.add(news_id);
+                    rb_query.add(title);
+                    rb_query.add(media);
+                    rb_query.add(formatter.format(date));
+                    break;
                 }
-                cursor.moveToNext();
             }
-        }
-//        cursor.moveToFirst();
-//        while (cursor.moveToNext()){
-//
-//            String title = cursor.getString(cursor.getColumnIndex("title"));
-//            String news_id = cursor.getString(cursor.getColumnIndex("news_id"));
-//            String media = cursor.getString(cursor.getColumnIndex("media"));
-//            Log.d("lognewsselect", title);
-//            if(!title.equals("NA")){
-//                exist_read = true;
-//                int share_var = 0, trigger_var = 0;
-//                String cat_var = "種類";
-////                tmp_share_Array = (List<String>) d.get(READING_BEHAVIOR_SHARE);
-////                for (int i=0; i< tmp_share_Array.size(); i++){
-////                    if(!tmp_share_Array.get(i).equals(NA_STRING) && !tmp_share_Array.get(i).equals(NONE_STRING)){
-////                        share_var = 1;
-////                        break;
-////                    }
-////                }
-////                if(d.getString(READING_BEHAVIOR_TRIGGER_BY).equals(READING_BEHAVIOR_TRIGGER_BY_NOTIFICATION)){
-////                    trigger_var = 1;
-////                }
-////                                    tmp_category_Array = (List<String>) d.get(READING_BEHAVIOR_CATEGORY);
-//                tmp_category_Array.add("暫無");
-//                cat_var = tmp_category_Array.get(0);
-////                L timestamp = cursor.getLong(cursor.getColumnIndex("news_id");
+//            rb_sample = news_id + "¢" + title+ "¢" + media + "¢" + formatter.format(date) + "#";
+//            while(!cursor.isAfterLast()) {
+//                // If you use c.moveToNext() here, you will bypass the first row, which is WRONG
+//                String title = cursor.getString(cursor.getColumnIndex("title"));
+//                String news_id = cursor.getString(cursor.getColumnIndex("news_id"));
+//                String media = cursor.getString(cursor.getColumnIndex("media"));
 //                long in_time = cursor.getLong(cursor.getColumnIndex("in_timestamp"));
-//                Date date = new Date ();
-//                date.setTime(in_time*1000);
-//                @SuppressLint("SimpleDateFormat")
-//                SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-//                news_title_target_array.add(title + "(" + media + ")" + "¢" + share_var + "¢" + trigger_var + "¢" + cat_var + "¢" + formatter.format(date) + "¢" + news_id);
+//                Log.d("lognewsselect", title);
+//                if(!title.equals("NA")){
+//                    exist_read = true;
+//                    int share_var = 0, trigger_var = 0;
+//                    String cat_var = "種類";
+//                    Date date = new Date();
+//                    date.setTime(in_time*1000);
+//                    @SuppressLint("SimpleDateFormat")
+//                    SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+//                    rb_query.add(title + "(" + media + ")" + "¢" + share_var + "¢" + trigger_var + "¢" + cat_var + "¢" + formatter.format(date) + "¢" + news_id);
+//                }
+//                cursor.moveToNext();
 //            }
-//        }
+        }
         if (!cursor.isClosed())  {
             cursor.close();
         }
 
-        if(news_title_target_array.size()!=0){
-            String title_array = "";
-            for(int i = 0; i< news_title_target_array.size(); i++){
-                title_array+= news_title_target_array.get(i) + "#";
-            }
+        if(rb_query.size()!=0){
+//            String title_array = "";
+//            for(int i = 0; i< rb_query.size(); i++){
+//                title_array+= rb_query.get(i) + "#";
+//            }
             SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
             SharedPreferences.Editor editor = sharedPrefs.edit();
-            editor.putString(ESM_READ_HISTORY_CANDIDATE, title_array);
+            editor.putString(ESM_READ_HISTORY_CANDIDATE, rb_query.get(0));
             editor.apply();
-//                    Log.d("lognewsselect", "@@@@@@@@@@@@@");
         }
-        Log.d("lognewsselect", news_title_target_array.toString());
     }
 
-    private void query_database_noti() {
+    private void sql_query_noti() {
         PushNewsDbHelper dbHandler = new PushNewsDbHelper(getApplicationContext());
-        notification_unclick_array.clear();
-//        ArrayList<String> my_noti_list = new ArrayList<>();
+        noti_query.clear();
         Cursor cursor = dbHandler.getNotiDataForESM(my_time.getSeconds());
         if (cursor.moveToFirst()) {
             while(!cursor.isAfterLast()) {
-                // If you use c.moveToNext() here, you will bypass the first row, which is WRONG
                 String title = cursor.getString(cursor.getColumnIndex("title"));
                 String news_id = cursor.getString(cursor.getColumnIndex("news_id"));
                 if(!title.equals("NA")){
     //                my_noti_list.add(title + "¢" + news_id + "#");
-                    notification_unclick_array.add(title);
+                    noti_query.add(title);
                     exist_notification = true;
                 }
                 cursor.moveToNext();
             }
         }
-//        cursor.moveToFirst();
-//        while (cursor.moveToNext()){
-//            String title = cursor.getString(cursor.getColumnIndex("title"));
-//            String news_id = cursor.getString(cursor.getColumnIndex("news_id"));
-//            if(!title.equals("NA")){
-////                my_noti_list.add(title + "¢" + news_id + "#");
-//                notification_unclick_array.add(title);
-//                exist_notification = true;
-//            }
-//        }
         if (!cursor.isClosed())  {
             cursor.close();
         }
 
-        if(notification_unclick_array.size()!=0){
+        if(noti_query.size()!=0){
             String notification_unclick_string = "";
-            for(int i = 0; i< notification_unclick_array.size(); i++){
-                notification_unclick_string+= notification_unclick_array.get(i) + "#";
+            for(int i = 0; i< noti_query.size(); i++){
+                notification_unclick_string+= noti_query.get(i) + "#";
             }
             SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
             SharedPreferences.Editor editor = sharedPrefs.edit();
@@ -313,6 +264,7 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void openESM() {
 
         Intent intent_esm = new Intent();
@@ -323,8 +275,18 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
         intent_esm.putExtra(ESM_EXIST_NOTIFICATION_SAMPLE, exist_notification);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        @SuppressLint("HardwareIds")
-        String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        ESM myesm = new ESM();
+        myesm.setKEY_DOC_ID(device_id + " " + esm_id);
+        myesm.setKEY_ESM_TYPE(0);
+//        myesm.setKEY_NOTI_SAMPLE(String.valueOf(noti_query));
+        myesm.setKEY_NOTI_SAMPLE(String.join("#", noti_query));
+//        myesm.setKEY_SELF_READ_SAMPLE(String.valueOf(rb_query));
+        myesm.setKEY_SELF_READ_SAMPLE(String.join("#", noti_query));
+        myesm.setKEY_ESM_SAMPLE_TIME(my_time.getSeconds());
+        ESMDbHelper dbHandler_esm = new ESMDbHelper(getApplicationContext());
+        dbHandler_esm.UpdatePushESMDetailsClick(myesm);
+
         if (!esm_id.equals("")){
 //            final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(PUSH_ESM_COLLECTION).document(esm_id);
             final DocumentReference rbRef = db.collection(PUSH_ESM_COLLECTION).document(device_id + " " + esm_id);
@@ -335,14 +297,14 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
                         DocumentSnapshot document = task.getResult();
                         assert document != null;
                         if (document.exists()) {
-                            rbRef.update(PUSH_ESM_READ_ARRAY, news_title_target_array,
-                                    PUSH_ESM_NOTI_ARRAY, notification_unclick_array,
+                            rbRef.update(PUSH_ESM_READ_ARRAY, rb_query,
+                                    PUSH_ESM_NOTI_ARRAY, noti_query,
 //                                    PUSH_ESM_NOT_SAMPLE_READ_SHORT, not_sample_short,
-                                    PUSH_ESM_NOT_SAMPLE_READ_FAR, not_sample_far,
-                                    PUSH_ESM_NOT_SAMPLE_NOTIFICATION_FAR, not_sample_far_noti,
+//                                    PUSH_ESM_NOT_SAMPLE_READ_FAR, not_sample_far,
+//                                    PUSH_ESM_NOT_SAMPLE_NOTIFICATION_FAR, not_sample_far_noti,
                                     PUSH_ESM_READ_EXIST, exist_read,
                                     PUSH_ESM_NOTIFICATION_EXIST, exist_notification,
-                                    "SAMPLE TIME LONG", my_time.getSeconds()
+                                    "sample_time", my_time.getSeconds()
                                     )//another field
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
@@ -379,7 +341,7 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
         startActivity(intent_esm);
     }
 
-    private void select_news_title_candidate(final String esm_id_in) {
+    private void firestore_query(final String esm_id_in) {
         final String tmp_esm_id = esm_id_in;
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         @SuppressLint("HardwareIds")

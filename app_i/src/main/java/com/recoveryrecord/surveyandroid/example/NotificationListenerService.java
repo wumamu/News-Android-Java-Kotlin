@@ -18,7 +18,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import com.google.firebase.Timestamp;
+import com.recoveryrecord.surveyandroid.example.DbHelper.ESMDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.PushNewsDbHelper;
+import com.recoveryrecord.surveyandroid.example.sqlite.ESM;
 import com.recoveryrecord.surveyandroid.example.sqlite.PushNews;
 import com.recoveryrecord.surveyandroid.example.sqlite.ReadingBehavior;
 
@@ -99,6 +101,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_REMOV
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_SERVICE_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_SERVICE_RECEIEVE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.SETS_PACKAGE_NAME;
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.STORM_PACKAGE_NAME;
 import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.UDN_PACKAGE_NAME;
@@ -131,16 +134,6 @@ public class NotificationListenerService extends android.service.notification.No
     public void onNotificationPosted (StatusBarNotification sbn, NotificationListenerService.RankingMap rankingMap) {
 
         final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-//        set_once = sharedPrefs.getBoolean(ESM_SET_ONCE, false);
-//        if(set_once){
-//            check_my_diary_and_esm();
-//        }
-
-//        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),REPEAT_ALARM_CHECKER, pendingIntent);//every ten min check
-        Log.i(TAG,"**********  onNotificationPosted ***********" + rankingMap);
-        Log.i(TAG,"**********  onNotificationPosted ***********" + sbn.getGroupKey());
-        Log.i(TAG,"**********  onNotificationPosted7 ***********" + sbn.getKey());
-        Log.i(TAG,"**********  onNotificationPosted ***********" + sbn);
         boolean is_target = false;
         switch (sbn.getPackageName()) {
             case CHINA_TIMES_PACKAGE_NAME:
@@ -158,7 +151,6 @@ public class NotificationListenerService extends android.service.notification.No
                 break;
         }
         //cancel notification
-        //if (sbn.getPackageName().equals("com.recoveryrecord.surveyandroid")){
         if (is_target){
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -175,9 +167,6 @@ public class NotificationListenerService extends android.service.notification.No
         }
         //MY APP
         if(sbn.getPackageName().equals(MY_APP_PACKAGE_NAME)){
-            //ADD TO SQLITE
-//            PushNews myPushNews = new PushNews();//sqlite
-
             final Timestamp current_now = Timestamp.now();
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             @SuppressLint("HardwareIds")
@@ -205,9 +194,14 @@ public class NotificationListenerService extends android.service.notification.No
                         editor.putInt(ESM_DAY_PUSH_PREFIX + day_index, esm_day_sum + 1);
                         editor.apply();
                         doc_id = device_id + " " + doc_id;
+                        ESM myesm = new ESM();
+                        myesm.setKEY_DOC_ID(doc_id);
+                        myesm.setKEY_RECEIEVE_TIMESTAMP(Timestamp.now().getSeconds());
+                        ESMDbHelper dbHandler = new ESMDbHelper(getApplicationContext());
+                        dbHandler.UpdatePushESMDetailsReceieve(myesm);
                         break;
                     }
-                    case NOTIFICATION_TYPE_VALUE_NEWS: //news
+                    case NOTIFICATION_TYPE_VALUE_NEWS: {//news
                         collection_id = PUSH_NEWS_COLLECTION;
                         receieve_field = PUSH_NEWS_RECEIEVE_TIME;
                         mark = true;
@@ -219,6 +213,7 @@ public class NotificationListenerService extends android.service.notification.No
                         dbHandler.UpdatePushNewsDetailsReceieve(myPushNews);
                         //insert
                         break;
+                    }
                     case NOTIFICATION_TYPE_VALUE_DIARY: {//diary
                         collection_id = PUSH_DIARY_COLLECTION;
                         receieve_field = PUSH_DIARY_RECEIEVE_TIME;
@@ -235,10 +230,11 @@ public class NotificationListenerService extends android.service.notification.No
                         editor.apply();
                         break;
                     }
-                    default: //service
+                    default: {//service
                         collection_id = PUSH_SERVICE_COLLECTION;
                         receieve_field = PUSH_SERVICE_RECEIEVE_TIME;
                         break;
+                    }
                 }
                 //news
                 //service
@@ -328,11 +324,6 @@ public class NotificationListenerService extends android.service.notification.No
                             .document(formatter.format(date))
                             .set(receieve_notification);
                 }
-//                db.collection(TEST_USER_COLLECTION)
-//                        .document(device_id)
-//                        .collection(NOTIFICATION_BAR_NEWS_MONITOR_COLLECTION)
-//                        .document(sbn.getKey())
-//                        .set(receieve_notification);
                 db.collection(NOTIFICATION_BAR_NEWS_MONITOR_COLLECTION)
                         .document(device_id + " " + sbn.getPostTime())
                         .set(receieve_notification);
@@ -349,11 +340,6 @@ public class NotificationListenerService extends android.service.notification.No
             db.collection(NOTIFICATION_BAR_OTHER_APP_COLLECTION)
                     .document(device_id + " " + sbn.getPostTime())
                     .set(receieve_notification);
-//            db.collection(TEST_USER_COLLECTION)
-//                    .document(device_id)
-//                    .collection(NOTIFICATION_BAR_OTHER_APP_COLLECTION)
-//                    .document(sbn.getKey())
-//                    .set(receieve_notification);
         }
     }
 
@@ -477,14 +463,21 @@ public class NotificationListenerService extends android.service.notification.No
                 SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
                 SharedPreferences.Editor editor = sharedPrefs.edit();
                 switch (type) {
-                    case NOTIFICATION_TYPE_VALUE_ESM:
+                    case NOTIFICATION_TYPE_VALUE_ESM:{
                         collection_id = PUSH_ESM_COLLECTION;
                         remove_field = PUSH_ESM_REMOVE_TIME;
                         remove_type_field = PUSH_ESM_REMOVE_TYPE;
                         doc_id = device_id + " " + doc_id;
                         mark = true;
+                        ESM myesm = new ESM();
+                        myesm.setKEY_DOC_ID(doc_id);
+                        myesm.setKEY_REMOVE_TIMESTAMP(Timestamp.now().getSeconds());
+                        myesm.setKEY_REMOVE_TYPE(remove_reason);
+                        ESMDbHelper dbHandler_e = new ESMDbHelper(getApplicationContext());
+                        dbHandler_e.UpdatePushESMDetailsRemove(myesm);
                         break;
-                    case NOTIFICATION_TYPE_VALUE_NEWS:
+                    }
+                    case NOTIFICATION_TYPE_VALUE_NEWS: {
                         collection_id = PUSH_NEWS_COLLECTION;
                         remove_field = PUSH_NEWS_REMOVE_TIME;
                         remove_type_field = PUSH_NEWS_REMOVE_TYPE;
@@ -493,24 +486,22 @@ public class NotificationListenerService extends android.service.notification.No
                         PushNews myPushNews = new PushNews();
                         myPushNews.setKEY_DOC_ID(doc_id);
                         myPushNews.setKEY_REMOVE_TIMESTAMP(Timestamp.now().getSeconds());
-                        myPushNews.setKEY_REMOVE_TYPE(remove_type_field);
-                        PushNewsDbHelper dbHandler = new PushNewsDbHelper(getApplicationContext());
-                        dbHandler.UpdatePushNewsDetailsRemove(myPushNews);
+                        myPushNews.setKEY_REMOVE_TYPE(remove_reason);
+                        PushNewsDbHelper dbHandler_p = new PushNewsDbHelper(getApplicationContext());
+                        dbHandler_p.UpdatePushNewsDetailsRemove(myPushNews);
                         break;
-                    case NOTIFICATION_TYPE_VALUE_DIARY:
+                    }
+                    case NOTIFICATION_TYPE_VALUE_DIARY:{
                         collection_id = PUSH_DIARY_COLLECTION;
                         remove_field = PUSH_DIARY_REMOVE_TIME;
                         remove_type_field = PUSH_DIARY_REMOVE_TYPE;
                         doc_id = device_id + " " + doc_id;
                         mark = true;
                         break;
+                    }
+
                 }
-                Log.i(TAG,"********** onNOtificationRemoved type" + collection_id);
-                Log.i(TAG,"********** onNOtificationRemoved id" + doc_id);
                 if(mark){
-//                    final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(collection_id).document(doc_id);
-
-
                     final DocumentReference rbRef = db.collection(collection_id).document(doc_id);
                     final String finalRemove_field = remove_field;
                     final String finalRemove_reason = remove_reason;
@@ -547,11 +538,10 @@ public class NotificationListenerService extends android.service.notification.No
                 }
             }
         } else {
-//            final String package_id = sbn.getKey();
-//            final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(NOTIFICATION_BAR_OTHER_APP_COLLECTION).document(package_id);
             final DocumentReference rbRef = db.collection(NOTIFICATION_BAR_OTHER_APP_COLLECTION).document(device_id + " " + sbn.getPostTime());
             final String finalRemove_reason1 = remove_reason;
             rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @RequiresApi(api = Build.VERSION_CODES.KITKAT_WATCH)
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if (task.isSuccessful()) {

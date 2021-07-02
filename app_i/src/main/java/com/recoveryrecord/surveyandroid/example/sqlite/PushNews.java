@@ -36,35 +36,35 @@ public class PushNews {
         this.KEY_CLICK = 0;
     }
 
-    public PushNews(String KEY_DOC_ID,
-                    String KEY_DEVICE_ID,
-                    String KEY_USER_ID,
-                    String KEY_NEWS_ID,
-                    String KEY_TITLE,
-                    String KEY_MEDIA,
-                    long KEY_PUBDATE,
-                    long KEY_NOTI_TIMESTAMP,
-                    long KEY_RECEIEVE_TIMESTAMP,
-                    long KEY_OPEN_TIMESTAMP,
-                    long KEY_REMOVE_TIMESTAMP,
-                    String KEY_REMOVE_TYPE,
-                    String KEY_TYPE,
-                    int KEY_CLICK) {
-        this.KEY_DOC_ID = KEY_DOC_ID;
-        this.KEY_DEVICE_ID = KEY_DEVICE_ID;
-        this.KEY_USER_ID = KEY_USER_ID;
-        this.KEY_NEWS_ID = KEY_NEWS_ID;
-        this.KEY_TITLE = KEY_TITLE;
-        this.KEY_MEDIA = KEY_MEDIA;
-        this.KEY_PUBDATE = KEY_PUBDATE;
-        this.KEY_NOTI_TIMESTAMP = KEY_NOTI_TIMESTAMP;
-        this.KEY_RECEIEVE_TIMESTAMP = KEY_RECEIEVE_TIMESTAMP;
-        this.KEY_OPEN_TIMESTAMP = KEY_OPEN_TIMESTAMP;
-        this.KEY_REMOVE_TIMESTAMP = KEY_REMOVE_TIMESTAMP;
-        this.KEY_REMOVE_TYPE = KEY_REMOVE_TYPE;
-        this.KEY_TYPE = KEY_TYPE;
-        this.KEY_CLICK = KEY_CLICK;
-    }
+//    public PushNews(String KEY_DOC_ID,
+//                    String KEY_DEVICE_ID,
+//                    String KEY_USER_ID,
+//                    String KEY_NEWS_ID,
+//                    String KEY_TITLE,
+//                    String KEY_MEDIA,
+//                    long KEY_PUBDATE,
+//                    long KEY_NOTI_TIMESTAMP,
+//                    long KEY_RECEIEVE_TIMESTAMP,
+//                    long KEY_OPEN_TIMESTAMP,
+//                    long KEY_REMOVE_TIMESTAMP,
+//                    String KEY_REMOVE_TYPE,
+//                    String KEY_TYPE,
+//                    int KEY_CLICK) {
+//        this.KEY_DOC_ID = KEY_DOC_ID;
+//        this.KEY_DEVICE_ID = KEY_DEVICE_ID;
+//        this.KEY_USER_ID = KEY_USER_ID;
+//        this.KEY_NEWS_ID = KEY_NEWS_ID;
+//        this.KEY_TITLE = KEY_TITLE;
+//        this.KEY_MEDIA = KEY_MEDIA;
+//        this.KEY_PUBDATE = KEY_PUBDATE;
+//        this.KEY_NOTI_TIMESTAMP = KEY_NOTI_TIMESTAMP;
+//        this.KEY_RECEIEVE_TIMESTAMP = KEY_RECEIEVE_TIMESTAMP;
+//        this.KEY_OPEN_TIMESTAMP = KEY_OPEN_TIMESTAMP;
+//        this.KEY_REMOVE_TIMESTAMP = KEY_REMOVE_TIMESTAMP;
+//        this.KEY_REMOVE_TYPE = KEY_REMOVE_TYPE;
+//        this.KEY_TYPE = KEY_TYPE;
+//        this.KEY_CLICK = KEY_CLICK;
+//    }
 
     public String getKEY_DOC_ID() {
         return KEY_DOC_ID;

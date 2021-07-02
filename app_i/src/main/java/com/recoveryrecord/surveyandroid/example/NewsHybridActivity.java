@@ -571,53 +571,53 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
 
-//            case R.id.nav_contactt :
-////                long esm_time = sharedPrefs.getLong(ESM_LAST_TIME, 0);
-////                Boolean esm_not_done = sharedPrefs.getBoolean(ESM_LAST_TIME, false);
-////                Log.d("lognewsselect", String.valueOf(esm_not_done));
-////
-////                if(esm_not_done){
-//                Intent intent_esm = new Intent(context, AlarmReceiver.class);
-//                intent_esm.setAction(ESM_ALARM_ACTION);
-//                PendingIntent pendingIntent_esm = PendingIntent.getBroadcast(context, 77, intent_esm, 0);
-//                AlarmManager alarmManager_esm = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-//                Calendar cal_esm = Calendar.getInstance();
-//                cal_esm.add(Calendar.SECOND, 1);
-//                assert alarmManager_esm != null;
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//                    alarmManager_esm.setExact(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_esm);
-//                }else {
-//                    alarmManager_esm.set(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_esm);
+            case R.id.nav_contactt :
+//                long esm_time = sharedPrefs.getLong(ESM_LAST_TIME, 0);
+//                Boolean esm_not_done = sharedPrefs.getBoolean(ESM_LAST_TIME, false);
+//                Log.d("lognewsselect", String.valueOf(esm_not_done));
+//
+//                if(esm_not_done){
+                Intent intent_esm = new Intent(context, AlarmReceiver.class);
+                intent_esm.setAction(ESM_ALARM_ACTION);
+                PendingIntent pendingIntent_esm = PendingIntent.getBroadcast(context, 77, intent_esm, 0);
+                AlarmManager alarmManager_esm = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+                Calendar cal_esm = Calendar.getInstance();
+                cal_esm.add(Calendar.SECOND, 1);
+                assert alarmManager_esm != null;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    alarmManager_esm.setExact(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_esm);
+                }else {
+                    alarmManager_esm.set(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_esm);
+                }
+//                } else {
+//                    Toast.makeText(this,"目前不在填答時間",Toast.LENGTH_LONG).show();
+////                    Toast.makeText(this,"permission denied",Toast.LENGTH_LONG).show();
 //                }
-////                } else {
-////                    Toast.makeText(this,"目前不在填答時間",Toast.LENGTH_LONG).show();
-//////                    Toast.makeText(this,"permission denied",Toast.LENGTH_LONG).show();
-////                }
-//                drawerLayout.closeDrawer(GravityCompat.START);
-//                return true;
-//            case R.id.nav_tmp :
-////                long diary_time = sharedPrefs.getLong(DIARY_LAST_TIME, 0);
-////                Boolean diary_not_done = sharedPrefs.getBoolean(DIARY_LAST_TIME, false);
-////                Log.d("lognewsselect", String.valueOf(diary_not_done));
-////                if(diary_not_done){
-//                Intent intent_diary = new Intent(context, AlarmReceiver.class);
-//                intent_diary.setAction(DIARY_ALARM_ACTION);
-//                PendingIntent pendingIntent_diary = PendingIntent.getBroadcast(context, 78, intent_diary, 0);
-//                AlarmManager alarmManager_diary = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-//                Calendar cal_diary = Calendar.getInstance();
-//                cal_diary.add(Calendar.SECOND, 1);
-//                assert alarmManager_diary != null;
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//                    alarmManager_diary.setExact(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent_diary);
-//                }else {
-//                    alarmManager_diary.set(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent_diary);
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+            case R.id.nav_tmp :
+//                long diary_time = sharedPrefs.getLong(DIARY_LAST_TIME, 0);
+//                Boolean diary_not_done = sharedPrefs.getBoolean(DIARY_LAST_TIME, false);
+//                Log.d("lognewsselect", String.valueOf(diary_not_done));
+//                if(diary_not_done){
+                Intent intent_diary = new Intent(context, AlarmReceiver.class);
+                intent_diary.setAction(DIARY_ALARM_ACTION);
+                PendingIntent pendingIntent_diary = PendingIntent.getBroadcast(context, 78, intent_diary, 0);
+                AlarmManager alarmManager_diary = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+                Calendar cal_diary = Calendar.getInstance();
+                cal_diary.add(Calendar.SECOND, 1);
+                assert alarmManager_diary != null;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    alarmManager_diary.setExact(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent_diary);
+                }else {
+                    alarmManager_diary.set(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent_diary);
+                }
+//                } else {
+//                    Toast.makeText(this,"目前不在填答時間",Toast.LENGTH_LONG).show();
+////                    Toast.makeText(this,"permission denied",Toast.LENGTH_LONG).show();
 //                }
-////                } else {
-////                    Toast.makeText(this,"目前不在填答時間",Toast.LENGTH_LONG).show();
-//////                    Toast.makeText(this,"permission denied",Toast.LENGTH_LONG).show();
-////                }
-//                drawerLayout.closeDrawer(GravityCompat.START);
-//                return true;
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
             default :
                 return false;
         }

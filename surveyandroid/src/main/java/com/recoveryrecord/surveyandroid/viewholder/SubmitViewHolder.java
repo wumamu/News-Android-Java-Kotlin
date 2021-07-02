@@ -27,6 +27,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.recoveryrecord.surveyandroid.AnswerProvider;
 import com.recoveryrecord.surveyandroid.R;
 import com.recoveryrecord.surveyandroid.SubmitSurveyHandler;
+import com.recoveryrecord.surveyandroid.example.DbHelper.ESMDbHelper;
+import com.recoveryrecord.surveyandroid.example.sqlite.ESM;
 import com.recoveryrecord.surveyandroid.question.QuestionsWrapper.SubmitData;
 
 import org.json.JSONException;
@@ -125,7 +127,6 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 submitSurveyHandler.submit(submitData.url, answerProvider.allAnswersJson());
-
                 String device_id = Settings.Secure.getString(((Activity)v.getContext()).getContentResolver(), Settings.Secure.ANDROID_ID);
                 if (((Activity)v.getContext()).getIntent().getExtras() != null) {
                     Bundle b = ((Activity)v.getContext()).getIntent().getExtras();
@@ -183,10 +184,6 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                                                             if (jsonAnswerObject.has("read_17")) {
                                                                 target_read_title_place =  jsonAnswerObject.getString("read_17");
                                                             }
-//                                                            SharedPreferences.Editor editor = sharedPrefs.edit();
-//                                                            String tmp_list = sharedPrefs.getString(TO_DIARY_LIST, "");
-//                                                            editor.putString(TO_DIARY_LIST, tmp_list + );
-//                                                            editor.apply();
                                                             break;
                                                         }
                                                     } catch (JSONException e) {
@@ -212,8 +209,8 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                         }
                     });
 
+
                     final Timestamp current = Timestamp.now();
-//                    final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(PUSH_ESM_COLLECTION).document(esm_id);
                     final DocumentReference rbRef = db.collection(PUSH_ESM_COLLECTION).document(device_id + " " + esm_id);
                     rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
@@ -260,6 +257,31 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                             }
                         }
                     });
+                    //sqlite
+                    ESM myesm = new ESM();
+                    myesm.setKEY_DOC_ID(device_id + " " + esm_id);
+                    myesm.setKEY_SUBMIT_TIMESTAMP(current.getSeconds());
+                    myesm.setKEY_RESULT(result_json);
+                    myesm.setKEY_NOTI_READ_NEWS_ID(device_id + " " + esm_id);
+                    myesm.setKEY_NOTI_READ_TITLE(device_id + " " + esm_id);
+//                    myesm.setKEY_NOTI_READ_IN_TIME(device_id + " " + esm_id);
+//                    myesm.setKEY_NOTI_READ_RECEIEVE_TIME(device_id + " " + esm_id);
+//                    myesm.setKEY_NOTI_READ_SITUATION(device_id + " " + esm_id);
+//                    myesm.setKEY_NOTI_READ_PLACE(device_id + " " + esm_id);
+//                    myesm.setKEY_NOTI_NOT_READ_NEWS_ID(device_id + " " + esm_id);
+//                    myesm.setKEY_NOTI_NOT_READ_TITLE(device_id + " " + esm_id);
+//                    myesm.setKEY_NOTI_NOT_READ_RECEIEVE_TIME(device_id + " " + esm_id);
+
+//                    myesm.setKEY_SELF_READ_NEWS_ID(device_id + " " + esm_id);
+//                    myesm.setKEY_SELF_READ_TITLE(device_id + " " + esm_id);
+//                    myesm.setKEY_SELF_READ_IN_TIME(device_id + " " + esm_id);
+//                    myesm.setKEY_SELF_READ_RECEIEVE_TIME(device_id + " " + esm_id);
+//                    myesm.setKEY_SELF_READ_SITUATION(target_read_title_situation);
+//                    myesm.setKEY_SELF_READ_PLACE(device_id + " " + esm_id);
+
+
+                    ESMDbHelper dbHandler = new ESMDbHelper((Activity)v.getContext());
+                    dbHandler.UpdatePushESMDetailsSubmit(myesm);
                 } else if(is_diary) {
                     SharedPreferences.Editor editor = sharedPrefs.edit();
                     Calendar calendar = Calendar.getInstance();

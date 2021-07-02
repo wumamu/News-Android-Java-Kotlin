@@ -39,7 +39,7 @@ public class SurveyQuestions {
                 .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         try {
             InputStream inputStream;
-            if(jsonFileName.equals("test.json")){
+            if(jsonFileName.equals("noti.json") || jsonFileName.equals("test.json")){
                 inputStream = assetManager.open(jsonFileName);//asset
             } else {
                 @SuppressLint("SdCardPath")

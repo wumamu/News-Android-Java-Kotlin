@@ -64,63 +64,63 @@ public class ReadingBehavior {
 
 
 
-    public ReadingBehavior(String KEY_DOC_ID,
-                           String KEY_DEVICE_ID,
-                           String KEY_USER_ID,
-                           String KEY_SELECT_ESM_ID,
-                           String KEY_TRIGGER_BY,
-                           String KEY_NEWS_ID,
-                           String KEY_TITLE,
-                           String KEY_MEDIA,
-                           int KEY_HAS_IMG,
-                           long KEY_PUBDATE,
-                           int KEY_ROW_SPACING,
-                           int KEY_BYTE_PER_LINE,
-                           String KEY_FONT_SIZE,
-                           int KEY_CONTENT_LENGTH,
-                           float KEY_DISPLAY_WIDTH,
-                           float KEY_DISPLAY_HEIGHT,
-                           long KEY_IN_TIMESTAMP,
-                           long KEY_OUT_TIMESTAMP,
-                           long KEY_TIME_ON_PAGE,
-                           int KEY_PAUSE_ON_PAGE,
-                           int KEY_VIEW_PORT_NUM,
-                           String KEY_VIEW_PORT_RECORD,
-                           int KEY_FLING_NUM,
-                           String KEY_FLING_RECORD,
-                           int KEY_DRAG_NUM,
-                           String KEY_DRAG_RECORD,
-                           String KEY_SHARE,
-                           String KEY_TIME_SERIES) {
-        this.KEY_DOC_ID = KEY_DOC_ID;
-        this.KEY_DEVICE_ID = KEY_DEVICE_ID;
-        this.KEY_USER_ID = KEY_USER_ID;
-        this.KEY_SELECT_ESM_ID = KEY_SELECT_ESM_ID;
-        this.KEY_TRIGGER_BY = KEY_TRIGGER_BY;
-        this.KEY_NEWS_ID = KEY_NEWS_ID;
-        this.KEY_TITLE = KEY_TITLE;
-        this.KEY_MEDIA = KEY_MEDIA;
-        this.KEY_HAS_IMG = KEY_HAS_IMG;
-        this.KEY_PUBDATE = KEY_PUBDATE;
-        this.KEY_ROW_SPACING = KEY_ROW_SPACING;
-        this.KEY_BYTE_PER_LINE = KEY_BYTE_PER_LINE;
-        this.KEY_FONT_SIZE = KEY_FONT_SIZE;
-        this.KEY_CONTENT_LENGTH = KEY_CONTENT_LENGTH;
-        this.KEY_DISPLAY_WIDTH = KEY_DISPLAY_WIDTH;
-        this.KEY_DISPLAY_HEIGHT = KEY_DISPLAY_HEIGHT;
-        this.KEY_IN_TIMESTAMP = KEY_IN_TIMESTAMP;
-        this.KEY_OUT_TIMESTAMP = KEY_OUT_TIMESTAMP;
-        this.KEY_TIME_ON_PAGE = KEY_TIME_ON_PAGE;
-        this.KEY_PAUSE_ON_PAGE = KEY_PAUSE_ON_PAGE;
-        this.KEY_VIEW_PORT_NUM = KEY_VIEW_PORT_NUM;
-        this.KEY_VIEW_PORT_RECORD = KEY_VIEW_PORT_RECORD;
-        this.KEY_FLING_NUM = KEY_FLING_NUM;
-        this.KEY_FLING_RECORD = KEY_FLING_RECORD;
-        this.KEY_DRAG_NUM = KEY_DRAG_NUM;
-        this.KEY_DRAG_RECORD = KEY_DRAG_RECORD;
-        this.KEY_SHARE = KEY_SHARE;
-        this.KEY_TIME_SERIES = KEY_TIME_SERIES;
-    }
+//    public ReadingBehavior(String KEY_DOC_ID,
+//                           String KEY_DEVICE_ID,
+//                           String KEY_USER_ID,
+//                           String KEY_SELECT_ESM_ID,
+//                           String KEY_TRIGGER_BY,
+//                           String KEY_NEWS_ID,
+//                           String KEY_TITLE,
+//                           String KEY_MEDIA,
+//                           int KEY_HAS_IMG,
+//                           long KEY_PUBDATE,
+//                           int KEY_ROW_SPACING,
+//                           int KEY_BYTE_PER_LINE,
+//                           String KEY_FONT_SIZE,
+//                           int KEY_CONTENT_LENGTH,
+//                           float KEY_DISPLAY_WIDTH,
+//                           float KEY_DISPLAY_HEIGHT,
+//                           long KEY_IN_TIMESTAMP,
+//                           long KEY_OUT_TIMESTAMP,
+//                           long KEY_TIME_ON_PAGE,
+//                           int KEY_PAUSE_ON_PAGE,
+//                           int KEY_VIEW_PORT_NUM,
+//                           String KEY_VIEW_PORT_RECORD,
+//                           int KEY_FLING_NUM,
+//                           String KEY_FLING_RECORD,
+//                           int KEY_DRAG_NUM,
+//                           String KEY_DRAG_RECORD,
+//                           String KEY_SHARE,
+//                           String KEY_TIME_SERIES) {
+//        this.KEY_DOC_ID = KEY_DOC_ID;
+//        this.KEY_DEVICE_ID = KEY_DEVICE_ID;
+//        this.KEY_USER_ID = KEY_USER_ID;
+//        this.KEY_SELECT_ESM_ID = KEY_SELECT_ESM_ID;
+//        this.KEY_TRIGGER_BY = KEY_TRIGGER_BY;
+//        this.KEY_NEWS_ID = KEY_NEWS_ID;
+//        this.KEY_TITLE = KEY_TITLE;
+//        this.KEY_MEDIA = KEY_MEDIA;
+//        this.KEY_HAS_IMG = KEY_HAS_IMG;
+//        this.KEY_PUBDATE = KEY_PUBDATE;
+//        this.KEY_ROW_SPACING = KEY_ROW_SPACING;
+//        this.KEY_BYTE_PER_LINE = KEY_BYTE_PER_LINE;
+//        this.KEY_FONT_SIZE = KEY_FONT_SIZE;
+//        this.KEY_CONTENT_LENGTH = KEY_CONTENT_LENGTH;
+//        this.KEY_DISPLAY_WIDTH = KEY_DISPLAY_WIDTH;
+//        this.KEY_DISPLAY_HEIGHT = KEY_DISPLAY_HEIGHT;
+//        this.KEY_IN_TIMESTAMP = KEY_IN_TIMESTAMP;
+//        this.KEY_OUT_TIMESTAMP = KEY_OUT_TIMESTAMP;
+//        this.KEY_TIME_ON_PAGE = KEY_TIME_ON_PAGE;
+//        this.KEY_PAUSE_ON_PAGE = KEY_PAUSE_ON_PAGE;
+//        this.KEY_VIEW_PORT_NUM = KEY_VIEW_PORT_NUM;
+//        this.KEY_VIEW_PORT_RECORD = KEY_VIEW_PORT_RECORD;
+//        this.KEY_FLING_NUM = KEY_FLING_NUM;
+//        this.KEY_FLING_RECORD = KEY_FLING_RECORD;
+//        this.KEY_DRAG_NUM = KEY_DRAG_NUM;
+//        this.KEY_DRAG_RECORD = KEY_DRAG_RECORD;
+//        this.KEY_SHARE = KEY_SHARE;
+//        this.KEY_TIME_SERIES = KEY_TIME_SERIES;
+//    }
 
     public String getKEY_DOC_ID() {
         return KEY_DOC_ID;
