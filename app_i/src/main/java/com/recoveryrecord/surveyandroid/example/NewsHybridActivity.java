@@ -460,6 +460,13 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         resetTimer();
         startTimer();
         LastPauseTime = formatter;
+        sessiontime.put("session", -1);
+        sessiontime.put("state", 1);
+        sessiontime.put("time", formatter.format(date));
+        sessiontime.put("device_id", device_id);
+        db.collection("Session_List")
+                .document(device_id + " " + formatter.format(date))
+                .set(sessiontime);
     }
 
     @Override

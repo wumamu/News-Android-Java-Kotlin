@@ -89,7 +89,23 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 return true;
             }
         });
+        Preference clearPref1 = findPreference("CSV");
 
+        clearPref1.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                // handle click here
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        // Permission is not granted
+                        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                    } else {
+                        Toast.makeText(getContext(), "權限已經開啟", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                return true;
+            }
+        });
 //        switchPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 //            @Override
 //            public boolean onPreferenceChange(Preference preference, Object newValue) {

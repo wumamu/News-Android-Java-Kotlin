@@ -26,6 +26,10 @@
             app:key="PhysicalActivity"
             android:title="體能紀錄存取權"
             app:summary="點選允許存取權限"/>
+        <Preference
+            app:key="CSV"
+            android:title="讀寫存取權"
+            app:summary="點選允許存取權限"/>
     </PreferenceCategory>
     <PreferenceCategory app:title="基礎設置">
 
