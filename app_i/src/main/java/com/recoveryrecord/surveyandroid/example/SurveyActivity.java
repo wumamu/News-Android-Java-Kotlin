@@ -58,6 +58,11 @@ import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TY
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_CLOSE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_OPEN_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_IN;
+import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_MEDIA;
+import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_RECEIEVE;
+import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_TITLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.SURVEY_PAGE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_DIARY;
@@ -215,8 +220,8 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
         String file_name = "noti.json";
         if (getIntent().getExtras() != null) {
             Bundle b = getIntent().getExtras();
-            return "test.json";
-//            if (Objects.requireNonNull(b.getString(NOTIFICATION_TYPE_KEY)).equals(NOTIFICATION_TYPE_VALUE_ESM)){
+//            return "test.json";
+            if (Objects.requireNonNull(b.getString(NOTIFICATION_TYPE_KEY)).equals(NOTIFICATION_TYPE_VALUE_ESM)){
 //                final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 //                String ReadNewsTitle = sharedPrefs.getString(ESM_READ_HISTORY_CANDIDATE, ZERO_RESULT_STRING);
 //                String NotiNewTitle = sharedPrefs.getString(ESM_NOTIFICATION_UNCLICKED_CANDIDATE, ZERO_RESULT_STRING);
@@ -236,29 +241,35 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
 //                        e.printStackTrace();
 //                    }
 //                }
-//                return file_name;
-//            } else if (Objects.requireNonNull(b.getString(NOTIFICATION_TYPE_KEY)).equals(NOTIFICATION_TYPE_VALUE_DIARY)){
-//                final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-//                String diary_option_string_list = sharedPrefs.getString(DIARY_READ_HISTORY_CANDIDATE, ZERO_RESULT_STRING);
-//                Log.d("lognewsselect", "DIARY&&&&&&&&&&&&&&&&&&&&&&&&&&");
-//                if(!diary_option_string_list.equals(ZERO_RESULT_STRING)){
-//                    Log.d("lognewsselect", "exist rb");
-//                    try {
-//                        file_name = generate_diary_json(diary_option_string_list, "diary.json", true);
-//
-//                    } catch (JSONException | InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                } else {
-//                    Log.d("lognewsselect", "zero_result here");
-//                    try {
-//                        file_name = generate_diary_json(diary_option_string_list, "diary.json", false);
-//                    } catch (JSONException | InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//                return file_name;
-//            }
+                Log.d("lognewsselect", "zero_result here");
+                try {
+                    file_name = generate_json();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                return file_name;
+            } else if (Objects.requireNonNull(b.getString(NOTIFICATION_TYPE_KEY)).equals(NOTIFICATION_TYPE_VALUE_DIARY)){
+                final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+                String diary_option_string_list = sharedPrefs.getString(DIARY_READ_HISTORY_CANDIDATE, ZERO_RESULT_STRING);
+                Log.d("lognewsselect", "DIARY&&&&&&&&&&&&&&&&&&&&&&&&&&");
+                if(!diary_option_string_list.equals(ZERO_RESULT_STRING)){
+                    Log.d("lognewsselect", "exist rb");
+                    try {
+                        file_name = generate_diary_json(diary_option_string_list, "diary.json", true);
+
+                    } catch (JSONException | InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Log.d("lognewsselect", "zero_result here");
+                    try {
+                        file_name = generate_diary_json(diary_option_string_list, "diary.json", false);
+                    } catch (JSONException | InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return file_name;
+            }
         }
         return "diary.json";
     }
@@ -386,6 +397,97 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
             });
         }
 
+    }
+
+    private String generate_json() throws JSONException {
+        JSONObject jsonRootObject = new JSONObject(loadJSONFromAsset("test.json"));
+        JSONArray jsonQuestionObject = jsonRootObject.optJSONArray("questions");
+        final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String my_news_id = sharedPrefs.getString(SAMPLE_ID, "NA");
+        String my_title = sharedPrefs.getString(SAMPLE_TITLE, "NA");
+        String my_media = sharedPrefs.getString(SAMPLE_MEDIA, "NA");
+        String my_re = sharedPrefs.getString(SAMPLE_RECEIEVE, "NA");
+        String my_in = sharedPrefs.getString(SAMPLE_IN, "NA");
+        for (int i =0 ; i < jsonQuestionObject.length();i++){
+            JSONObject one = jsonQuestionObject.getJSONObject(i);
+            if(one.optString("id").equals("base_1")){
+                one.putOpt("question", "你是否有印象注意到在" + my_re + "「" + my_title + "」這則新聞通知的出現？");
+                continue;
+            }
+            if(one.optString("id").equals("recieve_moment_1")){
+                one.putOpt("question", "請問您在「該則通知出現當下」" + my_re + "，約有多少時間可以閱讀新聞？");
+                continue;
+            }
+            if(one.optString("id").equals("recieve_moment_2")){
+                one.putOpt("question", "請問您在「該則通知出現當下」" + my_re + "，約有多少時間可以閱讀新聞？");
+                continue;
+            }
+            if(one.optString("id").equals("recieve_moment_3")){
+                one.putOpt("question", "承上題，該項您「該則通知出現當下」" + my_re + "從事的活動，對您來說，該活動的複雜程度為何？");
+                continue;
+            }
+            if(one.optString("id").equals("recieve_moment_6")){
+                one.putOpt("question", "請選擇最符合您「該則通知出現當下」" + my_re + "所處地點");
+                continue;
+            }
+            if(one.optString("id").equals("read_moment_1")){
+                if(!my_in.equals("NA")){
+                    one.putOpt("question", "根據資料顯示，您在" + my_in + "閱讀該篇新聞");
+                } else {
+                    one.putOpt("question", "根據資料顯示，您未閱讀該篇新聞，請重填問題2");
+                }
+                continue;
+            }
+            if(one.optString("id").equals("read_behaf_9")){
+                one.putOpt("question", "請問您點入「" + my_media + "」的新聞進行閱讀之動機為何？");
+                continue;
+            }
+            if(one.optString("id").equals("not_read_recieve_moment_1")){
+                one.putOpt("question", "請問您在「該則通知出現當下」" + my_re + "，約有多少時間可以「閱讀新聞」？");
+                continue;
+            }
+            if(one.optString("id").equals("not_read_recieve_moment_2")){
+                one.putOpt("question", "在「該則通知出現當下」" + my_re + "，您是否正在從事以下活動？");
+                continue;
+            }
+            if(one.optString("id").equals("not_read_recieve_moment_3")){
+                one.putOpt("question", "承上題，該項您「該則通知出現當下」" + my_re + "從事的活動，對您來說，該活動的複雜程度為何？");
+                continue;
+            }
+            if(one.optString("id").equals("not_read_recieve_moment_6")){
+                one.putOpt("question", "請選擇最符合您「該則通知出現當下」" + my_re + "所處地點");
+                continue;
+            }
+            if(one.optString("id").equals("miss_recieve_moment_1")){
+                one.putOpt("question", "請問您在「該則通知出現當下」" + my_re + "，約有多少時間可以「閱讀新聞」？");
+                continue;
+            }
+            if(one.optString("id").equals("miss_recieve_moment_2")){
+                one.putOpt("question", "在「該則通知出現當下」" + my_re + "，您是否正在從事以下活動？");
+                continue;
+            }
+            if(one.optString("id").equals("miss_recieve_moment_3")){
+                one.putOpt("question", "承上題，該項您「該則通知出現當下」" + my_re + "從事的活動，對您來說，該活動的複雜程度為何？");
+                continue;
+            }
+            if(one.optString("id").equals("miss_recieve_moment_6")){
+                one.putOpt("question", "請選擇最符合您「該則通知出現當下」" + my_re + "所處地點");
+                continue;
+            }
+        }
+        File file;
+        file = new File(getFilesDir(), "test.json");
+        try{
+            FileOutputStream fos = new FileOutputStream(file);//创建一个文件输出流
+            fos.write(jsonRootObject.toString().getBytes());//将生成的JSON数据写出
+            fos.close();//关闭输出流
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return file.getAbsolutePath();
+//        return "test.json";
     }
 
     private String generate_diary_json(String diary_option_string_list, String file_name, Boolean exist) throws JSONException, InterruptedException {

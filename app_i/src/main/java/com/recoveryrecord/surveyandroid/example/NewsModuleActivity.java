@@ -406,7 +406,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
 
                 db.collection(PUSH_NEWS_COLLECTION)
                         .document(device_id + " " + news_id)
-                        .update(PUSH_NEWS_CLICK, 1,
+                        .update(PUSH_NEWS_CLICK, 0,
                                 PUSH_NEWS_OPEN_TIME, Timestamp.now())
 //                                PUSH_NEWS_READING_BEHAVIOR_ID, myReadingBehavior.getKEY_IN_TIMESTAMP())
                         .addOnSuccessListener(new OnSuccessListener<Void>() {

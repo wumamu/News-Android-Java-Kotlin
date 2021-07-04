@@ -2288,6 +2288,148 @@
           }
         ]
       }
+    },
+    {
+      "id": "miss_recieve_moment_1",
+      "header": "Question 64",
+      "question": "請問您在「該則通知出現當下」(抵達時間)，約有多少時間可以「閱讀新聞」？\n(接下來，請您回想該則新聞通知出現當下狀態(抵達時間)進行回答。)",
+      "question_type": "single_text_field",
+      "label": "分鐘",
+      "input_type": "number",
+      "max_chars": "2",
+      "validations": [
+        {
+          "operation": "greater than",
+          "value": 1,
+          "on_fail_message": "time must be at least 1"
+        },
+        {
+          "operation": "less than",
+          "value": 61,
+          "on_fail_message": "time must <= 60"
+        }
+      ],
+      "show_if": {
+        "id": "base_1",
+        "operation": "equals",
+        "value": "沒有，我沒有注意到這則通知出現"
+      }
+    },
+    {
+      "id": "miss_recieve_moment_2",
+      "header": "Question 65",
+      "question": "在「該則通知出現當下」(抵達時間)，您是否正在從事以下活動？",
+      "question_type": "single_select",
+      "options": [
+        "處理家務",
+        "移動中",
+        "工作或學習",
+        "開會",
+        "用餐",
+        "從事娛樂或休閒運動",
+        "上廁所",
+        "與親友聊天",
+        "休息",
+        "未從事特定活動",
+        {
+          "title": "其他",
+          "type": "freeform"
+        }
+      ],
+      "show_if": {
+        "id": "base_1",
+        "operation": "equals",
+        "value": "沒有，我沒有注意到這則通知出現"
+      }
+    },
+    {
+      "id": "miss_recieve_moment_3",
+      "header": "Question 66",
+      "question": "承上題，該項您「該則通知出現當下」(抵達時間)從事的活動，對您來說，該活動的複雜程度為何？\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)",
+      "question_type": "segment_select",
+      "low_tag": "非常不複雜",
+      "high_tag": "非常複雜",
+      "values": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "show_if": {
+        "id": "base_1",
+        "operation": "equals",
+        "value": "沒有，我沒有注意到這則通知出現"
+      }
+    },
+    {
+      "id": "miss_recieve_moment_4",
+      "header": "Question 67",
+      "question": "對我來說，這是個可以被通知打擾的時機，請選擇您對此句描述的感受為何。",
+      "question_type": "segment_select",
+      "low_tag": "非常不同意",
+      "high_tag": "非常同意",
+      "values": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "show_if": {
+        "id": "base_1",
+        "operation": "equals",
+        "value": "沒有，我沒有注意到這則通知出現"
+      }
+    },
+    {
+      "id": "miss_recieve_moment_5",
+      "header": "Question 68",
+      "question": "對我來說，這是個可以被通知打擾的時機，請選擇您對此句描述的感受為何。",
+      "question_type": "segment_select",
+      "low_tag": "非常不同意",
+      "high_tag": "非常同意",
+      "values": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "show_if": {
+        "id": "base_1",
+        "operation": "equals",
+        "value": "沒有，我沒有注意到這則通知出現"
+      }
+    },
+    {
+      "id": "miss_recieve_moment_6",
+      "header": "Question 69",
+      "question": "請選擇最符合您「該則通知出現當下」(抵達時間)所處地點",
+      "question_type": "single_select",
+      "options": [
+        "住所",
+        "運動場所",
+        "用餐地點(如：咖啡廳、餐廳)",
+        "工作學校場所",
+        "公眾場所(如：電影院、大賣場)",
+        "移動中",
+        {
+          "title": "其他",
+          "type": "freeform"
+        }
+      ],
+      "show_if": {
+        "id": "base_1",
+        "operation": "equals",
+        "value": "沒有，我沒有注意到這則通知出現"
+      }
     }
   ],
   "submit": {

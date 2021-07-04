@@ -271,10 +271,10 @@ public class NewsNotificationService extends Service {
                                             scheduleNotification(getNotification(news_id, media, title), 1000 );
                                             Log.d("lognewsselect", "doc id" + doc_id);
                                             record_noti.put(PUSH_NEWS_TYPE, "target add");
-                                            record_noti.put(COMPARE_RESULT_CLICK, 0);
+                                            record_noti.put(COMPARE_RESULT_CLICK, 1);
 
                                             myPushNews.setKEY_TYPE("target add");
-                                            myPushNews.setKEY_CLICK(0);
+                                            myPushNews.setKEY_CLICK(1);
                                             count++;
                                         } else {
                                             record_noti.put(PUSH_NEWS_TYPE, "target too much");

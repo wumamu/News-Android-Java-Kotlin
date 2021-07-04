@@ -47,12 +47,18 @@ import androidx.preference.PreferenceManager;
 //import static com.recoveryrecord.surveyandroid.example.Constants.ESM_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_EXIST_NOTIFICATION_SAMPLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_EXIST_READ_SAMPLE;
+import static com.recoveryrecord.surveyandroid.example.Constants.EXIST_READ;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_NOTIFICATION_EXIST;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_READ_EXIST;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_SAMPLE_CHECK_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_SAMPLE_CHECK_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_IN;
+import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_MEDIA;
+import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_RECEIEVE;
+import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_TITLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.SURVEY_PAGE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TARGET_RANGE;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TIME_ON_PAGE_THRESHOLD;
@@ -84,15 +90,12 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
     Boolean exist_read = false, exist_notification = false;
     String esm_id = "", type ="";
     List<String> rb_query = new ArrayList<>();
-    String rb_sample = "NA";
-    String noti_sample = "NA";
     List<String> noti_query = new ArrayList<>();
     List<String> not_sample_short = new ArrayList<>();
     List<String> not_sample_far = new ArrayList<>();
     List<String> not_sample_far_noti = new ArrayList<>();
 
     String device_id = "NA";
-    List<String> tmp_category_Array = new ArrayList<>();
     Timestamp my_time;
 
     private ProgressBar pgsBar;
@@ -121,14 +124,18 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
         //initial
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPrefs.edit();
-        editor.putString(ESM_READ_HISTORY_CANDIDATE, ZERO_RESULT_STRING);
-        editor.putString(ESM_NOTIFICATION_UNCLICKED_CANDIDATE, ZERO_RESULT_STRING);
-        my_time = Timestamp.now();
+        editor.putString(SAMPLE_ID, "NA");
+        editor.putString(SAMPLE_TITLE, "NA");
+        editor.putString(SAMPLE_MEDIA, "NA");
+        editor.putString(SAMPLE_RECEIEVE, "NA");
+        editor.putString(SAMPLE_IN, "NA");
         editor.apply();
+        my_time = Timestamp.now();
+
         //find
-        firestore_query(esm_id);
+//        firestore_query(esm_id);
         sql_query_noti();
-        sql_query_rb();
+//        sql_query_rb();
         button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -169,66 +176,46 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
         }).start();
     }
 
-    private void sql_query_rb() {
-        rb_query.clear();
-        ReadingBehaviorDbHelper dbHandler = new ReadingBehaviorDbHelper(getApplicationContext());
-        Cursor cursor = dbHandler.getReadingDataForESM(my_time.getSeconds());
-
-        if (cursor.moveToFirst()) {
-            while(!cursor.isAfterLast()) {
-                String title = cursor.getString(cursor.getColumnIndex("title"));
-                String news_id = cursor.getString(cursor.getColumnIndex("news_id"));
-                String media = cursor.getString(cursor.getColumnIndex("media"));
-                long in_time = cursor.getLong(cursor.getColumnIndex("in_timestamp"));
-                Date date = new Date();
-                date.setTime(in_time*1000);
-                @SuppressLint("SimpleDateFormat")
-                SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-                if(!news_id.equals("NA") && !title.equals("NA") && !media.equals("NA")){
-                    rb_query.add(news_id + "¢" + title+ "¢" + media + "¢" + formatter.format(date) + "#");
-                    rb_query.add(news_id);
-                    rb_query.add(title);
-                    rb_query.add(media);
-                    rb_query.add(formatter.format(date));
-                    break;
-                }
-            }
-//            rb_sample = news_id + "¢" + title+ "¢" + media + "¢" + formatter.format(date) + "#";
+//    private void sql_query_rb() {
+//        rb_query.clear();
+//        ReadingBehaviorDbHelper dbHandler = new ReadingBehaviorDbHelper(getApplicationContext());
+//        Cursor cursor = dbHandler.getReadingDataForESM(my_time.getSeconds());
+//
+//        if (cursor.moveToFirst()) {
 //            while(!cursor.isAfterLast()) {
-//                // If you use c.moveToNext() here, you will bypass the first row, which is WRONG
 //                String title = cursor.getString(cursor.getColumnIndex("title"));
 //                String news_id = cursor.getString(cursor.getColumnIndex("news_id"));
 //                String media = cursor.getString(cursor.getColumnIndex("media"));
 //                long in_time = cursor.getLong(cursor.getColumnIndex("in_timestamp"));
-//                Log.d("lognewsselect", title);
-//                if(!title.equals("NA")){
-//                    exist_read = true;
-//                    int share_var = 0, trigger_var = 0;
-//                    String cat_var = "種類";
-//                    Date date = new Date();
-//                    date.setTime(in_time*1000);
-//                    @SuppressLint("SimpleDateFormat")
-//                    SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-//                    rb_query.add(title + "(" + media + ")" + "¢" + share_var + "¢" + trigger_var + "¢" + cat_var + "¢" + formatter.format(date) + "¢" + news_id);
+//                Date date = new Date();
+//                date.setTime(in_time*1000);
+//                @SuppressLint("SimpleDateFormat")
+//                SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+//                if(!news_id.equals("NA") && !title.equals("NA") && !media.equals("NA")){
+//                    rb_query.add(news_id + "¢" + title+ "¢" + media + "¢" + formatter.format(date) + "#");
+//                    rb_query.add(news_id);
+//                    rb_query.add(title);
+//                    rb_query.add(media);
+//                    rb_query.add(formatter.format(date));
+//                    break;
 //                }
-//                cursor.moveToNext();
 //            }
-        }
-        if (!cursor.isClosed())  {
-            cursor.close();
-        }
-
-        if(rb_query.size()!=0){
-//            String title_array = "";
-//            for(int i = 0; i< rb_query.size(); i++){
-//                title_array+= rb_query.get(i) + "#";
-//            }
-            SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-            SharedPreferences.Editor editor = sharedPrefs.edit();
-            editor.putString(ESM_READ_HISTORY_CANDIDATE, rb_query.get(0));
-            editor.apply();
-        }
-    }
+//        }
+//        if (!cursor.isClosed())  {
+//            cursor.close();
+//        }
+//
+//        if(rb_query.size()!=0){
+////            String title_array = "";
+////            for(int i = 0; i< rb_query.size(); i++){
+////                title_array+= rb_query.get(i) + "#";
+////            }
+//            SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+//            SharedPreferences.Editor editor = sharedPrefs.edit();
+//            editor.putString(ESM_READ_HISTORY_CANDIDATE, rb_query.get(0));
+//            editor.apply();
+//        }
+//    }
 
     private void sql_query_noti() {
         PushNewsDbHelper dbHandler = new PushNewsDbHelper(getApplicationContext());
@@ -236,12 +223,23 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
         Cursor cursor = dbHandler.getNotiDataForESM(my_time.getSeconds());
         if (cursor.moveToFirst()) {
             while(!cursor.isAfterLast()) {
-                String title = cursor.getString(cursor.getColumnIndex("title"));
                 String news_id = cursor.getString(cursor.getColumnIndex("news_id"));
-                if(!title.equals("NA")){
-    //                my_noti_list.add(title + "¢" + news_id + "#");
+                String title = cursor.getString(cursor.getColumnIndex("title"));
+                String media = cursor.getString(cursor.getColumnIndex("media"));
+                long re_time = cursor.getLong(cursor.getColumnIndex("receieve_timestamp"));
+                Date date = new Date();
+                date.setTime(re_time*1000);
+                @SuppressLint("SimpleDateFormat")
+                SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+                String[] mysplit = formatter.format(date).split(" ");
+                if(!title.equals("NA") || !title.equals("") ){
+                    noti_query.add(news_id + "¢" + title+ "¢" + media + "¢" + mysplit[2] + "#");
+                    noti_query.add(news_id);
                     noti_query.add(title);
+                    noti_query.add(media);
+                    noti_query.add(mysplit[2]);
                     exist_notification = true;
+                    break;
                 }
                 cursor.moveToNext();
             }
@@ -249,18 +247,48 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
         if (!cursor.isClosed())  {
             cursor.close();
         }
-
-        if(noti_query.size()!=0){
-            String notification_unclick_string = "";
-            for(int i = 0; i< noti_query.size(); i++){
-                notification_unclick_string+= noti_query.get(i) + "#";
+        if(exist_notification){
+            //find reading behavior
+            ReadingBehaviorDbHelper dbHandler_rb = new ReadingBehaviorDbHelper(getApplicationContext());
+            Cursor cursor_rb = dbHandler_rb.getReadingDataFromNoti(my_time.getSeconds(), "\"" + noti_query.get(1) + "\"");
+            if (cursor_rb.moveToFirst()) {
+                while(!cursor_rb.isAfterLast()) {
+                    long in_time = cursor_rb.getLong(cursor_rb.getColumnIndex("in_timestamp"));
+                    Date date = new Date();
+                    date.setTime(in_time*1000);
+                    @SuppressLint("SimpleDateFormat")
+                    SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+                    String[] myssplit = formatter.format(date).split(" ");
+                    Log.d("lognewsselect", formatter.format(date));
+                    if(in_time!=0){
+                        noti_query.add(myssplit[2]);
+                        exist_read = true;
+                        break;
+                    }
+                    cursor_rb.moveToNext();
+                }
+            }
+            if (!cursor_rb.isClosed())  {
+                cursor_rb.close();
             }
             SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
             SharedPreferences.Editor editor = sharedPrefs.edit();
-            editor.putString(ESM_NOTIFICATION_UNCLICKED_CANDIDATE, notification_unclick_string);
+            //id title media receieve in
+//            editor.putString(ESM_NOTIFICATION_UNCLICKED_CANDIDATE, notification_unclick_string);
+            editor.putString(SAMPLE_ID, noti_query.get(1));
+            editor.putString(SAMPLE_TITLE, noti_query.get(2));
+            editor.putString(SAMPLE_MEDIA, noti_query.get(3));
+            editor.putString(SAMPLE_RECEIEVE, noti_query.get(4));
+            if(exist_read){
+                editor.putString(SAMPLE_IN, noti_query.get(5));
+                editor.putBoolean(EXIST_READ, true);
+            } else {
+                editor.putString(SAMPLE_IN, "NA");
+                editor.putBoolean(EXIST_READ, false);
+            }
             editor.apply();
         }
-//        Log.d("lognewsselect", my_noti_list.toString());
+        Log.d("lognewsselect", String.valueOf(noti_query));
     }
 
 
@@ -288,7 +316,6 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
         dbHandler_esm.UpdatePushESMDetailsClick(myesm);
 
         if (!esm_id.equals("")){
-//            final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(PUSH_ESM_COLLECTION).document(esm_id);
             final DocumentReference rbRef = db.collection(PUSH_ESM_COLLECTION).document(device_id + " " + esm_id);
             rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -297,15 +324,11 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
                         DocumentSnapshot document = task.getResult();
                         assert document != null;
                         if (document.exists()) {
-                            rbRef.update(PUSH_ESM_READ_ARRAY, rb_query,
-                                    PUSH_ESM_NOTI_ARRAY, noti_query,
-//                                    PUSH_ESM_NOT_SAMPLE_READ_SHORT, not_sample_short,
-//                                    PUSH_ESM_NOT_SAMPLE_READ_FAR, not_sample_far,
-//                                    PUSH_ESM_NOT_SAMPLE_NOTIFICATION_FAR, not_sample_far_noti,
+                            rbRef.update(PUSH_ESM_NOTI_ARRAY, noti_query,
                                     PUSH_ESM_READ_EXIST, exist_read,
                                     PUSH_ESM_NOTIFICATION_EXIST, exist_notification,
                                     "sample_time", my_time.getSeconds()
-                                    )//another field
+                            )//another field
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
@@ -318,6 +341,24 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
                                             Log.w("lognewsselect", "Error updating document", e);
                                         }
                                     });
+//                            rbRef.update(PUSH_ESM_READ_ARRAY, rb_query,
+//                                    PUSH_ESM_NOTI_ARRAY, noti_query,
+//                                    PUSH_ESM_READ_EXIST, exist_read,
+//                                    PUSH_ESM_NOTIFICATION_EXIST, exist_notification,
+//                                    "sample_time", my_time.getSeconds()
+//                                    )//another field
+//                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                        @Override
+//                                        public void onSuccess(Void aVoid) {
+//                                            Log.d("lognewsselect", "DocumentSnapshot successfully updated!");
+//                                        }
+//                                    })
+//                                    .addOnFailureListener(new OnFailureListener() {
+//                                        @Override
+//                                        public void onFailure(@NonNull Exception e) {
+//                                            Log.w("lognewsselect", "Error updating document", e);
+//                                        }
+//                                    });
                         } else {
                             Log.d("lognewsselect", "ESMLoadingPageActivity No such document");
                             Toast.makeText(getApplicationContext(), "系統出錯，幫您導回主頁面", Toast.LENGTH_SHORT).show();
@@ -357,7 +398,7 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
                 .get();
         task2 =  db.collection(PUSH_NEWS_COLLECTION)
                 .whereEqualTo(PUSH_NEWS_DEVICE_ID, device_id)
-                .whereEqualTo(PUSH_NEWS_CLICK, 0)
+                .whereEqualTo(PUSH_NEWS_CLICK, 1)
                 .orderBy(PUSH_NEWS_NOTI_TIME, Query.Direction.DESCENDING)
                 .get();
 
@@ -424,16 +465,6 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
                                 });
                     }
                 }
-//                if(news_title_target_array.size()!=0){
-//                    String title_array = "";
-//                    for(int i = 0; i< news_title_target_array.size(); i++){
-//                        title_array+= news_title_target_array.get(i) + "#";
-//                    }
-//                    SharedPreferences.Editor editor = sharedPrefs.edit();
-//                    editor.putString(ESM_READ_HISTORY_CANDIDATE, title_array);
-//                    editor.apply();
-////                    Log.d("lognewsselect", "@@@@@@@@@@@@@");
-//                }
                 Log.d("lognewsselect", "**********COMPLETE TASK1");
             }
         }).addOnFailureListener(new OnFailureListener() {

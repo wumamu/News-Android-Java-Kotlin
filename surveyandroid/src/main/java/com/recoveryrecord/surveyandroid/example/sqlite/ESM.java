@@ -33,7 +33,7 @@ public class ESM {
     //type 0
     private String KEY_NOTI_READ_NEWS_ID;
     private String KEY_NOTI_READ_TITLE;
-    private long KEY_NOTI_READ_IN_TIME;
+    private String KEY_NOTI_READ_IN_TIME;
     private long KEY_NOTI_READ_RECEIEVE_TIME;
     private String KEY_NOTI_READ_SITUATION;
     private String KEY_NOTI_READ_PLACE;
@@ -75,7 +75,7 @@ public class ESM {
 
         this.KEY_NOTI_READ_NEWS_ID = "NA";
         this.KEY_NOTI_READ_TITLE = "NA";
-        this.KEY_NOTI_READ_IN_TIME = 0;
+        this.KEY_NOTI_READ_IN_TIME = "NA";
         this.KEY_NOTI_READ_RECEIEVE_TIME = 0;
         this.KEY_NOTI_READ_SITUATION = "NA";
         this.KEY_NOTI_READ_PLACE = "NA";
@@ -259,11 +259,11 @@ public class ESM {
         this.KEY_NOTI_READ_TITLE = KEY_NOTI_READ_TITLE;
     }
 
-    public long getKEY_NOTI_READ_IN_TIME() {
+    public String getKEY_NOTI_READ_IN_TIME() {
         return KEY_NOTI_READ_IN_TIME;
     }
 
-    public void setKEY_NOTI_READ_IN_TIME(long KEY_NOTI_READ_IN_TIME) {
+    public void setKEY_NOTI_READ_IN_TIME(String KEY_NOTI_READ_IN_TIME) {
         this.KEY_NOTI_READ_IN_TIME = KEY_NOTI_READ_IN_TIME;
     }
 

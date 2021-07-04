@@ -114,6 +114,14 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
 
     String TO_DIARY_LIST = "DiaryList";
 
+    String SAMPLE_ID = "sample_id";
+    String SAMPLE_TITLE = "sample_title";
+    String SAMPLE_MEDIA = "sample_media";
+    String SAMPLE_RECEIEVE = "sample_receieve";
+    String SAMPLE_IN = "sample_in";
+    String EXIST_READ = "exist_read";
+
+
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     public SubmitViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -154,60 +162,131 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                     editor.putInt(ESM_DONE_TOTAL, esm_done+1);
                     editor.putInt(ESM_DAY_DONE_PREFIX + day_index, esm_day_done+1);
                     editor.apply();
+                    Boolean exist_read = sharedPrefs.getBoolean(EXIST_READ, false);
+//                    DocumentReference docRef = db.collection("push_esm").document(device_id + " " + esm_id);
+                    if(exist_read){
+                        try {
+                            assert result_json != null;
+                            JSONObject jsonRootObject = new JSONObject(result_json);
+                            JSONObject jsonAnswerObject = jsonRootObject.getJSONObject("answers");
+                            Iterator<String> keys = jsonAnswerObject.keys();
+                            if (jsonAnswerObject.has("base_2")) {
+                                if(jsonAnswerObject.getString("base_2").equals("我有點入閱讀")){
+                                    target_read_title_id = sharedPrefs.getString(SAMPLE_ID, "NA");;
+                                    target_read_title_in_time = sharedPrefs.getString(SAMPLE_IN, "NA");;
+                                    target_read_title = sharedPrefs.getString(SAMPLE_TITLE, "NA");;
 
-                    DocumentReference docRef = db.collection("push_esm").document(device_id + " " + esm_id);
-                    //result without title so we have to trace
-                    docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>(){
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if (task.isSuccessful()) {
-                                DocumentSnapshot document = task.getResult();
-                                if (document.exists()) {
-                                    if(document.get("ExistReadSample")!=null){
-                                        sample_read_Array = (List<String>) document.get("ReadNewsTitle");
-//                                        if(!sample_read_Array.get(0).equals("zero_result")){
-                                        if(document.getBoolean("ExistReadSample")){
-                                            try {
-                                                assert result_json != null;
-                                                JSONObject jsonRootObject = new JSONObject(result_json);
-                                                JSONObject jsonAnswerObject = jsonRootObject.getJSONObject("answers");
-                                                Iterator<String> keys = jsonAnswerObject.keys();
-                                                while(keys.hasNext()) {
-                                                    String key = keys.next();
-                                                    try {
-                                                        if(jsonAnswerObject.get(key).equals("有點入閱讀，且沒看過相同的新聞")){
-                                                            List<String> add_what = new ArrayList<String>(Arrays.asList(key.split("_")));
-                                                            target_read_title = sample_read_Array.get(Integer.parseInt(add_what.get(1)));
-                                                            if (jsonAnswerObject.has("read_15")) {
-                                                                target_read_title_situation = jsonAnswerObject.getString("read_15");
-                                                            }
-                                                            if (jsonAnswerObject.has("read_17")) {
-                                                                target_read_title_place =  jsonAnswerObject.getString("read_17");
-                                                            }
-                                                            break;
-                                                        }
-                                                    } catch (JSONException e) {
-                                                        // Something went wrong!
-                                                    }
-                                                }
-                                                Log.d("lognewsselect", "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$finish");
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
+                                    if (jsonAnswerObject.has("read_seen_1")) {
+                                        String answer = jsonAnswerObject.getString("read_seen_1");
+                                        if(answer.equals("活動與地點皆相同")){
+                                            if (jsonAnswerObject.has("recieve_moment_2")) {
+                                                target_read_title_situation = jsonAnswerObject.getString("recieve_moment_2");
                                             }
-                                        } else {
-                                            Log.d("lognewsselect", "document.get(\"ReadNewsTitle\")==zero_result");
+                                            if (jsonAnswerObject.has("recieve_moment_6")) {
+                                                target_read_title_place =  jsonAnswerObject.getString("recieve_moment_6");
+                                            }
+                                        } else if (answer.equals("活動相同，地點不同")){
+                                            if (jsonAnswerObject.has("recieve_moment_2")) {
+                                                target_read_title_situation = jsonAnswerObject.getString("recieve_moment_2");
+                                            }
+                                            if (jsonAnswerObject.has("read_seen_7")) {
+                                                target_read_title_place =  jsonAnswerObject.getString("read_seen_7");
+                                            }
+                                        } else if (answer.equals("活動不同，地點相同")){
+                                            if (jsonAnswerObject.has("read_seen_3")) {
+                                                target_read_title_situation = jsonAnswerObject.getString("read_seen_3");
+                                            }
+                                            if (jsonAnswerObject.has("recieve_moment_6")) {
+                                                target_read_title_place =  jsonAnswerObject.getString("recieve_moment_6");
+                                            }
+                                        } else { //活動、地點均不相同
+                                            if (jsonAnswerObject.has("read_seen_3")) {
+                                                target_read_title_situation = jsonAnswerObject.getString("read_seen_3");
+                                            }
+                                            if (jsonAnswerObject.has("read_seen_7")) {
+                                                target_read_title_place =  jsonAnswerObject.getString("read_seen_7");
+                                            }
                                         }
-                                    } else {
-                                        Log.d("lognewsselect", "document.get(\"ReadNewsTitle\")==null");
                                     }
-                                } else {
-                                    Log.d("lognewsselect", "No such document");
+                                    if (jsonAnswerObject.has("read_moment_2")) {
+                                        String answer = jsonAnswerObject.getString("read_moment_2");
+                                        if(answer.equals("活動與地點皆相同")){
+                                            //do nothing
+                                        } else if (answer.equals("活動相同，地點不同")){
+                                            if (jsonAnswerObject.has("read_seen_7")) {
+                                                target_read_title_place =  jsonAnswerObject.getString("read_seen_7");
+                                            }
+                                        } else if (answer.equals("活動不同，地點相同")){
+                                            if (jsonAnswerObject.has("read_seen_3")) {
+                                                target_read_title_situation = jsonAnswerObject.getString("read_seen_3");
+                                            }
+                                        } else { //活動、地點均不相同
+                                            if (jsonAnswerObject.has("read_seen_3")) {
+                                                target_read_title_situation = jsonAnswerObject.getString("read_seen_3");
+                                            }
+                                            if (jsonAnswerObject.has("read_seen_7")) {
+                                                target_read_title_place =  jsonAnswerObject.getString("read_seen_7");
+                                            }
+                                        }
+                                    }
                                 }
-                            } else {
-                                Log.d("lognewsselect", "get failed with ", task.getException());
                             }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    });
+                    }
+                    //result without title so we have to trace
+//                    docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>(){
+//                        @Override
+//                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                            if (task.isSuccessful()) {
+//                                DocumentSnapshot document = task.getResult();
+//                                if (document.exists()) {
+//                                    if(document.get("ExistReadSample")!=null){
+//                                        sample_read_Array = (List<String>) document.get("ReadNewsTitle");
+////                                        if(!sample_read_Array.get(0).equals("zero_result")){
+//                                        if(document.getBoolean("ExistReadSample")){
+//                                            try {
+//                                                assert result_json != null;
+//                                                JSONObject jsonRootObject = new JSONObject(result_json);
+//                                                JSONObject jsonAnswerObject = jsonRootObject.getJSONObject("answers");
+//                                                Iterator<String> keys = jsonAnswerObject.keys();
+//                                                while(keys.hasNext()) {
+//                                                    String key = keys.next();
+//                                                    try {
+//                                                        if(jsonAnswerObject.get(key).equals("有點入閱讀，且沒看過相同的新聞")){
+//                                                            List<String> add_what = new ArrayList<String>(Arrays.asList(key.split("_")));
+//                                                            target_read_title = sample_read_Array.get(Integer.parseInt(add_what.get(1)));
+//                                                            if (jsonAnswerObject.has("read_15")) {
+//                                                                target_read_title_situation = jsonAnswerObject.getString("read_15");
+//                                                            }
+//                                                            if (jsonAnswerObject.has("read_17")) {
+//                                                                target_read_title_place =  jsonAnswerObject.getString("read_17");
+//                                                            }
+//                                                            break;
+//                                                        }
+//                                                    } catch (JSONException e) {
+//                                                        // Something went wrong!
+//                                                    }
+//                                                }
+//                                                Log.d("lognewsselect", "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$finish");
+//                                            } catch (JSONException e) {
+//                                                e.printStackTrace();
+//                                            }
+//                                        } else {
+//                                            Log.d("lognewsselect", "document.get(\"ReadNewsTitle\")==zero_result");
+//                                        }
+//                                    } else {
+//                                        Log.d("lognewsselect", "document.get(\"ReadNewsTitle\")==null");
+//                                    }
+//                                } else {
+//                                    Log.d("lognewsselect", "No such document");
+//                                }
+//                            } else {
+//                                Log.d("lognewsselect", "get failed with ", task.getException());
+//                            }
+//                        }
+//                    });
 
 
                     final Timestamp current = Timestamp.now();
@@ -218,21 +297,22 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                             if (task.isSuccessful()) {
                                 DocumentSnapshot document = task.getResult();
                                 if (document.exists()) {
-                                    int sample = 1;
-                                    String diary_title = "NA";
-                                    if(!target_read_title.equals("NA")){
-                                        sample = 2;
-                                        List<String> tmp = new ArrayList<String>(Arrays.asList(target_read_title.split("¢")));
-                                        target_read_title_in_time = tmp.get(4);
-                                        target_read_title_id = tmp.get(5);
-                                        diary_title = tmp.get(0);
-                                    }
+//                                    int sample = 1;
+//                                    String diary_title = "NA";
+//                                    if(!target_read_title.equals("NA")){
+//                                        sample = 2;
+//                                        List<String> tmp = new ArrayList<String>(Arrays.asList(target_read_title.split("¢")));
+//                                        target_read_title_in_time = tmp.get(4);
+//                                        target_read_title_id = tmp.get(5);
+//                                        diary_title = tmp.get(0);
+//                                    }
 
-                                    rbRef.update(PUSH_ESM_SAMPLE, sample,
-                                            PUSH_ESM_TARGET_TITLE_DIARY, target_read_title,
-                                            PUSH_ESM_TARGET_TITLE,  diary_title,
-                                            PUSH_ESM_TARGET_IN_TIME, target_read_title_in_time,
+                                    rbRef.update(
+//                                            PUSH_ESM_SAMPLE, sample,
+//                                            PUSH_ESM_TARGET_TITLE_DIARY, target_read_title,
+                                            PUSH_ESM_TARGET_TITLE,  target_read_title,
                                             PUSH_ESM_TARGET_NEWS_ID, target_read_title_id,
+                                            PUSH_ESM_TARGET_IN_TIME, target_read_title_in_time,
                                             PUSH_ESM_TARGET_SITUATION, target_read_title_situation,
                                             PUSH_ESM_TARGET_PLACE, target_read_title_place,
                                             PUSH_ESM_SUBMIT_TIME, current,
@@ -262,12 +342,12 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                     myesm.setKEY_DOC_ID(device_id + " " + esm_id);
                     myesm.setKEY_SUBMIT_TIMESTAMP(current.getSeconds());
                     myesm.setKEY_RESULT(result_json);
-                    myesm.setKEY_NOTI_READ_NEWS_ID(device_id + " " + esm_id);
-                    myesm.setKEY_NOTI_READ_TITLE(device_id + " " + esm_id);
-//                    myesm.setKEY_NOTI_READ_IN_TIME(device_id + " " + esm_id);
+                    myesm.setKEY_NOTI_READ_NEWS_ID(target_read_title_id);
+                    myesm.setKEY_NOTI_READ_TITLE(target_read_title);
+                    myesm.setKEY_NOTI_READ_IN_TIME(target_read_title_in_time);
 //                    myesm.setKEY_NOTI_READ_RECEIEVE_TIME(device_id + " " + esm_id);
-//                    myesm.setKEY_NOTI_READ_SITUATION(device_id + " " + esm_id);
-//                    myesm.setKEY_NOTI_READ_PLACE(device_id + " " + esm_id);
+                    myesm.setKEY_NOTI_READ_SITUATION(target_read_title_situation);
+                    myesm.setKEY_NOTI_READ_PLACE(target_read_title_place);
 //                    myesm.setKEY_NOTI_NOT_READ_NEWS_ID(device_id + " " + esm_id);
 //                    myesm.setKEY_NOTI_NOT_READ_TITLE(device_id + " " + esm_id);
 //                    myesm.setKEY_NOTI_NOT_READ_RECEIEVE_TIME(device_id + " " + esm_id);
@@ -311,19 +391,12 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                                         List<String> data_array = new ArrayList<String>(Arrays.asList(diary_option_array.get(j).split("\n")));
                                         //把標題分出來
                                         if(data_array.get(0).equals(view_array.get(0))){
-//                                            List<String> to_result_tmp_array = new ArrayList<String>(Arrays.asList(diary_option_array.get(j).split("\n")));
                                             target_inopportune_news_id = data_array.get(4);
                                             target_inopportune_title = data_array.get(0);
                                             target_inopportune = diary_option_array.get(j);
                                             break;
                                         }
                                     }
-//
-//                                    int index = Integer.parseInt(tmp_array.get(0));
-//                                    List<String> new_tmp_array = new ArrayList<String>(Arrays.asList(diary_option_array.get(index).split("\n")));
-//                                    target_inopportune_news_id = new_tmp_array.get(4);
-//                                    target_inopportune_title = new_tmp_array.get(0);
-//                                    target_inopportune = diary_option_array.get(index);
                                 }
 
                             }
@@ -339,12 +412,6 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                                             break;
                                         }
                                     }
-//                                    List<String> tmp_array = new ArrayList<String>(Arrays.asList(jsonAnswerObject.getString("opportune_1").split("\n")));
-//                                    int index = Integer.parseInt(tmp_array.get(0));
-//                                    List<String> new_tmp_array = new ArrayList<String>(Arrays.asList(diary_option_array.get(index).split("\n")));
-//                                    target_opportune_news_id = new_tmp_array.get(4);
-//                                    target_opportune_title = new_tmp_array.get(0);
-//                                    target_opportune = diary_option_array.get(index);
                                 }
                             }
                         } catch (JSONException e) {

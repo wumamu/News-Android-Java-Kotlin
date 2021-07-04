@@ -91,7 +91,7 @@ public class PushNewsDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cValues = new ContentValues();
         cValues.put(KEY_RECEIEVE_TIMESTAMP, pushnews.getKEY_RECEIEVE_TIMESTAMP());
-        cValues.put(KEY_CLICK, 0);
+        cValues.put(KEY_CLICK, 1);
         db.update(TABLE_NAME_PUSH_NEWS, cValues, KEY_DOC_ID + " = ?", new String[]{String.valueOf(pushnews.getKEY_DOC_ID())});
     }
 
@@ -107,25 +107,27 @@ public class PushNewsDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cValues = new ContentValues();
         cValues.put(KEY_OPEN_TIMESTAMP, pushnews.getKEY_OPEN_TIMESTAMP());
-        cValues.put(KEY_CLICK, 1);
+        cValues.put(KEY_CLICK, 0);
         db.update(TABLE_NAME_PUSH_NEWS, cValues, KEY_DOC_ID + " = ?", new String[]{String.valueOf(pushnews.getKEY_DOC_ID())});
     }
 
     public Cursor getNotiDataForESM(long now_timestamp) {
         SQLiteDatabase db = this.getReadableDatabase();
 //        Cursor res =  db.rawQuery( "select * from contacts where id="+id+"", null );
-        Cursor res =  db.rawQuery( "SELECT tmp.news_id, tmp.title\n" +
+        Cursor res =  db.rawQuery( "SELECT tmp.news_id, tmp.title, tmp.receieve_timestamp, tmp.media\n" +
                         "                FROM\n" +
                         "                        (\n" +
                         "                                SELECT DISTINCT pn.news_id,\n" +
                         "                                pn.title,\n" +
-                        "                                pn.noti_timestamp,\n" +
-                        "                                (" + now_timestamp + "-pn.noti_timestamp) as diff\n" +
+                        "                                pn.media,\n" +
+                        "                                pn.receieve_timestamp,\n" +
+                        "                                pn.click,\n" +
+                        "                                (" + now_timestamp + "-pn.receieve_timestamp) as diff\n" +
                         "                                FROM push_news pn\n" +
                         "                                WHERE pn.type = 'target add'" +
                         "                        ) as tmp\n" +
-                        "                WHERE tmp.diff <= 3600\n" +
-                        "                ORDER BY tmp.noti_timestamp DESC;"
+                        "                WHERE tmp.diff <= 2700\n" +
+                        "                ORDER BY  tmp.click ASC, tmp.receieve_timestamp DESC;"
         , null );
         return res;
     }

@@ -177,11 +177,36 @@ public class ReadingBehaviorDbHelper extends SQLiteOpenHelper {
                         "\tFROM reading_behavior rb\n" +
                         "\tWHERE rb.time_on_page > 1\n" +
                         ") as tmp\n" +
-                        "WHERE tmp.diff <= 3600 AND tmp.diff >=0\n" +
+                        "WHERE tmp.diff <= 2700 AND tmp.diff >=0\n" +
                         "ORDER BY tmp.in_timestamp DESC;"
                 , null );
         return res;
     }
+
+    public Cursor getReadingDataFromNoti(long now_timestamp, String target_news_id) {
+//        Stringtarget_news_id
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "SELECT tmp.in_timestamp\n" +
+                        "FROM\n" +
+                        "(\n" +
+                        "\tSELECT DISTINCT rb.news_id, \n" +
+//                        "\t\t\t\t\trb.title, \n" +
+//                        "\t\t\t\t\trb.media,\n" +
+//                        "\t\t\t\t\trb.share,\n" +
+//                        "\t\t\t\t\trb.trigger_by,\n" +
+                        "\t\t\t\t\trb.time_on_page,\n" +
+                        "\t\t\t\t\trb.in_timestamp,\n" +
+                        "\t\t\t\t\t(" + now_timestamp + "-rb.in_timestamp) as diff\n" +
+                        "\tFROM reading_behavior rb\n" +
+//                        "\tWHERE rb.time_on_page > 1\n" +
+                        "\tWHERE rb.news_id = " + target_news_id + "\n" +
+                        ") as tmp\n" +
+                        "WHERE tmp.diff <= 2700 AND tmp.diff >=0\n" +
+                        "ORDER BY tmp.time_on_page DESC;"
+                , null );
+        return res;
+    }
+
     // Get User Details
 //    public ArrayList<HashMap<String, String>> GetNotifications(){
 //

@@ -259,6 +259,16 @@ public class Constants {
     public static final String PUSH_ESM_TARGET_SITUATION = "target_situation";
     public static final String PUSH_ESM_TARGET_PLACE = "target_place";
     public static final String PUSH_ESM_TARGET_NEWS_ID = "target_news_id";
+
+
+    public static final String SAMPLE_NEWS_ID = "sample_news_id";
+    public static final String SAMPLE_NEWS_TITLE = "sample_news_title";
+    public static final String SAMPLE_NEWS_MEDIA = "sample_news_media";
+    public static final String SAMPLE_NEWS_RECEIEVE_TIME = "sample_news_receieve_time";
+    public static final String SAMPLE_NEWS_IN_TIME = "sample_news_in_time";
+
+
+
     //PUSH DIARY
     public static final String PUSH_DIARY_COLLECTION = "push_diary";
     public static final String PUSH_DIARY_DEVICE_ID = "device_id";
@@ -316,6 +326,13 @@ public class Constants {
     public static final String ESM_SET_ONCE = "ESMSetOnce";
     public static final String LAST_ESM_TIME = "LastEsmTime";
     public static final String LAST_DIARY_TIME = "LastDiaryTime";
+
+    public static final String SAMPLE_ID = "sample_id";
+    public static final String SAMPLE_TITLE = "sample_title";
+    public static final String SAMPLE_MEDIA = "sample_media";
+    public static final String SAMPLE_RECEIEVE = "sample_receieve";
+    public static final String SAMPLE_IN = "sample_in";
+    public static final String EXIST_READ = "exist_read";
 
 
 
