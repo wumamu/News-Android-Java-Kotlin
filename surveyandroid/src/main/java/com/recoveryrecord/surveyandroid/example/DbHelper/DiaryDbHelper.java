@@ -2,6 +2,7 @@ package com.recoveryrecord.surveyandroid.example.DbHelper;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -39,10 +40,6 @@ public class DiaryDbHelper extends SQLiteOpenHelper {
     private static final String KEY_RESULT = "result";
     private static final String KEY_INOPPORTUNTE_RESULT = "inopportune_result";
     private static final String KEY_OPPORTUNTE_RESULT = "opportune_result";
-
-
-
-
 
     public DiaryDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -94,7 +91,7 @@ public class DiaryDbHelper extends SQLiteOpenHelper {
         cValues.put(KEY_USER_ID, diary.getKEY_USER_ID());//initiate
 
         cValues.put(KEY_ESM_RESULT_SAMPLE, diary.getKEY_ESM_RESULT_SAMPLE());//click
-        cValues.put(KEY_DIARY_SCHEDULE_SOURCE, diary.getKEY_DIARY_SCHEDULE_SOURCE());//click
+        cValues.put(KEY_DIARY_SCHEDULE_SOURCE, diary.getKEY_DIARY_SCHEDULE_SOURCE());//initiate
         cValues.put(KEY_DIARY_SAMPLE_TIME, diary.getKEY_DIARY_SAMPLE_TIME());//click
 
         cValues.put(KEY_NOTI_TIMESTAMP, diary.getKEY_NOTI_TIMESTAMP());//initiate
@@ -163,5 +160,26 @@ public class DiaryDbHelper extends SQLiteOpenHelper {
         db.update(TABLE_NAME_PUSH_DIARY, cValues, KEY_DOC_ID + " = ?", new String[]{String.valueOf(diary.getKEY_DOC_ID())});
     }
 
+    public Cursor getALL() {
+        SQLiteDatabase db = this.getReadableDatabase();
+//        Cursor res =  db.rawQuery( "select * from contacts where id="+id+"", null );
+        Cursor res =  db.rawQuery( "SELECT  * FROM " + TABLE_NAME_PUSH_DIARY + " as tmp WHERE tmp.user_id <> 'upload';", null );
+        return res;
+    }
 
+    public void UpdateAll(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cValues = new ContentValues();
+        cValues.put(KEY_USER_ID, "upload");
+        db.update(TABLE_NAME_PUSH_DIARY, cValues, null, null);
+
+    }
+
+    public void deleteDb() {
+        // on below line we are creating
+        // a variable to write our database.
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from "+ TABLE_NAME_PUSH_DIARY);
+        db.close();
+    }
 }

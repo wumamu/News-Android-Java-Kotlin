@@ -249,5 +249,46 @@ public class ESMDbHelper extends SQLiteOpenHelper {
         db.update(TABLE_NAME_PUSH_ESM, cValues, KEY_DOC_ID + " = ?", new String[]{String.valueOf(esm.getKEY_DOC_ID())});
     }
 
+    public Cursor getNotiDataForDiary(long now_timestamp) {//15 hour
+        SQLiteDatabase db = this.getReadableDatabase();
+//        Cursor res =  db.rawQuery( "select * from contacts where id="+id+"", null );
+        Cursor res =  db.rawQuery( "SELECT tmp.noti_read_news_id, tmp.noti_read_title, tmp.noti_read_in_time, tmp.noti_read_situation, tmp.noti_read_place\n" +
+                        "FROM\n" +
+                        "(\n" +
+                        "\tSELECT DISTINCT esm.noti_read_news_id, \n" +
+                        "\t\t\t\t\tesm.noti_read_title,\n" +
+                        "\t\t\t\t\tesm.noti_read_in_time,\n" +
+                        "\t\t\t\t\tesm.noti_read_situation,\n" +
+                        "\t\t\t\t\tesm.noti_read_place,\n" +
+                        "\t\t\t\t\t(" + now_timestamp + "-esm.receieve_timestamp) as diff\n" +
+                        "\tFROM push_esm esm\n" +
+                        ") as tmp\n" +
+                        "WHERE tmp.diff <= 54000 AND tmp.diff >=0\n" +
+                        "ORDER BY diff ASC;"
+                , null );
+        return res;
+    }
 
+    public Cursor getALL() {
+        SQLiteDatabase db = this.getReadableDatabase();
+//        Cursor res =  db.rawQuery( "select * from contacts where id="+id+"", null );
+        Cursor res =  db.rawQuery( "SELECT  * FROM " + TABLE_NAME_PUSH_ESM + " as tmp WHERE tmp.user_id <> 'upload';", null );
+        return res;
+    }
+
+    public void UpdateAll(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cValues = new ContentValues();
+        cValues.put(KEY_USER_ID, "upload");
+        db.update(TABLE_NAME_PUSH_ESM, cValues, null, null);
+
+    }
+
+    public void deleteDb() {
+        // on below line we are creating
+        // a variable to write our database.
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from "+ TABLE_NAME_PUSH_ESM);
+        db.close();
+    }
 }

@@ -29,12 +29,16 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.ActivityRecognition;
 import com.google.android.gms.location.ActivityRecognitionClient;
 import com.google.android.gms.location.ActivityTransition;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.recoveryrecord.surveyandroid.example.chinatimes.ChinatimesMainFragment;
 import com.recoveryrecord.surveyandroid.example.cna.CnaMainFragment;
@@ -100,6 +104,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.MEDIA_BAR_ORDER
 import static com.recoveryrecord.surveyandroid.example.Constants.MY_DEVICE;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_MEDIA_SELECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_SHARE;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_CLEAR_CACHE;
 //import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_PARCELABLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.OUR_EMAIL;
@@ -189,6 +194,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     private boolean TimerRunning;
     //private long TimeLeftInMillis = SeesionCountDown;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @SuppressLint("HardwareIds")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -202,6 +208,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         //first in app
         final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         boolean clear = sharedPrefs.getBoolean(SHARE_PREFERENCE_CLEAR_CACHE, true);
+        Map<String, Object> first = new HashMap<>();
         if (clear) {
             SharedPreferences.Editor editor = sharedPrefs.edit();
             editor.putString(SHARE_PREFERENCE_DEVICE_ID, device_id);
@@ -227,28 +234,79 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 edit.putStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, set);
                 edit.apply();
             }
+            List<String> media_bar_result = new ArrayList<>();
+            List<String> media_push_result = new ArrayList<>();
+//        List<String> media_bar_result = (List<String>) document.get(READING_BEHAVIOR_SHARE);
+            media_bar_result.add(sharedPrefs.getStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, Collections.<String>emptySet()).toString());
+//            media_push_result.add(sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, Collections.<String>emptySet()).toString());
+            media_push_result.add(String.join(",", sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, Collections.<String>emptySet()).toString()));
+            first.put(MEDIA_BAR_ORDER, media_bar_result);
+            first.put(USER_DEVICE_ID, device_id);
+            first.put(USER_PHONE_ID, Build.MODEL);
+            first.put(USER_ANDROID_SDK, Build.VERSION.SDK_INT);
+            first.put(USER_ANDROID_RELEASE, Build.VERSION.RELEASE);
+            first.put(UPDATE_TIME, Timestamp.now());
+            first.put(APP_VERSION_KEY, APP_VERSION_VALUE);
+            first.put(USER_SURVEY_NUMBER, sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+            first.put(PUSH_MEDIA_SELECTION, media_push_result);
+
+            db.collection(USER_COLLECTION)
+                    .document(device_id)
+                    .set(first);
+        } else {
+            final DocumentReference rbRef = db.collection(USER_COLLECTION).document(device_id);
+            rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            Log.d("log: firebase", "Success");
+
+
+                            List<String> media_push_result = (List<String>) document.get(PUSH_MEDIA_SELECTION);
+                            Log.d("l1231313", media_push_result.get(media_push_result.size() - 1));
+                            //different from last one
+//                            for (int)
+                            String tmp = String.join(",", sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, Collections.<String>emptySet()).toString());
+                            Log.d("l1231313", tmp);
+//                            media_push_result.add(tmp);
+                            if(!media_push_result.get(media_push_result.size() - 1).equals(tmp)){
+                                media_push_result.add(tmp);
+                            }
+//                            media_push_result.add(String.valueOf(media_push_result));
+                            rbRef.update(PUSH_MEDIA_SELECTION, media_push_result,
+                                    USER_SURVEY_NUMBER, sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"),
+                                    UPDATE_TIME, Timestamp.now(),
+                                    APP_VERSION_KEY, APP_VERSION_VALUE,
+                                    USER_DEVICE_ID, device_id,
+                                    USER_ANDROID_SDK, Build.VERSION.SDK_INT,
+                                    USER_ANDROID_RELEASE, Build.VERSION.RELEASE)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.d("log: firebase share", "DocumentSnapshot successfully updated!");
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.w("log: firebase share", "Error updating document", e);
+                                        }
+                                    });
+                        } else {
+
+                            Log.d("log: firebase share", "No such document");
+                        }
+                    } else {
+                        Log.d("log: firebase share", "get failed with ", task.getException());
+                    }
+                }
+            });
         }
-        Map<String, Object> first = new HashMap<>();
-        first.put(UPDATE_TIME, Timestamp.now());
-        first.put(USER_DEVICE_ID, device_id);
-        first.put(USER_PHONE_ID, Build.MODEL);
-        first.put(USER_ANDROID_SDK, Build.VERSION.SDK_INT);
-        first.put(USER_ANDROID_RELEASE, Build.VERSION.RELEASE);
-        first.put(APP_VERSION_KEY, APP_VERSION_VALUE);
-        first.put(USER_SURVEY_NUMBER, sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
-        first.put(PUSH_MEDIA_SELECTION, sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, Collections.<String>emptySet()).toString());
-        first.put(MEDIA_BAR_ORDER, sharedPrefs.getStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, Collections.<String>emptySet()).toString());
-        db.collection(USER_COLLECTION)
-                .document(device_id)
-                .set(first);
-        //notification media_select
-//        Set<String> selections = sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, Collections.<String>emptySet());
-//        if (selections==null){
-////            Toast.makeText(this, "趕快去設定選擇想要收到推播的媒體吧~", Toast.LENGTH_SHORT).show();
-//        } else {
-////            String[] selected = selections.toArray(new String[] {});
-//            Log.d("lognewsselect", Arrays.toString(new Set[]{selections}));
-//        }
+
+
+
         swipeRefreshLayout = (MySwipeRefreshLayout) findViewById(R.id.mainSwipeContainer);
 //        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.mainSwipeContainer);
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -303,12 +361,6 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 
-//        db.collection(TEST_USER_COLLECTION)
-//                .document(device_id)
-//                .collection(NEWS_SERVICE_COLLECTION)
-////                .document(String.valueOf(Timestamp.now().toDate()))
-//                .document(formatter.format(date))
-//                .set(log_service);
         db.collection(NEWS_SERVICE_COLLECTION)
                 .document(device_id + " " + formatter.format(date))
                 .set(log_service);
@@ -507,17 +559,6 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
             }
         });
         editDialog.show();
-//        new AlertDialog.Builder(this)
-//                .setTitle("注意事項(必做)")
-////                .setMessage("1.帳號設定把通知存取打開\n2.帳號設定可以調整首頁媒體排序喔~\n3.帳號設定選擇想要收到推播的媒體吧~")
-//                .setMessage("去帳號設定\n1.把通知存取打開\n2.問卷推播時間設定並按儲存~")
-//                .setPositiveButton("ok", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        dialog.dismiss();
-//                    }
-//                })
-//                .create().show();
     }
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @SuppressLint("NonConstantResourceId")
@@ -572,11 +613,6 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 return true;
 
             case R.id.nav_contactt :
-//                long esm_time = sharedPrefs.getLong(ESM_LAST_TIME, 0);
-//                Boolean esm_not_done = sharedPrefs.getBoolean(ESM_LAST_TIME, false);
-//                Log.d("lognewsselect", String.valueOf(esm_not_done));
-//
-//                if(esm_not_done){
                 Intent intent_esm = new Intent(context, AlarmReceiver.class);
                 intent_esm.setAction(ESM_ALARM_ACTION);
                 PendingIntent pendingIntent_esm = PendingIntent.getBroadcast(context, 77, intent_esm, 0);
@@ -589,17 +625,9 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 }else {
                     alarmManager_esm.set(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_esm);
                 }
-//                } else {
-//                    Toast.makeText(this,"目前不在填答時間",Toast.LENGTH_LONG).show();
-////                    Toast.makeText(this,"permission denied",Toast.LENGTH_LONG).show();
-//                }
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             case R.id.nav_tmp :
-//                long diary_time = sharedPrefs.getLong(DIARY_LAST_TIME, 0);
-//                Boolean diary_not_done = sharedPrefs.getBoolean(DIARY_LAST_TIME, false);
-//                Log.d("lognewsselect", String.valueOf(diary_not_done));
-//                if(diary_not_done){
                 Intent intent_diary = new Intent(context, AlarmReceiver.class);
                 intent_diary.setAction(DIARY_ALARM_ACTION);
                 PendingIntent pendingIntent_diary = PendingIntent.getBroadcast(context, 78, intent_diary, 0);

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.recoveryrecord.surveyandroid.example.sqlite.ReadingBehavior;
 
@@ -13,6 +14,7 @@ public class ReadingBehaviorDbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "reading_behavior.db";
     private static final String TABLE_NAME_READING_BEHAVIOR = "reading_behavior";
     private static final String KEY_ID = "id";
+//    private static final String KEY_UPLOAD = "upload";
     private static final String KEY_DOC_ID = "doc_id";
     private static final String KEY_DEVICE_ID = "device_id";
     private static final String KEY_USER_ID = "user_id";
@@ -49,6 +51,7 @@ public class ReadingBehaviorDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db){
         String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME_READING_BEHAVIOR + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+//                + KEY_UPLOAD + " INT,"
                 + KEY_DOC_ID + " TEXT,"
                 + KEY_DEVICE_ID + " TEXT,"
                 + KEY_USER_ID + " TEXT,"
@@ -156,10 +159,30 @@ public class ReadingBehaviorDbHelper extends SQLiteOpenHelper {
         cValues.put(KEY_FLING_RECORD, readingBehavior.getKEY_FLING_RECORD());
         cValues.put(KEY_DRAG_NUM, readingBehavior.getKEY_DRAG_NUM());
         cValues.put(KEY_DRAG_RECORD, readingBehavior.getKEY_DRAG_RECORD());
-        cValues.put(KEY_SHARE, readingBehavior.getKEY_SHARE());
+//        cValues.put(KEY_SHARE, readingBehavior.getKEY_SHARE());
         cValues.put(KEY_TIME_SERIES, readingBehavior.getKEY_TIME_SERIES());
 
         return db.update(TABLE_NAME_READING_BEHAVIOR, cValues, KEY_DOC_ID+" = ?",  new String[]{String.valueOf(readingBehavior.getKEY_DOC_ID())}) >0;
+    }
+
+    public Boolean UpdateReadingBehaviorDetailsShare(ReadingBehavior readingBehavior, String type){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cValues = new ContentValues();
+        String doc_id = "\"" +  readingBehavior.getKEY_DOC_ID() + "\"";
+        String apptype = "\"" +  type + "\"";
+        cValues.put(KEY_SHARE, apptype);
+        return db.update(TABLE_NAME_READING_BEHAVIOR, cValues, KEY_DOC_ID+" = ?",  new String[]{String.valueOf(readingBehavior.getKEY_DOC_ID())}) >0;
+    }
+
+    public Cursor getShare(ReadingBehavior readingBehavior) {
+        SQLiteDatabase db_r = this.getReadableDatabase();
+        String doc_id = "\"" +  readingBehavior.getKEY_DOC_ID() + "\"";
+        Cursor res =  db_r.rawQuery("SELECT DISTINCT rb.title, rb.share\n" +
+                        "FROM reading_behavior rb\n" +
+                        "WHERE rb.doc_id = " + doc_id + "\n" +
+                        "ORDER BY rb.in_timestamp DESC;"
+                , null );
+        return res;
     }
 
     public Cursor getReadingDataForESM(long now_timestamp) {
@@ -207,50 +230,29 @@ public class ReadingBehaviorDbHelper extends SQLiteOpenHelper {
         return res;
     }
 
-    // Get User Details
-//    public ArrayList<HashMap<String, String>> GetNotifications(){
-//
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        ArrayList<HashMap<String, String>> notificationList = new ArrayList<>();
-////        String query = "SELECT packagename, tickertext, time, notititle, notitext FROM "+ TABLE_NAME_NOTIFICATION;
-//        String query = "SELECT * FROM "+ TABLE_NAME_READING_BEHAVIOR;
-//        Cursor cursor = db.rawQuery(query,null);
-//        while (cursor.moveToNext()){
-//            HashMap<String, String> notification = new HashMap<>();
-//            notification.put("packagename",cursor.getString(cursor.getColumnIndex(KEY_NEWS_ID)));
-//            notification.put("time",cursor.getString(cursor.getColumnIndex(KEY_TIME_IN)));
-//            notification.put("tickertext",cursor.getString(cursor.getColumnIndex(KEY_TRIGGER_BY)));
-//            notification.put("notititle",cursor.getString(cursor.getColumnIndex(KEY_DISPLAY_WIDTH)));
-//            notification.put("notitext",cursor.getString(cursor.getColumnIndex(KEY_TIME_OUT)));
-//            notificationList.add(notification);
-//        }
-//        return  notificationList;
-//    }
+    public Cursor getALL() {
+        SQLiteDatabase db = this.getReadableDatabase();
+//        Cursor res =  db.rawQuery( "select * from contacts where id="+id+"", null );
+        Cursor res =  db.rawQuery( "SELECT  * FROM " + TABLE_NAME_READING_BEHAVIOR + " as tmp WHERE tmp.user_id <> 'upload';", null );
+        return res;
+    }
 
+    public void UpdateAll(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cValues = new ContentValues();
+        cValues.put(KEY_USER_ID, "upload");
+        db.update(TABLE_NAME_READING_BEHAVIOR, cValues, null, null);
 
-//    // Get User Details based on userid
-//    public ArrayList<HashMap<String, String>> GetUserByUserId(int notificationid){
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        ArrayList<HashMap<String, String>> notificationList = new ArrayList<>();
-//        String query = "SELECT packagename, tickertext, time, title, text FROM "+ TABLE_Notifications;
-//        Cursor cursor = db.query(TABLE_Notifications, new String[]{KEY_PACKAGE_NAME, KEY_TICKER_TEXT, KEY_TIME, KEY_TITLE, KEY_TEXT}, KEY_ID+ "=?",new String[]{String.valueOf(notificationid)},null, null, null, null);
-//        if (cursor.moveToNext()){
-//            HashMap<String, String> notification = new HashMap<>();
-//            notification.put("packagename",cursor.getString(cursor.getColumnIndex(KEY_PACKAGE_NAME)));
-//            notification.put("time",cursor.getString(cursor.getColumnIndex(KEY_TIME)));
-//            notification.put("tickertext",cursor.getString(cursor.getColumnIndex(KEY_TICKER_TEXT)));
-//            notification.put("title",cursor.getString(cursor.getColumnIndex(KEY_TITLE)));
-//            notification.put("text",cursor.getString(cursor.getColumnIndex(KEY_TEXT)));
-//            notificationList.add(notification);
-//        }
-//        return  notificationList;
-//    }
-//    // Delete User Details
-//    public void DeleteUser(int userid){
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        db.delete(TABLE_Notifications, KEY_ID+" = ?",new String[]{String.valueOf(userid)});
-//        db.close();
-//    }
+    }
+
+    public void deleteDb() {
+        // on below line we are creating
+        // a variable to write our database.
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from "+ TABLE_NAME_READING_BEHAVIOR);
+        db.close();
+
+    }
 
 
 }

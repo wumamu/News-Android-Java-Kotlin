@@ -11,15 +11,20 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.recoveryrecord.surveyandroid.example.DbHelper.DiaryDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.ESMDbHelper;
+import com.recoveryrecord.surveyandroid.example.DbHelper.PushNewsDbHelper;
+import com.recoveryrecord.surveyandroid.example.sqlite.Diary;
 import com.recoveryrecord.surveyandroid.example.sqlite.ESM;
 
 import java.text.SimpleDateFormat;
@@ -38,6 +43,8 @@ import androidx.preference.PreferenceManager;
 import static android.content.Context.ALARM_SERVICE;
 //import static com.recoveryrecord.surveyandroid.example.Constants.DAIRY_ALARM_ACTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.CANCEL_ALARM_ACTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_DELAY_COUNT;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.RESTART_ALARM_ACTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.CHECK_SERVICE_ACTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_DIARY_CHANNEL_ID;
@@ -98,6 +105,11 @@ import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_NOTI_T
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_SAMPLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_SCHEDULE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_SCHEDULE_SOURCE;
+import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_IN;
+import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_MEDIA;
+import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_RECEIEVE;
+import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_TITLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_ACTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_ACTION_TYPE;
 import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_COLLECTION;
@@ -134,7 +146,49 @@ public class AlarmReceiver extends BroadcastReceiver {
                 esm_name = intent.getExtras().getString(ESM_SCHEDULE_ID);
                 esm_source = intent.getExtras().getString(SCHEDULE_SOURCE);
             }
-            scheduleNotification_esm(context, getNotification_esm(context, esm_name, esm_source), 1000);
+            PushNewsDbHelper dbHandler = new PushNewsDbHelper(context.getApplicationContext());
+            Boolean exist_noti = false;
+            Cursor cursor = dbHandler.checkNotiDataForESM(Timestamp.now().getSeconds());
+            if (cursor.moveToFirst()) {
+                while(!cursor.isAfterLast()) {
+                    //returns true when cursor is at last row position
+                    exist_noti = true;
+                    break;
+                }
+                cursor.moveToNext();
+            }
+            if (!cursor.isClosed())  {
+                cursor.close();
+            }
+            if(exist_noti){
+                scheduleNotification_esm(context, getNotification_esm(context, esm_name, esm_source), 1000);
+                SharedPreferences.Editor editor = sharedPrefs.edit();
+                editor.putInt(ESM_DELAY_COUNT, 0);
+                editor.apply();
+            } else {
+                Toast.makeText(context, "暫無通知紀錄，10分鐘後重送", Toast.LENGTH_SHORT).show();
+                int my_delay_count = sharedPrefs.getInt(ESM_DELAY_COUNT, 0);
+                if(my_delay_count<3){
+                    SharedPreferences.Editor editor = sharedPrefs.edit();
+                    editor.putInt(ESM_DELAY_COUNT, my_delay_count+1);
+                    editor.apply();
+                    //delay 10 up 2 times
+                    Intent intent_esm = new Intent(context, AlarmReceiver.class);
+                    intent_esm.setAction(ESM_ALARM_ACTION);
+                    PendingIntent pendingIntent_esm = PendingIntent.getBroadcast(context, 77, intent_esm, 0);
+                    AlarmManager alarmManager_esm = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+                    Calendar cal_esm = Calendar.getInstance();
+                    cal_esm.add(Calendar.MINUTE, 10);
+                    assert alarmManager_esm != null;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        alarmManager_esm.setExact(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_esm);
+                    }else {
+                        alarmManager_esm.set(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_esm);
+                    }
+                }
+
+            }
+
         }
         if(action.equals(DIARY_ALARM_ACTION) && set_once){
             String diary_source = "NA";
@@ -150,14 +204,8 @@ public class AlarmReceiver extends BroadcastReceiver {
             Calendar cal = Calendar.getInstance();
             cal.add(Calendar.HOUR, 2);
             alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() , pendingIntent);
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//                alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() , pendingIntent);
-//            } else {
-//                alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() , pendingIntent);
-//            }
         }
         if(action.equals(SCHEDULE_ALARM_ACTION) && set_once){
-//            Log.d("AlarmReceiver", action);
             Map<String, Object> my_alarm = new HashMap<>();
             Date date = new Date(System.currentTimeMillis());
             @SuppressLint("SimpleDateFormat")
@@ -262,15 +310,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 
-
-//        db.collection(TEST_USER_COLLECTION)
-//                .document(device_id)
-//                .collection(NEWS_SERVICE_COLLECTION)
-////            .document(String.valueOf(Timestamp.now().toDate()))
-//                .document(formatter.format(date))
-//                .set(service_check);
         db.collection(NEWS_SERVICE_COLLECTION)
-//            .document(String.valueOf(Timestamp.now().toDate()))
             .document(device_id + " " + formatter.format(date))
             .set(service_check);
         add_ServiceChecker(context);
@@ -355,46 +395,37 @@ public class AlarmReceiver extends BroadcastReceiver {
         cal_diary.set(Calendar.SECOND, 0);
         if(!now_cal.before(cal_diary)){
             cal_diary.add(Calendar.HOUR, 24);
-//            Log.d("AlarmReceiver", "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-//                my_alarm.put("diary", tmp_cal.getTime());
         }
         my_alarm.put("diary", cal_diary.getTime());
         Intent intent_diary = new Intent(context, AlarmReceiver.class);
         intent_diary.setAction(DIARY_ALARM_ACTION);
-//        intent_diary.putExtra(ESM_SCHEDULE_ID, i + "_esm");
         intent_diary.putExtra(SCHEDULE_SOURCE, formatter.format(date));
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 100, intent_diary, 0);
-//        assert alarmManager != null;
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//            alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent);
-//        }else {
-//            alarmManager.set(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent);
-//        }
         alarmManager.set(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent);
 
         //esm alarm
         int max_esm = hour_interval*2/3;
         int sum = 0;
-//        Log.d("AlarmReceiver", now_cal.getTime().toString());
-        for (int i=0; i< 16; i++){
-
+        for (int i=0;; i++){
             Calendar cal_esm = Calendar.getInstance();
             cal_esm.set(Calendar.HOUR_OF_DAY, 0);
             cal_esm.set(Calendar.MINUTE, 0);
-            cal_esm.set(Calendar.SECOND, 0);
+            cal_esm.set(Calendar.MINUTE, 0);
             Random r_esm = new Random();
             int randomNumber_esm;//"配置鬧終於+sum 分鐘後
             if(i==0){
                 randomNumber_esm = r_esm.nextInt(30);
             } else {
-                randomNumber_esm = r_esm.nextInt(20) + 20;
+                randomNumber_esm = r_esm.nextInt(20);
             }
             sum+= randomNumber_esm;
             cal_esm.add(Calendar.MINUTE, sum);//"配置鬧終於+sum 分鐘後
-
             //generate same day alarm
 //            Log.d("AlarmReceiver", "before " + cal_esm.getTime().toString());
-            sum+=60;
+            sum+=80;
+            if(sum>=1440){
+                break;//24*60
+            }
             if(now_cal.before(cal_esm)){
                 if(check_esm_time_cal(cal_esm, context)){
 //                    Log.d("AlarmReceiver", "456" +  cal_esm.getTime().toString());
@@ -406,11 +437,6 @@ public class AlarmReceiver extends BroadcastReceiver {
                         intent_e.putExtra(SCHEDULE_SOURCE, formatter.format(date));
                         PendingIntent pendingIntent_e = PendingIntent.getBroadcast(context, i, intent_e, 0);
                         intentEsmArray.add(pendingIntent_e);
-//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//                            alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_e);
-//                        }else {
-//                            alarmManager.set(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_e);
-//                        }
                         alarmManager.set(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_e);
                     }
                 }
@@ -427,23 +453,11 @@ public class AlarmReceiver extends BroadcastReceiver {
                         intent_e.putExtra(SCHEDULE_SOURCE, formatter.format(date));
                         PendingIntent pendingIntent_e = PendingIntent.getBroadcast(context, i, intent_e, 0);
                         intentEsmArray.add(pendingIntent_e);
-//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//                            alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_e);
-//                        }else {
-//                            alarmManager.set(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_e);
-//                        }
                         alarmManager.set(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_e);
                     }
-
                 }
             }
-//            Log.d("AlarmReceiver", "after " + cal_esm.getTime().toString());
-
         }
-
-
-
-
         my_alarm.put(SCHEDULE_ALARM_SURVEY_START, StartHour);
         my_alarm.put(SCHEDULE_ALARM_SURVEY_END, EndHour);
         my_alarm.put(SCHEDULE_ALARM_TRIGGER_TIME, Timestamp.now().toDate());
@@ -504,17 +518,15 @@ public class AlarmReceiver extends BroadcastReceiver {
         builder.setPriority(NotificationManager.IMPORTANCE_MAX);
         builder.setCategory(Notification.CATEGORY_REMINDER);
         builder.setOngoing(true);
-//        builder.setGroup(GROUP_NEWS);
-//        builder.setGroupSummary(true);
         Bundle extras = new Bundle();
         extras.putString(DOC_ID_KEY, esm_id);
         extras.putString(NOTIFICATION_TYPE_KEY, NOTIFICATION_TYPE_VALUE_ESM);
         builder.setExtras(extras);
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-
+        //sql
         ESM myesm = new ESM();
         myesm.setKEY_DOC_ID(device_id + " " + esm_id);
         myesm.setKEY_DEVICE_ID(device_id);
@@ -524,25 +536,22 @@ public class AlarmReceiver extends BroadcastReceiver {
         myesm.setKEY_NOTI_TIMESTAMP(Timestamp.now().getSeconds());
         ESMDbHelper dbHandler = new ESMDbHelper(context.getApplicationContext());
         dbHandler.insertPushESMDetailsCreate(myesm);
-
+        //firestore
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         Map<String, Object> esm = new HashMap<>();
         esm.put(PUSH_ESM_NOTI_TIME, Timestamp.now());
         esm.put(PUSH_ESM_SAMPLE, 0);
         esm.put(PUSH_ESM_SCHEDULE_ID, esm_schedule_name);
         esm.put(PUSH_ESM_SCHEDULE_SOURCE, esm_schedule_source);
         esm.put(PUSH_ESM_DEVICE_ID, device_id);
-
-
-
         db.collection(PUSH_ESM_COLLECTION)
                 .document(device_id + " " + esm_id)
                 .set(esm);
-
         return builder.build();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void scheduleNotification_esm (Context context, Notification notification, int delay) {
+    private void scheduleNotification_esm(Context context, Notification notification, int delay) {
         Intent notificationIntent = new Intent(context, NotificationListenerESM.class);
         notificationIntent.putExtra(DEFAULT_ESM_NOTIFICATION_ID, 1 ) ;
         notificationIntent.putExtra(DEFAULT_ESM_NOTIFICATION, notification) ;
@@ -554,7 +563,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
     }
     @RequiresApi(api = Build.VERSION_CODES.N)
-    private Notification getNotification_diary (Context context, String diary_schedule_source) {
+    private Notification getNotification_diary(Context context, String diary_schedule_source) {
         Date date = new Date(System.currentTimeMillis());
         String diary_id = "";
         @SuppressLint("SimpleDateFormat")
@@ -586,15 +595,27 @@ public class AlarmReceiver extends BroadcastReceiver {
         extras.putString(DOC_ID_KEY, diary_id);
         extras.putString(NOTIFICATION_TYPE_KEY, NOTIFICATION_TYPE_VALUE_DIARY);
         builder.setExtras(extras);
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         @SuppressLint("HardwareIds")
         String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        //sql
+        Diary mydiary = new Diary();
+        mydiary.setKEY_DOC_ID(device_id + " " + diary_id);
+        mydiary.setKEY_DEVICE_ID(device_id);
+        mydiary.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+        mydiary.setKEY_DIARY_SCHEDULE_SOURCE(diary_schedule_source);
+        mydiary.setKEY_NOTI_TIMESTAMP(Timestamp.now().getSeconds());
+        DiaryDbHelper dbHandler = new DiaryDbHelper(context.getApplicationContext());
+        dbHandler.insertPushDiaryDetailsCreate(mydiary);
+        //firestore
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         Map<String, Object> diary = new HashMap<>();
         diary.put(PUSH_DIARY_NOTI_TIME, Timestamp.now());
-        diary.put(PUSH_DIARY_DONE, 0);
-//        diary.put(PUSH_DIARY_TRIGGER_BY, PUSH_DIARY_TRIGGER_BY_ALARM);
+//        diary.put(PUSH_DIARY_DONE, 0);
         diary.put(PUSH_DIARY_SCHEDULE_SOURCE, diary_schedule_source);
         diary.put(PUSH_DIARY_DEVICE_ID, device_id);
+        diary.put(PUSH_DIARY_USER_ID, sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
         db.collection(PUSH_DIARY_COLLECTION)
                 .document(device_id + " " + diary_id)
                 .set(diary);

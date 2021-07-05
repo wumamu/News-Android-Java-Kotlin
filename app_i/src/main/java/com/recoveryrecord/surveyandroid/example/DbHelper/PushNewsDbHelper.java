@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.widget.Toast;
 
 import com.recoveryrecord.surveyandroid.example.sqlite.PushNews;
 
@@ -13,6 +14,7 @@ public class PushNewsDbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "push_news.db";
     private static final String TABLE_NAME_PUSH_NEWS = "push_news";
     private static final String KEY_ID = "id";
+//    private static final String KEY_UPLOAD = "upload";
     private static final String KEY_DOC_ID = "doc_id";
     private static final String KEY_DEVICE_ID = "device_id";
     private static final String KEY_USER_ID = "user_id";
@@ -28,6 +30,7 @@ public class PushNewsDbHelper extends SQLiteOpenHelper {
     private static final String KEY_TYPE = "type";
     private static final String KEY_CLICK = "click";
 
+
     public PushNewsDbHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -35,6 +38,7 @@ public class PushNewsDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db){
         String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME_PUSH_NEWS + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+//                + KEY_UPLOAD + " INT,"
                 + KEY_DOC_ID + " TEXT,"
                 + KEY_DEVICE_ID + " TEXT,"
                 + KEY_USER_ID + " TEXT,"
@@ -68,6 +72,7 @@ public class PushNewsDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         //Create a new map of values, where column names are the keys
         ContentValues cValues = new ContentValues();
+//        cValues.put(KEY_UPLOAD, 0);
         cValues.put(KEY_DOC_ID, pushnews.getKEY_DOC_ID());
         cValues.put(KEY_DEVICE_ID, pushnews.getKEY_DEVICE_ID());
         cValues.put(KEY_USER_ID, pushnews.getKEY_USER_ID());
@@ -111,7 +116,7 @@ public class PushNewsDbHelper extends SQLiteOpenHelper {
         db.update(TABLE_NAME_PUSH_NEWS, cValues, KEY_DOC_ID + " = ?", new String[]{String.valueOf(pushnews.getKEY_DOC_ID())});
     }
 
-    public Cursor getNotiDataForESM(long now_timestamp) {
+    public Cursor getNotiDataForESM(long now_timestamp) {//45min
         SQLiteDatabase db = this.getReadableDatabase();
 //        Cursor res =  db.rawQuery( "select * from contacts where id="+id+"", null );
         Cursor res =  db.rawQuery( "SELECT tmp.news_id, tmp.title, tmp.receieve_timestamp, tmp.media\n" +
@@ -130,6 +135,51 @@ public class PushNewsDbHelper extends SQLiteOpenHelper {
                         "                ORDER BY  tmp.click ASC, tmp.receieve_timestamp DESC;"
         , null );
         return res;
+    }
+
+    public Cursor checkNotiDataForESM(long now_timestamp) {//30min
+        SQLiteDatabase db = this.getReadableDatabase();
+//        Cursor res =  db.rawQuery( "select * from contacts where id="+id+"", null );
+        Cursor res =  db.rawQuery( "SELECT tmp.news_id, tmp.title, tmp.receieve_timestamp, tmp.media\n" +
+                        "                FROM\n" +
+                        "                        (\n" +
+                        "                                SELECT DISTINCT pn.news_id,\n" +
+                        "                                pn.title,\n" +
+                        "                                pn.media,\n" +
+                        "                                pn.receieve_timestamp,\n" +
+                        "                                pn.click,\n" +
+                        "                                (" + now_timestamp + "-pn.receieve_timestamp) as diff\n" +
+                        "                                FROM push_news pn\n" +
+                        "                                WHERE pn.type = 'target add'" +
+                        "                        ) as tmp\n" +
+                        "                WHERE tmp.diff <= 1800\n" +
+                        "                ORDER BY  tmp.click ASC, tmp.receieve_timestamp DESC;"
+                , null );
+        return res;
+    }
+
+    public Cursor getALL() {
+        SQLiteDatabase db = this.getReadableDatabase();
+//        Cursor res =  db.rawQuery( "select * from contacts where id="+id+"", null );
+        Cursor res =  db.rawQuery( "SELECT  * FROM " + TABLE_NAME_PUSH_NEWS + " as tmp WHERE tmp.user_id <> 'upload';", null );
+        return res;
+    }
+
+    public void UpdateAll(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cValues = new ContentValues();
+        cValues.put(KEY_USER_ID, "upload");
+        db.update(TABLE_NAME_PUSH_NEWS, cValues, null, null);
+
+    }
+
+    public void deleteDb() {
+        // on below line we are creating
+        // a variable to write our database.
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from "+ TABLE_NAME_PUSH_NEWS);
+        db.close();
+
     }
 
 }

@@ -28,16 +28,16 @@
     {
       "id": "recieve_moment_1",
       "header": "Question 3",
-      "question": "請問您在「該則通知出現當下」(抵達時間)，約有多少時間可以閱讀新聞？",
+      "question": "請問您在「該則通知出現當下」(抵達時間)，約有多少時間可以閱讀新聞？(覺得沒空請填0)",
       "question_type": "single_text_field",
       "label": "分鐘",
       "input_type": "number",
       "max_chars": "2",
       "validations": [
         {
-          "operation": "greater than",
-          "value": 1,
-          "on_fail_message": "time must be at least 1"
+          "operation": "greater than or equal to",
+          "value": 0,
+          "on_fail_message": "time must be at least 0"
         },
         {
           "operation": "less than",
@@ -257,16 +257,16 @@
     {
       "id": "read_seen_2",
       "header": "Question 10",
-      "question": "請問您在「看到該則通知當下」，約有多少時間可以閱讀新聞？",
+      "question": "請問您在「看到該則通知當下」，約有多少時間可以閱讀新聞？(覺得沒空請填0)",
       "question_type": "single_text_field",
       "label": "分鐘",
       "input_type": "number",
       "max_chars": "2",
       "validations": [
         {
-          "operation": "greater than",
-          "value": 1,
-          "on_fail_message": "time must be at least 1"
+          "operation": "greater than or equal to",
+          "value": 0,
+          "on_fail_message": "time must be at least 0"
         },
         {
           "operation": "less than",
@@ -566,16 +566,16 @@
     {
       "id": "read_moment_3",
       "header": "Question 18",
-      "question": "請問您「閱讀該篇新聞當下」約有多少時間可以「閱讀新聞」？",
+      "question": "請問您「閱讀該篇新聞當下」約有多少時間可以「閱讀新聞」？(覺得沒空請填0)",
       "question_type": "single_text_field",
       "label": "分鐘",
       "input_type": "number",
       "max_chars": "2",
       "validations": [
         {
-          "operation": "greater than",
-          "value": 1,
-          "on_fail_message": "time must be at least 1"
+          "operation": "greater than or equal to",
+          "value": 0,
+          "on_fail_message": "time must be at least 0"
         },
         {
           "operation": "less than",
@@ -1571,16 +1571,16 @@
     {
       "id": "not_read_recieve_moment_1",
       "header": "Question 44",
-      "question": "請問您在「該則通知出現當下」(抵達時間)，約有多少時間可以「閱讀新聞」？",
+      "question": "請問您在「該則通知出現當下」(抵達時間)，約有多少時間可以「閱讀新聞」？(覺得沒空請填0)",
       "question_type": "single_text_field",
       "label": "分鐘",
       "input_type": "number",
       "max_chars": "2",
       "validations": [
         {
-          "operation": "greater than",
-          "value": 1,
-          "on_fail_message": "time must be at least 1"
+          "operation": "greater than or equal to",
+          "value": 0,
+          "on_fail_message": "time must be at least 0"
         },
         {
           "operation": "less than",
@@ -1797,16 +1797,16 @@
     {
       "id": "not_read_seen_2",
       "header": "Question 51",
-      "question": "請問您在「看到該則通知當下」，約有多少時間可以閱讀新聞？",
+      "question": "請問您在「看到該則通知當下」，約有多少時間可以閱讀新聞？(覺得沒空請填0)",
       "question_type": "single_text_field",
       "label": "分鐘",
       "input_type": "number",
       "max_chars": "2",
       "validations": [
         {
-          "operation": "greater than",
-          "value": 1,
-          "on_fail_message": "time must be at least 1"
+          "operation": "greater than or equal to",
+          "value": 0,
+          "on_fail_message": "time must be at least 0"
         },
         {
           "operation": "less than",
@@ -2292,16 +2292,16 @@
     {
       "id": "miss_recieve_moment_1",
       "header": "Question 64",
-      "question": "請問您在「該則通知出現當下」(抵達時間)，約有多少時間可以「閱讀新聞」？\n(接下來，請您回想該則新聞通知出現當下狀態(抵達時間)進行回答。)",
+      "question": "請問您在「該則通知出現當下」(抵達時間)，約有多少時間可以「閱讀新聞」？(覺得沒空請填0)\n(接下來，請您回想該則新聞通知出現當下狀態(抵達時間)進行回答。)",
       "question_type": "single_text_field",
       "label": "分鐘",
       "input_type": "number",
       "max_chars": "2",
       "validations": [
         {
-          "operation": "greater than",
-          "value": 1,
-          "on_fail_message": "time must be at least 1"
+          "operation": "greater than or equal to",
+          "value": 0,
+          "on_fail_message": "time must be at least 0"
         },
         {
           "operation": "less than",
@@ -2389,7 +2389,7 @@
     {
       "id": "miss_recieve_moment_5",
       "header": "Question 68",
-      "question": "對我來說，這是個可以被通知打擾的時機，請選擇您對此句描述的感受為何。",
+      "question": "對我來說，這是個適合閱讀新聞的時機。請選擇您對此句描述的感受。",
       "question_type": "segment_select",
       "low_tag": "非常不同意",
       "high_tag": "非常同意",

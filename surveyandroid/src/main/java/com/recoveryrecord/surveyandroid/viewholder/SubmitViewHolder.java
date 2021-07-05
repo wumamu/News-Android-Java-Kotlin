@@ -27,7 +27,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.recoveryrecord.surveyandroid.AnswerProvider;
 import com.recoveryrecord.surveyandroid.R;
 import com.recoveryrecord.surveyandroid.SubmitSurveyHandler;
+import com.recoveryrecord.surveyandroid.example.DbHelper.DiaryDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.ESMDbHelper;
+import com.recoveryrecord.surveyandroid.example.sqlite.Diary;
 import com.recoveryrecord.surveyandroid.example.sqlite.ESM;
 import com.recoveryrecord.surveyandroid.question.QuestionsWrapper.SubmitData;
 
@@ -119,8 +121,12 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
     String SAMPLE_MEDIA = "sample_media";
     String SAMPLE_RECEIEVE = "sample_receieve";
     String SAMPLE_IN = "sample_in";
-    String EXIST_READ = "exist_read";
+    String EXIST_READ = "exist_read";//esm
 
+    String EXIST_ESM = "exist_esm";//diary
+
+    List<String> in_re = new ArrayList<>();
+    List<String> op_re = new ArrayList<>();
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     public SubmitViewHolder(@NonNull View itemView) {
@@ -372,13 +378,16 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                     editor.putInt(DIARY_DAY_DONE_PREFIX + day_index, diary_day_done+1);
                     editor.apply();
                     final Timestamp current = Timestamp.now();
-//                    final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(PUSH_DIARY_COLLECTION).document(diary_id);
                     final DocumentReference rbRef = db.collection(PUSH_DIARY_COLLECTION).document(device_id + " " + diary_id);
+                    Boolean exist_esm = sharedPrefs.getBoolean(EXIST_ESM, false);
                     String diary_option_string_list = sharedPrefs.getString(DIARY_READ_HISTORY_CANDIDATE, ZERO_RESULT_STRING);
                     List<String> diary_option_array = new ArrayList<String>(Arrays.asList(diary_option_string_list.split("#")));
                     //DiaryLoadingPage
                     //{news_title}\n{news_time}\n{news_situation}\n{news_place}\n{news_id}#
-                    if(!diary_option_string_list.equals(ZERO_RESULT_STRING)){
+
+                    in_re.clear();
+                    op_re.clear();
+                    if(exist_esm){
                         try {
                             assert result_json != null;
                             JSONObject jsonRootObject = new JSONObject(result_json);
@@ -391,9 +400,15 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                                         List<String> data_array = new ArrayList<String>(Arrays.asList(diary_option_array.get(j).split("\n")));
                                         //把標題分出來
                                         if(data_array.get(0).equals(view_array.get(0))){
-                                            target_inopportune_news_id = data_array.get(4);
-                                            target_inopportune_title = data_array.get(0);
-                                            target_inopportune = diary_option_array.get(j);
+                                            in_re.add(data_array.get(4));//id
+                                            in_re.add(data_array.get(0));//title
+                                            in_re.add(data_array.get(1));//in time
+                                            in_re.add(data_array.get(2));//situation
+                                            in_re.add(data_array.get(3));//place
+
+//                                            target_inopportune_news_id = data_array.get(4);
+//                                            target_inopportune_title = data_array.get(0);
+//                                            target_inopportune = diary_option_array.get(j);
                                             break;
                                         }
                                     }
@@ -406,9 +421,14 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                                     for (int j=0; j<diary_option_array.size(); j++){
                                         List<String> data_array = new ArrayList<String>(Arrays.asList(diary_option_array.get(j).split("\n")));
                                         if(data_array.get(0).equals(view_array.get(0))){
-                                            target_opportune_news_id = data_array.get(4);
-                                            target_opportune_title = data_array.get(0);
-                                            target_opportune = diary_option_array.get(j);
+                                            op_re.add(data_array.get(4));//id
+                                            op_re.add(data_array.get(0));//title
+                                            op_re.add(data_array.get(1));//in time
+                                            op_re.add(data_array.get(2));//situation
+                                            op_re.add(data_array.get(3));//place
+//                                            target_opportune_news_id = data_array.get(4);
+//                                            target_opportune_title = data_array.get(0);
+//                                            target_opportune = diary_option_array.get(j);
                                             break;
                                         }
                                     }
@@ -418,7 +438,15 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                             e.printStackTrace();
                         }
                     }
-
+                    //sqlite
+                    Diary mydiary = new Diary();
+                    mydiary.setKEY_DOC_ID(device_id + " " + diary_id);
+                    mydiary.setKEY_SUBMIT_TIMESTAMP(current.getSeconds());
+                    mydiary.setKEY_RESULT(result_json);
+                    mydiary.setKEY_INOPPORTUNTE_RESULT(String.join("#", in_re));
+                    mydiary.setKEY_OPPORTUNTE_RESULT(String.join("#", op_re));
+                    DiaryDbHelper dbHandler = new DiaryDbHelper((Activity)v.getContext());
+                    dbHandler.UpdatePushDiaryDetailsSubmit(mydiary);
 
                     rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
@@ -426,15 +454,17 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                             if (task.isSuccessful()) {
                                 DocumentSnapshot document = task.getResult();
                                 if (document.exists()) {
-                                    rbRef.update(PUSH_DIARY_DONE, 1,
+                                    rbRef.update(
+//                                            PUSH_DIARY_DONE, 1,
                                             PUSH_DIARY_SUBMIT_TIME, current,
                                             PUSH_DIARY_RESULT, result_json,
-                                            PUSH_DIARY_INOPPORTUNE_TARGET, target_inopportune,
-                                            PUSH_DIARY_INOPPORTUNE_TARGET_TITLE, target_inopportune_title,
-                                            PUSH_DIARY_INOPPORTUNE_TARGET_NEWS_ID, target_inopportune_news_id,
-                                            PUSH_DIARY_OPPORTUNE_TARGET, target_opportune,
-                                            PUSH_DIARY_OPPORTUNE_TARGET_TITLE, target_opportune_title,
-                                            PUSH_DIARY_OPPORTUNE_TARGET_NEWS_ID, target_opportune_news_id)//another field
+                                            PUSH_DIARY_INOPPORTUNE_TARGET, in_re,
+//                                            PUSH_DIARY_INOPPORTUNE_TARGET_TITLE, target_inopportune_title,
+//                                            PUSH_DIARY_INOPPORTUNE_TARGET_NEWS_ID, target_inopportune_news_id,
+                                            PUSH_DIARY_OPPORTUNE_TARGET, op_re
+//                                            PUSH_DIARY_OPPORTUNE_TARGET_TITLE, target_opportune_title,
+//                                            PUSH_DIARY_OPPORTUNE_TARGET_NEWS_ID, target_opportune_news_id
+                                             )//another field
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {

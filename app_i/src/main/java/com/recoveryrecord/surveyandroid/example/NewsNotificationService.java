@@ -93,7 +93,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_NOTIFICAT
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_NOTI_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_PUBDATE;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_SELECTION;
+//import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_SELECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_TITLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_TYPE;
 import static com.recoveryrecord.surveyandroid.example.Constants.SERVICE_CHECKER_INTERVAL;
@@ -222,12 +222,6 @@ public class NewsNotificationService extends Service {
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 
-//        db.collection(TEST_USER_COLLECTION)
-//                .document(device_id)
-//                .collection(NEWS_SERVICE_COLLECTION)
-////                .document(String.valueOf(Timestamp.now().toDate()))
-//                .document(formatter.format(date))
-//                .set(service_check);
         db.collection(NEWS_SERVICE_COLLECTION)
 //                .document(String.valueOf(Timestamp.now().toDate()))
                 .document(device_id + " " + formatter.format(date))
@@ -254,10 +248,6 @@ public class NewsNotificationService extends Service {
                             switch (dc.getType()) {
                                 case ADDED:
                                     //add record
-//                                    Date date = new Date(System.currentTimeMillis());
-//                                    @SuppressLint("SimpleDateFormat")
-//                                    SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-//                                    String doc_name = device_id + " " + formatter.format(date);
                                     Map<String, Object> record_noti = new HashMap<>();
                                     String news_id = "", media = "", title = "", doc_id = "";
                                     PushNews myPushNews = new PushNews();//sqlite//add new to db
@@ -268,6 +258,35 @@ public class NewsNotificationService extends Service {
                                             media  = dc.getDocument().getString(COMPARE_RESULT_MEDIA);
                                             title = dc.getDocument().getString(COMPARE_RESULT_NEW_TITLE);
                                             doc_id = dc.getDocument().getId();
+                                            switch (media) {
+                                                case "cna":
+                                                    media = "中央社";
+                                                    break;
+                                                case "chinatimes":
+                                                    media = "中時";
+                                                    break;
+                                                case "cts":
+                                                    media = "華視";
+                                                    break;
+                                                case "ebc":
+                                                    media = "東森";
+                                                    break;
+                                                case "ltn":
+                                                    media = "自由時報";
+                                                    break;
+                                                case "storm":
+                                                    media = "風傳媒";
+                                                    break;
+                                                case "udn":
+                                                    media = "聯合";
+                                                    break;
+                                                case "ettoday":
+                                                    media = "ettoday";
+                                                    break;
+                                                case "setn":
+                                                    media = "三立";
+                                                    break;
+                                            }
                                             scheduleNotification(getNotification(news_id, media, title), 1000 );
                                             Log.d("lognewsselect", "doc id" + doc_id);
                                             record_noti.put(PUSH_NEWS_TYPE, "target add");
@@ -296,6 +315,9 @@ public class NewsNotificationService extends Service {
                                     record_noti.put(PUSH_NEWS_DEVICE_ID,  device_id);
                                     record_noti.put(PUSH_NEWS_USER_ID,  sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
 
+                                    db.collection(PUSH_NEWS_COLLECTION)
+                                            .document(device_id + " " + dc.getDocument().getString(COMPARE_RESULT_ID))
+                                            .set(record_noti);
 
                                     myPushNews.setKEY_DOC_ID(device_id + " " + dc.getDocument().getString(COMPARE_RESULT_ID));
                                     myPushNews.setKEY_DEVICE_ID(device_id);
@@ -309,9 +331,7 @@ public class NewsNotificationService extends Service {
                                     PushNewsDbHelper dbHandler = new PushNewsDbHelper(getApplicationContext());
                                     dbHandler.insertPushNewsDetailsCreate(myPushNews);
 
-                                    db.collection(PUSH_NEWS_COLLECTION)
-                                            .document(device_id + " " + dc.getDocument().getString(COMPARE_RESULT_ID))
-                                            .set(record_noti);
+
 
                                     //delete
                                     db.collection(TEST_USER_COLLECTION)

@@ -25,7 +25,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.recoveryrecord.surveyandroid.Answer;
 import com.recoveryrecord.surveyandroid.R;
 import com.recoveryrecord.surveyandroid.condition.CustomConditionHandler;
+import com.recoveryrecord.surveyandroid.example.DbHelper.DiaryDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.ESMDbHelper;
+import com.recoveryrecord.surveyandroid.example.sqlite.Diary;
 import com.recoveryrecord.surveyandroid.example.sqlite.ESM;
 import com.recoveryrecord.surveyandroid.example.sqlite.NewsCompareObj;
 
@@ -154,6 +156,12 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 }
             });
         } else if(is_diary){
+            Diary mydiary = new Diary();
+            mydiary.setKEY_DOC_ID(device_id + " " + esm_id);
+            mydiary.setKEY_OPEN_TIMESTAMP(Timestamp.now().getSeconds());
+            DiaryDbHelper dbHandler = new DiaryDbHelper(getApplicationContext());
+            dbHandler.UpdatePushDiaryDetailsOpen(mydiary);
+
             final DocumentReference rbRef = db.collection(PUSH_DIARY_COLLECTION).document(device_id + " " + diary_id);
             rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -365,6 +373,12 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 }
             });
         } else if(is_diary){
+            Diary mydiary = new Diary();
+            mydiary.setKEY_DOC_ID(device_id + " " + esm_id);
+            mydiary.setKEY_CLOSE_TIMESTAMP(Timestamp.now().getSeconds());
+            DiaryDbHelper dbHandler = new DiaryDbHelper(getApplicationContext());
+            dbHandler.UpdatePushDiaryDetailsClose(mydiary);
+
 
             final DocumentReference rbRef = db.collection(PUSH_DIARY_COLLECTION).document(device_id + " " + diary_id);
             rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -403,7 +417,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
         JSONObject jsonRootObject = new JSONObject(loadJSONFromAsset("test.json"));
         JSONArray jsonQuestionObject = jsonRootObject.optJSONArray("questions");
         final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String my_news_id = sharedPrefs.getString(SAMPLE_ID, "NA");
+//        String my_news_id = sharedPrefs.getString(SAMPLE_ID, "NA");
         String my_title = sharedPrefs.getString(SAMPLE_TITLE, "NA");
         String my_media = sharedPrefs.getString(SAMPLE_MEDIA, "NA");
         String my_re = sharedPrefs.getString(SAMPLE_RECEIEVE, "NA");
@@ -415,11 +429,11 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 continue;
             }
             if(one.optString("id").equals("recieve_moment_1")){
-                one.putOpt("question", "請問您在「該則通知出現當下」" + my_re + "，約有多少時間可以閱讀新聞？");
+                one.putOpt("question", "請問您在「該則通知出現當下」" + my_re + "，約有多少時間可以閱讀新聞？(覺得沒空請填0)");
                 continue;
             }
             if(one.optString("id").equals("recieve_moment_2")){
-                one.putOpt("question", "請問您在「該則通知出現當下」" + my_re + "，約有多少時間可以閱讀新聞？");
+                one.putOpt("question", "在「該則通知出現當下」" + my_re + "，您是否正在從事以下活動？");
                 continue;
             }
             if(one.optString("id").equals("recieve_moment_3")){
@@ -443,7 +457,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 continue;
             }
             if(one.optString("id").equals("not_read_recieve_moment_1")){
-                one.putOpt("question", "請問您在「該則通知出現當下」" + my_re + "，約有多少時間可以「閱讀新聞」？");
+                one.putOpt("question", "請問您在「該則通知出現當下」" + my_re + "，約有多少時間可以「閱讀新聞」？(覺得沒空請填0)");
                 continue;
             }
             if(one.optString("id").equals("not_read_recieve_moment_2")){
@@ -459,7 +473,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 continue;
             }
             if(one.optString("id").equals("miss_recieve_moment_1")){
-                one.putOpt("question", "請問您在「該則通知出現當下」" + my_re + "，約有多少時間可以「閱讀新聞」？");
+                one.putOpt("question", "請問您在「該則通知出現當下」" + my_re + "，約有多少時間可以「閱讀新聞」？(覺得沒空請填0)\n(接下來，請您回想該則新聞通知出現當下狀態(抵達時間)進行回答。)");
                 continue;
             }
             if(one.optString("id").equals("miss_recieve_moment_2")){

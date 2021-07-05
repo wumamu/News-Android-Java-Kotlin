@@ -24,7 +24,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TARGET_TITLE;
+//import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TARGET_TITLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_OUT_TIME;

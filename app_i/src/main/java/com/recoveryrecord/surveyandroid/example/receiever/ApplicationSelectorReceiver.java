@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -14,10 +15,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.recoveryrecord.surveyandroid.example.DbHelper.ReadingBehaviorDbHelper;
+import com.recoveryrecord.surveyandroid.example.sqlite.ReadingBehavior;
 
 import java.util.List;
 import java.util.Objects;
@@ -41,8 +45,6 @@ public class ApplicationSelectorReceiver extends BroadcastReceiver {
             doc_date = intent.getExtras().getString("doc_date");
             share_field = intent.getExtras().getString("share_field");
             Log.d("log: device_id", intent.getExtras().getString("device_id"));
-//            Log.d("log: doc_name", intent.getExtras().getString("doc_date"));
-//            Log.d("log: index", intent.getExtras().getString("0"));
         }
 
         for (String key : Objects.requireNonNull(intent.getExtras()).keySet()) {
@@ -51,13 +53,27 @@ public class ApplicationSelectorReceiver extends BroadcastReceiver {
                 PackageManager packageManager = context.getPackageManager();
                 assert componentInfo != null;
                 final String appName = (String) packageManager.getApplicationLabel(packageManager.getApplicationInfo(componentInfo.getPackageName(), PackageManager.GET_META_DATA));
-                Log.d("log: Selected App Name", appName);
+//                Log.d("log: Selected App Name", appName);
+
+                ReadingBehavior myReadingBehavior = new ReadingBehavior();
+                myReadingBehavior.setKEY_DOC_ID(device_id + " " + doc_time);
+                ReadingBehaviorDbHelper dbHandler = new ReadingBehaviorDbHelper(context.getApplicationContext());
+                Cursor cursor = dbHandler.getShare(myReadingBehavior);
+                String tmp_share = "";
+                if (cursor.moveToFirst()) {
+                    tmp_share = cursor.getString(cursor.getColumnIndex("share"));
+                    if(tmp_share.equals("NA")){
+                        tmp_share = "";
+                    }
+                }
+                if (!cursor.isClosed())  {
+                    cursor.close();
+                }
+                dbHandler.UpdateReadingBehaviorDetailsShare(myReadingBehavior, tmp_share + "#" + appName);
+
+
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
-//                final DocumentReference rbRef = db.collection(Build.ID).document(doc_date).collection("reading_behaviors").document(doc_time);
-//                final DocumentReference rbRef = db.collection("test_users").document(device_id).collection("reading_behaviors").document(doc_time);
                 final DocumentReference rbRef = db.collection(READING_BEHAVIOR_COLLECTION).document(device_id + " " + doc_time);
-//                rbRef.update("share", FieldValue.arrayRemove(share_field));
-//                rbRef.update("share", FieldValue.arrayUnion(share_field + " " + appName));
                 rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {

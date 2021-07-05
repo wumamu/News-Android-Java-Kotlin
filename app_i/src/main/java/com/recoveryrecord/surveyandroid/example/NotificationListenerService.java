@@ -18,8 +18,10 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import com.google.firebase.Timestamp;
+import com.recoveryrecord.surveyandroid.example.DbHelper.DiaryDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.ESMDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.PushNewsDbHelper;
+import com.recoveryrecord.surveyandroid.example.sqlite.Diary;
 import com.recoveryrecord.surveyandroid.example.sqlite.ESM;
 import com.recoveryrecord.surveyandroid.example.sqlite.PushNews;
 import com.recoveryrecord.surveyandroid.example.sqlite.ReadingBehavior;
@@ -224,10 +226,14 @@ public class NotificationListenerService extends android.service.notification.No
                         int day_index = calendar.get(Calendar.DAY_OF_YEAR);
                         int diary_sum = sharedPrefs.getInt(DIARY_PUSH_TOTAL, 0);
                         int diary_day_sum = sharedPrefs.getInt(DIARY_DAY_PUSH_PREFIX + day_index, 0);
-//                        editor.putBoolean(DIARY_LAST_TIME, true);
                         editor.putInt(DIARY_PUSH_TOTAL, diary_sum + 1);
                         editor.putInt(DIARY_DAY_PUSH_PREFIX + day_index, diary_day_sum + 1);
                         editor.apply();
+                        Diary mydiary = new Diary();
+                        mydiary.setKEY_DOC_ID(doc_id);
+                        mydiary.setKEY_RECEIEVE_TIMESTAMP(Timestamp.now().getSeconds());;
+                        DiaryDbHelper dbHandler = new DiaryDbHelper(getApplicationContext());
+                        dbHandler.UpdatePushDiaryDetailsReceieve(mydiary);
                         break;
                     }
                     default: {//service
@@ -497,6 +503,11 @@ public class NotificationListenerService extends android.service.notification.No
                         remove_type_field = PUSH_DIARY_REMOVE_TYPE;
                         doc_id = device_id + " " + doc_id;
                         mark = true;
+                        Diary mydiary = new Diary();
+                        mydiary.setKEY_DOC_ID(doc_id);
+                        mydiary.setKEY_RECEIEVE_TIMESTAMP(Timestamp.now().getSeconds());;
+                        DiaryDbHelper dbHandler = new DiaryDbHelper(getApplicationContext());
+                        dbHandler.UpdatePushESMDetailsRemove(mydiary);
                         break;
                     }
 

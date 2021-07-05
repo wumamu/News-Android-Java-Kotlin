@@ -4,6 +4,7 @@ package com.recoveryrecord.surveyandroid.example;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,10 +25,12 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.recoveryrecord.surveyandroid.example.DbHelper.DiaryDbHelper;
+import com.recoveryrecord.surveyandroid.example.DbHelper.ESMDbHelper;
+import com.recoveryrecord.surveyandroid.example.sqlite.Diary;
+import com.recoveryrecord.surveyandroid.example.sqlite.ESM;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,16 +40,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_EXIST_ESM_SAMPLE;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_LAST_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_READ_HISTORY_CANDIDATE;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_TARGET_RANGE;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_EXIST_READ_SAMPLE;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TARGET_RANGE;
+import static com.recoveryrecord.surveyandroid.example.Constants.EXIST_ESM;
 import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_DIARY;
-import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_ESM;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_OPTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_COLLECTION;
@@ -55,15 +55,9 @@ import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_NOTI_T
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_READ_EXIST;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_SAMPLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_SAMPLE_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TARGET_IN_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TARGET_NEWS_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TARGET_PLACE;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TARGET_SITUATION;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TARGET_TITLE;
 //import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TARGET_TITLE_DIARY;
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_IN_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.SURVEY_PAGE_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.ZERO_RESULT_STRING;
 
 
@@ -74,13 +68,15 @@ public class DiaryLoadingPageActivity extends AppCompatActivity {
     String diary_id = "", type ="";
     Boolean exist_esm_sample = false;
 //    TextView who;
-    List<String> diary_option_array = new ArrayList<>();
-    List<String> diary_option_array_server = new ArrayList<>();
+    List<String> esm_query = new ArrayList<>();
+//    List<String> diary_option_array_server = new ArrayList<>();
     private ProgressBar pgsBar;
     private int i = 0;
     private TextView txtView;
     private Handler hdlr = new Handler();
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+
+    Timestamp my_time;
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,12 +97,15 @@ public class DiaryLoadingPageActivity extends AppCompatActivity {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putString(DIARY_READ_HISTORY_CANDIDATE, ZERO_RESULT_STRING);
-//        editor.putBoolean(DIARY_LAST_TIME, false);
+        editor.putBoolean(EXIST_ESM, false);
         editor.apply();
 
-        select_news_title_candidate();
+        my_time = Timestamp.now();
+        sql_query_esm();
+//        select_news_title_candidate();
         button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 openDiary();
@@ -145,20 +144,67 @@ public class DiaryLoadingPageActivity extends AppCompatActivity {
         }).start();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void sql_query_esm() {
+        ESMDbHelper dbHandler = new ESMDbHelper(getApplicationContext());
+        esm_query.clear();
+        Cursor cursor = dbHandler.getNotiDataForDiary(my_time.getSeconds());
+        if (cursor.moveToFirst()) {
+            while(!cursor.isAfterLast()) {
+                String noti_read_news_id = cursor.getString(cursor.getColumnIndex("noti_read_news_id"));
+                String noti_read_title = cursor.getString(cursor.getColumnIndex("noti_read_title"));
+                String noti_read_in_time = cursor.getString(cursor.getColumnIndex("noti_read_in_time"));
+                String noti_read_situation = cursor.getString(cursor.getColumnIndex("noti_read_situation"));
+                String noti_read_place = cursor.getString(cursor.getColumnIndex("noti_read_place"));
 
+                noti_read_title = noti_read_title.replace("\n", "");
+                noti_read_situation = noti_read_situation.replace("\n", "");
+                noti_read_place = noti_read_place.replace("\n", "");
+                if(!noti_read_news_id.equals("NA")){
+                    esm_query.add(noti_read_title + "\n進入時間: " + noti_read_in_time + "\n當下活動: " + noti_read_situation + "\n地點: " + noti_read_place + "\n" + noti_read_news_id);
+                    exist_esm_sample = true;
+//                    break;
+                }
+                cursor.moveToNext();
+            }
+        }
+        if (!cursor.isClosed())  {
+            cursor.close();
+        }
+        if(exist_esm_sample){
+//            String title_array = "";
+//            for(int i = 0; i< esm_query.size(); i++){
+//                title_array+= esm_query.get(i) + "#";
+//            }
+            SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editor = sharedPrefs.edit();
+            editor.putString(DIARY_READ_HISTORY_CANDIDATE, String.join("#", esm_query));
+            editor.putBoolean(EXIST_ESM, true);
+            editor.apply();
+        }
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void openDiary() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        @SuppressLint("HardwareIds")
+        String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+
         Intent intent_diary = new Intent();
         intent_diary.setClass(this, SurveyActivity.class);
         intent_diary.putExtra(SURVEY_PAGE_ID, diary_id);//******************
         intent_diary.putExtra(NOTIFICATION_TYPE_KEY, NOTIFICATION_TYPE_VALUE_DIARY);
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-//        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-//        String diary_option = sharedPrefs.getString(DIARY_READ_HISTORY_CANDIDATE, ZERO_RESULT_STRING);
-//        final List<String> diary_option_array = new ArrayList<String>(Arrays.asList(diary_option.split("#")));
-        @SuppressLint("HardwareIds")
-        String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        Diary mydiary = new Diary();
+        mydiary.setKEY_DOC_ID(device_id + " " + diary_id);
+        mydiary.setKEY_ESM_RESULT_SAMPLE(String.join("#", esm_query));
+        mydiary.setKEY_DIARY_SAMPLE_TIME(my_time.getSeconds());
+        DiaryDbHelper dbHandler_d = new DiaryDbHelper(getApplicationContext());
+        dbHandler_d.UpdatePushDiaryDetailsClick(mydiary);
+
+
         if (!diary_id.equals("")){
-//            final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(PUSH_DIARY_COLLECTION).document(diary_id);
             final DocumentReference rbRef = db.collection(PUSH_DIARY_COLLECTION).document(device_id + " " + diary_id);
             rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -167,7 +213,7 @@ public class DiaryLoadingPageActivity extends AppCompatActivity {
                         DocumentSnapshot document = task.getResult();
                         assert document != null;
                         if (document.exists()) {
-                            rbRef.update(PUSH_DIARY_OPTION, diary_option_array, DIARY_EXIST_ESM_SAMPLE, exist_esm_sample)//another field
+                            rbRef.update(PUSH_DIARY_OPTION, esm_query)//another field
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
@@ -196,16 +242,8 @@ public class DiaryLoadingPageActivity extends AppCompatActivity {
     private void select_news_title_candidate() {
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-//        final Long now = System.currentTimeMillis();
-//        final Calendar c = Calendar.getInstance();
-//        c.setTimeInMillis(now);
         final Timestamp now_time_stamp = Timestamp.now();
         @SuppressLint("HardwareIds") final String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-//        task3 =  db.collection(TEST_USER_COLLECTION)
-//                .document(device_id)
-//                .collection(PUSH_ESM_COLLECTION)
-//                .whereEqualTo(PUSH_ESM_SAMPLE, 2)
-//                .get();
         task3 =  db.collection(PUSH_ESM_COLLECTION)
                 .whereEqualTo(PUSH_ESM_DEVICE_ID, device_id)
                 .whereEqualTo(PUSH_ESM_SAMPLE, 2)
@@ -219,20 +257,18 @@ public class DiaryLoadingPageActivity extends AppCompatActivity {
                         if(Math.abs(now_time_stamp.getSeconds() - d.getTimestamp(PUSH_ESM_NOTI_TIME).getSeconds()) <= DIARY_TARGET_RANGE){
                             if (d.getBoolean(PUSH_ESM_READ_EXIST)!=null && d.getBoolean(PUSH_ESM_READ_EXIST)){
 //                            if (d.get(PUSH_ESM_TARGET_TITLE)!=null && !d.get(PUSH_ESM_TARGET_TITLE).equals("NA")){
-                                String news_title = "NA";
-                                String news_time = "NA";
-                                String news_situation = "NA";
-                                String news_place = "NA";
-                                String news_id = "NA";
-                                news_title = d.getString(PUSH_ESM_TARGET_TITLE);
-                                news_time = d.getString(PUSH_ESM_TARGET_IN_TIME);
-                                news_situation = d.getString(PUSH_ESM_TARGET_SITUATION);
-                                news_place = d.getString(PUSH_ESM_TARGET_PLACE);
-                                news_id = d.getString(PUSH_ESM_TARGET_NEWS_ID);
-                                diary_option_array.add(news_title + "\n" + news_time + "\n" + news_situation + "\n" + news_place + "\n" + news_id);
-//                                diary_option_array_server.add(news_title + "\n" + news_time + "\n" + news_situation + "\n" + news_place + "\n" + news_id);
-//                                diary_option_array.add(news_title + "\n" + news_time + "\n" + news_situation + "\n" + news_place);
-                                exist_esm_sample = true;
+//                                String news_title = "NA";
+//                                String news_time = "NA";
+//                                String news_situation = "NA";
+//                                String news_place = "NA";
+//                                String news_id = "NA";
+//                                news_title = d.getString(PUSH_ESM_TARGET_TITLE);
+//                                news_time = d.getString(PUSH_ESM_TARGET_IN_TIME);
+//                                news_situation = d.getString(PUSH_ESM_TARGET_SITUATION);
+//                                news_place = d.getString(PUSH_ESM_TARGET_PLACE);
+//                                news_id = d.getString(PUSH_ESM_TARGET_NEWS_ID);
+//                                diary_option_array.add(news_title + "\n" + news_time + "\n" + news_situation + "\n" + news_place + "\n" + news_id);
+//                                exist_esm_sample = true;
                             }
                         }
                         //mark as check
@@ -272,16 +308,16 @@ public class DiaryLoadingPageActivity extends AppCompatActivity {
                     }
 
                 }
-                if(diary_option_array.size()!=0){
-                    String title_array = "";
-                    for(int i = 0; i< diary_option_array.size(); i++){
-                        title_array+= diary_option_array.get(i) + "#";
-                    }
-                    SharedPreferences.Editor editor = sharedPrefs.edit();
-                    editor.putString(DIARY_READ_HISTORY_CANDIDATE, title_array);
-                    editor.apply();
-                    Log.d("lognewsselect", "@@@@@@@@@@@@@");
-                }
+//                if(esm_query.size()!=0){
+//                    String title_array = "";
+//                    for(int i = 0; i< esm_query.size(); i++){
+//                        title_array+= esm_query.get(i) + "#";
+//                    }
+//                    SharedPreferences.Editor editor = sharedPrefs.edit();
+//                    editor.putString(DIARY_READ_HISTORY_CANDIDATE, title_array);
+//                    editor.apply();
+//                    Log.d("lognewsselect", "@@@@@@@@@@@@@");
+//                }
 //                else {
 //                    SharedPreferences.Editor editor = sharedPrefs.edit();
 //                    editor.putString(DIARY_READ_HISTORY_CANDIDATE, ZERO_RESULT_STRING);

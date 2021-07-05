@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.icu.lang.UCharacter;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -92,8 +93,16 @@ import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_CLICK
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_OPEN_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_READING_BEHAVIOR_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_BYTE_PER_LINE;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_CONTENT_LENGTH;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_DEVICE_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_DISPLAY_HEIGHT;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_DISPLAY_WIDTH;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_DRAG_NUM;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_DRAG_RECORD;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_FLING_NUM;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_FLING_RECORD;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_FONT_SIZE;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_HAS_IMAGE;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_IN_TIME;
@@ -101,14 +110,20 @@ import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIO
 //import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_MID;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_NEWS_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_OUT_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_PAUSE_COUNT;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_PUBDATE;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_ROW_SPACING;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_SAMPLE_CHECK;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_SAMPLE_CHECK_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_SHARE;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_TIME_ON_PAGE;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_TIME_SERIES;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_TITLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_TRIGGER_BY;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_TRIGGER_BY_NOTIFICATION;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_USER_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_VIEWPORT_NUM;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_VIEWPORT_RECORD;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_TEST_SIZE;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.TRIGGER_BY_KEY;
@@ -1433,7 +1448,6 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
 
         if (id == R.id.share){
             String share_field = "";
-//            final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(READING_BEHAVIOR_COLLECTION).document(myReadingBehavior.getKEY_TIME_IN());
             final DocumentReference rbRef = db.collection(READING_BEHAVIOR_COLLECTION).document(device_id + " " + myReadingBehavior.getKEY_IN_TIMESTAMP());
             if(share_clicked){
                 rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -1504,7 +1518,6 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
             }
             try{
                 String url = mUrl;
-//                Toast.makeText(this, "share is being clicked", Toast.LENGTH_LONG).show();
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.setType("text/plain");
                 shareIntent.putExtra(Intent.EXTRA_TEXT,url); // your above url
@@ -1524,6 +1537,10 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         } else if (id == android.R.id.home){
             Intent intent_back = new Intent(NewsModuleActivity.this, NewsHybridActivity.class);
             startActivity(intent_back);
+        } else if (id == R.id.web){
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(mUrl));
+            startActivity(i);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -1578,6 +1595,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
 
         readingBehavior.put(READING_BEHAVIOR_DEVICE_ID,  device_id);
         readingBehavior.put(READING_BEHAVIOR_USER_ID,  sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+        readingBehavior.put(READING_BEHAVIOR_SAMPLE_CHECK_ID, "NA");
         //select esm id
         readingBehavior.put(READING_BEHAVIOR_TRIGGER_BY, myReadingBehavior.getKEY_TRIGGER_BY());
         readingBehavior.put(READING_BEHAVIOR_NEWS_ID,  news_id);
@@ -1585,27 +1603,27 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         readingBehavior.put(READING_BEHAVIOR_MEDIA, myReadingBehavior.getKEY_MEDIA());
         readingBehavior.put(READING_BEHAVIOR_HAS_IMAGE, has_img);
         //pubdate
-        readingBehavior.put("row_spacing(dp)", "NA");
-        readingBehavior.put("byte_per_line", "NA");
+        readingBehavior.put(READING_BEHAVIOR_ROW_SPACING, "NA");
+        readingBehavior.put(READING_BEHAVIOR_BYTE_PER_LINE, "NA");
         readingBehavior.put(READING_BEHAVIOR_FONT_SIZE,  text_size_string);
-        readingBehavior.put("content_length(dp)", "NA");
-        readingBehavior.put("display_width(dp)", myReadingBehavior.getKEY_DISPLAY_WIDTH());
-        readingBehavior.put("display_height(dp)", myReadingBehavior.getKEY_DISPLAY_HEIGHT());
+
+        readingBehavior.put(READING_BEHAVIOR_CONTENT_LENGTH, "NA");
+        readingBehavior.put(READING_BEHAVIOR_DISPLAY_WIDTH, myReadingBehavior.getKEY_DISPLAY_WIDTH());
+        readingBehavior.put(READING_BEHAVIOR_DISPLAY_HEIGHT, myReadingBehavior.getKEY_DISPLAY_HEIGHT());
         readingBehavior.put(READING_BEHAVIOR_IN_TIME, enter_timestamp);
         readingBehavior.put(READING_BEHAVIOR_OUT_TIME, Timestamp.now());
         readingBehavior.put(READING_BEHAVIOR_TIME_ON_PAGE, myReadingBehavior.getKEY_TIME_ON_PAGE());
-        readingBehavior.put("pause_count", myReadingBehavior.getKEY_PAUSE_ON_PAGE());
-        readingBehavior.put("viewport_num", "NA");
-        readingBehavior.put("viewport_record", Arrays.asList("NA"));
-        readingBehavior.put("fling_num", myReadingBehavior.getKEY_FLING_NUM());
-        readingBehavior.put("fling_record", Arrays.asList("NA"));
-        readingBehavior.put("drag_num", myReadingBehavior.getKEY_DRAG_NUM());
-        readingBehavior.put("drag_record", Arrays.asList("NA"));
+        readingBehavior.put(READING_BEHAVIOR_PAUSE_COUNT, myReadingBehavior.getKEY_PAUSE_ON_PAGE());
+        readingBehavior.put(READING_BEHAVIOR_VIEWPORT_NUM, "NA");
+        readingBehavior.put(READING_BEHAVIOR_VIEWPORT_RECORD, Arrays.asList("NA"));
+        readingBehavior.put(READING_BEHAVIOR_FLING_NUM, myReadingBehavior.getKEY_FLING_NUM());
+        readingBehavior.put(READING_BEHAVIOR_FLING_RECORD, Arrays.asList("NA"));
+        readingBehavior.put(READING_BEHAVIOR_DRAG_NUM, myReadingBehavior.getKEY_DRAG_NUM());
+        readingBehavior.put(READING_BEHAVIOR_DRAG_RECORD, Arrays.asList("NA"));
         readingBehavior.put(READING_BEHAVIOR_SHARE, Arrays.asList("NA"));
-        readingBehavior.put("time_series(s)", Arrays.asList("NA"));
+        readingBehavior.put(READING_BEHAVIOR_TIME_SERIES, Arrays.asList("NA"));
 
-        readingBehavior.put(READING_BEHAVIOR_SAMPLE_CHECK, false);
-        readingBehavior.put(READING_BEHAVIOR_SAMPLE_CHECK_ID, device_id);
+//        readingBehavior.put(READING_BEHAVIOR_SAMPLE_CHECK, false);
 //        readingBehavior.put(READING_BEHAVIOR_CATEGORY,categoryArray);
 
         myReadingBehavior.setKEY_DOC_ID(device_id + " " + myReadingBehavior.getKEY_IN_TIMESTAMP());
@@ -1632,37 +1650,31 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         List<String> viewport_record_list = new ArrayList<String>(Arrays.asList(myReadingBehavior.getKEY_VIEW_PORT_RECORD().split("#")));
         List<String> drag_record_list = new ArrayList<String>(Arrays.asList(myReadingBehavior.getKEY_DRAG_RECORD().split("#")));
         List<String> fling_record_list = new ArrayList<String>(Arrays.asList(myReadingBehavior.getKEY_FLING_RECORD().split("#")));
-//        for (int i = 0; i < viewport_record_list.size(); i++) {
-////            System.out.println(time_series_list.get(i));
-//            Log.d("log: firebase", viewport_record_list.get(i));
-//        }
-//        for (int i = 0; i < drag_record_list.size(); i++) {
-////            System.out.println(time_series_list.get(i));
-//            Log.d("log: firebase", drag_record_list.get(i));
-//        }
-//        List<String> out_tt = new ArrayList<String>(Arrays.asList(myReadingBehavior.getKEY_TIME_OUT().split(" ")));
-        // Set the "isCapital" field of the city 'DC'
 
-
-        rbRef.update("content_length(dp)", myReadingBehavior.getKEY_CONTENT_LENGTH(),
-                "byte_per_line", myReadingBehavior.getKEY_BYTE_PER_LINE(),
-//                "category", categoryArray,
-                "has_img", has_img,
+        rbRef.update(
                 READING_BEHAVIOR_NEWS_ID,  myReadingBehavior.getKEY_NEWS_ID(),
-                READING_BEHAVIOR_MEDIA, myReadingBehavior.getKEY_MEDIA(),
-                "pubdate",mPubdate,
-                "row_spacing(dp)", myReadingBehavior.getKEY_ROW_SPACING(),
-                "viewport_num", myReadingBehavior.getKEY_VIEW_PORT_NUM(),
-                "drag_num", myReadingBehavior.getKEY_DRAG_NUM(),
-                "drag_record", drag_record_list,
-                "fling_num", myReadingBehavior.getKEY_FLING_NUM(),
-                "fling_record", fling_record_list,
-                "pause_count", myReadingBehavior.getKEY_PAUSE_ON_PAGE(),//auto
-                "time_on_page(s)", myReadingBehavior.getKEY_TIME_ON_PAGE(),//auto
-                "out_timestamp", myReadingBehavior.getKEY_OUT_TIMESTAMP(),
                 READING_BEHAVIOR_TITLE, myReadingBehavior.getKEY_TITLE(),
-                "time_series(s)", time_series_list,//auto
-                "viewport_record", viewport_record_list)//auto
+                READING_BEHAVIOR_MEDIA, myReadingBehavior.getKEY_MEDIA(),
+                READING_BEHAVIOR_HAS_IMAGE, has_img,
+                READING_BEHAVIOR_PUBDATE,mPubdate,
+
+                READING_BEHAVIOR_ROW_SPACING, myReadingBehavior.getKEY_ROW_SPACING(),
+                READING_BEHAVIOR_BYTE_PER_LINE, myReadingBehavior.getKEY_BYTE_PER_LINE(),
+
+                READING_BEHAVIOR_CONTENT_LENGTH, myReadingBehavior.getKEY_CONTENT_LENGTH(),
+
+                READING_BEHAVIOR_OUT_TIME, myReadingBehavior.getKEY_OUT_TIMESTAMP(),
+
+                READING_BEHAVIOR_TIME_ON_PAGE, myReadingBehavior.getKEY_TIME_ON_PAGE(),//auto
+                READING_BEHAVIOR_PAUSE_COUNT, myReadingBehavior.getKEY_PAUSE_ON_PAGE(),//auto
+                READING_BEHAVIOR_VIEWPORT_NUM, myReadingBehavior.getKEY_VIEW_PORT_NUM(),
+                READING_BEHAVIOR_VIEWPORT_RECORD, viewport_record_list,
+                READING_BEHAVIOR_FLING_NUM, myReadingBehavior.getKEY_FLING_NUM(),
+                READING_BEHAVIOR_FLING_RECORD, fling_record_list,
+                READING_BEHAVIOR_DRAG_NUM, myReadingBehavior.getKEY_DRAG_NUM(),
+                READING_BEHAVIOR_DRAG_RECORD, drag_record_list,
+                READING_BEHAVIOR_TIME_SERIES, time_series_list//auto
+                )//auto
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
