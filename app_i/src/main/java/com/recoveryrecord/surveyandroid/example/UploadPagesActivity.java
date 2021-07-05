@@ -137,6 +137,7 @@ public class UploadPagesActivity extends AppCompatActivity {
                 esm.put(PUSH_ESM_SUBMIT_TIME, new Timestamp(cursor.getLong(cursor.getColumnIndex("submit_timestamp")), 0));//
                 esm.put(PUSH_ESM_REMOVE_TIME, new Timestamp(cursor.getLong(cursor.getColumnIndex("remove_timestamp")), 0));
                 esm.put(PUSH_ESM_REMOVE_TYPE, cursor.getString(cursor.getColumnIndex("remove_type")));
+
                 esm.put(PUSH_ESM_RESULT, cursor.getString(cursor.getColumnIndex("result")));
                 esm.put(PUSH_ESM_TARGET_NEWS_ID, cursor.getString(cursor.getColumnIndex("noti_read_news_id")));//receieve 1 click 0
                 esm.put(PUSH_ESM_TARGET_TITLE, cursor.getString(cursor.getColumnIndex("noti_read_title")));//receieve 1 click 0
@@ -214,15 +215,18 @@ public class UploadPagesActivity extends AppCompatActivity {
                 pn.put(PUSH_NEWS_DOC_ID, cursor.getString(cursor.getColumnIndex("doc_id")));
                 pn.put(PUSH_NEWS_DEVICE_ID, cursor.getString(cursor.getColumnIndex("device_id")));
                 pn.put(PUSH_NEWS_USER_ID, cursor.getString(cursor.getColumnIndex("user_id")));
+
                 pn.put(PUSH_NEWS_ID, cursor.getString(cursor.getColumnIndex("news_id")));
                 pn.put(PUSH_NEWS_TITLE, cursor.getString(cursor.getColumnIndex("title")));
                 pn.put(PUSH_NEWS_MEDIA, cursor.getString(cursor.getColumnIndex("media")));
                 pn.put(PUSH_NEWS_PUBDATE, new Timestamp(cursor.getLong(cursor.getColumnIndex("pubdate")), 0));//
+
                 pn.put(PUSH_NEWS_NOTI_TIME, new Timestamp(cursor.getLong(cursor.getColumnIndex("noti_timestamp")), 0));
                 pn.put(PUSH_NEWS_RECEIEVE_TIME, new Timestamp(cursor.getLong(cursor.getColumnIndex("receieve_timestamp")), 0));
                 pn.put(PUSH_NEWS_OPEN_TIME, new Timestamp(cursor.getLong(cursor.getColumnIndex("open_timestamp")), 0));
                 pn.put(PUSH_NEWS_REMOVE_TIME, new Timestamp(cursor.getLong(cursor.getColumnIndex("remove_timestamp")), 0));
                 pn.put(PUSH_NEWS_REMOVE_TYPE, cursor.getString(cursor.getColumnIndex("remove_type")));
+
                 pn.put(PUSH_NEWS_TYPE, cursor.getString(cursor.getColumnIndex("type")));
                 pn.put(PUSH_NEWS_CLICK, cursor.getString(cursor.getColumnIndex("click")));//receieve 1 click 0
 

@@ -109,7 +109,7 @@ public class Constants {
 
     public static final String USER_COLLECTION = "user";
     public static final String APP_VERSION_KEY = "app_version";
-    public static final String APP_VERSION_VALUE = "21.07.02-beta";
+    public static final String APP_VERSION_VALUE = "21.07.06-beta";
     public static final String UPDATE_TIME = "update_timestamp";
     public static final String INITIAL_TIME = "initial_timestamp";
     public static final String LAST_LAUNCH_TIME = "last_launch_timestamp";
@@ -267,10 +267,11 @@ public class Constants {
     public static final String PUSH_ESM_TYPE = "esm_type";
     public static final String PUSH_ESM_READ_ARRAY = "ReadNewsTitle";
     public static final String PUSH_ESM_NOTI_ARRAY = "NotiNewTitle";
+    public static final String PUSH_ESM_SAMPLE_TIME = "esm_sample_time";
 
     public static final String PUSH_ESM_SCHEDULE_ID = "esm_schedule_id";
     public static final String PUSH_ESM_SCHEDULE_SOURCE = "esm_schedule_source";
-    public static final String PUSH_ESM_SAMPLE_TIME = "esm_sample_time";
+
     public static final String PUSH_ESM_SAMPLE = "sample";
     public static final String PUSH_ESM_SAMPLE_ID = "sample_diary_id";
 

@@ -99,6 +99,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIO
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_DISPLAY_HEIGHT;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_DISPLAY_WIDTH;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_DOC_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_DRAG_NUM;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_DRAG_RECORD;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_FLING_NUM;
@@ -1593,6 +1594,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         Map<String, Object> readingBehavior = new HashMap<>();
 
+        readingBehavior.put(READING_BEHAVIOR_DOC_ID,  device_id + " " + myReadingBehavior.getKEY_IN_TIMESTAMP());
         readingBehavior.put(READING_BEHAVIOR_DEVICE_ID,  device_id);
         readingBehavior.put(READING_BEHAVIOR_USER_ID,  sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
         readingBehavior.put(READING_BEHAVIOR_SAMPLE_CHECK_ID, "NA");

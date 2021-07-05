@@ -82,10 +82,16 @@ import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_TI
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_NEWS;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_SERVICE;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_CLICK;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_DEVICE_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_DOC_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_MEDIA;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_OPEN_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_RECEIEVE_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_REMOVE_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_REMOVE_TYPE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_USER_ID;
@@ -290,30 +296,40 @@ public class NewsNotificationService extends Service {
                                             scheduleNotification(getNotification(news_id, media, title), 1000 );
                                             Log.d("lognewsselect", "doc id" + doc_id);
                                             record_noti.put(PUSH_NEWS_TYPE, "target add");
-                                            record_noti.put(COMPARE_RESULT_CLICK, 1);
+                                            record_noti.put(PUSH_NEWS_CLICK, 1);
 
                                             myPushNews.setKEY_TYPE("target add");
                                             myPushNews.setKEY_CLICK(1);
                                             count++;
                                         } else {
                                             record_noti.put(PUSH_NEWS_TYPE, "target too much");
-                                            record_noti.put(COMPARE_RESULT_CLICK, 2);
+                                            record_noti.put(PUSH_NEWS_CLICK, 2);
                                             myPushNews.setKEY_TYPE("target too much");
                                             myPushNews.setKEY_CLICK(2);
                                         }
                                     } else {
                                         record_noti.put(PUSH_NEWS_TYPE, "not target");
-                                        record_noti.put(COMPARE_RESULT_CLICK, 3);
+                                        record_noti.put(PUSH_NEWS_CLICK, 3);
                                         myPushNews.setKEY_TYPE("not target");
                                         myPushNews.setKEY_CLICK(3);
                                     }
-                                    record_noti.put(PUSH_NEWS_MEDIA, dc.getDocument().getString(COMPARE_RESULT_MEDIA));
-                                    record_noti.put(PUSH_NEWS_TITLE, dc.getDocument().getString(COMPARE_RESULT_NEW_TITLE));
-                                    record_noti.put(PUSH_NEWS_ID, dc.getDocument().getString(COMPARE_RESULT_ID));
-                                    record_noti.put(PUSH_NEWS_PUBDATE, dc.getDocument().getTimestamp(COMPARE_RESULT_PUBDATE));
-                                    record_noti.put(PUSH_NEWS_NOTI_TIME, Timestamp.now());
+                                    record_noti.put(PUSH_NEWS_DOC_ID, device_id + " " + dc.getDocument().getString(COMPARE_RESULT_ID));
                                     record_noti.put(PUSH_NEWS_DEVICE_ID,  device_id);
                                     record_noti.put(PUSH_NEWS_USER_ID,  sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+
+                                    record_noti.put(PUSH_NEWS_ID, dc.getDocument().getString(COMPARE_RESULT_ID));
+                                    record_noti.put(PUSH_NEWS_TITLE, dc.getDocument().getString(COMPARE_RESULT_NEW_TITLE));
+                                    record_noti.put(PUSH_NEWS_MEDIA, dc.getDocument().getString(COMPARE_RESULT_MEDIA));
+                                    record_noti.put(PUSH_NEWS_PUBDATE, dc.getDocument().getTimestamp(COMPARE_RESULT_PUBDATE));
+
+                                    record_noti.put(PUSH_NEWS_NOTI_TIME, Timestamp.now());
+                                    record_noti.put(PUSH_NEWS_RECEIEVE_TIME, 0);
+                                    record_noti.put(PUSH_NEWS_OPEN_TIME, 0);
+                                    record_noti.put(PUSH_NEWS_REMOVE_TIME, 0);
+                                    record_noti.put(PUSH_NEWS_REMOVE_TYPE, "NA");
+
+//                                    record_noti.put(PUSH_NEWS_TYPE, "NA");//ABOVE
+//                                    record_noti.put(PUSH_NEWS_CLICK, "NA");//ABOVE
 
                                     db.collection(PUSH_NEWS_COLLECTION)
                                             .document(device_id + " " + dc.getDocument().getString(COMPARE_RESULT_ID))

@@ -41,87 +41,20 @@ import androidx.core.app.NotificationCompat;
 import androidx.preference.PreferenceManager;
 
 import static android.content.Context.ALARM_SERVICE;
+import static com.recoveryrecord.surveyandroid.example.Constants.*;
 //import static com.recoveryrecord.surveyandroid.example.Constants.DAIRY_ALARM_ACTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.CANCEL_ALARM_ACTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_DELAY_COUNT;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_USER_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.RESTART_ALARM_ACTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.CHECK_SERVICE_ACTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_DIARY_CHANNEL_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_DIARY_NOTIFICATION;
-import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_DIARY_NOTIFICATION_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_CHANNEL_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_NOTIFICATION;
-import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_NOTIFICATION_ID;
 //import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_PARCELABLE;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_ALARM_ACTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_CHANNEL_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_NOTIFICATION_CONTENT_TEXT;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_NOTIFICATION_CONTENT_TITLE;
 //import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_NOT_IN_PUSH_RANGE;
 //import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_OUT_OF_INTERVAL_LIMIT;
 //import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_PUSH;
 //import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_STATUS;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_TIME_OUT;
-import static com.recoveryrecord.surveyandroid.example.Constants.DOC_ID_KEY;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_ALARM_ACTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_CHANNEL_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_END_TIME_HOUR;
 //import static com.recoveryrecord.surveyandroid.example.Constants.ESM_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOTIFICATION_CONTENT_TEXT;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOTIFICATION_CONTENT_TITLE;
 //import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOT_IN_PUSH_RANGE;
 //import static com.recoveryrecord.surveyandroid.example.Constants.ESM_OUT_OF_INTERVAL_LIMIT;
 //import static com.recoveryrecord.surveyandroid.example.Constants.ESM_PUSH;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_SCHEDULE_ID;
 //import static com.recoveryrecord.surveyandroid.example.Constants.ESM_SCHEDULE_SOURCE;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_SET_ONCE;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_START_TIME_HOUR;
 //import static com.recoveryrecord.surveyandroid.example.Constants.ESM_STATUS;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TIME_OUT;
-import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_DIARY;
-import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_ESM;
-import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_KEY;
-import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_KEY;
-import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_VALUE_ALARM;
-import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_DEVICE_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_KEY;
-import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_VALUE_RESTART;
-import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_VALUE_RUNNING;
-import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_KEY;
-import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_DIARY;
-import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_ESM;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_DEVICE_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_DONE;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_NOTI_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_SCHEDULE_SOURCE;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_DEVICE_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_NOTI_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_SAMPLE;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_SCHEDULE_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_SCHEDULE_SOURCE;
-import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_IN;
-import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_MEDIA;
-import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_RECEIEVE;
-import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_TITLE;
-import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_ACTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_ACTION_TYPE;
-import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_DEVICE_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_MAX_ESM;
-import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_SURVEY_END;
-import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_SURVEY_START;
-import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_TRIGGER_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_SOURCE;
-import static com.recoveryrecord.surveyandroid.example.Constants.SERVICE_CHECKER_INTERVAL;
-import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.VIBRATE_EFFECT;
+
 
 public class AlarmReceiver extends BroadcastReceiver {
     String device_id = "";
@@ -539,11 +472,36 @@ public class AlarmReceiver extends BroadcastReceiver {
         //firestore
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Map<String, Object> esm = new HashMap<>();
-        esm.put(PUSH_ESM_NOTI_TIME, Timestamp.now());
-        esm.put(PUSH_ESM_SAMPLE, 0);
-        esm.put(PUSH_ESM_SCHEDULE_ID, esm_schedule_name);
-        esm.put(PUSH_ESM_SCHEDULE_SOURCE, esm_schedule_source);
+        esm.put(PUSH_ESM_DOC_ID, device_id + " " + esm_id);
         esm.put(PUSH_ESM_DEVICE_ID, device_id);
+        esm.put(PUSH_ESM_USER_ID, sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+
+        esm.put(PUSH_ESM_TYPE, 0);//??
+        esm.put(PUSH_ESM_NOTI_ARRAY, "NA");
+        esm.put(PUSH_ESM_READ_ARRAY, "NA");
+
+        esm.put(PUSH_ESM_SCHEDULE_ID, esm_schedule_name);//??
+        esm.put(PUSH_ESM_SCHEDULE_SOURCE, esm_schedule_source);//??
+        esm.put(PUSH_ESM_SAMPLE_TIME, 0);
+        esm.put(PUSH_ESM_SAMPLE, 0);//??
+        esm.put(PUSH_ESM_SAMPLE_ID, "NA");//??
+
+        esm.put(PUSH_ESM_NOTI_TIME, Timestamp.now());
+        esm.put(PUSH_ESM_RECEIEVE_TIME, 0);
+        esm.put(PUSH_ESM_OPEN_TIME, 0);
+        esm.put(PUSH_ESM_CLOSE_TIME, 0);
+        esm.put(PUSH_ESM_SUBMIT_TIME, 0);
+        esm.put(PUSH_ESM_REMOVE_TIME, 0);
+        esm.put(PUSH_ESM_REMOVE_TYPE, "NA");
+
+        esm.put(PUSH_ESM_RESULT, "NA");
+        esm.put(PUSH_ESM_TARGET_NEWS_ID, "NA");
+        esm.put(PUSH_ESM_TARGET_TITLE, "NA");
+        esm.put(PUSH_ESM_TARGET_IN_TIME, "NA");
+        esm.put(PUSH_ESM_TARGET_SITUATION, "NA");
+        esm.put(PUSH_ESM_TARGET_PLACE, "NA");
+
+
         db.collection(PUSH_ESM_COLLECTION)
                 .document(device_id + " " + esm_id)
                 .set(esm);
@@ -611,11 +569,27 @@ public class AlarmReceiver extends BroadcastReceiver {
         //firestore
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Map<String, Object> diary = new HashMap<>();
-        diary.put(PUSH_DIARY_NOTI_TIME, Timestamp.now());
-//        diary.put(PUSH_DIARY_DONE, 0);
-        diary.put(PUSH_DIARY_SCHEDULE_SOURCE, diary_schedule_source);
+        diary.put(PUSH_DIARY_DOC_ID, device_id + " " + diary_id);
         diary.put(PUSH_DIARY_DEVICE_ID, device_id);
         diary.put(PUSH_DIARY_USER_ID, sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+
+        diary.put(PUSH_DIARY_SCHEDULE_SOURCE, diary_schedule_source);
+        diary.put(PUSH_DIARY_SAMPLE_TIME, 0);
+        diary.put(PUSH_DIARY_OPTION, "NA");
+
+        diary.put(PUSH_DIARY_NOTI_TIME, Timestamp.now());
+        diary.put(PUSH_DIARY_RECEIEVE_TIME, 0);
+        diary.put(PUSH_DIARY_OPEN_TIME, 0);
+        diary.put(PUSH_DIARY_CLOSE_TIME, 0);
+        diary.put(PUSH_DIARY_SUBMIT_TIME, 0);
+        diary.put(PUSH_DIARY_REMOVE_TIME, 0);
+
+        diary.put(PUSH_DIARY_REMOVE_TYPE, "NA");
+        diary.put(PUSH_DIARY_RESULT, "NA");
+        diary.put(PUSH_DIARY_INOPPORTUNE_TARGET, "NA");
+        diary.put(PUSH_DIARY_OPPORTUNE_TARGET, "NA");
+
+
         db.collection(PUSH_DIARY_COLLECTION)
                 .document(device_id + " " + diary_id)
                 .set(diary);

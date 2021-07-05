@@ -49,6 +49,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TY
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_DIARY;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_OPTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_SAMPLE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_NOTI_TIME;
@@ -213,7 +214,8 @@ public class DiaryLoadingPageActivity extends AppCompatActivity {
                         DocumentSnapshot document = task.getResult();
                         assert document != null;
                         if (document.exists()) {
-                            rbRef.update(PUSH_DIARY_OPTION, esm_query)//another field
+                            rbRef.update(PUSH_DIARY_OPTION, esm_query,
+                                    PUSH_DIARY_SAMPLE_TIME, my_time.getSeconds())//another field
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
