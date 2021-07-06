@@ -3,14 +3,10 @@ package com.recoveryrecord.surveyandroid.example;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,15 +16,12 @@ import com.recoveryrecord.surveyandroid.example.DbHelper.DiaryDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.ESMDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.PushNewsDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.ReadingBehaviorDbHelper;
-import com.recoveryrecord.surveyandroid.example.sqlite.ESM;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -42,15 +35,29 @@ public class UploadPagesActivity extends AppCompatActivity {
     String device_id = "";
 
     private Button mybutton;
+    private TextView uptime, intro;
 
-    @SuppressLint("HardwareIds")
+    @SuppressLint({"HardwareIds", "SetTextI18n"})
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle("資料上傳頁面");
         setContentView(R.layout.activity_upload);
         device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-//        final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        @SuppressLint("SimpleDateFormat")
+        final SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+//        intro = findViewById(R.id.intro);
+        uptime = findViewById(R.id.uptextview);
         mybutton = findViewById(R.id.upbutton);
+
+
+        final Date date = new Date();
+        date.setTime(sharedPrefs.getLong(UPLOAD_TIME, 0)*1000);
+
+//        String[] mysplit = formatter.format(date).split(" ");
+//        intro.setText("此上傳機制為確保App資料完整性，您將上傳 新聞閱讀記錄、以及問卷填答記錄（ESM, Diary)。");
+        uptime.setText("此上傳機制為確保App資料完整性，您將上傳 新聞閱讀記錄、以及問卷填答記錄（ESM, Diary)。\n\n上次上傳時間\n" + formatter.format(date) + "\n(請每日至少上傳一次)");
+
         mybutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,6 +66,15 @@ public class UploadPagesActivity extends AppCompatActivity {
                 upload_esm();
                 upload_diary();
                 Toast.makeText(getApplicationContext(), "上傳資料完成", Toast.LENGTH_SHORT).show();
+
+                Long new_time = Timestamp.now().getSeconds();
+                Date new_date = new Date();
+                new_date.setTime(new_time*1000);
+                uptime.setText("此上傳機制為確保App資料完整性，您將上傳 新聞閱讀記錄、以及問卷填答記錄（ESM, Diary)。\n\n上次上傳時間\n" + formatter.format(new_date));
+
+                SharedPreferences.Editor editor = sharedPrefs.edit();
+                editor.putLong(UPLOAD_TIME, new_time);
+                editor.apply();
             }
         });
 
