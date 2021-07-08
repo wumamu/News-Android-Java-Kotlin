@@ -15,6 +15,7 @@ public class Constants {
     public static final String RESTART_ALARM_ACTION = "RestartAlarm";//request code 1050
     public static final String CANCEL_ALARM_ACTION = "CancelAlarm";//request code 1050
     public static final String SCHEDULE_ALARM_ACTION = "ScheduleAlarm";//request code 1000 1001
+    public static final String UPLOAD_ACTION = "UploadSQLite";//request code 1000 1001
 
     public static final int SERVICE_CHECKER_INTERVAL = 20 * 60 * 1000;//every 20 min
     //other
@@ -424,7 +425,7 @@ public class Constants {
     public static final String DIARY_DAY_PUSH_PREFIX = "DiaryDayPush_";
     public static final String DIARY_DAY_DONE_PREFIX = "DiaryDayDone_";
 
-
+    public static final String READ_TOTAL = "ReadTotal_";
 
 //    public static final String CATEGORY_HASH_SET_SIZE = "category_hash_set_size";
 //    public static final String CATEGORY_HASH_SET_PREFIX = "category_";

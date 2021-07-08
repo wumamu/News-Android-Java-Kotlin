@@ -73,6 +73,9 @@ public class AlarmReceiver extends BroadcastReceiver {
         if(action.equals(CHECK_SERVICE_ACTION)){
             isServiceAlive(context);
         }
+        if(action.equals(UPLOAD_ACTION)){
+            Toast.makeText(context, "上傳資料完成", Toast.LENGTH_SHORT).show();
+        }
         if(action.equals(ESM_ALARM_ACTION) && set_once) {
             String esm_name = "NA", esm_source = "NA";
             if (intent.getExtras().getString(ESM_SCHEDULE_ID) != null && intent.getExtras().getString(SCHEDULE_SOURCE) != null ) {

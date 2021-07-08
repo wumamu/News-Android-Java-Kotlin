@@ -44,7 +44,7 @@ public class PushHistoryActivity extends AppCompatActivity {
                 case 0:
                     return PushHistoryFragment.newInstance();
                 case 1:
-                    return TestTab1Fragment.newInstance();
+                    return ReadHistorySummaryFragment.newInstance();
                 default:
                     return TestTab3Fragment.newInstance();
             }
@@ -60,7 +60,7 @@ public class PushHistoryActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "Tab 1";
+                    return "近50則";
                 case 1:
                     return "Tab 2";
                 case 2:
