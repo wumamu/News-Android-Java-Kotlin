@@ -48,6 +48,7 @@ import androidx.preference.PreferenceManager;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_EXIST_NOTIFICATION_SAMPLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_EXIST_READ_SAMPLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.EXIST_READ;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_ESM_TYPE_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_NOTIFICATION_EXIST;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_READ_EXIST;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_SAMPLE_TIME;
@@ -288,8 +289,9 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
         intent_esm.setClass(this, SurveyActivity.class);
         intent_esm.putExtra(SURVEY_PAGE_ID, esm_id);//******************
         intent_esm.putExtra(NOTIFICATION_TYPE_KEY, NOTIFICATION_TYPE_VALUE_ESM);
-        intent_esm.putExtra(ESM_EXIST_READ_SAMPLE, exist_read);
-        intent_esm.putExtra(ESM_EXIST_NOTIFICATION_SAMPLE, exist_notification);
+        intent_esm.putExtra(NOTIFICATION_ESM_TYPE_KEY, 0);
+//        intent_esm.putExtra(ESM_EXIST_READ_SAMPLE, exist_read);
+//        intent_esm.putExtra(ESM_EXIST_NOTIFICATION_SAMPLE, exist_notification);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 

@@ -82,6 +82,7 @@ public class Constants {
     public static final String GROUP_NEWS_SERVICE = "NewsMoment Service";
     public static final String DOC_ID_KEY = "id";
     public static final String NOTIFICATION_TYPE_KEY = "type";
+    public static final String NOTIFICATION_ESM_TYPE_KEY = "esm_type";//0 noti 1 read
     public static final String NOTIFICATION_TYPE_VALUE_NEWS = "news";
     public static final String NOTIFICATION_TYPE_VALUE_ESM = "esm";
     public static final String NOTIFICATION_TYPE_VALUE_DIARY = "diary";

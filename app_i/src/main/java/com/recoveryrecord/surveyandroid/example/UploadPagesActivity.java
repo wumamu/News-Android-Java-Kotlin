@@ -158,6 +158,7 @@ public class UploadPagesActivity extends AppCompatActivity {
                 esm.put(PUSH_ESM_TARGET_NEWS_ID, cursor.getString(cursor.getColumnIndex("noti_read_news_id")));//receieve 1 click 0
                 esm.put(PUSH_ESM_TARGET_TITLE, cursor.getString(cursor.getColumnIndex("noti_read_title")));//receieve 1 click 0
                 esm.put(PUSH_ESM_TARGET_IN_TIME, cursor.getString(cursor.getColumnIndex("noti_read_in_time")));//receieve 1 click 0
+//                esm.put(PUSH_ESM_TARGET_RECEIEVE_TIME, cursor.getString(cursor.getColumnIndex("noti_read_receieve_time")));//receieve 1 click 0
                 esm.put(PUSH_ESM_TARGET_SITUATION, cursor.getString(cursor.getColumnIndex("noti_read_situation")));//receieve 1 click 0
                 esm.put(PUSH_ESM_TARGET_PLACE, cursor.getString(cursor.getColumnIndex("noti_read_place")));//receieve 1 click 0
 
