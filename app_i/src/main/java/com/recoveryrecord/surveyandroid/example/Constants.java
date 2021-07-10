@@ -111,7 +111,7 @@ public class Constants {
 
     public static final String USER_COLLECTION = "user";
     public static final String APP_VERSION_KEY = "app_version";
-    public static final String APP_VERSION_VALUE = "21.07.06-1";
+    public static final String APP_VERSION_VALUE = "21.07.10-1";
     public static final String UPDATE_TIME = "update_timestamp";
     public static final String INITIAL_TIME = "initial_timestamp";
     public static final String LAST_LAUNCH_TIME = "last_launch_timestamp";
@@ -296,8 +296,11 @@ public class Constants {
     public static final String PUSH_ESM_TARGET_NEWS_ID = "target_news_id";
     public static final String PUSH_ESM_TARGET_TITLE = "target_read_title";
     public static final String PUSH_ESM_TARGET_IN_TIME = "target_in_time";
-    public static final String PUSH_ESM_TARGET_SITUATION = "target_situation";
-    public static final String PUSH_ESM_TARGET_PLACE = "target_place";
+    public static final String PUSH_ESM_TARGET_RECEIEVE_TIME = "target_receieve_time";
+    public static final String PUSH_ESM_TARGET_RECEIEVE_SITUATION = "target_receieve_situation";
+    public static final String PUSH_ESM_TARGET_RECEIEVE_PLACE = "target_receieve_place";
+    public static final String PUSH_ESM_TARGET_READ_SITUATION = "target_read_situation";
+    public static final String PUSH_ESM_TARGET_READ_PLACE = "target_read_place";
 
 
     public static final String PUSH_ESM_READ_EXIST = "ExistReadSample";
@@ -327,7 +330,8 @@ public class Constants {
 
     public static final String PUSH_DIARY_SCHEDULE_SOURCE = "diary_schedule_source";
     public static final String PUSH_DIARY_SAMPLE_TIME = "diary_sample_time";
-    public static final String PUSH_DIARY_OPTION = "target_history_candidate";
+    public static final String PUSH_DIARY_OPTION_READ = "target_history_candidate_read";
+    public static final String PUSH_DIARY_OPTION_NOTI = "target_history_candidate_noti";
 
     public static final String PUSH_DIARY_NOTI_TIME = "noti_timestamp";
     public static final String PUSH_DIARY_RECEIEVE_TIME = "receieve_timestamp";
@@ -338,8 +342,10 @@ public class Constants {
     public static final String PUSH_DIARY_REMOVE_TYPE = "remove_type";
 
     public static final String PUSH_DIARY_RESULT = "result";
-    public static final String PUSH_DIARY_INOPPORTUNE_TARGET = "inopportune_target";
-    public static final String PUSH_DIARY_OPPORTUNE_TARGET = "opportune_target";
+    public static final String PUSH_DIARY_INOPPORTUNE_TARGET_READ = "inopportune_read_target";
+    public static final String PUSH_DIARY_OPPORTUNE_TARGET_RAED = "opportune_read_target";
+    public static final String PUSH_DIARY_INOPPORTUNE_TARGET_NOTI = "inopportune_noti_target";
+    public static final String PUSH_DIARY_OPPORTUNE_TARGET_NOTI = "opportune_noti_target";
 
     public static final String PUSH_DIARY_DONE = "done";
     public static final String PUSH_DIARY_TRIGGER_BY_NOTIFICATION = "notification_service";
@@ -396,6 +402,7 @@ public class Constants {
     public static final String SAMPLE_RECEIEVE = "sample_receieve";
     public static final String SAMPLE_IN = "sample_in";
     public static final String EXIST_READ = "exist_read";
+    public static final String ESM_TYPE = "esm_type";
 
 
     public static final String ESM_DELAY_COUNT = "esm_delay_count";
@@ -405,7 +412,8 @@ public class Constants {
 
 
     //DIARY
-    public static final String DIARY_READ_HISTORY_CANDIDATE = "DiaryTargetOptionArray";
+    public static final String DIARY_READ_HISTORY_CANDIDATE = "DiaryTargetOptionArrayRead";
+    public static final String DIARY_NOTI_HISTORY_CANDIDATE = "DiaryTargetOptionArrayNoti";
     public static final String EXIST_ESM = "exist_esm";
     //{news_title}\n{news_time}\n{news_situation}\n{news_place}\n{news_id}#
     public static final String TO_DIARY_LIST = "DiaryList";

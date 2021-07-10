@@ -26,6 +26,35 @@
       }
     },
     {
+      "id": "base_3",
+      "header": "Question 2.5",
+      "question": "請問您以甚麼甚麼方式進入閱讀？",
+      "question_type": "single_select",
+      "options": [
+        "看到通知跳出立即點入閱讀",
+        "瀏覽通知列的新聞通知點入閱讀",
+        {
+          "title": "其他",
+          "type": "freeform"
+        }
+      ],
+      "show_if": {
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "base_1",
+            "operation": "equals",
+            "value": "有，我有印象看到此則通知出現"
+          },
+          {
+            "id": "base_2",
+            "operation": "equals",
+            "value": "我有點入閱讀"
+          }
+        ]
+      }
+    },
+    {
       "id": "recieve_moment_1",
       "header": "Question 3",
       "question": "請問您在「該則通知出現當下」(抵達時間)，約有多少時間可以閱讀新聞？(覺得沒空請填0)",

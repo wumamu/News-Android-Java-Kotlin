@@ -34,7 +34,7 @@ public class ESM {
     private String KEY_NOTI_READ_NEWS_ID;
     private String KEY_NOTI_READ_TITLE;
     private String KEY_NOTI_READ_IN_TIME;
-    private long KEY_NOTI_READ_RECEIEVE_TIME;
+    private String KEY_NOTI_READ_RECEIEVE_TIME;
     private String KEY_NOTI_READ_SITUATION;
     private String KEY_NOTI_READ_PLACE;
     private String KEY_NOTI_NOT_READ_NEWS_ID;
@@ -76,7 +76,7 @@ public class ESM {
         this.KEY_NOTI_READ_NEWS_ID = "NA";
         this.KEY_NOTI_READ_TITLE = "NA";
         this.KEY_NOTI_READ_IN_TIME = "NA";
-        this.KEY_NOTI_READ_RECEIEVE_TIME = 0;
+        this.KEY_NOTI_READ_RECEIEVE_TIME = "NA";
         this.KEY_NOTI_READ_SITUATION = "NA";
         this.KEY_NOTI_READ_PLACE = "NA";
         this.KEY_NOTI_NOT_READ_NEWS_ID = "NA";
@@ -267,11 +267,11 @@ public class ESM {
         this.KEY_NOTI_READ_IN_TIME = KEY_NOTI_READ_IN_TIME;
     }
 
-    public long getKEY_NOTI_READ_RECEIEVE_TIME() {
+    public String getKEY_NOTI_READ_RECEIEVE_TIME() {
         return KEY_NOTI_READ_RECEIEVE_TIME;
     }
 
-    public void setKEY_NOTI_READ_RECEIEVE_TIME(long KEY_NOTI_READ_RECEIEVE_TIME) {
+    public void setKEY_NOTI_READ_RECEIEVE_TIME(String KEY_NOTI_READ_RECEIEVE_TIME) {
         this.KEY_NOTI_READ_RECEIEVE_TIME = KEY_NOTI_READ_RECEIEVE_TIME;
     }
 

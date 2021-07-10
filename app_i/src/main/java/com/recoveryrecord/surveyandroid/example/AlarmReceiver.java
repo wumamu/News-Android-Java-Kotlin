@@ -1,7 +1,6 @@
 package com.recoveryrecord.surveyandroid.example;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -84,27 +83,42 @@ public class AlarmReceiver extends BroadcastReceiver {
                 esm_name = intent.getExtras().getString(ESM_SCHEDULE_ID);
                 esm_source = intent.getExtras().getString(SCHEDULE_SOURCE);
             }
-            PushNewsDbHelper dbHandler = new PushNewsDbHelper(context.getApplicationContext());
-            Boolean exist_noti = false;
-            Cursor cursor = dbHandler.checkNotiDataForESM(Timestamp.now().getSeconds());
-            if (cursor.moveToFirst()) {
-                while(!cursor.isAfterLast()) {
+            PushNewsDbHelper dbHandler_noti = new PushNewsDbHelper(context.getApplicationContext());
+            Boolean exist_noti = false, exist_read = false;
+            Cursor cursor_noti = dbHandler_noti.checkNotiDataForESM(Timestamp.now().getSeconds());
+            if (cursor_noti.moveToFirst()) {
+                while(!cursor_noti.isAfterLast()) {
                     //returns true when cursor is at last row position
+                    Log.d("AlarmReceiver", "noti");
                     exist_noti = true;
                     break;
                 }
-                cursor.moveToNext();
+                cursor_noti.moveToNext();
             }
-            if (!cursor.isClosed())  {
-                cursor.close();
+            if (!cursor_noti.isClosed())  {
+                cursor_noti.close();
             }
-            if(exist_noti){
+            ReadingBehaviorDbHelper dbHandler_read = new ReadingBehaviorDbHelper(context.getApplicationContext());
+            Cursor cursor_read = dbHandler_read.checkReadDataForESM(Timestamp.now().getSeconds());
+            if (cursor_read.moveToFirst()) {
+                while(!cursor_read.isAfterLast()) {
+                    //returns true when cursor is at last row position
+                    Log.d("AlarmReceiver", "read");
+                    exist_read = true;
+                    break;
+                }
+                cursor_read.moveToNext();
+            }
+            if (!cursor_read.isClosed())  {
+                cursor_read.close();
+            }
+            if (exist_noti || exist_read){
                 scheduleNotification_esm(context, getNotification_esm(context, esm_name, esm_source), 1000);
                 SharedPreferences.Editor editor = sharedPrefs.edit();
                 editor.putInt(ESM_DELAY_COUNT, 0);
                 editor.apply();
             } else {
-                Toast.makeText(context, "暫無通知紀錄，10分鐘後重送", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "暫無通知閱讀紀錄，10分鐘後重送", Toast.LENGTH_SHORT).show();
                 int my_delay_count = sharedPrefs.getInt(ESM_DELAY_COUNT, 0);
                 if(my_delay_count<3){
                     SharedPreferences.Editor editor = sharedPrefs.edit();
@@ -123,6 +137,11 @@ public class AlarmReceiver extends BroadcastReceiver {
                     }else {
                         alarmManager_esm.set(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_esm);
                     }
+                } else {
+                    //to many times reset
+                    SharedPreferences.Editor editor = sharedPrefs.edit();
+                    editor.putInt(ESM_DELAY_COUNT, 0);
+                    editor.apply();
                 }
 
             }
@@ -514,8 +533,11 @@ public class AlarmReceiver extends BroadcastReceiver {
         esm.put(PUSH_ESM_TARGET_NEWS_ID, "NA");
         esm.put(PUSH_ESM_TARGET_TITLE, "NA");
         esm.put(PUSH_ESM_TARGET_IN_TIME, "NA");
-        esm.put(PUSH_ESM_TARGET_SITUATION, "NA");
-        esm.put(PUSH_ESM_TARGET_PLACE, "NA");
+        esm.put(PUSH_ESM_TARGET_RECEIEVE_TIME, "NA");
+        esm.put(PUSH_ESM_TARGET_RECEIEVE_SITUATION, "NA");
+        esm.put(PUSH_ESM_TARGET_RECEIEVE_PLACE, "NA");
+        esm.put(PUSH_ESM_TARGET_READ_SITUATION, "NA");
+        esm.put(PUSH_ESM_TARGET_READ_PLACE, "NA");
 
 
         db.collection(PUSH_ESM_COLLECTION)
@@ -591,7 +613,8 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         diary.put(PUSH_DIARY_SCHEDULE_SOURCE, diary_schedule_source);
         diary.put(PUSH_DIARY_SAMPLE_TIME, 0);
-        diary.put(PUSH_DIARY_OPTION, "NA");
+        diary.put(PUSH_DIARY_OPTION_READ, "NA");
+        diary.put(PUSH_DIARY_OPTION_NOTI, "NA");
 
         diary.put(PUSH_DIARY_NOTI_TIME, Timestamp.now());
         diary.put(PUSH_DIARY_RECEIEVE_TIME, 0);
@@ -602,9 +625,10 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         diary.put(PUSH_DIARY_REMOVE_TYPE, "NA");
         diary.put(PUSH_DIARY_RESULT, "NA");
-        diary.put(PUSH_DIARY_INOPPORTUNE_TARGET, "NA");
-        diary.put(PUSH_DIARY_OPPORTUNE_TARGET, "NA");
-
+        diary.put(PUSH_DIARY_INOPPORTUNE_TARGET_READ, "NA");
+        diary.put(PUSH_DIARY_OPPORTUNE_TARGET_RAED, "NA");
+        diary.put(PUSH_DIARY_INOPPORTUNE_TARGET_NOTI, "NA");
+        diary.put(PUSH_DIARY_OPPORTUNE_TARGET_NOTI, "NA");
 
         db.collection(PUSH_DIARY_COLLECTION)
                 .document(device_id + " " + diary_id)
@@ -639,7 +663,8 @@ public class AlarmReceiver extends BroadcastReceiver {
 
                 diary.put(PUSH_DIARY_SCHEDULE_SOURCE, cursor.getString(cursor.getColumnIndex("diary_schedule_source")));
                 diary.put(PUSH_DIARY_SAMPLE_TIME, new Timestamp(cursor.getLong(cursor.getColumnIndex("diary_sample_time")), 0));//
-                diary.put(PUSH_DIARY_OPTION, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("esm_sample")).split("#"))));
+                diary.put(PUSH_DIARY_OPTION_READ, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("esm_sample_read")).split("#"))));
+                diary.put(PUSH_DIARY_OPTION_NOTI, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("esm_sample_noti")).split("#"))));
 
                 diary.put(PUSH_DIARY_NOTI_TIME, new Timestamp(cursor.getLong(cursor.getColumnIndex("noti_timestamp")), 0));
                 diary.put(PUSH_DIARY_RECEIEVE_TIME, new Timestamp(cursor.getLong(cursor.getColumnIndex("receieve_timestamp")), 0));
@@ -649,8 +674,10 @@ public class AlarmReceiver extends BroadcastReceiver {
                 diary.put(PUSH_DIARY_REMOVE_TIME, new Timestamp(cursor.getLong(cursor.getColumnIndex("remove_timestamp")), 0));
                 diary.put(PUSH_DIARY_REMOVE_TYPE, cursor.getString(cursor.getColumnIndex("remove_type")));
                 diary.put(PUSH_DIARY_RESULT, cursor.getString(cursor.getColumnIndex("result")));
-                diary.put(PUSH_DIARY_INOPPORTUNE_TARGET, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("inopportune_result")).split("#"))));
-                diary.put(PUSH_DIARY_OPPORTUNE_TARGET, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("opportune_result")).split("#"))));
+                diary.put(PUSH_DIARY_INOPPORTUNE_TARGET_READ, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("inopportune_result_read")).split("#"))));
+                diary.put(PUSH_DIARY_OPPORTUNE_TARGET_RAED, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("opportune_result_read")).split("#"))));
+                diary.put(PUSH_DIARY_INOPPORTUNE_TARGET_NOTI, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("inopportune_result_noti")).split("#"))));
+                diary.put(PUSH_DIARY_OPPORTUNE_TARGET_NOTI, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("opportune_result_noti")).split("#"))));
 
                 db.collection(PUSH_DIARY_COLLECTION+"_sql")
                         .document(cursor.getString(cursor.getColumnIndex("doc_id")))
@@ -698,8 +725,12 @@ public class AlarmReceiver extends BroadcastReceiver {
                 esm.put(PUSH_ESM_TARGET_NEWS_ID, cursor.getString(cursor.getColumnIndex("noti_read_news_id")));//receieve 1 click 0
                 esm.put(PUSH_ESM_TARGET_TITLE, cursor.getString(cursor.getColumnIndex("noti_read_title")));//receieve 1 click 0
                 esm.put(PUSH_ESM_TARGET_IN_TIME, cursor.getString(cursor.getColumnIndex("noti_read_in_time")));//receieve 1 click 0
-                esm.put(PUSH_ESM_TARGET_SITUATION, cursor.getString(cursor.getColumnIndex("noti_read_situation")));//receieve 1 click 0
-                esm.put(PUSH_ESM_TARGET_PLACE, cursor.getString(cursor.getColumnIndex("noti_read_place")));//receieve 1 click 0
+                esm.put(PUSH_ESM_TARGET_RECEIEVE_TIME, cursor.getString(cursor.getColumnIndex("noti_read_receieve_time")));//receieve 1 click 0
+                esm.put(PUSH_ESM_TARGET_RECEIEVE_SITUATION, cursor.getString(cursor.getColumnIndex("noti_read_situation")));//receieve 1 click 0
+                esm.put(PUSH_ESM_TARGET_RECEIEVE_PLACE, cursor.getString(cursor.getColumnIndex("noti_read_place")));//receieve 1 click 0
+
+                esm.put(PUSH_ESM_TARGET_READ_SITUATION, cursor.getString(cursor.getColumnIndex("self_read_situation")));//receieve 1 click 0
+                esm.put(PUSH_ESM_TARGET_READ_PLACE, cursor.getString(cursor.getColumnIndex("self_read_place")));//receieve 1 click 0
 
                 db.collection(PUSH_ESM_COLLECTION+"_sql")
                         .document(cursor.getString(cursor.getColumnIndex("doc_id")))

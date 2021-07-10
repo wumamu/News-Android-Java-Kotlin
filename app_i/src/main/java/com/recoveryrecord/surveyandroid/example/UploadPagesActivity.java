@@ -99,7 +99,8 @@ public class UploadPagesActivity extends AppCompatActivity {
 
                 diary.put(PUSH_DIARY_SCHEDULE_SOURCE, cursor.getString(cursor.getColumnIndex("diary_schedule_source")));
                 diary.put(PUSH_DIARY_SAMPLE_TIME, new Timestamp(cursor.getLong(cursor.getColumnIndex("diary_sample_time")), 0));//
-                diary.put(PUSH_DIARY_OPTION, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("esm_sample")).split("#"))));
+                diary.put(PUSH_DIARY_OPTION_READ, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("esm_sample_read")).split("#"))));
+                diary.put(PUSH_DIARY_OPTION_NOTI, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("esm_sample_noti")).split("#"))));
 
                 diary.put(PUSH_DIARY_NOTI_TIME, new Timestamp(cursor.getLong(cursor.getColumnIndex("noti_timestamp")), 0));
                 diary.put(PUSH_DIARY_RECEIEVE_TIME, new Timestamp(cursor.getLong(cursor.getColumnIndex("receieve_timestamp")), 0));
@@ -109,8 +110,10 @@ public class UploadPagesActivity extends AppCompatActivity {
                 diary.put(PUSH_DIARY_REMOVE_TIME, new Timestamp(cursor.getLong(cursor.getColumnIndex("remove_timestamp")), 0));
                 diary.put(PUSH_DIARY_REMOVE_TYPE, cursor.getString(cursor.getColumnIndex("remove_type")));
                 diary.put(PUSH_DIARY_RESULT, cursor.getString(cursor.getColumnIndex("result")));
-                diary.put(PUSH_DIARY_INOPPORTUNE_TARGET, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("inopportune_result")).split("#"))));
-                diary.put(PUSH_DIARY_OPPORTUNE_TARGET, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("opportune_result")).split("#"))));
+                diary.put(PUSH_DIARY_INOPPORTUNE_TARGET_READ, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("inopportune_result")).split("#"))));
+                diary.put(PUSH_DIARY_OPPORTUNE_TARGET_RAED, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("opportune_result")).split("#"))));
+                diary.put(PUSH_DIARY_INOPPORTUNE_TARGET_NOTI, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("inopportune_result_noti")).split("#"))));
+                diary.put(PUSH_DIARY_OPPORTUNE_TARGET_NOTI, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("opportune_result_noti")).split("#"))));
 
                 db.collection(PUSH_DIARY_COLLECTION+"_sql")
                         .document(cursor.getString(cursor.getColumnIndex("doc_id")))
@@ -158,9 +161,12 @@ public class UploadPagesActivity extends AppCompatActivity {
                 esm.put(PUSH_ESM_TARGET_NEWS_ID, cursor.getString(cursor.getColumnIndex("noti_read_news_id")));//receieve 1 click 0
                 esm.put(PUSH_ESM_TARGET_TITLE, cursor.getString(cursor.getColumnIndex("noti_read_title")));//receieve 1 click 0
                 esm.put(PUSH_ESM_TARGET_IN_TIME, cursor.getString(cursor.getColumnIndex("noti_read_in_time")));//receieve 1 click 0
-//                esm.put(PUSH_ESM_TARGET_RECEIEVE_TIME, cursor.getString(cursor.getColumnIndex("noti_read_receieve_time")));//receieve 1 click 0
-                esm.put(PUSH_ESM_TARGET_SITUATION, cursor.getString(cursor.getColumnIndex("noti_read_situation")));//receieve 1 click 0
-                esm.put(PUSH_ESM_TARGET_PLACE, cursor.getString(cursor.getColumnIndex("noti_read_place")));//receieve 1 click 0
+                esm.put(PUSH_ESM_TARGET_RECEIEVE_TIME, cursor.getString(cursor.getColumnIndex("noti_read_receieve_time")));//receieve 1 click 0
+                esm.put(PUSH_ESM_TARGET_RECEIEVE_SITUATION, cursor.getString(cursor.getColumnIndex("noti_read_situation")));//receieve 1 click 0
+                esm.put(PUSH_ESM_TARGET_RECEIEVE_PLACE, cursor.getString(cursor.getColumnIndex("noti_read_place")));//receieve 1 click 0
+
+                esm.put(PUSH_ESM_TARGET_READ_SITUATION, cursor.getString(cursor.getColumnIndex("self_read_situation")));//receieve 1 click 0
+                esm.put(PUSH_ESM_TARGET_READ_PLACE, cursor.getString(cursor.getColumnIndex("self_read_place")));//receieve 1 click 0
 
                 db.collection(PUSH_ESM_COLLECTION+"_sql")
                         .document(cursor.getString(cursor.getColumnIndex("doc_id")))
