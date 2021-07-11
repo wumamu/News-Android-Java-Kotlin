@@ -126,8 +126,8 @@ public class UploadPagesActivity extends AppCompatActivity {
                 diary.put(PUSH_DIARY_REMOVE_TIME, new Timestamp(cursor.getLong(cursor.getColumnIndex("remove_timestamp")), 0));
                 diary.put(PUSH_DIARY_REMOVE_TYPE, cursor.getString(cursor.getColumnIndex("remove_type")));
                 diary.put(PUSH_DIARY_RESULT, cursor.getString(cursor.getColumnIndex("result")));
-                diary.put(PUSH_DIARY_INOPPORTUNE_TARGET_READ, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("inopportune_result")).split("#"))));
-                diary.put(PUSH_DIARY_OPPORTUNE_TARGET_RAED, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("opportune_result")).split("#"))));
+                diary.put(PUSH_DIARY_INOPPORTUNE_TARGET_READ, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("inopportune_result_read")).split("#"))));
+                diary.put(PUSH_DIARY_OPPORTUNE_TARGET_RAED, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("opportune_result_read")).split("#"))));
                 diary.put(PUSH_DIARY_INOPPORTUNE_TARGET_NOTI, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("inopportune_result_noti")).split("#"))));
                 diary.put(PUSH_DIARY_OPPORTUNE_TARGET_NOTI, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("opportune_result_noti")).split("#"))));
 

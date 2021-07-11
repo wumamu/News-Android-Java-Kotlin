@@ -440,6 +440,8 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                     mydiary.setKEY_RESULT(result_json);
                     mydiary.setKEY_INOPPORTUNTE_RESULT_READ(String.join("#", in_re));
                     mydiary.setKEY_OPPORTUNTE_RESULT_READ(String.join("#", op_re));
+                    mydiary.setKEY_OPPORTUNTE_RESULT_NOTI(String.join("#", op_no));
+                    mydiary.setKEY_INOPPORTUNTE_RESULT_NOTI(String.join("#", in_no));
                     DiaryDbHelper dbHandler = new DiaryDbHelper((Activity)v.getContext());
                     dbHandler.UpdatePushDiaryDetailsSubmit(mydiary);
 
