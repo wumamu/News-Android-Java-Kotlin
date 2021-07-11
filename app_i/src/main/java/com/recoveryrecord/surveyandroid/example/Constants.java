@@ -111,7 +111,7 @@ public class Constants {
 
     public static final String USER_COLLECTION = "user";
     public static final String APP_VERSION_KEY = "app_version";
-    public static final String APP_VERSION_VALUE = "21.07.11-1";
+    public static final String APP_VERSION_VALUE = "21.07.10-1";
     public static final String UPDATE_TIME = "update_timestamp";
     public static final String INITIAL_TIME = "initial_timestamp";
     public static final String LAST_LAUNCH_TIME = "last_launch_timestamp";
@@ -448,17 +448,4 @@ public class Constants {
 
 //    public static String JSON_TEMPLATE = "";
 
-    //SENSOR
-    public static final String SENSOR_DEVICE_ID = "device_id";
-    public static final String SENSOR_DOC_ID = "doc_id";
-    public static final String SENSOR_TIMESTAMP = "timestamp";
-    public static final String SENSOR_USER_ID = "user_id";
-    public static final String SENSOR_SESSION = "session";
-    public static final String SENSOR_USING_APP = "using_app";
-    public static final String SENSOR_ACTIVITYRECOGNITION = "activityrecognition";
-    public static final String SENSOR_APPUSAGE = "appusage";
-    public static final String SENSOR_LIGHT = "light";
-    public static final String SENSOR_NETWORK = "network";
-    public static final String SENSOR_SCREEN = "screen";
-    public static final String SENSOR_RINGMODE = "ringmode";
 }

@@ -5,7 +5,7 @@ buildscript {
     repositories {
         google()
         jcenter()
-        
+        maven { url 'https://jitpack.io' }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.6.3'
@@ -13,24 +13,6 @@ buildscript {
         // Check that you have the Google Services Gradle plugin v4.3.2 or later
         // (if not, add it).
         classpath 'com.google.gms:google-services:4.3.5'
-
-        // Add the Crashlytics Gradle plugin (be sure to add version
-        // 2.0.0 or later if you built your app with Android Studio 4.1).
-//        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.5.1'
-
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-
-
-//        // To benefit from the latest Performance Monitoring plugin features,
-//        // update your Android Gradle Plugin dependency to at least v3.4.0
-//        classpath 'com.android.tools.build:gradle:3.4.0'
-//
-//        classpath 'com.google.gms:google-services:4.3.8'  // Google Services plugin
-//
-//        // Add the dependency for the Performance Monitoring plugin
-//        classpath 'com.google.firebase:perf-plugin:1.4.0'  // Performance Monitoring plugin
     }
 }
 
@@ -38,7 +20,7 @@ allprojects {
     repositories {
         google()
         jcenter()
-        
+        maven { url 'https://jitpack.io' }
     }
 }
 
