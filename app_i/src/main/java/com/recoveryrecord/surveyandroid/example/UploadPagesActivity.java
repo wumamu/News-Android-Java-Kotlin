@@ -122,7 +122,7 @@ public class UploadPagesActivity extends AppCompatActivity {
             }
             cursor.close();
         }
-        dbHandler.UpdateAll();
+//        dbHandler.UpdateAll();
 //        dbHandler.deleteDb();
     }
 
@@ -175,7 +175,7 @@ public class UploadPagesActivity extends AppCompatActivity {
             }
             cursor.close();
         }
-        dbHandler.UpdateAll();
+//        dbHandler.UpdateAll();
 //        dbHandler.deleteDb();
     }
 
@@ -223,7 +223,7 @@ public class UploadPagesActivity extends AppCompatActivity {
             }
             cursor.close();
         }
-        dbHandler.UpdateAll();
+//        dbHandler.UpdateAll();
 //        dbHandler.deleteDb();
     }
 
@@ -260,7 +260,7 @@ public class UploadPagesActivity extends AppCompatActivity {
             }
             cursor.close();
         }
-        dbHandler.UpdateAll();
+//        dbHandler.UpdateAll();
 //        dbHandler.deleteDb();
     }
 

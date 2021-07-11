@@ -245,7 +245,7 @@ public class ReadingBehaviorDbHelper extends SQLiteOpenHelper {
                         "\tWHERE rb.time_on_page > 1\n" +
 //                        "\tWHERE rb.news_id = " + target_news_id + "\n" +
                         ") as tmp\n" +
-                        "WHERE tmp.diff <= 3600 AND tmp.diff >=0\n" +
+                        "WHERE tmp.diff <= 2700 AND tmp.diff >=0\n" +
                         "ORDER BY tmp.in_timestamp DESC;"
                 , null );
         return res;
@@ -266,7 +266,7 @@ public class ReadingBehaviorDbHelper extends SQLiteOpenHelper {
                         "\tWHERE rb.time_on_page > 1\n" +
 //                        "\tWHERE rb.news_id = " + target_news_id + "\n" +
                         ") as tmp\n" +
-                        "WHERE tmp.diff <= 2700 AND tmp.diff >=0\n" +
+                        "WHERE tmp.diff <= 1800 AND tmp.diff >=0\n" +
                         "ORDER BY tmp.in_timestamp DESC;"
                 , null );
         return res;
@@ -275,7 +275,8 @@ public class ReadingBehaviorDbHelper extends SQLiteOpenHelper {
     public Cursor getALL() {
         SQLiteDatabase db = this.getReadableDatabase();
 //        Cursor res =  db.rawQuery( "select * from contacts where id="+id+"", null );
-        Cursor res =  db.rawQuery( "SELECT  * FROM " + TABLE_NAME_READING_BEHAVIOR + " as tmp WHERE tmp.user_id <> 'upload';", null );
+//        Cursor res =  db.rawQuery( "SELECT  * FROM " + TABLE_NAME_READING_BEHAVIOR + " as tmp WHERE tmp.user_id <> 'upload';", null );
+        Cursor res =  db.rawQuery( "SELECT  * FROM " + TABLE_NAME_READING_BEHAVIOR + ";", null );
         return res;
     }
 

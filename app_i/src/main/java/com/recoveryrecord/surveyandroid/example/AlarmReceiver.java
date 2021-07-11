@@ -686,7 +686,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             }
             cursor.close();
         }
-        dbHandler.UpdateAll();
+//        dbHandler.UpdateAll();
 //        dbHandler.deleteDb();
     }
 
@@ -739,7 +739,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             }
             cursor.close();
         }
-        dbHandler.UpdateAll();
+//        dbHandler.UpdateAll();
 //        dbHandler.deleteDb();
     }
 
@@ -787,7 +787,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             }
             cursor.close();
         }
-        dbHandler.UpdateAll();
+//        dbHandler.UpdateAll();
 //        dbHandler.deleteDb();
     }
 
@@ -824,7 +824,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             }
             cursor.close();
         }
-        dbHandler.UpdateAll();
+//        dbHandler.UpdateAll();
 //        dbHandler.deleteDb();
     }
 }

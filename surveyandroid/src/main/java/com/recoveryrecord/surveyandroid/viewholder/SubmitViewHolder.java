@@ -365,8 +365,8 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                                 if(!jsonAnswerObject.getString("inopportune_noti_1").equals("無")){
                                     List<String> view_array = new ArrayList<String>(Arrays.asList(jsonAnswerObject.getString("inopportune_noti_1").split("\n")));
                                     //{news_title}\n{news_time}\n{news_situation}\n{news_place}#
-                                    for (int j=0; j<diary_read_array.size(); j++){
-                                        List<String> data_array = new ArrayList<String>(Arrays.asList(diary_read_array.get(j).split("\n")));
+                                    for (int j=0; j<diary_noti_array.size(); j++){
+                                        List<String> data_array = new ArrayList<String>(Arrays.asList(diary_noti_array.get(j).split("\n")));
                                         //把標題分出來
                                         if(data_array.get(0).equals(view_array.get(0))){
                                             in_no.add(data_array.get(4));//id
@@ -382,8 +382,8 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                             if (jsonAnswerObject.has("opportune_noti_1")) {
                                 if(!jsonAnswerObject.getString("opportune_noti_1").equals("無")){
                                     List<String> view_array = new ArrayList<String>(Arrays.asList(jsonAnswerObject.getString("opportune_noti_1").split("\n")));
-                                    for (int j=0; j<diary_read_array.size(); j++){
-                                        List<String> data_array = new ArrayList<String>(Arrays.asList(diary_read_array.get(j).split("\n")));
+                                    for (int j=0; j<diary_noti_array.size(); j++){
+                                        List<String> data_array = new ArrayList<String>(Arrays.asList(diary_noti_array.get(j).split("\n")));
                                         if(data_array.get(0).equals(view_array.get(0))){
                                             op_no.add(data_array.get(4));//id
                                             op_no.add(data_array.get(0));//title

@@ -161,7 +161,8 @@ public class PushNewsDbHelper extends SQLiteOpenHelper {
     public Cursor getALL() {
         SQLiteDatabase db = this.getReadableDatabase();
 //        Cursor res =  db.rawQuery( "select * from contacts where id="+id+"", null );
-        Cursor res =  db.rawQuery( "SELECT  * FROM " + TABLE_NAME_PUSH_NEWS + " as tmp WHERE tmp.user_id <> 'upload';", null );
+//        Cursor res =  db.rawQuery( "SELECT  * FROM " + TABLE_NAME_PUSH_NEWS + " as tmp WHERE tmp.user_id <> 'upload';", null );
+        Cursor res =  db.rawQuery( "SELECT  * FROM " + TABLE_NAME_PUSH_NEWS + ";", null );
         return res;
     }
 
