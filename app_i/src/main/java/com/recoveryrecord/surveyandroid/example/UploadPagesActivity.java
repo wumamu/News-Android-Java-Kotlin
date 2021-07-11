@@ -5,6 +5,9 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -12,10 +15,17 @@ import android.widget.Toast;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.recoveryrecord.surveyandroid.example.DbHelper.ActivityRecognitionReceiverDbHelper;
+import com.recoveryrecord.surveyandroid.example.DbHelper.AppUsageReceiverDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.DiaryDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.ESMDbHelper;
+import com.recoveryrecord.surveyandroid.example.DbHelper.LightSensorReceiverDbHelper;
+import com.recoveryrecord.surveyandroid.example.DbHelper.NetworkChangeReceiverDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.PushNewsDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.ReadingBehaviorDbHelper;
+import com.recoveryrecord.surveyandroid.example.DbHelper.RingModeReceiverDbHelper;
+import com.recoveryrecord.surveyandroid.example.DbHelper.ScreenStateReceiverDbHelper;
+import com.recoveryrecord.surveyandroid.example.sqlite.ESM;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -65,6 +75,12 @@ public class UploadPagesActivity extends AppCompatActivity {
                 upload_reading_behavior();
                 upload_esm();
                 upload_diary();
+                upload_activityrecognition();
+                upload_appusage();
+                upload_light();
+                upload_network();
+                upload_RingMode();
+                upload_Screen();
                 Toast.makeText(getApplicationContext(), "上傳資料完成", Toast.LENGTH_SHORT).show();
 
                 Long new_time = Timestamp.now().getSeconds();
@@ -263,7 +279,175 @@ public class UploadPagesActivity extends AppCompatActivity {
 //        dbHandler.UpdateAll();
 //        dbHandler.deleteDb();
     }
-
+    //sensor
+    private void upload_activityrecognition(){
+        ActivityRecognitionReceiverDbHelper dbHelper = new ActivityRecognitionReceiverDbHelper(getApplicationContext());
+        Cursor cursor = dbHelper.getALL();
+        if(cursor.moveToFirst()){
+//            Log.e("upload", "move to first");
+            while(!cursor.isAfterLast()){
+//                Log.e("upload", "isafterlast");
+                Map<String, Object> activity = new HashMap<>();
+                activity.put(SENSOR_DOC_ID, cursor.getString(cursor.getColumnIndex("doc_id")));
+                activity.put(SENSOR_DEVICE_ID, cursor.getString(cursor.getColumnIndex("device_id")));
+                activity.put(SENSOR_TIMESTAMP, new Timestamp(cursor.getLong(cursor.getColumnIndex("timestamp")), 0));
+                activity.put(SENSOR_USER_ID, cursor.getString(cursor.getColumnIndex("user_id")));
+                activity.put(SENSOR_SESSION, cursor.getInt(cursor.getColumnIndex("session")));
+                activity.put(SENSOR_USING_APP, cursor.getString(cursor.getColumnIndex("using_app")));
+                activity.put(SENSOR_ACTIVITYRECOGNITION, cursor.getString(cursor.getColumnIndex("activityrecognition")));
+                db.collection("Sensor collection")
+                        .document("Sensor SQL")
+                        .collection("Confirmed Activity Recognition sql")
+                        .document(cursor.getString(cursor.getColumnIndex("doc_id")))
+                        .set(activity);
+                cursor.moveToNext();
+            }
+//            Log.e("upload", "close");
+            cursor.close();
+        }
+//        Log.e("upload", "updateall");
+        dbHelper.UpdateAll();
+    }
+    private void upload_appusage(){
+        AppUsageReceiverDbHelper dbHelper = new AppUsageReceiverDbHelper(getApplicationContext());
+        Cursor cursor = dbHelper.getALL();
+        if(cursor.moveToFirst()){
+//            Log.e("upload", "move to first");
+            while(!cursor.isAfterLast()){
+//                Log.e("upload", "isafterlast");
+                Map<String, Object> appusage = new HashMap<>();
+                appusage.put(SENSOR_DOC_ID, cursor.getString(cursor.getColumnIndex("doc_id")));
+                appusage.put(SENSOR_DEVICE_ID, cursor.getString(cursor.getColumnIndex("device_id")));
+                appusage.put(SENSOR_TIMESTAMP, new Timestamp(cursor.getLong(cursor.getColumnIndex("timestamp")), 0));
+                appusage.put(SENSOR_USER_ID, cursor.getString(cursor.getColumnIndex("user_id")));
+                appusage.put(SENSOR_SESSION, cursor.getInt(cursor.getColumnIndex("session")));
+                appusage.put(SENSOR_USING_APP, cursor.getString(cursor.getColumnIndex("using_app")));
+                appusage.put(SENSOR_APPUSAGE, cursor.getString(cursor.getColumnIndex("appusage")));
+                db.collection("Sensor collection")
+                        .document("Sensor SQL")
+                        .collection("AppUsage sql")
+                        .document(cursor.getString(cursor.getColumnIndex("doc_id")))
+                        .set(appusage);
+                cursor.moveToNext();
+            }
+//            Log.e("upload", "close");
+            cursor.close();
+        }
+//        Log.e("upload", "updateall");
+        dbHelper.UpdateAll();
+    }
+    private void upload_light(){
+        LightSensorReceiverDbHelper dbHelper = new LightSensorReceiverDbHelper(getApplicationContext());
+        Cursor cursor = dbHelper.getALL();
+        if(cursor.moveToFirst()){
+//            Log.e("upload", "move to first");
+            while(!cursor.isAfterLast()){
+//                Log.e("upload", "isafterlast");
+                Map<String, Object> light = new HashMap<>();
+                light.put(SENSOR_DOC_ID, cursor.getString(cursor.getColumnIndex("doc_id")));
+                light.put(SENSOR_DEVICE_ID, cursor.getString(cursor.getColumnIndex("device_id")));
+                light.put(SENSOR_TIMESTAMP, new Timestamp(cursor.getLong(cursor.getColumnIndex("timestamp")), 0));
+                light.put(SENSOR_USER_ID, cursor.getString(cursor.getColumnIndex("user_id")));
+                light.put(SENSOR_SESSION, cursor.getInt(cursor.getColumnIndex("session")));
+                light.put(SENSOR_USING_APP, cursor.getString(cursor.getColumnIndex("using_app")));
+                light.put(SENSOR_LIGHT, cursor.getString(cursor.getColumnIndex("light")));
+                db.collection("Sensor collection")
+                        .document("Sensor SQL")
+                        .collection("Light Sensor sql")
+                        .document(cursor.getString(cursor.getColumnIndex("doc_id")))
+                        .set(light);
+                cursor.moveToNext();
+            }
+//            Log.e("upload", "close");
+            cursor.close();
+        }
+//        Log.e("upload", "updateall");
+        dbHelper.UpdateAll();
+    }
+    private void upload_network(){
+        NetworkChangeReceiverDbHelper dbHelper = new NetworkChangeReceiverDbHelper(getApplicationContext());
+        Cursor cursor = dbHelper.getALL();
+        if(cursor.moveToFirst()){
+//            Log.e("upload", "move to first");
+            while(!cursor.isAfterLast()){
+//                Log.e("upload", "isafterlast");
+                Map<String, Object> network = new HashMap<>();
+                network.put(SENSOR_DOC_ID, cursor.getString(cursor.getColumnIndex("doc_id")));
+                network.put(SENSOR_DEVICE_ID, cursor.getString(cursor.getColumnIndex("device_id")));
+                network.put(SENSOR_TIMESTAMP, new Timestamp(cursor.getLong(cursor.getColumnIndex("timestamp")), 0));
+                network.put(SENSOR_USER_ID, cursor.getString(cursor.getColumnIndex("user_id")));
+                network.put(SENSOR_SESSION, cursor.getInt(cursor.getColumnIndex("session")));
+                network.put(SENSOR_USING_APP, cursor.getString(cursor.getColumnIndex("using_app")));
+                network.put(SENSOR_NETWORK, cursor.getString(cursor.getColumnIndex("network")));
+                db.collection("Sensor collection")
+                        .document("Sensor SQL")
+                        .collection("Network sql")
+                        .document(cursor.getString(cursor.getColumnIndex("doc_id")))
+                        .set(network);
+                cursor.moveToNext();
+            }
+//            Log.e("upload", "close");
+            cursor.close();
+        }
+//        Log.e("upload", "updateall");
+        dbHelper.UpdateAll();
+    }
+    private void upload_RingMode(){
+        RingModeReceiverDbHelper dbHelper = new RingModeReceiverDbHelper(getApplicationContext());
+        Cursor cursor = dbHelper.getALL();
+        if(cursor.moveToFirst()){
+//            Log.e("upload", "move to first");
+            while(!cursor.isAfterLast()){
+//                Log.e("upload", "isafterlast");
+                Map<String, Object> ring = new HashMap<>();
+                ring.put(SENSOR_DOC_ID, cursor.getString(cursor.getColumnIndex("doc_id")));
+                ring.put(SENSOR_DEVICE_ID, cursor.getString(cursor.getColumnIndex("device_id")));
+                ring.put(SENSOR_TIMESTAMP, new Timestamp(cursor.getLong(cursor.getColumnIndex("timestamp")), 0));
+                ring.put(SENSOR_USER_ID, cursor.getString(cursor.getColumnIndex("user_id")));
+                ring.put(SENSOR_SESSION, cursor.getInt(cursor.getColumnIndex("session")));
+                ring.put(SENSOR_USING_APP, cursor.getString(cursor.getColumnIndex("using_app")));
+                ring.put(SENSOR_RINGMODE, cursor.getString(cursor.getColumnIndex("ringmode")));
+                db.collection("Sensor collection")
+                        .document("Sensor SQL")
+                        .collection("Ring Mode sql")
+                        .document(cursor.getString(cursor.getColumnIndex("doc_id")))
+                        .set(ring);
+                cursor.moveToNext();
+            }
+//            Log.e("upload", "close");
+            cursor.close();
+        }
+//        Log.e("upload", "updateall");
+        dbHelper.UpdateAll();
+    }
+    private void upload_Screen(){
+        ScreenStateReceiverDbHelper dbHelper = new ScreenStateReceiverDbHelper(getApplicationContext());
+        Cursor cursor = dbHelper.getALL();
+        if(cursor.moveToFirst()){
+//            Log.e("upload", "move to first");
+            while(!cursor.isAfterLast()){
+//                Log.e("upload", "isafterlast");
+                Map<String, Object> screen = new HashMap<>();
+                screen.put(SENSOR_DOC_ID, cursor.getString(cursor.getColumnIndex("doc_id")));
+                screen.put(SENSOR_DEVICE_ID, cursor.getString(cursor.getColumnIndex("device_id")));
+                screen.put(SENSOR_TIMESTAMP, new Timestamp(cursor.getLong(cursor.getColumnIndex("timestamp")), 0));
+                screen.put(SENSOR_USER_ID, cursor.getString(cursor.getColumnIndex("user_id")));
+                screen.put(SENSOR_SESSION, cursor.getInt(cursor.getColumnIndex("session")));
+                screen.put(SENSOR_USING_APP, cursor.getString(cursor.getColumnIndex("using_app")));
+                screen.put(SENSOR_SCREEN, cursor.getString(cursor.getColumnIndex("screen")));
+                db.collection("Sensor collection")
+                        .document("Sensor SQL")
+                        .collection("Screen sql")
+                        .document(cursor.getString(cursor.getColumnIndex("doc_id")))
+                        .set(screen);
+                cursor.moveToNext();
+            }
+//            Log.e("upload", "close");
+            cursor.close();
+        }
+//        Log.e("upload", "updateall");
+        dbHelper.UpdateAll();
+    }
     @Override
     protected void onStart() {
         super.onStart();
