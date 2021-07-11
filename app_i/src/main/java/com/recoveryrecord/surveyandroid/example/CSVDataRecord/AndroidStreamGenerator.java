@@ -17,7 +17,7 @@ public class AndroidStreamGenerator<T extends DataRecord>
     }
 
     @Override
-    public void updateStream() {
+    public void updateStream(Context context) {
 
     }
 }

@@ -117,7 +117,7 @@ public class BlueToothReceiver implements StreamGenerator{
     };
 
     @Override
-    public void updateStream() {
+    public void updateStream(Context context) {
         BluetoothAdapter mBtAdapter = BluetoothAdapter.getDefaultAdapter( );
         if( !mBtAdapter.isEnabled( ) ) {
             BlueToothState = "BlueTooth Is Closed";

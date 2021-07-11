@@ -8,6 +8,7 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
@@ -17,17 +18,23 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.preference.PreferenceManager;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.recoveryrecord.surveyandroid.example.DbHelper.NetworkChangeReceiverDbHelper;
+import com.recoveryrecord.surveyandroid.example.DbHelper.RingModeReceiverDbHelper;
+import com.recoveryrecord.surveyandroid.example.sqlite.Network;
+import com.recoveryrecord.surveyandroid.example.sqlite.RingMode;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
@@ -57,7 +64,7 @@ public class NetworkChangeReceiver implements StreamGenerator{
     }
 
     @Override
-    public void updateStream() {
+    public void updateStream(Context context) {
         final Timestamp current_end = Timestamp.now();
         Date date = new Date(System.currentTimeMillis());
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
@@ -76,6 +83,17 @@ public class NetworkChangeReceiver implements StreamGenerator{
                 .collection("Network")
                 .document(device_id + " " + time_now)
                 .set(sensordb);
+        final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        com.recoveryrecord.surveyandroid.example.sqlite.Network mynetwork = new Network();//sqlite//add new to db
+        mynetwork.setKEY_TIMESTAMP(Timestamp.now().getSeconds());
+        mynetwork.setKEY_DOC_ID(device_id + " " + time_now);
+        mynetwork.setKEY_DEVICE_ID(device_id);
+        mynetwork.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+        mynetwork.setKEY_SESSION(SessionID);
+        mynetwork.setKEY_USING_APP(UsingApp);
+        mynetwork.setKEY_NETWORK(NetworkState);
+        NetworkChangeReceiverDbHelper dbHandler = new NetworkChangeReceiverDbHelper(context);
+        dbHandler.insertNetworkDetailsCreate(mynetwork);
     }
 
     public class NetworkChangeBroadcastReceiver extends BroadcastReceiver {
@@ -140,6 +158,17 @@ public class NetworkChangeReceiver implements StreamGenerator{
                         .collection("Network")
                         .document(device_id + " " + time_now)
                         .set(sensordb);
+                final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+                com.recoveryrecord.surveyandroid.example.sqlite.Network mynetwork = new Network();//sqlite//add new to db
+                mynetwork.setKEY_TIMESTAMP(Timestamp.now().getSeconds());
+                mynetwork.setKEY_DOC_ID(device_id + " " + time_now);
+                mynetwork.setKEY_DEVICE_ID(device_id);
+                mynetwork.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+                mynetwork.setKEY_SESSION(SessionID);
+                mynetwork.setKEY_USING_APP(UsingApp);
+                mynetwork.setKEY_NETWORK(NetworkState);
+                NetworkChangeReceiverDbHelper dbHandler = new NetworkChangeReceiverDbHelper(context);
+                dbHandler.insertNetworkDetailsCreate(mynetwork);
             } catch (NullPointerException e) {
                 e.printStackTrace();
             }

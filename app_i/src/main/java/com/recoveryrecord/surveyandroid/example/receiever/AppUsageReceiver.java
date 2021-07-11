@@ -8,6 +8,7 @@ import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -17,10 +18,15 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.preference.PreferenceManager;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.recoveryrecord.surveyandroid.example.DbHelper.ActivityRecognitionReceiverDbHelper;
+import com.recoveryrecord.surveyandroid.example.DbHelper.AppUsageReceiverDbHelper;
+import com.recoveryrecord.surveyandroid.example.sqlite.ActivityRecognition;
+import com.recoveryrecord.surveyandroid.example.sqlite.AppUsage;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -30,9 +36,11 @@ import java.util.Map;
 
 import static android.app.AppOpsManager.MODE_ALLOWED;
 import static android.app.AppOpsManager.OPSTR_GET_USAGE_STATS;
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
+import static com.recoveryrecord.surveyandroid.example.receiever.TransportationModeReceiver.getConfirmedActivityString;
 
 public class
 AppUsageReceiver extends Service {
@@ -81,18 +89,24 @@ AppUsageReceiver extends Service {
                 UsingApp = "Not Using APP";
 //                sensordb.put("Using APP", "N");
             }
-//            ref.collection("BlueTooth").document(time_now).set(sensordb);
-//            ref.collection("LightSensor").document(time_now).set(sensordb);
-//            ref.collection("Network").document(time_now).set(sensordb);
-//            ref.collection("RingMode").document(time_now).set(sensordb);
-//            ref.collection("Screen").document(time_now).set(sensordb);
-//            ref.collection("Activity Recognition").document(time_now).set(sensordb);
+            SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+            com.recoveryrecord.surveyandroid.example.sqlite.AppUsage myappusage = new AppUsage();//sqlite//add new to db
+            myappusage.setKEY_TIMESTAMP(Timestamp.now().getSeconds());
+            myappusage.setKEY_DOC_ID(device_id + " " + time_now);
+            myappusage.setKEY_DEVICE_ID(device_id);
+            myappusage.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+            myappusage.setKEY_SESSION(SessionID);
+            myappusage.setKEY_USING_APP(UsingApp);
+            myappusage.setKEY_APPUSAGE(foregroundActivityName);
+            AppUsageReceiverDbHelper dbHandler = new AppUsageReceiverDbHelper(context);
+            dbHandler.insertAppUsageDetailsCreate(myappusage);
         }
     };
     @Override
     public void onCreate() {
         super.onCreate();
         context = this;
+
     }
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -119,6 +133,17 @@ AppUsageReceiver extends Service {
                 .collection("App Usage")
                 .document(device_id + " " + time_now)
                 .set(sensordb);
+        final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        com.recoveryrecord.surveyandroid.example.sqlite.AppUsage myappusage = new AppUsage();//sqlite//add new to db
+        myappusage.setKEY_TIMESTAMP(Timestamp.now().getSeconds());
+        myappusage.setKEY_DOC_ID(device_id + " " + time_now);
+        myappusage.setKEY_DEVICE_ID(device_id);
+        myappusage.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+        myappusage.setKEY_SESSION(SessionID);
+        myappusage.setKEY_USING_APP(UsingApp);
+        myappusage.setKEY_APPUSAGE(foregroundActivityName);
+        AppUsageReceiverDbHelper dbHandler = new AppUsageReceiverDbHelper(this);
+        dbHandler.insertAppUsageDetailsCreate(myappusage);
         return START_STICKY;
     }
 

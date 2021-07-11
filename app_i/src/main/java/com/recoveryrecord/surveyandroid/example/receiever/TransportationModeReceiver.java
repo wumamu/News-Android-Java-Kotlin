@@ -7,6 +7,8 @@ import android.os.Environment;
 import android.provider.Settings;
 import android.util.Log;
 
+import androidx.preference.PreferenceManager;
+
 import com.google.android.gms.location.DetectedActivity;
 import com.google.common.eventbus.EventBus;
 import com.google.firebase.Timestamp;
@@ -20,11 +22,16 @@ import com.recoveryrecord.surveyandroid.example.CSVDataRecord.StreamAlreadyExist
 import com.recoveryrecord.surveyandroid.example.CSVDataRecord.StreamNotFoundException;
 import com.recoveryrecord.surveyandroid.example.CSVDataRecord.TransportationModeDataRecord;
 import com.recoveryrecord.surveyandroid.example.CSVDataRecord.TransportationModeStream;
+import com.recoveryrecord.surveyandroid.example.DbHelper.ActivityRecognitionReceiverDbHelper;
+import com.recoveryrecord.surveyandroid.example.DbHelper.ReadingBehaviorDbHelper;
 import com.recoveryrecord.surveyandroid.example.config.Constants;
+import com.recoveryrecord.surveyandroid.example.sqlite.ActivityRecognition;
+import com.recoveryrecord.surveyandroid.example.sqlite.PushNews;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.security.AccessControlContext;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,6 +42,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 import static android.util.Log.e;
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.MILLISECONDS_PER_MINUTE;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
@@ -177,7 +185,7 @@ public class TransportationModeReceiver implements StreamGenerator {
 
     @SuppressLint("LongLogTag")
     public void TransportationModeStreamGenerator(Context applicationContext) {
-        Log.e("TransportationMode Stream Generator", "START");
+//        Log.e("TransportationMode Stream Generator", "START");
 //        super(applicationContext);
         this.mContext = applicationContext;
         this.mStream = new TransportationModeStream(50);
@@ -201,6 +209,7 @@ public class TransportationModeReceiver implements StreamGenerator {
                 "activityRecognitionProbableActivity");
 
         this.register();
+
     }
 
     @SuppressLint("LongLogTag")
@@ -217,74 +226,16 @@ public class TransportationModeReceiver implements StreamGenerator {
 
     @SuppressLint("LongLogTag")
     @Override
-    public void updateStream() {
-        Log.e("Tramsportation Mode", "update");
+    public void updateStream(Context context) {
+//        Log.e("Tramsportation Mode", "update");
         Log.d(TAG, "Update stream called.");
-        //TODO deprecated, move to activityRecognition to update every 5 second
-        //detecting the Transportation from the activityRecognition
-//
-//        if(MyStreamManager.getInstance().getActivityRecognitionDataRecord()!=null){
-//
-//            ActivityRecognitionDataRecord record = MyStreamManager.getInstance().getActivityRecognitionDataRecord();
-//
-//            if (record!=null) {
-//
-//                //getting latest Transportation based on the incoming record
-//                examineTransportation(record);
-//
-//                //Log.d(TAG, "[test replay] test trip: after examine transportation the current activity is  is " + getConfirmedActivityString() + " the status is " + getCurrentState());
-//            }
-//
-//            sharedPrefs.edit().putInt("CurrentState", mCurrentState).apply();
-//            sharedPrefs.edit().putInt("ConfirmedActivityType", mConfirmedActivityType).apply();
-//
-//            if(record.getMostProbableActivity().getConfidence()!=999){ //conf == 999 means it didn't receive anything from AR
-//
-//                latest_activityRecognitionDataRecord = record;
-//            }
-//        }
-
-//        int session_id = SessionManager.getOngoingSessionId();
-
-//        long session_id;
-//        long phone_session_id = sharedPrefs.getLong("Phone_SessionID", 1);
-////        String AccessibilityUrl = sharedPrefs.getString("AccessibilityUrl", "");
-////        String NotificationUrl = sharedPrefs.getString("NotificationUrl", "");
-//
-//        String screenshot = sharedPrefs.getString("ScreenShot", "0");
-//        String ImageName = sharedPrefs.getString("CaptureImgName", "");
-
-//        boolean readnews = mContext.getSharedPreferences("test",Context.MODE_PRIVATE).getBoolean("ReadNews",false);
-//        if(readnews) {
-//            session_id = sharedPrefs.getLong("SessionID", Constants.INVALID_INT_VALUE);
-//        }
-//        else{
-//            session_id = -1;
-//        }
-//        try {
-//            if (screenshot.equals("0")) {
-//                if(!ImageName.equals(""))
-//                    sharedPrefs.edit().putString("CaptureImgName", "").apply();
-//                ImageName = "";
-//            }
-////            else{
-////                if(LastImageName.equals(ImageName)){
-////                    ImageName = "";
-////                }
-////                else{
-////                    LastImageName = ImageName;
-////                }
-////            }
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
         String suspectedStartActivity = getActivityNameFromType(getSuspectedStartActivityType());
         String suspectedEndActivity = getActivityNameFromType(getSuspectedStopActivityType());
 
         TransportationModeDataRecord transportationModeDataRecord;
         transportationModeDataRecord =
                 new TransportationModeDataRecord(getConfirmedActivityString(), getSuspectTime(), suspectedStartActivity, suspectedEndActivity);
-        Log.e("update confirmed activity", getConfirmedActivityString());
+//        Log.e("update confirmed activity", getConfirmedActivityString());
         Log.d(TAG,"updateStream transportationModeDataRecord : " + getConfirmedActivityString());
         if(mStream != null)
             mStream.add(transportationModeDataRecord);
@@ -293,22 +244,13 @@ public class TransportationModeReceiver implements StreamGenerator {
         //TODO move to AR after examine the transportation
         MyStreamManager.getInstance().setTransportationModeDataRecord(transportationModeDataRecord, mContext, sharedPrefs);
 
-        // also post an event.
-//        EventBus.getDefault().post(transportationModeDataRecord);
-
-//        try {
-//            db.transportationModeDataRecordDao().insertAll(transportationModeDataRecord);
-//        } catch (NullPointerException e) { //Sometimes no data is normal
-//
-////            CSVHelper.storeToCSV(CSVHelper.CSV_ESM, "Transportation, update stream, NullPointerException");
-////            CSVHelper.storeToCSV(CSVHelper.CSV_ESM, Utils.getStackTrace(e));
-//        } catch (Exception e) {
-//
-//        }
         final Timestamp current_end = Timestamp.now();
         Date date = new Date(System.currentTimeMillis());
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         final String time_now = formatter.format(date);
+
+
+
         sensordb.put("Time", time_now);
         sensordb.put("Confirmed Activity Recognition", getConfirmedActivityString());
         sensordb.put("device_id", device_id);
@@ -323,6 +265,18 @@ public class TransportationModeReceiver implements StreamGenerator {
                 .collection("Confirmed Activity Recognition")
                 .document(device_id + " " + time_now)
                 .set(sensordb);
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        com.recoveryrecord.surveyandroid.example.sqlite.ActivityRecognition myactivityrecognition = new ActivityRecognition();//sqlite//add new to db
+        myactivityrecognition.setKEY_TIMESTAMP(Timestamp.now().getSeconds());
+        myactivityrecognition.setKEY_DOC_ID(device_id + " " + time_now);
+        myactivityrecognition.setKEY_DEVICE_ID(device_id);
+        myactivityrecognition.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+        myactivityrecognition.setKEY_SESSION(SessionID);
+        myactivityrecognition.setKEY_USING_APP(UsingApp);
+        Log.e("activity using app", UsingApp);
+        myactivityrecognition.setKEY_ACTIVITYRECOGNITION(getConfirmedActivityString());
+        ActivityRecognitionReceiverDbHelper dbHandler = new ActivityRecognitionReceiverDbHelper(context);
+        dbHandler.insertActivityRecognitionDetailsCreate(myactivityrecognition);
     }
 
     public long getUpdateFrequency() {

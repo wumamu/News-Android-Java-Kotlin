@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -12,15 +13,22 @@ import android.media.AudioManager;
 import android.provider.Settings;
 import android.util.Log;
 
+import androidx.preference.PreferenceManager;
+
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.recoveryrecord.surveyandroid.example.DbHelper.AppUsageReceiverDbHelper;
+import com.recoveryrecord.surveyandroid.example.DbHelper.LightSensorReceiverDbHelper;
 import com.recoveryrecord.surveyandroid.example.NewsHybridActivity;
+import com.recoveryrecord.surveyandroid.example.sqlite.AppUsage;
+import com.recoveryrecord.surveyandroid.example.sqlite.LightSensor;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
@@ -67,6 +75,7 @@ public class LightSensorReceiver implements StreamGenerator{
             sensorManager.registerListener(lightSensorListener, LightSensor, SensorManager.SENSOR_DELAY_NORMAL);
         }
         device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+
     }
 
     public void unregisterLightSensorReceiver(Context context){
@@ -86,7 +95,7 @@ public class LightSensorReceiver implements StreamGenerator{
 
     @Override
 
-    public void updateStream() {
+    public void updateStream(Context context) {
         Log.e("lux", String.valueOf(LightState));
         final Timestamp current_end = Timestamp.now();
         Date date = new Date(System.currentTimeMillis());
@@ -113,6 +122,17 @@ public class LightSensorReceiver implements StreamGenerator{
 //                .collection("LightSensor")
 //                .document(time_now)
 //                .set(sensordb);
+        final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        com.recoveryrecord.surveyandroid.example.sqlite.LightSensor mylight = new LightSensor();//sqlite//add new to db
+        mylight.setKEY_TIMESTAMP(Timestamp.now().getSeconds());
+        mylight.setKEY_DOC_ID(device_id + " " + time_now);
+        mylight.setKEY_DEVICE_ID(device_id);
+        mylight.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+        mylight.setKEY_SESSION(SessionID);
+        mylight.setKEY_USING_APP(UsingApp);
+        mylight.setKEY_LIGHT(LightState);
+        LightSensorReceiverDbHelper dbHandler = new LightSensorReceiverDbHelper(context);
+        dbHandler.insertLightDetailsCreate(mylight);
     }
 
     private class LightSensorListener implements SensorEventListener{
