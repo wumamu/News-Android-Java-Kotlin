@@ -54,6 +54,8 @@ dependencies {
     implementation 'com.opencsv:opencsv:5.3'
     implementation 'androidx.room:room-runtime:2.3.0'
     annotationProcessor 'androidx.room:room-compiler:2.3.0'
+    debugImplementation 'com.idescout.sql:sqlscout-server:4.1'
+    releaseImplementation 'com.idescout.sql:sqlscout-server-noop:4.1'
 
     //graph
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0-alpha'

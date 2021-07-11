@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,8 +16,14 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.preference.PreferenceManager;
+
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.recoveryrecord.surveyandroid.example.DbHelper.AppUsageReceiverDbHelper;
+import com.recoveryrecord.surveyandroid.example.DbHelper.RingModeReceiverDbHelper;
+import com.recoveryrecord.surveyandroid.example.sqlite.AppUsage;
+import com.recoveryrecord.surveyandroid.example.sqlite.RingMode;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -24,6 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static androidx.core.content.ContextCompat.getSystemService;
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
@@ -52,7 +60,7 @@ public class RingModeReceiver implements StreamGenerator{
         }
 
     @Override
-    public void updateStream() {
+    public void updateStream(Context context) {
         final Timestamp current_end = Timestamp.now();
         Date date = new Date(System.currentTimeMillis());
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
@@ -71,6 +79,17 @@ public class RingModeReceiver implements StreamGenerator{
                 .collection("Ring Mode")
                 .document(device_id + " " + time_now)
                 .set(sensordb);
+        final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        com.recoveryrecord.surveyandroid.example.sqlite.RingMode myring = new RingMode();//sqlite//add new to db
+        myring.setKEY_TIMESTAMP(Timestamp.now().getSeconds());
+        myring.setKEY_DOC_ID(device_id + " " + time_now);
+        myring.setKEY_DEVICE_ID(device_id);
+        myring.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+        myring.setKEY_SESSION(SessionID);
+        myring.setKEY_USING_APP(UsingApp);
+        myring.setKEY_RING(RingerState);
+        RingModeReceiverDbHelper dbHandler = new RingModeReceiverDbHelper(context);
+        dbHandler.insertRingModeDetailsCreate(myring);
     }
 
     class RingModeBroadcastReceiver extends BroadcastReceiver {
@@ -119,6 +138,17 @@ public class RingModeReceiver implements StreamGenerator{
                         .collection("Ring Mode")
                         .document(device_id + " " + time_now)
                         .set(sensordb);
+                final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+                com.recoveryrecord.surveyandroid.example.sqlite.RingMode myring = new RingMode();//sqlite//add new to db
+                myring.setKEY_TIMESTAMP(Timestamp.now().getSeconds());
+                myring.setKEY_DOC_ID(device_id + " " + time_now);
+                myring.setKEY_DEVICE_ID(device_id);
+                myring.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+                myring.setKEY_SESSION(SessionID);
+                myring.setKEY_USING_APP(UsingApp);
+                myring.setKEY_RING(RingerState);
+                RingModeReceiverDbHelper dbHandler = new RingModeReceiverDbHelper(context);
+                dbHandler.insertRingModeDetailsCreate(myring);
             }
         };
         public void unregisterBluetoothReceiver(Context context){

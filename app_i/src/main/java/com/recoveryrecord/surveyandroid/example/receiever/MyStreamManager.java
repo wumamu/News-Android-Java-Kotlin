@@ -58,14 +58,14 @@ public class MyStreamManager{
         }
         return MyStreamManager.instance;
     }
-    public void updateStreamGenerators() {
-        streamGenerator1.updateStream();
+    public void updateStreamGenerators(Context context) {
+        streamGenerator1.updateStream(context);
 //        streamGenerator2.updateStream();
-        streamGenerator3.updateStream();
-        streamGenerator4.updateStream();
-        streamGenerator5.updateStream();
-        streamGenerator6.updateStream();
-        streamGenerator7.updateStream();
+        streamGenerator3.updateStream(context);
+        streamGenerator4.updateStream(context);
+        streamGenerator5.updateStream(context);
+        streamGenerator6.updateStream(context);
+        streamGenerator7.updateStream(context);
     }
     //transportation
 
