@@ -451,7 +451,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 continue;
             }
             if(one.optString("id").equals("recieve_moment_1")){
-                one.putOpt("question", "請問您在「該則通知出現當下」" + my_re + "，約有多少時間可以閱讀新聞？(覺得沒空請填0)");
+                one.putOpt("question", "請問您在「該則通知出現當下」" + my_re + "，約有幾分鐘可以閱讀新聞？(覺得沒空請填0)");
                 continue;
             }
             if(one.optString("id").equals("recieve_moment_2")){
@@ -459,7 +459,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 continue;
             }
             if(one.optString("id").equals("recieve_moment_3")){
-                one.putOpt("question", "承上題，該項您「該則通知出現當下」" + my_re + "從事的活動，對您來說，該活動的複雜程度為何？\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)");
+                one.putOpt("question", "承上題，該項您「該則通知出現當下」" + my_re + "從事的活動，對您來說，該活動的複雜程度為何？(沒有印象請選4)\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)");
                 continue;
             }
             if(one.optString("id").equals("recieve_moment_6")){
@@ -475,11 +475,11 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 continue;
             }
             if(one.optString("id").equals("read_behaf_9")){
-                one.putOpt("question", "請問您點入「" + my_media + "」的新聞進行閱讀之動機為何？");
+                one.putOpt("question", "請問您點入「" + my_media + "」的新聞進行閱讀之原因為何？");
                 continue;
             }
             if(one.optString("id").equals("not_read_recieve_moment_1")){
-                one.putOpt("question", "請問您在「該則通知出現當下」" + my_re + "，約有多少時間可以「閱讀新聞」？(覺得沒空請填0)");
+                one.putOpt("question", "請問您在「該則通知出現當下」" + my_re + "，約有幾分鐘可以「閱讀新聞」？(覺得沒空請填0)");
                 continue;
             }
             if(one.optString("id").equals("not_read_recieve_moment_2")){
@@ -487,7 +487,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 continue;
             }
             if(one.optString("id").equals("not_read_recieve_moment_3")){
-                one.putOpt("question", "承上題，該項您「該則通知出現當下」" + my_re + "從事的活動，對您來說，該活動的複雜程度為何？\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)");
+                one.putOpt("question", "承上題，該項您「該則通知出現當下」" + my_re + "從事的活動，對您來說，該活動的複雜程度為何？(沒有印象請選4)\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)");
                 continue;
             }
             if(one.optString("id").equals("not_read_recieve_moment_6")){
@@ -495,7 +495,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 continue;
             }
             if(one.optString("id").equals("miss_recieve_moment_1")){
-                one.putOpt("question", "請問您在「該則通知出現當下」" + my_re + "，約有多少時間可以「閱讀新聞」？(覺得沒空請填0)\n(接下來，請您回想該則新聞通知出現當下狀態(抵達時間)進行回答。)");
+                one.putOpt("question", "請問您在「該則通知出現當下」" + my_re + "，約有幾分鐘可以「閱讀新聞」？(覺得沒空請填0)\n(接下來，請您回想該則新聞通知出現當下狀態(抵達時間)進行回答。)");
                 continue;
             }
             if(one.optString("id").equals("miss_recieve_moment_2")){
@@ -503,7 +503,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 continue;
             }
             if(one.optString("id").equals("miss_recieve_moment_3")){
-                one.putOpt("question", "承上題，該項您「該則通知出現當下」" + my_re + "從事的活動，對您來說，該活動的複雜程度為何？\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)");
+                one.putOpt("question", "承上題，該項您「該則通知出現當下」" + my_re + "從事的活動，對您來說，該活動的複雜程度為何？(沒有印象請選4)\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)");
                 continue;
             }
             if(one.optString("id").equals("miss_recieve_moment_6")){
