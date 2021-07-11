@@ -29,7 +29,7 @@ public class MyBackgroudService extends Service{
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            mystreamManager.updateStreamGenerators();
+            mystreamManager.updateStreamGenerators(getApplicationContext());
 //            screenStateReceiver.updateStream();
 //            Log.e("MyBackgroundService", "123");
             mMainThread.postDelayed(runnable, DetectTime);

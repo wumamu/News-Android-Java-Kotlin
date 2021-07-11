@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.Handler;
 import android.provider.Settings;
@@ -11,9 +12,15 @@ import android.text.PrecomputedText;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.preference.PreferenceManager;
+
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.recoveryrecord.surveyandroid.example.DbHelper.NetworkChangeReceiverDbHelper;
+import com.recoveryrecord.surveyandroid.example.DbHelper.ScreenStateReceiverDbHelper;
+import com.recoveryrecord.surveyandroid.example.sqlite.Network;
+import com.recoveryrecord.surveyandroid.example.sqlite.ScreenState;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
@@ -88,9 +96,20 @@ public class ScreenStateReceiver implements StreamGenerator{
                     .collection("Screen")
                     .document(device_id + " " + time_now)
                     .set(sensordb);
+            final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+            com.recoveryrecord.surveyandroid.example.sqlite.ScreenState myscreen = new ScreenState();//sqlite//add new to db
+            myscreen.setKEY_TIMESTAMP(Timestamp.now().getSeconds());
+            myscreen.setKEY_DOC_ID(device_id + " " + time_now);
+            myscreen.setKEY_DEVICE_ID(device_id);
+            myscreen.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+            myscreen.setKEY_SESSION(SessionID);
+            myscreen.setKEY_USING_APP(UsingApp);
+            myscreen.setKEY_SCREEN(ScreenState);
+            ScreenStateReceiverDbHelper dbHandler = new ScreenStateReceiverDbHelper(context);
+            dbHandler.insertScreenDetailsCreate(myscreen);
         }
     }
-    public void updateStream() {
+    public void updateStream(Context context) {
         final Timestamp current_end = Timestamp.now();
         Date date = new Date(System.currentTimeMillis());
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
@@ -109,6 +128,17 @@ public class ScreenStateReceiver implements StreamGenerator{
                 .collection("Screen")
                 .document(device_id + " " + time_now)
                 .set(sensordb);
+        final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        com.recoveryrecord.surveyandroid.example.sqlite.ScreenState myscreen = new ScreenState();//sqlite//add new to db
+        myscreen.setKEY_TIMESTAMP(Timestamp.now().getSeconds());
+        myscreen.setKEY_DOC_ID(device_id + " " + time_now);
+        myscreen.setKEY_DEVICE_ID(device_id);
+        myscreen.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+        myscreen.setKEY_SESSION(SessionID);
+        myscreen.setKEY_USING_APP(UsingApp);
+        myscreen.setKEY_SCREEN(ScreenState);
+        ScreenStateReceiverDbHelper dbHandler = new ScreenStateReceiverDbHelper(context);
+        dbHandler.insertScreenDetailsCreate(myscreen);
     }
     public void unregisterScreenStateReceiver(Context context){
         if(mReceiver != null){

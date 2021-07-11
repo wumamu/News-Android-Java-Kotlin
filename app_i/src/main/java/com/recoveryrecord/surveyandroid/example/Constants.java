@@ -435,4 +435,17 @@ public class Constants {
 
 //    public static String JSON_TEMPLATE = "";
 
+    //SENSOR
+    public static final String SENSOR_DEVICE_ID = "device_id";
+    public static final String SENSOR_DOC_ID = "doc_id";
+    public static final String SENSOR_TIMESTAMP = "timestamp";
+    public static final String SENSOR_USER_ID = "user_id";
+    public static final String SENSOR_SESSION = "session";
+    public static final String SENSOR_USING_APP = "using_app";
+    public static final String SENSOR_ACTIVITYRECOGNITION = "activityrecognition";
+    public static final String SENSOR_APPUSAGE = "appusage";
+    public static final String SENSOR_LIGHT = "light";
+    public static final String SENSOR_NETWORK = "network";
+    public static final String SENSOR_SCREEN = "screen";
+    public static final String SENSOR_RINGMODE = "ringmode";
 }
