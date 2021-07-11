@@ -50,6 +50,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
 
+import static android.app.Notification.EXTRA_NOTIFICATION_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_VALUE;
 import static com.recoveryrecord.surveyandroid.example.Constants.CHECK_SERVICE_ACTION;
@@ -108,6 +109,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLE
 import static com.recoveryrecord.surveyandroid.example.Constants.TRIGGER_BY_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.TRIGGER_BY_VALUE_NOTIFICATION;
 import static com.recoveryrecord.surveyandroid.example.Constants.UPDATE_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.UPLOAD_ACTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_PHONE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.VIBRATE_EFFECT;
@@ -146,7 +148,12 @@ public class NewsNotificationService extends Service {
         extras.putString(DOC_ID_KEY, "####");
         extras.putString(NOTIFICATION_TYPE_KEY, NOTIFICATION_TYPE_VALUE_SERVICE);
         notificationBuilder.setExtras(extras);
-
+//
+//        Intent snoozeIntent = new Intent(this, AlarmReceiver.class);
+//        snoozeIntent.setAction(UPLOAD_ACTION);
+//        snoozeIntent.setClass(this, AlarmReceiver.class);
+//        snoozeIntent.putExtra(EXTRA_NOTIFICATION_ID, 0);
+//        PendingIntent snoozePendingIntent = PendingIntent.getBroadcast(this, 0, snoozeIntent, 0);
         if(first_group){
             first_group = false;
             SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -162,6 +169,7 @@ public class NewsNotificationService extends Service {
                     .setSmallIcon(R.drawable.ic_launcher_foreground, 0)
                     .setGroup(GROUP_NEWS_SERVICE)
                     .setGroupSummary(true)
+//                    .addAction(R.drawable.baseline_face_24, getString(R.string.upload), snoozePendingIntent)
                     .build();
             startForeground(2, notification);
         } else {
@@ -173,6 +181,7 @@ public class NewsNotificationService extends Service {
                     .setNotificationSilent()
                     .setSmallIcon(R.drawable.ic_launcher_foreground, 0)
                     .setGroup(GROUP_NEWS_SERVICE)
+//                    .addAction(R.drawable.baseline_face_24, getString(R.string.upload), snoozePendingIntent)
 //                .setGroupSummary(true)
                     .build();
             startForeground(2, notification);

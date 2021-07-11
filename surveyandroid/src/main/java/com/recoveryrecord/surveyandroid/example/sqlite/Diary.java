@@ -5,7 +5,8 @@ public class Diary {
     private String KEY_DEVICE_ID;
     private String KEY_USER_ID;
 
-    private String KEY_ESM_RESULT_SAMPLE;//
+    private String KEY_ESM_RESULT_SAMPLE_READ;//
+    private String KEY_ESM_RESULT_SAMPLE_NOTI;//
     private String KEY_DIARY_SCHEDULE_SOURCE;
     private long KEY_DIARY_SAMPLE_TIME;
 
@@ -18,15 +19,18 @@ public class Diary {
     private String KEY_REMOVE_TYPE;
 
     private String KEY_RESULT;
-    private String KEY_INOPPORTUNTE_RESULT;
-    private String KEY_OPPORTUNTE_RESULT;
+    private String KEY_INOPPORTUNTE_RESULT_READ;
+    private String KEY_OPPORTUNTE_RESULT_READ;
+    private String KEY_INOPPORTUNTE_RESULT_NOTI;
+    private String KEY_OPPORTUNTE_RESULT_NOTI;
 
     public Diary() {
         this.KEY_DOC_ID = "NA";
         this.KEY_DEVICE_ID = "NA";
         this.KEY_USER_ID = "NA";
 
-        this.KEY_ESM_RESULT_SAMPLE = "NA";//option
+        this.KEY_ESM_RESULT_SAMPLE_READ = "NA";//option
+        this.KEY_ESM_RESULT_SAMPLE_NOTI = "NA";//option
         this.KEY_DIARY_SCHEDULE_SOURCE = "NA";
         this.KEY_DIARY_SAMPLE_TIME = 0;
 
@@ -39,9 +43,35 @@ public class Diary {
         this.KEY_REMOVE_TYPE = "NA";
 
         this.KEY_RESULT = "NA";
-        this.KEY_INOPPORTUNTE_RESULT = "NA";
-        this.KEY_OPPORTUNTE_RESULT = "NA";
+        this.KEY_INOPPORTUNTE_RESULT_READ = "NA";
+        this.KEY_OPPORTUNTE_RESULT_READ = "NA";
+        this.KEY_INOPPORTUNTE_RESULT_NOTI = "NA";
+        this.KEY_OPPORTUNTE_RESULT_NOTI = "NA";
 
+    }
+
+    public String getKEY_ESM_RESULT_SAMPLE_NOTI() {
+        return KEY_ESM_RESULT_SAMPLE_NOTI;
+    }
+
+    public void setKEY_ESM_RESULT_SAMPLE_NOTI(String KEY_ESM_RESULT_SAMPLE_NOTI) {
+        this.KEY_ESM_RESULT_SAMPLE_NOTI = KEY_ESM_RESULT_SAMPLE_NOTI;
+    }
+
+    public String getKEY_INOPPORTUNTE_RESULT_NOTI() {
+        return KEY_INOPPORTUNTE_RESULT_NOTI;
+    }
+
+    public void setKEY_INOPPORTUNTE_RESULT_NOTI(String KEY_INOPPORTUNTE_RESULT_NOTI) {
+        this.KEY_INOPPORTUNTE_RESULT_NOTI = KEY_INOPPORTUNTE_RESULT_NOTI;
+    }
+
+    public String getKEY_OPPORTUNTE_RESULT_NOTI() {
+        return KEY_OPPORTUNTE_RESULT_NOTI;
+    }
+
+    public void setKEY_OPPORTUNTE_RESULT_NOTI(String KEY_OPPORTUNTE_RESULT_NOTI) {
+        this.KEY_OPPORTUNTE_RESULT_NOTI = KEY_OPPORTUNTE_RESULT_NOTI;
     }
 
     public String getKEY_DOC_ID() {
@@ -68,12 +98,12 @@ public class Diary {
         this.KEY_USER_ID = KEY_USER_ID;
     }
 
-    public String getKEY_ESM_RESULT_SAMPLE() {
-        return KEY_ESM_RESULT_SAMPLE;
+    public String getKEY_ESM_RESULT_SAMPLE_READ() {
+        return KEY_ESM_RESULT_SAMPLE_READ;
     }
 
-    public void setKEY_ESM_RESULT_SAMPLE(String KEY_ESM_RESULT_SAMPLE) {
-        this.KEY_ESM_RESULT_SAMPLE = KEY_ESM_RESULT_SAMPLE;
+    public void setKEY_ESM_RESULT_SAMPLE_READ(String KEY_ESM_RESULT_SAMPLE_READ) {
+        this.KEY_ESM_RESULT_SAMPLE_READ = KEY_ESM_RESULT_SAMPLE_READ;
     }
 
     public String getKEY_DIARY_SCHEDULE_SOURCE() {
@@ -156,19 +186,19 @@ public class Diary {
         this.KEY_RESULT = KEY_RESULT;
     }
 
-    public String getKEY_INOPPORTUNTE_RESULT() {
-        return KEY_INOPPORTUNTE_RESULT;
+    public String getKEY_INOPPORTUNTE_RESULT_READ() {
+        return KEY_INOPPORTUNTE_RESULT_READ;
     }
 
-    public void setKEY_INOPPORTUNTE_RESULT(String KEY_INOPPORTUNTE_RESULT) {
-        this.KEY_INOPPORTUNTE_RESULT = KEY_INOPPORTUNTE_RESULT;
+    public void setKEY_INOPPORTUNTE_RESULT_READ(String KEY_INOPPORTUNTE_RESULT_READ) {
+        this.KEY_INOPPORTUNTE_RESULT_READ = KEY_INOPPORTUNTE_RESULT_READ;
     }
 
-    public String getKEY_OPPORTUNTE_RESULT() {
-        return KEY_OPPORTUNTE_RESULT;
+    public String getKEY_OPPORTUNTE_RESULT_READ() {
+        return KEY_OPPORTUNTE_RESULT_READ;
     }
 
-    public void setKEY_OPPORTUNTE_RESULT(String KEY_OPPORTUNTE_RESULT) {
-        this.KEY_OPPORTUNTE_RESULT = KEY_OPPORTUNTE_RESULT;
+    public void setKEY_OPPORTUNTE_RESULT_READ(String KEY_OPPORTUNTE_RESULT_READ) {
+        this.KEY_OPPORTUNTE_RESULT_READ = KEY_OPPORTUNTE_RESULT_READ;
     }
 }

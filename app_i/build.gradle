@@ -36,13 +36,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation project(":surveyandroid")
-//    implementation project(path: ':surveyandroid', onfiguration: 'default')
     implementation 'com.google.firebase:firebase-firestore:17.1.2'
     implementation 'androidx.viewpager:viewpager:1.0.0'
-//    implementation 'com.google.firebase:firebase-messaging'
-//    implementation platform('com.google.firebase:firebase-bom:26.8.0')
-//    implementation 'com.google.firebase:firebase-analytics'
-
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation "androidx.cardview:cardview:1.0.0"
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
@@ -51,7 +46,6 @@ dependencies {
     // ESM survey 兩個會衝突!!!??
     implementation 'com.google.android.material:material:1.0.0'
     //viewpage indicator
-//    implementation 'com.google.android.material:material:1.2.0-alpha05'
     implementation 'androidx.preference:preference:1.1.1'
     // TODO: Review play services library required for activity recognition.
     implementation 'com.google.android.gms:play-services-location:17.0.0'
@@ -63,20 +57,7 @@ dependencies {
     debugImplementation 'com.idescout.sql:sqlscout-server:4.1'
     releaseImplementation 'com.idescout.sql:sqlscout-server-noop:4.1'
 
+    //graph
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0-alpha'
 
-    // Import the BoM for the Firebase platform
-//    implementation platform('com.google.firebase:firebase-bom:28.0.1')
-
-    // Declare the dependency for the Performance Monitoring library
-    // When using the BoM, you don't specify versions in Firebase library dependencies
-//    implementation 'com.google.firebase:firebase-perf'
-
-
-//    // Import the BoM for the Firebase platform
-//    implementation platform('com.google.firebase:firebase-bom:28.0.1')
-//
-//    // Declare the dependencies for the Crashlytics and Analytics libraries
-//    // When using the BoM, you don't specify versions in Firebase library dependencies
-//    implementation 'com.google.firebase:firebase-crashlytics'
-//    implementation 'com.google.firebase:firebase-analytics'
 }

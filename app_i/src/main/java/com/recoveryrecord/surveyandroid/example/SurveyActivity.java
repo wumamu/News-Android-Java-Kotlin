@@ -7,7 +7,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -50,17 +49,16 @@ import java.util.Objects;
 
 //import static com.recoveryrecord.surveyandroid.example.Constants.ESM_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_EXIST_ESM_SAMPLE;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_LAST_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_NOTI_HISTORY_CANDIDATE;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_READ_HISTORY_CANDIDATE;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_EXIST_NOTIFICATION_SAMPLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_EXIST_READ_SAMPLE;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_LAST_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_DIARY;
 import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_ESM;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_ESM_TYPE_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_CLOSE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_OPEN_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_IN;
 import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_MEDIA;
 import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_RECEIEVE;
@@ -69,16 +67,13 @@ import static com.recoveryrecord.surveyandroid.example.Constants.SURVEY_PAGE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_DIARY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_ESM;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOTIFICATION_UNCLICKED_CANDIDATE;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTI_UNCLICK_LAST_ONE;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOT_TARGET_READ_NEWS_TITLE_ANSWER;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_CLOSE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_OPEN_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_READ_HISTORY_CANDIDATE;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TARGET_NEWS_TITLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.TARGET_READ_NEWS_TITLE_ANSWER;
-import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.ZERO_RESULT_STRING;
 import static java.lang.Integer.parseInt;
 //import static com.recoveryrecord.surveyandroid.example.Constants.JSON_TEMPLATE;
@@ -225,45 +220,34 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected String getJsonFilename() {
-        String file_name = "noti.json";
+        String file_name = "test.json";
         if (getIntent().getExtras() != null) {
             Bundle b = getIntent().getExtras();
-//            return "test.json";
-            if (Objects.requireNonNull(b.getString(NOTIFICATION_TYPE_KEY)).equals(NOTIFICATION_TYPE_VALUE_ESM)){
-//                final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-//                String ReadNewsTitle = sharedPrefs.getString(ESM_READ_HISTORY_CANDIDATE, ZERO_RESULT_STRING);
-//                String NotiNewTitle = sharedPrefs.getString(ESM_NOTIFICATION_UNCLICKED_CANDIDATE, ZERO_RESULT_STRING);
-//                if(!ReadNewsTitle.equals(ZERO_RESULT_STRING)){
-//                    Log.d("lognewsselect", "exist rb");
-//                    try {
-//                        file_name = generate_esm_json(ReadNewsTitle, NotiNewTitle, "2.json");
-//
-//                    } catch (JSONException | InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                } else {
-//                    Log.d("lognewsselect", "zero_result here");
-//                    try {
-//                        file_name = generate_esm_json(ReadNewsTitle, NotiNewTitle, "0.json");
-//                    } catch (JSONException | InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-                Log.d("lognewsselect", "zero_result here");
-                try {
-                    file_name = generate_json();
-                } catch (JSONException e) {
-                    e.printStackTrace();
+            if (Objects.requireNonNull(b.getString(NOTIFICATION_TYPE_KEY)).equals(NOTIFICATION_TYPE_VALUE_ESM)){//
+                if(Objects.requireNonNull(b.getInt(NOTIFICATION_ESM_TYPE_KEY))==1){
+                    //read esm type 1
+                    try {
+                        file_name = generate_json_read();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    //noti esm type 0 2
+                    try {
+                        file_name = generate_json_noti();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
                 return file_name;
             } else if (Objects.requireNonNull(b.getString(NOTIFICATION_TYPE_KEY)).equals(NOTIFICATION_TYPE_VALUE_DIARY)){
                 final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-                String diary_option_string_list = sharedPrefs.getString(DIARY_READ_HISTORY_CANDIDATE, ZERO_RESULT_STRING);
-                Log.d("lognewsselect", "DIARY&&&&&&&&&&&&&&&&&&&&&&&&&&");
-                if(!diary_option_string_list.equals(ZERO_RESULT_STRING)){
+                String diary_read = sharedPrefs.getString(DIARY_READ_HISTORY_CANDIDATE, ZERO_RESULT_STRING);
+                String diary_noti = sharedPrefs.getString(DIARY_NOTI_HISTORY_CANDIDATE, ZERO_RESULT_STRING);
+                if(!diary_read.equals(ZERO_RESULT_STRING)){
                     Log.d("lognewsselect", "exist rb");
                     try {
-                        file_name = generate_diary_json(diary_option_string_list, "diary.json", true);
+                        file_name = generate_diary_json(diary_read, diary_noti, "diary.json", true);
 
                     } catch (JSONException | InterruptedException e) {
                         e.printStackTrace();
@@ -271,7 +255,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 } else {
                     Log.d("lognewsselect", "zero_result here");
                     try {
-                        file_name = generate_diary_json(diary_option_string_list, "diary.json", false);
+                        file_name = generate_diary_json(diary_read, diary_noti, "diary.json", false);
                     } catch (JSONException | InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -413,8 +397,46 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
 
     }
 
-    private String generate_json() throws JSONException {
-        JSONObject jsonRootObject = new JSONObject(loadJSONFromAsset("test.json"));
+    private String generate_json_read() throws JSONException {
+        JSONObject jsonRootObject = new JSONObject(loadJSONFromAsset("read.json"));
+        JSONArray jsonQuestionObject = jsonRootObject.optJSONArray("questions");
+        final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+//        String my_news_id = sharedPrefs.getString(SAMPLE_ID, "NA");
+        String my_title = sharedPrefs.getString(SAMPLE_TITLE, "NA");
+        String my_media = sharedPrefs.getString(SAMPLE_MEDIA, "NA");
+//        String my_re = sharedPrefs.getString(SAMPLE_RECEIEVE, "NA");
+        String my_in = sharedPrefs.getString(SAMPLE_IN, "NA");
+        for (int i =0 ; i < jsonQuestionObject.length();i++){
+            JSONObject one = jsonQuestionObject.getJSONObject(i);
+            if(one.optString("id").equals("active_base_1")){
+                one.putOpt("question", "請問您有印象在NewsMoment上閱讀「" + my_title + "」嗎？" + my_in);
+                continue;
+            }
+            if(one.optString("id").equals("active_read_moment_1")){
+                one.putOpt("question", "根據資料顯示，您在" + my_in + "閱讀該篇新聞");
+                continue;
+            }
+            if(one.optString("id").equals("active_read_behaf_8")){
+                one.putOpt("question", "請問您點入「" + my_media + "」的新聞進行閱讀之動機為何？");
+                continue;
+            }
+        }
+        File file;
+        file = new File(getFilesDir(), "read.json");
+        try{
+            FileOutputStream fos = new FileOutputStream(file);//创建一个文件输出流
+            fos.write(jsonRootObject.toString().getBytes());//将生成的JSON数据写出
+            fos.close();//关闭输出流
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return file.getAbsolutePath();
+    }
+
+    private String generate_json_noti() throws JSONException {
+        JSONObject jsonRootObject = new JSONObject(loadJSONFromAsset("noti.json"));
         JSONArray jsonQuestionObject = jsonRootObject.optJSONArray("questions");
         final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 //        String my_news_id = sharedPrefs.getString(SAMPLE_ID, "NA");
@@ -437,7 +459,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 continue;
             }
             if(one.optString("id").equals("recieve_moment_3")){
-                one.putOpt("question", "承上題，該項您「該則通知出現當下」" + my_re + "從事的活動，對您來說，該活動的複雜程度為何？");
+                one.putOpt("question", "承上題，該項您「該則通知出現當下」" + my_re + "從事的活動，對您來說，該活動的複雜程度為何？\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)");
                 continue;
             }
             if(one.optString("id").equals("recieve_moment_6")){
@@ -465,7 +487,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 continue;
             }
             if(one.optString("id").equals("not_read_recieve_moment_3")){
-                one.putOpt("question", "承上題，該項您「該則通知出現當下」" + my_re + "從事的活動，對您來說，該活動的複雜程度為何？");
+                one.putOpt("question", "承上題，該項您「該則通知出現當下」" + my_re + "從事的活動，對您來說，該活動的複雜程度為何？\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)");
                 continue;
             }
             if(one.optString("id").equals("not_read_recieve_moment_6")){
@@ -481,7 +503,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 continue;
             }
             if(one.optString("id").equals("miss_recieve_moment_3")){
-                one.putOpt("question", "承上題，該項您「該則通知出現當下」" + my_re + "從事的活動，對您來說，該活動的複雜程度為何？");
+                one.putOpt("question", "承上題，該項您「該則通知出現當下」" + my_re + "從事的活動，對您來說，該活動的複雜程度為何？\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)");
                 continue;
             }
             if(one.optString("id").equals("miss_recieve_moment_6")){
@@ -490,7 +512,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
             }
         }
         File file;
-        file = new File(getFilesDir(), "test.json");
+        file = new File(getFilesDir(), "noti.json");
         try{
             FileOutputStream fos = new FileOutputStream(file);//创建一个文件输出流
             fos.write(jsonRootObject.toString().getBytes());//将生成的JSON数据写出
@@ -501,37 +523,58 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
             e.printStackTrace();
         }
         return file.getAbsolutePath();
-//        return "test.json";
     }
 
-    private String generate_diary_json(String diary_option_string_list, String file_name, Boolean exist) throws JSONException, InterruptedException {
+    private String generate_diary_json(String diary_read, String diary_noti, String file_name, Boolean exist) throws JSONException, InterruptedException {
         if(exist){
-            List<String> diary_option_string_list_array_json = new ArrayList<String>(Arrays.asList(diary_option_string_list.split("#")));
-            JSONArray option_arr = new JSONArray();
-            for (int x = 0; x< diary_option_string_list_array_json.size(); x++){
-                if(diary_option_string_list_array_json.get(0).equals(ZERO_RESULT_STRING)){
-                    break;
+//            Log.d("AlarmReceiver", diary_read);
+//            Log.d("AlarmReceiver", diary_noti);
+            List<String> diary_option_read = new ArrayList<String>(Arrays.asList(diary_read.split("#")));
+            List<String> diary_option_noti = new ArrayList<String>(Arrays.asList(diary_noti.split("#")));
+            JSONArray option_arr_read = new JSONArray();
+            if(!diary_read.equals(ZERO_RESULT_STRING) && !diary_read.equals("")){
+                for (int x = 0; x< diary_option_read.size(); x++){
+                    if(diary_option_read.get(0).equals(ZERO_RESULT_STRING)){
+                        break;
+                    }
+                    String origin_tmp = diary_option_read.get(x);
+                    List<String> tmp_array = new ArrayList<String>(Arrays.asList(origin_tmp.split("\n")));
+                    origin_tmp = tmp_array.get(0) + "\n" + tmp_array.get(1)  + "\n" + tmp_array.get(2)  + "\n" + tmp_array.get(3);
+                    option_arr_read.put(origin_tmp);
                 }
-                String origin_tmp = diary_option_string_list_array_json.get(x);
-                List<String> tmp_array = new ArrayList<String>(Arrays.asList(origin_tmp.split("\n")));
-//                origin_tmp = x + "\n" + tmp_array.get(0) + "\n" + tmp_array.get(1)  + "\n" + tmp_array.get(2)  + "\n" + tmp_array.get(3);
-                origin_tmp = tmp_array.get(0) + "\n" + tmp_array.get(1)  + "\n" + tmp_array.get(2)  + "\n" + tmp_array.get(3);
-                option_arr.put(origin_tmp);
-//                option_arr.put(diary_option_string_list_array_json.get(x));
             }
-            option_arr.put("無");
+            option_arr_read.put("無");
+            JSONArray option_arr_noti = new JSONArray();
+            if(!diary_noti.equals(ZERO_RESULT_STRING) && !diary_noti.equals("")){
+                for (int x = 0; x< diary_option_noti.size(); x++){
+                    if(diary_option_noti.get(0).equals(ZERO_RESULT_STRING)){
+                        break;
+                    }
+                    String origin_tmp = diary_option_noti.get(x);
+                    List<String> tmp_array = new ArrayList<String>(Arrays.asList(origin_tmp.split("\n")));
+                    origin_tmp = tmp_array.get(0) + "\n" + tmp_array.get(1)  + "\n" + tmp_array.get(2)  + "\n" + tmp_array.get(3);
+                    option_arr_noti.put(origin_tmp);
+                }
+            }
+            option_arr_noti.put("無");
             JSONObject jsonRootObject = new JSONObject(loadJSONFromAsset("diary.json"));
             JSONArray jsonQuestionObject = jsonRootObject.optJSONArray("questions");
             for (int i =0 ; i < jsonQuestionObject.length();i++){
                 JSONObject one = jsonQuestionObject.getJSONObject(i);
-                //for 2
-                if(one.optString("id").equals("opportune_1")){
-                    one.putOpt("options", option_arr);
+                if(one.optString("id").equals("opportune_read_1")){
+                    one.putOpt("options", option_arr_read);
                     continue;
                 }
-                //for 5
-                if(one.optString("id").equals("inopportune_1")){
-                    one.putOpt("options", option_arr);
+                if(one.optString("id").equals("inopportune_read_1")){
+                    one.putOpt("options", option_arr_read);
+                    continue;
+                }
+                if(one.optString("id").equals("opportune_noti_1")){
+                    one.putOpt("options", option_arr_noti);
+                    continue;
+                }
+                if(one.optString("id").equals("inopportune_noti_1")){
+                    one.putOpt("options", option_arr_noti);
                     continue;
                 }
             }

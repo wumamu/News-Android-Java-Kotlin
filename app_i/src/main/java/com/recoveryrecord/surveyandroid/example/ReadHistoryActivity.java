@@ -44,7 +44,9 @@ public class ReadHistoryActivity extends AppCompatActivity {
                 case 0:
                     return ReadingHistoryFragment.newInstance();
                 case 1:
-                    return TestTab1Fragment.newInstance();
+                    return ReadHistorySummaryFragment.newInstance();
+                case 2:
+                    return ReadHistoryDailyFragment.newInstance();
                 default:
                     return TestTab3Fragment.newInstance();
             }
@@ -53,18 +55,18 @@ public class ReadHistoryActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 1;
+            return 3;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "Tab 1";
+                    return "近50則";
                 case 1:
-                    return "Tab 2";
+                    return "總統計";
                 case 2:
-                    return "Tab 3";
+                    return "一週統計";
             }
             return null;
         }

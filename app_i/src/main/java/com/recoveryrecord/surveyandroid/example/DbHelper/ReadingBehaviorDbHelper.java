@@ -205,8 +205,8 @@ public class ReadingBehaviorDbHelper extends SQLiteOpenHelper {
                 , null );
         return res;
     }
-
-    public Cursor getReadingDataFromNoti(long now_timestamp, String target_news_id) {
+    //only need in time
+    public Cursor getReadingDataFromNoti(long now_timestamp, String target_news_id) {//45
 //        Stringtarget_news_id
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res =  db.rawQuery( "SELECT tmp.in_timestamp\n" +
@@ -229,11 +229,54 @@ public class ReadingBehaviorDbHelper extends SQLiteOpenHelper {
                 , null );
         return res;
     }
+    //id title media in_time
+    public Cursor getReadingDataSelf(long now_timestamp) {//60
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "SELECT tmp.in_timestamp, tmp.title, tmp.media, tmp.news_id\n" +
+                        "FROM\n" +
+                        "(\n" +
+                        "\tSELECT DISTINCT rb.news_id, \n" +
+                        "\t\t\t\t\trb.time_on_page,\n" +
+                        "\t\t\t\t\trb.media,\n" +
+                        "\t\t\t\t\trb.title,\n" +
+                        "\t\t\t\t\trb.in_timestamp,\n" +
+                        "\t\t\t\t\t(" + now_timestamp + "-rb.in_timestamp) as diff\n" +
+                        "\tFROM reading_behavior rb\n" +
+                        "\tWHERE rb.time_on_page > 1\n" +
+//                        "\tWHERE rb.news_id = " + target_news_id + "\n" +
+                        ") as tmp\n" +
+                        "WHERE tmp.diff <= 2700 AND tmp.diff >=0\n" +
+                        "ORDER BY tmp.in_timestamp DESC;"
+                , null );
+        return res;
+    }
+
+    public Cursor checkReadDataForESM(long now_timestamp) {//45
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "SELECT tmp.in_timestamp, tmp.title, tmp.media, tmp.news_id\n" +
+                        "FROM\n" +
+                        "(\n" +
+                        "\tSELECT DISTINCT rb.news_id, \n" +
+                        "\t\t\t\t\trb.time_on_page,\n" +
+                        "\t\t\t\t\trb.media,\n" +
+                        "\t\t\t\t\trb.title,\n" +
+                        "\t\t\t\t\trb.in_timestamp,\n" +
+                        "\t\t\t\t\t(" + now_timestamp + "-rb.in_timestamp) as diff\n" +
+                        "\tFROM reading_behavior rb\n" +
+                        "\tWHERE rb.time_on_page > 1\n" +
+//                        "\tWHERE rb.news_id = " + target_news_id + "\n" +
+                        ") as tmp\n" +
+                        "WHERE tmp.diff <= 1800 AND tmp.diff >=0\n" +
+                        "ORDER BY tmp.in_timestamp DESC;"
+                , null );
+        return res;
+    }
 
     public Cursor getALL() {
         SQLiteDatabase db = this.getReadableDatabase();
 //        Cursor res =  db.rawQuery( "select * from contacts where id="+id+"", null );
-        Cursor res =  db.rawQuery( "SELECT  * FROM " + TABLE_NAME_READING_BEHAVIOR + " as tmp WHERE tmp.user_id <> 'upload';", null );
+//        Cursor res =  db.rawQuery( "SELECT  * FROM " + TABLE_NAME_READING_BEHAVIOR + " as tmp WHERE tmp.user_id <> 'upload';", null );
+        Cursor res =  db.rawQuery( "SELECT  * FROM " + TABLE_NAME_READING_BEHAVIOR + ";", null );
         return res;
     }
 

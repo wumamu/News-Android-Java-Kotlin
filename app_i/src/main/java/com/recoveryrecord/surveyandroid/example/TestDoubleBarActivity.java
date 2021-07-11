@@ -48,7 +48,7 @@ public class TestDoubleBarActivity extends AppCompatActivity {
 
             switch (position) {
                 case 0:
-                    return TestTab1Fragment.newInstance();
+                    return ReadHistorySummaryFragment.newInstance();
                 case 1:
                     return new TestTab2Fragment();
                 default:

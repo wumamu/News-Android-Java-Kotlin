@@ -162,12 +162,13 @@
             tools:targetApi="n">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+<!--                <action android:name="UploadSQLite" />-->
             </intent-filter>
         </receiver>
-        <receiver android:name=".MyAlarmReceiver"
-            android:enabled="true"
-            android:exported="true">
-        </receiver>
+<!--        <receiver android:name=".MyAlarmReceiver"-->
+<!--            android:enabled="true"-->
+<!--            android:exported="true">-->
+<!--        </receiver>-->
         <receiver
             android:name=".BootUpReceiver"
             android:enabled="true"

@@ -119,7 +119,7 @@ public class PushNewsDbHelper extends SQLiteOpenHelper {
     public Cursor getNotiDataForESM(long now_timestamp) {//45min
         SQLiteDatabase db = this.getReadableDatabase();
 //        Cursor res =  db.rawQuery( "select * from contacts where id="+id+"", null );
-        Cursor res =  db.rawQuery( "SELECT tmp.news_id, tmp.title, tmp.receieve_timestamp, tmp.media\n" +
+        Cursor res =  db.rawQuery( "SELECT tmp.news_id, tmp.title, tmp.receieve_timestamp, tmp.media, tmp.click\n" +
                         "                FROM\n" +
                         "                        (\n" +
                         "                                SELECT DISTINCT pn.news_id,\n" +
@@ -161,7 +161,8 @@ public class PushNewsDbHelper extends SQLiteOpenHelper {
     public Cursor getALL() {
         SQLiteDatabase db = this.getReadableDatabase();
 //        Cursor res =  db.rawQuery( "select * from contacts where id="+id+"", null );
-        Cursor res =  db.rawQuery( "SELECT  * FROM " + TABLE_NAME_PUSH_NEWS + " as tmp WHERE tmp.user_id <> 'upload';", null );
+//        Cursor res =  db.rawQuery( "SELECT  * FROM " + TABLE_NAME_PUSH_NEWS + " as tmp WHERE tmp.user_id <> 'upload';", null );
+        Cursor res =  db.rawQuery( "SELECT  * FROM " + TABLE_NAME_PUSH_NEWS + ";", null );
         return res;
     }
 

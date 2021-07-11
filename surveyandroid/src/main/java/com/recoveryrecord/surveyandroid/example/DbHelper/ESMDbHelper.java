@@ -107,8 +107,8 @@ public class ESMDbHelper extends SQLiteOpenHelper {
 
                 + KEY_NOTI_READ_NEWS_ID + " TEXT,"
                 + KEY_NOTI_READ_TITLE + " TEXT,"
-                + KEY_NOTI_READ_IN_TIME + " INT,"
-                + KEY_NOTI_READ_RECEIEVE_TIME + " INT,"
+                + KEY_NOTI_READ_IN_TIME + " TEXT,"
+                + KEY_NOTI_READ_RECEIEVE_TIME + " TEXT,"
                 + KEY_NOTI_READ_SITUATION + " TEXT,"
                 + KEY_NOTI_READ_PLACE + " TEXT,"
                 + KEY_NOTI_NOT_READ_NEWS_ID + " TEXT,"
@@ -249,19 +249,43 @@ public class ESMDbHelper extends SQLiteOpenHelper {
         db.update(TABLE_NAME_PUSH_ESM, cValues, KEY_DOC_ID + " = ?", new String[]{String.valueOf(esm.getKEY_DOC_ID())});
     }
 
-    public Cursor getNotiDataForDiary(long now_timestamp) {//15 hour
+    public Cursor getNotiDataForDiaryNoti(long now_timestamp) {//15 hour
         SQLiteDatabase db = this.getReadableDatabase();
 //        Cursor res =  db.rawQuery( "select * from contacts where id="+id+"", null );
-        Cursor res =  db.rawQuery( "SELECT tmp.noti_read_news_id, tmp.noti_read_title, tmp.noti_read_in_time, tmp.noti_read_situation, tmp.noti_read_place\n" +
+        Cursor res =  db.rawQuery( "SELECT tmp.noti_read_news_id, tmp.noti_read_title, tmp.noti_read_receieve_time, tmp.noti_read_situation, tmp.noti_read_place, tmp.esm_type\n" +
+                        "FROM\n" +
+                        "(\n" +
+                        "\tSELECT DISTINCT esm.noti_read_news_id, \n" +
+                        "\t\t\t\t\tesm.noti_read_title,\n" +
+                        "\t\t\t\t\tesm.noti_read_receieve_time,\n" +
+                        "\t\t\t\t\tesm.noti_read_situation,\n" +
+                        "\t\t\t\t\tesm.noti_read_place,\n" +
+                        "\t\t\t\t\tesm.esm_type,\n" +
+                        "\t\t\t\t\t(" + now_timestamp + "-esm.receieve_timestamp) as diff\n" +
+                        "\tFROM push_esm esm\n" +
+                        "\tWHERE esm.esm_type=0 OR esm.esm_type=2\n" +
+                        ") as tmp\n" +
+                        "WHERE tmp.diff <= 54000 AND tmp.diff >=0\n" +
+                        "ORDER BY diff ASC;"
+                , null );
+        return res;
+    }
+
+    public Cursor getNotiDataForDiaryRead(long now_timestamp) {//15 hour
+        SQLiteDatabase db = this.getReadableDatabase();
+//        Cursor res =  db.rawQuery( "select * from contacts where id="+id+"", null );
+        Cursor res =  db.rawQuery( "SELECT tmp.noti_read_news_id, tmp.noti_read_title, tmp.noti_read_in_time, tmp.self_read_situation, tmp.self_read_place, tmp.esm_type\n" +
                         "FROM\n" +
                         "(\n" +
                         "\tSELECT DISTINCT esm.noti_read_news_id, \n" +
                         "\t\t\t\t\tesm.noti_read_title,\n" +
                         "\t\t\t\t\tesm.noti_read_in_time,\n" +
-                        "\t\t\t\t\tesm.noti_read_situation,\n" +
-                        "\t\t\t\t\tesm.noti_read_place,\n" +
+                        "\t\t\t\t\tesm.self_read_situation,\n" +
+                        "\t\t\t\t\tesm.self_read_place,\n" +
+                        "\t\t\t\t\tesm.esm_type,\n" +
                         "\t\t\t\t\t(" + now_timestamp + "-esm.receieve_timestamp) as diff\n" +
                         "\tFROM push_esm esm\n" +
+                        "\tWHERE esm.esm_type=0 OR esm.esm_type=1\n" +
                         ") as tmp\n" +
                         "WHERE tmp.diff <= 54000 AND tmp.diff >=0\n" +
                         "ORDER BY diff ASC;"
@@ -272,7 +296,7 @@ public class ESMDbHelper extends SQLiteOpenHelper {
     public Cursor getALL() {
         SQLiteDatabase db = this.getReadableDatabase();
 //        Cursor res =  db.rawQuery( "select * from contacts where id="+id+"", null );
-        Cursor res =  db.rawQuery( "SELECT  * FROM " + TABLE_NAME_PUSH_ESM + " as tmp WHERE tmp.user_id <> 'upload';", null );
+        Cursor res =  db.rawQuery( "SELECT  * FROM " + TABLE_NAME_PUSH_ESM + ";", null );
         return res;
     }
 

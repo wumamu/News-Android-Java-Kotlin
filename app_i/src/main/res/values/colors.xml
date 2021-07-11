@@ -30,4 +30,19 @@
 
     <color name="track_color">#66A5A5A5</color>
     <color name="switch_color">#66A5A5A5</color>
+
+    <color name="chart_color_US">#576F86</color>
+    <color name="chart_color_JP">#E7655A</color>
+    <color name="chart_color_KR">#F6CE5D</color>
+    <color name="chart_color_Others">#BAE6FB</color>
+
+    <color name="chart_color_chinatimes">#cccccc</color>
+    <color name="chart_color_cts">#faebd7</color>
+    <color name="chart_color_cna">#fdf498</color>
+    <color name="chart_color_setn">#e4dcf1</color>
+    <color name="chart_color_storm">#f4ca7c</color>
+    <color name="chart_color_ebc">#f9c1cb</color>
+    <color name="chart_color_udn">#e3e37d</color>
+    <color name="chart_color_ettoday">#addede</color>
+    <color name="chart_color_ltn">#93caec</color>
 </resources>

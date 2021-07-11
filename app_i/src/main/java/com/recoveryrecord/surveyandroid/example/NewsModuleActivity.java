@@ -60,6 +60,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -79,6 +80,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_DAY_PUSH_PREFIX;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_PUSH_TOTAL;
 import static com.recoveryrecord.surveyandroid.example.Constants.MEDIA_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_CONTENT;
@@ -125,6 +128,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIO
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_VIEWPORT_NUM;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_VIEWPORT_RECORD;
+import static com.recoveryrecord.surveyandroid.example.Constants.READ_TOTAL;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_TEST_SIZE;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.TRIGGER_BY_KEY;
@@ -508,6 +512,19 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                 break;
 
         }
+
+        //count different read sum
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        int read_sum = sharedPrefs.getInt(READ_TOTAL + media_eng, 0);
+        editor.putInt(READ_TOTAL + media_eng, read_sum + 1);
+
+        Calendar calendar = Calendar.getInstance();
+        int day_index = calendar.get(Calendar.DAY_OF_YEAR);
+        int day_sum = sharedPrefs.getInt(READ_TOTAL + day_index + media_eng, 0);
+        editor.putInt(READ_TOTAL + day_index + media_eng, day_sum + 1);
+
+        editor.apply();
+
         myReadingBehavior.setKEY_MEDIA(media_ch);
 //        Log.d("log: media_name", media_name);
 //        Log.d("log: time_in", myReadingBehavior.getKEY_TIME_IN());
@@ -1692,7 +1709,12 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
 
         myReadingBehavior.setKEY_TITLE(mTitle);
         myReadingBehavior.setKEY_HAS_IMG(has_img);
-        myReadingBehavior.setKEY_PUBDATE(mPubdate.getSeconds());
+        if((mPubdate !=null)){
+            myReadingBehavior.setKEY_PUBDATE(mPubdate.getSeconds());
+        } else {
+            myReadingBehavior.setKEY_PUBDATE(0);
+        }
+
         myReadingBehavior.setKEY_OUT_TIMESTAMP(Timestamp.now().getSeconds());
 
         ReadingBehaviorDbHelper dbHandler = new ReadingBehaviorDbHelper(getApplicationContext());

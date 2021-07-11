@@ -80,4 +80,20 @@
     <string name="sett_reminder_time_label_ee">設定結束時間</string>
     <string name="sett_reminder_time_content">8 : 00 AM</string>
 
+    <string name="chart_label_Others">Other Countries</string>
+    <string name="chart_label_KR">South Korea</string>
+    <string name="chart_label_JP">Japan</string>
+    <string name="chart_label_US">United States</string>
+
+    <string name="chart_label_chinatimes">中時</string>
+    <string name="chart_label_ltn">自由</string>
+    <string name="chart_label_setn">三立</string>
+    <string name="chart_label_udn">聯合</string>
+    <string name="chart_label_storm">風傳媒</string>
+    <string name="chart_label_cna">中央社</string>
+    <string name="chart_label_ebc">東森</string>
+    <string name="chart_label_ettoday">ET</string>
+    <string name="chart_label_cts">華視</string>
+
+    <string name="upload">上傳本地資料</string>
 </resources>

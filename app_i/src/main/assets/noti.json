@@ -27,17 +27,12 @@
     },
     {
       "id": "base_3",
-      "header": "Question 3",
-      "question": "請問你點擊此通知進入閱讀的原因為何？",
-      "question_type": "multi_select",
+      "header": "Question 2.5",
+      "question": "請問您以甚麼甚麼方式進入閱讀？",
+      "question_type": "single_select",
       "options": [
-        "為了獲得新聞資訊",
-        "因為手機提醒（如：訊息通知）",
-        "為了娛樂",
-        "為了放鬆或打發時間",
-        "為了學習或工作",
-        "為了社交",
-        "因為習慣",
+        "看到通知跳出立即點入閱讀",
+        "瀏覽通知列的新聞通知點入閱讀",
         {
           "title": "其他",
           "type": "freeform"
@@ -61,17 +56,271 @@
     },
     {
       "id": "recieve_moment_1",
-      "header": "Question 4",
-      "question": "請問您在該則通知出現當下(抵達時間)，約有多少時間可以閱讀新聞？",
+      "header": "Question 3",
+      "question": "請問您在「該則通知出現當下」(抵達時間)，約有多少時間可以閱讀新聞？(覺得沒空請填0)",
       "question_type": "single_text_field",
       "label": "分鐘",
       "input_type": "number",
       "max_chars": "2",
       "validations": [
         {
-          "operation": "greater than",
-          "value": 1,
-          "on_fail_message": "time must be at least 1"
+          "operation": "greater than or equal to",
+          "value": 0,
+          "on_fail_message": "time must be at least 0"
+        },
+        {
+          "operation": "less than",
+          "value": 61,
+          "on_fail_message": "time must <= 60"
+        }
+      ],
+      "show_if": {
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "base_1",
+            "operation": "equals",
+            "value": "有，我有印象看到此則通知出現"
+          },
+          {
+            "id": "base_2",
+            "operation": "equals",
+            "value": "我有點入閱讀"
+          }
+        ]
+      }
+    },
+    {
+      "id": "recieve_moment_2",
+      "header": "Question 4",
+      "question": "在「該則通知出現當下」(抵達時間)，您是否正在從事以下活動？",
+      "question_type": "single_select",
+      "options": [
+        "處理家務",
+        "移動中",
+        "工作或學習 ",
+        "開會",
+        "用餐",
+        "從事娛樂或休閒運動",
+        "上廁所",
+        "與親友聊天",
+        "休息",
+        "未從事特定活動",
+        "忘記了",
+        {
+          "title": "其他",
+          "type": "freeform"
+        }
+      ],
+      "show_if": {
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "base_1",
+            "operation": "equals",
+            "value": "有，我有印象看到此則通知出現"
+          },
+          {
+            "id": "base_2",
+            "operation": "equals",
+            "value": "我有點入閱讀"
+          }
+        ]
+      }
+    },
+    {
+      "id": "recieve_moment_3",
+      "header": "Question 5",
+      "question": "承上題，該項您「該則通知出現當下」(抵達時間)從事的活動，對您來說，該活動的複雜程度為何？",
+      "question_type": "segment_select",
+      "low_tag": "非常不複雜",
+      "high_tag": "非常複雜",
+      "values": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "show_if": {
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "base_1",
+            "operation": "equals",
+            "value": "有，我有印象看到此則通知出現"
+          },
+          {
+            "id": "base_2",
+            "operation": "equals",
+            "value": "我有點入閱讀"
+          }
+        ]
+      }
+    },
+    {
+      "id": "recieve_moment_4",
+      "header": "Question 6",
+      "question": "對我來說，這是個可以被通知打擾的時機，請選擇您對此句描述的感受為何。",
+      "question_type": "segment_select",
+      "low_tag": "非常不同意",
+      "high_tag": "非常同意",
+      "values": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "show_if": {
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "base_1",
+            "operation": "equals",
+            "value": "有，我有印象看到此則通知出現"
+          },
+          {
+            "id": "base_2",
+            "operation": "equals",
+            "value": "我有點入閱讀"
+          }
+        ]
+      }
+    },
+    {
+      "id": "recieve_moment_5",
+      "header": "Question 7",
+      "question": "對我來說，這是個適合閱讀新聞的時機。請選擇您對此句描述的感受。",
+      "question_type": "segment_select",
+      "low_tag": "非常不同意",
+      "high_tag": "非常同意",
+      "values": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "show_if": {
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "base_1",
+            "operation": "equals",
+            "value": "有，我有印象看到此則通知出現"
+          },
+          {
+            "id": "base_2",
+            "operation": "equals",
+            "value": "我有點入閱讀"
+          }
+        ]
+      }
+    },
+    {
+      "id": "recieve_moment_6",
+      "header": "Question 8",
+      "question": "請選擇最符合您「該則通知出現當下」(抵達時間)所處地點",
+      "question_type": "single_select",
+      "options": [
+        "住所",
+        "運動場所",
+        "用餐地點(如：咖啡廳、餐廳)",
+        "工作學校場所",
+        "公眾場所(如：電影院、大賣場)",
+        "移動中",
+        {
+          "title": "其他",
+          "type": "freeform"
+        }
+      ],
+      "show_if": {
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "base_1",
+            "operation": "equals",
+            "value": "有，我有印象看到此則通知出現"
+          },
+          {
+            "id": "base_2",
+            "operation": "equals",
+            "value": "我有點入閱讀"
+          }
+        ]
+      }
+    },
+    {
+      "id": "read_moment_1",
+      "header": "Question 9",
+      "question": "根據資料顯示，您在(rb上頭點入閱讀的時間記錄)閱讀該篇新聞",
+      "question_type": "single_select",
+      "options": [
+        "了解"
+      ],
+      "show_if": {
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "base_1",
+            "operation": "equals",
+            "value": "有，我有印象看到此則通知出現"
+          },
+          {
+            "id": "base_2",
+            "operation": "equals",
+            "value": "我有點入閱讀"
+          }
+        ]
+      }
+    },
+    {
+      "id": "read_moment_2",
+      "header": "Question 10",
+      "question": "請問您「閱讀該篇新聞當下」與「看到通知當下」這兩個時機當下正在從事的活動與所處地點是否相同？",
+      "question_type": "single_select",
+      "options": [
+        "活動與地點皆相同",
+        "活動相同，地點不同",
+        "活動不同，地點相同",
+        "活動、地點均不相同"
+      ],
+      "show_if": {
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "base_1",
+            "operation": "equals",
+            "value": "有，我有印象看到此則通知出現"
+          },
+          {
+            "id": "base_2",
+            "operation": "equals",
+            "value": "我有點入閱讀"
+          }
+        ]
+      }
+    },
+    {
+      "id": "read_moment_3",
+      "header": "Question 11",
+      "question": "請問您「閱讀該篇新聞當下」約有多少時間可以「閱讀新聞」？(覺得沒空請填0)",
+      "question_type": "single_text_field",
+      "label": "分鐘",
+      "input_type": "number",
+      "max_chars": "2",
+      "validations": [
+        {
+          "operation": "greater than or equal to",
+          "value": 0,
+          "on_fail_message": "time must be at least 0"
         },
         {
           "operation": "less than",
@@ -93,29 +342,34 @@
             "value": "我有點入閱讀"
           },
           {
-            "id": "base_3",
+            "id": "read_moment_2",
             "operation": "not equals",
-            "value": "***"
+            "value": "活動與地點皆相同"
+          },
+          {
+            "id": "read_moment_2",
+            "operation": "not equals",
+            "value": "活動相同，地點不同"
           }
         ]
       }
     },
     {
-      "id": "recieve_moment_2",
-      "header": "Question 5",
-      "question": "在該則通知出現當下(抵達時間)，您是否正在從事以下活動？",
+      "id": "read_moment_4",
+      "header": "Question 12",
+      "question": "「閱讀該篇新聞當下」，您是否正在從事以下活動？",
       "question_type": "single_select",
       "options": [
         "處理家務",
         "移動中",
-        "工作或學習 ",
-        "開會",
+        "工作或學習",
         "用餐",
         "從事娛樂或休閒運動",
         "上廁所",
         "與親友聊天",
         "休息",
         "未從事特定活動",
+        "忘記了",
         {
           "title": "其他",
           "type": "freeform"
@@ -135,22 +389,22 @@
             "value": "我有點入閱讀"
           },
           {
-            "id": "base_3",
+            "id": "read_moment_2",
             "operation": "not equals",
-            "value": "***"
+            "value": "活動與地點皆相同"
           },
           {
-            "id": "recieve_moment_1",
+            "id": "read_moment_2",
             "operation": "not equals",
-            "value": "***"
+            "value": "活動相同，地點不同"
           }
         ]
       }
     },
     {
-      "id": "recieve_moment_3",
-      "header": "Question 6",
-      "question": "承上題，該項您該則通知出現當下(抵達時間)從事的活動，對您來說，該活動的複雜程度為何？\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)",
+      "id": "read_moment_5",
+      "header": "Question 13",
+      "question": "承上題，該項您「閱讀該篇新聞當下」從事的活動，對您來說，該活動的複雜程度為何？\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)",
       "question_type": "segment_select",
       "low_tag": "非常不複雜",
       "high_tag": "非常複雜",
@@ -177,79 +431,21 @@
             "value": "我有點入閱讀"
           },
           {
-            "id": "base_3",
+            "id": "read_moment_2",
             "operation": "not equals",
-            "value": "***"
+            "value": "活動與地點皆相同"
           },
           {
-            "id": "recieve_moment_1",
+            "id": "read_moment_2",
             "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
+            "value": "活動相同，地點不同"
           }
         ]
       }
     },
     {
-      "id": "recieve_moment_4",
-      "header": "Question 7",
-      "question": "請選擇最符合您該則通知出現當下(抵達時間)所處地點",
-      "question_type": "single_select",
-      "options": [
-        "住所",
-        "運動場所",
-        "用餐地點(如：咖啡廳、餐廳)",
-        "工作學校場所",
-        "公眾場所(如：電影院、大賣場)",
-        "移動中",
-        {
-          "title": "其他",
-          "type": "freeform"
-        }
-      ],
-      "show_if": {
-        "operation": "and",
-        "subconditions": [
-          {
-            "id": "base_1",
-            "operation": "equals",
-            "value": "有，我有印象看到此則通知出現"
-          },
-          {
-            "id": "base_2",
-            "operation": "equals",
-            "value": "我有點入閱讀"
-          },
-          {
-            "id": "base_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          }
-        ]
-      }
-    },
-    {
-      "id": "recieve_moment_5",
-      "header": "Question 8",
+      "id": "read_moment_6",
+      "header": "Question 14",
       "question": "對我來說，這是個可以被通知打擾的時機，請選擇您對此句描述的感受為何。",
       "question_type": "segment_select",
       "low_tag": "非常不同意",
@@ -277,37 +473,22 @@
             "value": "我有點入閱讀"
           },
           {
-            "id": "base_3",
+            "id": "read_moment_2",
             "operation": "not equals",
-            "value": "***"
+            "value": "活動與地點皆相同"
           },
           {
-            "id": "recieve_moment_1",
+            "id": "read_moment_2",
             "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_4",
-            "operation": "not equals",
-            "value": "***"
+            "value": "活動相同，地點不同"
           }
         ]
       }
     },
     {
-      "id": "recieve_moment_6",
-      "header": "Question 9",
-      "question": "對我來說，這是個適合閱讀新聞的時機。請選擇您對此句描述的感受。",
+      "id": "read_moment_7",
+      "header": "Question 15",
+      "question": "這是個適合閱讀新聞的時機。請選擇您對此句描述的感受。",
       "question_type": "segment_select",
       "low_tag": "非常不同意",
       "high_tag": "非常同意",
@@ -334,41 +515,103 @@
             "value": "我有點入閱讀"
           },
           {
-            "id": "base_3",
+            "id": "read_moment_2",
             "operation": "not equals",
-            "value": "***"
+            "value": "活動與地點皆相同"
           },
           {
-            "id": "recieve_moment_1",
+            "id": "read_moment_2",
             "operation": "not equals",
-            "value": "***"
+            "value": "活動相同，地點不同"
+          }
+        ]
+      }
+    },
+    {
+      "id": "read_moment_8",
+      "header": "Question 16",
+      "question": "請選擇最符合您「閱讀該篇新聞當下」所處地點",
+      "question_type": "single_select",
+      "options": [
+        "住所",
+        "運動場所",
+        "用餐地點(如：咖啡廳、餐廳)",
+        "工作學校場所",
+        "公眾場所(如：電影院、大賣場)",
+        "移動中",
+        {
+          "title": "其他",
+          "type": "freeform"
+        }
+      ],
+      "show_if": {
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "base_1",
+            "operation": "equals",
+            "value": "有，我有印象看到此則通知出現"
           },
           {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
+            "id": "base_2",
+            "operation": "equals",
+            "value": "我有點入閱讀"
           },
           {
-            "id": "recieve_moment_3",
+            "id": "read_moment_2",
             "operation": "not equals",
-            "value": "***"
+            "value": "活動與地點皆相同"
           },
           {
-            "id": "recieve_moment_4",
+            "id": "read_moment_2",
             "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_5",
-            "operation": "not equals",
-            "value": "***"
+            "value": "活動不同，地點相同"
           }
         ]
       }
     },
     {
       "id": "read_behaf_1",
-      "header": "Question 10",
+      "header": "Question 17",
+      "question": "請問你點擊此通知進入閱讀的原因為何？",
+      "question_type": "multi_select",
+      "options": [
+        "為了獲得新聞資訊",
+        "因為手機提醒（如：訊息通知）",
+        "為了娛樂",
+        "為了放鬆或打發時間",
+        "為了學習或工作",
+        "為了社交",
+        "因為習慣",
+        {
+          "title": "其他",
+          "type": "freeform"
+        }
+      ],
+      "show_if": {
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "base_1",
+            "operation": "equals",
+            "value": "有，我有印象看到此則通知出現"
+          },
+          {
+            "id": "base_2",
+            "operation": "equals",
+            "value": "我有點入閱讀"
+          },
+          {
+            "id": "read_moment_1",
+            "operation": "equals",
+            "value": "了解"
+          }
+        ]
+      }
+    },
+    {
+      "id": "read_behaf_2",
+      "header": "Question 18",
       "question": "在閱讀該篇新聞之前，是否有看過其它媒體或平台「引用相同新聞稿，闡述字句幾乎相同」的新聞？\n(舉例來說，可能ET 新聞雲的新聞被Yahoo新聞轉發，則在這兩個不同的媒體上看到的新聞會是同樣的內容，即為上述問題情況。)",
       "question_type": "single_select",
       "options": [
@@ -389,46 +632,16 @@
             "value": "我有點入閱讀"
           },
           {
-            "id": "base_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_6",
-            "operation": "not equals",
-            "value": "***"
+            "id": "read_moment_1",
+            "operation": "equals",
+            "value": "了解"
           }
         ]
       }
     },
     {
-      "id": "read_behaf_2",
-      "header": "Question 11",
+      "id": "read_behaf_3",
+      "header": "Question 19",
       "question": "關於這篇新聞，主觀來說，您認為您閱讀多少比例的新聞內容？",
       "question_type": "segment_select",
       "low_tag": "0%",
@@ -459,51 +672,16 @@
             "value": "我有點入閱讀"
           },
           {
-            "id": "base_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_1",
-            "operation": "not equals",
-            "value": "***"
+            "id": "read_moment_1",
+            "operation": "equals",
+            "value": "了解"
           }
         ]
       }
     },
     {
-      "id": "read_behaf_3",
-      "header": "Question 12",
+      "id": "read_behaf_4",
+      "header": "Question 20",
       "question": "關於此次新聞閱讀，你投入程度為何？",
       "question_type": "segment_select",
       "low_tag": "非常不投入",
@@ -531,56 +709,16 @@
             "value": "我有點入閱讀"
           },
           {
-            "id": "base_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_2",
-            "operation": "not equals",
-            "value": "***"
+            "id": "read_moment_1",
+            "operation": "equals",
+            "value": "了解"
           }
         ]
       }
     },
     {
-      "id": "read_behaf_4",
-      "header": "Question 13",
+      "id": "read_behaf_5",
+      "header": "Question 21",
       "question": "關於這篇新聞內容，你理解程度為何？",
       "question_type": "segment_select",
       "low_tag": "非常不理解",
@@ -608,61 +746,16 @@
             "value": "我有點入閱讀"
           },
           {
-            "id": "base_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_3",
-            "operation": "not equals",
-            "value": "***"
+            "id": "read_moment_1",
+            "operation": "equals",
+            "value": "了解"
           }
         ]
       }
     },
     {
-      "id": "read_behaf_5",
-      "header": "Question 14",
+      "id": "read_behaf_6",
+      "header": "Question 22",
       "question": "關於這篇新聞，在閱讀文章內容時感到困難程度。\n(如文章用字艱澀、或有許多專有名詞，需要具備一定背景知識才能完整閱讀。)",
       "question_type": "segment_select",
       "low_tag": "非常不困難",
@@ -690,66 +783,16 @@
             "value": "我有點入閱讀"
           },
           {
-            "id": "base_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_4",
-            "operation": "not equals",
-            "value": "***"
+            "id": "read_moment_1",
+            "operation": "equals",
+            "value": "了解"
           }
         ]
       }
     },
     {
-      "id": "read_behaf_6",
-      "header": "Question 15",
+      "id": "read_behaf_7",
+      "header": "Question 23",
       "question": "關於這篇新聞，與您自身相關程度。",
       "question_type": "segment_select",
       "low_tag": "非常不相關",
@@ -777,71 +820,16 @@
             "value": "我有點入閱讀"
           },
           {
-            "id": "base_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_5",
-            "operation": "not equals",
-            "value": "***"
+            "id": "read_moment_1",
+            "operation": "equals",
+            "value": "了解"
           }
         ]
       }
     },
     {
-      "id": "read_behaf_7",
-      "header": "Question 16",
+      "id": "read_behaf_8",
+      "header": "Question 24",
       "question": "關於這篇新聞，您感興趣程度。",
       "question_type": "segment_select",
       "low_tag": "非常不感興趣",
@@ -869,76 +857,16 @@
             "value": "我有點入閱讀"
           },
           {
-            "id": "base_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_6",
-            "operation": "not equals",
-            "value": "***"
+            "id": "read_moment_1",
+            "operation": "equals",
+            "value": "了解"
           }
         ]
       }
     },
     {
-      "id": "read_behaf_8",
-      "header": "Question 17",
+      "id": "read_behaf_9",
+      "header": "Question 25",
       "question": "請問您點入「該(媒體)」的新聞進行閱讀之動機為何？",
       "question_type": "multi_select",
       "options": [
@@ -966,81 +894,16 @@
             "value": "我有點入閱讀"
           },
           {
-            "id": "base_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_7",
-            "operation": "not equals",
-            "value": "***"
+            "id": "read_moment_1",
+            "operation": "equals",
+            "value": "了解"
           }
         ]
       }
     },
     {
-      "id": "read_behaf_9",
-      "header": "Question 18",
+      "id": "read_behaf_10",
+      "header": "Question 26",
       "question": "對我來說，這則新聞是真實的。請選擇您對此句描述的感受為何。\n(請依據問題選擇你覺得最適合的答案，若無法判斷或沒意見請選擇4。)",
       "question_type": "segment_select",
       "low_tag": "非常不符合",
@@ -1068,86 +931,16 @@
             "value": "我有點入閱讀"
           },
           {
-            "id": "base_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_7",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_8",
-            "operation": "not equals",
-            "value": "***"
+            "id": "read_moment_1",
+            "operation": "equals",
+            "value": "了解"
           }
         ]
       }
     },
     {
-      "id": "read_behaf_10",
-      "header": "Question 19",
+      "id": "read_behaf_11",
+      "header": "Question 27",
       "question": "對我來說，這則新聞是正確的。請選擇您對此句描述的感受為何。\n(請依據問題選擇你覺得最適合的答案，若無法判斷或沒意見請選擇4。)",
       "question_type": "segment_select",
       "low_tag": "非常不符合",
@@ -1175,91 +968,16 @@
             "value": "我有點入閱讀"
           },
           {
-            "id": "base_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_7",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_8",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_9",
-            "operation": "not equals",
-            "value": "***"
+            "id": "read_moment_1",
+            "operation": "equals",
+            "value": "了解"
           }
         ]
       }
     },
     {
-      "id": "read_behaf_11",
-      "header": "Question 20",
+      "id": "read_behaf_12",
+      "header": "Question 28",
       "question": "對我來說，這則新聞是可信任的。請選擇您對此句描述的感受為何。\n(請依據問題選擇你覺得最適合的答案，若無法判斷或沒意見請選擇4。)",
       "question_type": "segment_select",
       "low_tag": "非常不符合",
@@ -1287,96 +1005,16 @@
             "value": "我有點入閱讀"
           },
           {
-            "id": "base_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_7",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_8",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_9",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_10",
-            "operation": "not equals",
-            "value": "***"
+            "id": "read_moment_1",
+            "operation": "equals",
+            "value": "了解"
           }
         ]
       }
     },
     {
-      "id": "read_behaf_12",
-      "header": "Question 21",
+      "id": "read_behaf_13",
+      "header": "Question 29",
       "question": "關於這次的新聞閱讀的時機，對您來說屬於何種性質？",
       "question_type": "single_select",
       "options": [
@@ -1401,101 +1039,16 @@
             "value": "我有點入閱讀"
           },
           {
-            "id": "base_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_7",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_8",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_9",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_10",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_11",
-            "operation": "not equals",
-            "value": "***"
+            "id": "read_moment_1",
+            "operation": "equals",
+            "value": "了解"
           }
         ]
       }
     },
     {
-      "id": "read_behaf_13",
-      "header": "Question 22",
+      "id": "read_behaf_14",
+      "header": "Question 30",
       "question": "關於這次新聞閱讀，您的閱讀目標最接近以下何種？",
       "question_type": "multi_select",
       "options": [
@@ -1523,106 +1076,16 @@
             "value": "我有點入閱讀"
           },
           {
-            "id": "base_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_7",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_8",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_9",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_10",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_11",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_12",
-            "operation": "not equals",
-            "value": "***"
+            "id": "read_moment_1",
+            "operation": "equals",
+            "value": "了解"
           }
         ]
       }
     },
     {
-      "id": "read_behaf_14",
-      "header": "Question 23",
+      "id": "read_behaf_15",
+      "header": "Question 31",
       "question": "承上題，甚麼因素讓你採取此閱讀方式(策略)？",
       "question_type": "multi_select",
       "options": [
@@ -1651,1334 +1114,9 @@
             "value": "我有點入閱讀"
           },
           {
-            "id": "base_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_7",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_8",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_9",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_10",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_11",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_12",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_13",
-            "operation": "not equals",
-            "value": "***"
-          }
-        ]
-      }
-    },
-    {
-      "id": "read_moment_1",
-      "header": "Question 24",
-      "question": "根據資料顯示，您在(rb上頭點入閱讀的時間記錄)閱讀該篇新聞",
-      "question_type": "single_select",
-      "options": [
-        "了解"
-      ],
-      "show_if": {
-        "operation": "and",
-        "subconditions": [
-          {
-            "id": "base_1",
-            "operation": "equals",
-            "value": "有，我有印象看到此則通知出現"
-          },
-          {
-            "id": "base_2",
-            "operation": "equals",
-            "value": "我有點入閱讀"
-          },
-          {
-            "id": "base_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_7",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_8",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_9",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_10",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_11",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_12",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_13",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_14",
-            "operation": "not equals",
-            "value": "***"
-          }
-        ]
-      }
-    },
-    {
-      "id": "read_moment_2",
-      "header": "Question 25",
-      "question": "請問您「收到該則通知當下」與「閱讀該篇新聞當下」，正在從事的活動是否相同？",
-      "question_type": "single_select",
-      "options": [
-        "是",
-        "否"
-      ],
-      "show_if": {
-        "operation": "and",
-        "subconditions": [
-          {
-            "id": "base_1",
-            "operation": "equals",
-            "value": "有，我有印象看到此則通知出現"
-          },
-          {
-            "id": "base_2",
-            "operation": "equals",
-            "value": "我有點入閱讀"
-          },
-          {
-            "id": "base_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_7",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_8",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_9",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_10",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_11",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_12",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_13",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_14",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
             "id": "read_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          }
-        ]
-      }
-    },
-    {
-      "id": "read_moment_3",
-      "header": "Question 26",
-      "question": "請問您閱讀該篇新聞當下約有多少時間可以「閱讀新聞」？",
-      "question_type": "single_text_field",
-      "label": "分鐘",
-      "input_type": "number",
-      "max_chars": "2",
-      "validations": [
-        {
-          "operation": "greater than",
-          "value": 1,
-          "on_fail_message": "time must be at least 1"
-        },
-        {
-          "operation": "less than",
-          "value": 61,
-          "on_fail_message": "time must <= 60"
-        }
-      ],
-      "show_if": {
-        "operation": "and",
-        "subconditions": [
-          {
-            "id": "base_1",
             "operation": "equals",
-            "value": "有，我有印象看到此則通知出現"
-          },
-          {
-            "id": "base_2",
-            "operation": "equals",
-            "value": "我有點入閱讀"
-          },
-          {
-            "id": "base_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_7",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_8",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_9",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_10",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_11",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_12",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_13",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_14",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_2",
-            "operation": "equals",
-            "value": "否"
-          }
-        ]
-      }
-    },
-    {
-      "id": "read_moment_4",
-      "header": "Question 27",
-      "question": "閱讀該篇新聞當下，您是否正在從事以下活動？",
-      "question_type": "single_select",
-      "options": [
-        "處理家務",
-        "移動中",
-        "工作或學習",
-        "用餐",
-        "從事娛樂或休閒運動",
-        "上廁所",
-        "與親友聊天",
-        "休息",
-        "未從事特定活動",
-        {
-          "title": "其他",
-          "type": "freeform"
-        }
-      ],
-      "show_if": {
-        "operation": "and",
-        "subconditions": [
-          {
-            "id": "base_1",
-            "operation": "equals",
-            "value": "有，我有印象看到此則通知出現"
-          },
-          {
-            "id": "base_2",
-            "operation": "equals",
-            "value": "我有點入閱讀"
-          },
-          {
-            "id": "base_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_7",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_8",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_9",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_10",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_11",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_12",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_13",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_14",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_2",
-            "operation": "equals",
-            "value": "否"
-          },
-          {
-            "id": "read_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          }
-        ]
-      }
-    },
-    {
-      "id": "read_moment_5",
-      "header": "Question 28",
-      "question": "承上題，該項您閱讀該篇新聞當下從事的活動，對您來說，該活動的複雜程度為何？\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)",
-      "question_type": "segment_select",
-      "low_tag": "非常不複雜",
-      "high_tag": "非常複雜",
-      "values": [
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7"
-      ],
-      "show_if": {
-        "operation": "and",
-        "subconditions": [
-          {
-            "id": "base_1",
-            "operation": "equals",
-            "value": "有，我有印象看到此則通知出現"
-          },
-          {
-            "id": "base_2",
-            "operation": "equals",
-            "value": "我有點入閱讀"
-          },
-          {
-            "id": "base_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_7",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_8",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_9",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_10",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_11",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_12",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_13",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_14",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_2",
-            "operation": "equals",
-            "value": "否"
-          },
-          {
-            "id": "read_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          }
-        ]
-      }
-    },
-    {
-      "id": "read_moment_6",
-      "header": "Question 29",
-      "question": "請選擇最符合您閱讀該篇新聞當下所處地點",
-      "question_type": "single_select",
-      "options": [
-        "住所",
-        "運動場所",
-        "用餐地點(如：咖啡廳、餐廳)",
-        "工作學校場所",
-        "公眾場所(如：電影院、大賣場)",
-        "移動中",
-        {
-          "title": "其他",
-          "type": "freeform"
-        }
-      ],
-      "show_if": {
-        "operation": "and",
-        "subconditions": [
-          {
-            "id": "base_1",
-            "operation": "equals",
-            "value": "有，我有印象看到此則通知出現"
-          },
-          {
-            "id": "base_2",
-            "operation": "equals",
-            "value": "我有點入閱讀"
-          },
-          {
-            "id": "base_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_7",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_8",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_9",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_10",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_11",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_12",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_13",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_14",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_2",
-            "operation": "equals",
-            "value": "否"
-          },
-          {
-            "id": "read_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          }
-        ]
-      }
-    },
-    {
-      "id": "read_moment_7",
-      "header": "Question 30",
-      "question": "對我來說，這是個可以被通知打擾的時機，請選擇您對此句描述的感受為何。",
-      "question_type": "segment_select",
-      "low_tag": "非常不同意",
-      "high_tag": "非常同意",
-      "values": [
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7"
-      ],
-      "show_if": {
-        "operation": "and",
-        "subconditions": [
-          {
-            "id": "base_1",
-            "operation": "equals",
-            "value": "有，我有印象看到此則通知出現"
-          },
-          {
-            "id": "base_2",
-            "operation": "equals",
-            "value": "我有點入閱讀"
-          },
-          {
-            "id": "base_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_7",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_8",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_9",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_10",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_11",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_12",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_13",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_14",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_2",
-            "operation": "equals",
-            "value": "否"
-          },
-          {
-            "id": "read_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          }
-        ]
-      }
-    },
-    {
-      "id": "read_moment_8",
-      "header": "Question 31",
-      "question": "這是個適合閱讀新聞的時機。請選擇您對此句描述的感受。",
-      "question_type": "segment_select",
-      "low_tag": "非常不同意",
-      "high_tag": "非常同意",
-      "values": [
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7"
-      ],
-      "show_if": {
-        "operation": "and",
-        "subconditions": [
-          {
-            "id": "base_1",
-            "operation": "equals",
-            "value": "有，我有印象看到此則通知出現"
-          },
-          {
-            "id": "base_2",
-            "operation": "equals",
-            "value": "我有點入閱讀"
-          },
-          {
-            "id": "base_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_7",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_8",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_9",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_10",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_11",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_12",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_13",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_14",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_2",
-            "operation": "equals",
-            "value": "否"
-          },
-          {
-            "id": "read_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_7",
-            "operation": "not equals",
-            "value": "沒有"
+            "value": "了解"
           }
         ]
       }
@@ -3006,149 +1144,9 @@
             "value": "我有點入閱讀"
           },
           {
-            "id": "base_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_7",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_8",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_9",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_10",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_11",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_12",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_13",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_14",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
             "id": "read_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_2",
             "operation": "equals",
-            "value": "否"
-          },
-          {
-            "id": "read_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_7",
-            "operation": "not equals",
-            "value": "沒有"
-          },
-          {
-            "id": "read_moment_8",
-            "operation": "not equals",
-            "value": "沒有"
+            "value": "了解"
           }
         ]
       }
@@ -3156,15 +1154,13 @@
     {
       "id": "read_share_2",
       "header": "Question 33",
-      "question": "請問您分享的管道為何？",
+      "question": "您分享則新聞通知方式為何？",
       "question_type": "multi_select",
       "options": [
-        "社群軟體(如fb,ig)貼文",
-        "通訊軟體(如line, whatsapp)貼文",
-        "私人訊息給單一好友",
-        "私人訊息給多人群組",
-        "實體聊天時口述",
-        "截圖",
+        "分享新聞連結",
+        "截圖分享",
+        "文字描述分享",
+        "口頭分享",
         {
           "title": "其他",
           "type": "freeform"
@@ -3184,149 +1180,9 @@
             "value": "我有點入閱讀"
           },
           {
-            "id": "base_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_7",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_8",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_9",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_10",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_11",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_12",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_13",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_14",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
             "id": "read_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_2",
             "operation": "equals",
-            "value": "否"
-          },
-          {
-            "id": "read_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_7",
-            "operation": "not equals",
-            "value": "沒有"
-          },
-          {
-            "id": "read_moment_8",
-            "operation": "not equals",
-            "value": "沒有"
+            "value": "了解"
           },
           {
             "id": "read_share_1",
@@ -3339,519 +1195,6 @@
     {
       "id": "read_share_3",
       "header": "Question 34",
-      "question": "分享此則新聞原因為何？",
-      "question_type": "multi_select",
-      "options": [
-        "這則新聞是可信任的",
-        "這則新聞很重要",
-        "覺得有趣",
-        "嘲諷此則新聞立場",
-        "此則新聞含有錯誤資訊，需澄清",
-        "想與親友討論某議題",
-        "倡議某議題",
-        {
-          "title": "其他",
-          "type": "freeform"
-        }
-      ],
-      "show_if": {
-        "operation": "and",
-        "subconditions": [
-          {
-            "id": "base_1",
-            "operation": "equals",
-            "value": "有，我有印象看到此則通知出現"
-          },
-          {
-            "id": "base_2",
-            "operation": "equals",
-            "value": "我有點入閱讀"
-          },
-          {
-            "id": "base_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_7",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_8",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_9",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_10",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_11",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_12",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_13",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_14",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_2",
-            "operation": "equals",
-            "value": "否"
-          },
-          {
-            "id": "read_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_7",
-            "operation": "not equals",
-            "value": "沒有"
-          },
-          {
-            "id": "read_moment_8",
-            "operation": "not equals",
-            "value": "沒有"
-          },
-          {
-            "id": "read_share_1",
-            "operation": "equals",
-            "value": "有"
-          },
-          {
-            "id": "read_share_2",
-            "operation": "not equals",
-            "value": "***"
-          }
-        ]
-      }
-    },
-    {
-      "id": "read_not_share_1",
-      "header": "Question 35",
-      "question": "不分享此則新聞原因為何？",
-      "question_type": "multi_select",
-      "options": [
-        "看起來不太可信",
-        "無聊",
-        "不重要",
-        "跟我無關",
-        "已過時",
-        "不想表達立場",
-        "覺得麻煩",
-        {
-          "title": "其他",
-          "type": "freeform"
-        }
-      ],
-      "show_if": {
-        "operation": "and",
-        "subconditions": [
-          {
-            "id": "base_1",
-            "operation": "equals",
-            "value": "有，我有印象看到此則通知出現"
-          },
-          {
-            "id": "base_2",
-            "operation": "equals",
-            "value": "我有點入閱讀"
-          },
-          {
-            "id": "base_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_7",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_8",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_9",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_10",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_11",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_12",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_13",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_14",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_2",
-            "operation": "equals",
-            "value": "否"
-          },
-          {
-            "id": "read_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_7",
-            "operation": "not equals",
-            "value": "沒有"
-          },
-          {
-            "id": "read_moment_8",
-            "operation": "not equals",
-            "value": "沒有"
-          },
-          {
-            "id": "read_share_1",
-            "operation": "equals",
-            "value": "沒有"
-          }
-        ]
-      }
-    },
-    {
-      "id": "read_share_1_0",
-      "header": "Question 64",
-      "question": "關於這篇新聞，您是否有以任意形式分享給其他人？",
-      "question_type": "single_select",
-      "options": [
-        "有",
-        "沒有"
-      ],
-      "show_if": {
-        "operation": "and",
-        "subconditions": [
-          {
-            "id": "base_1",
-            "operation": "equals",
-            "value": "有，我有印象看到此則通知出現"
-          },
-          {
-            "id": "base_2",
-            "operation": "equals",
-            "value": "我有點入閱讀"
-          },
-          {
-            "id": "base_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_7",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_8",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_9",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_10",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_11",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_12",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_13",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_14",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_2",
-            "operation": "equals",
-            "value": "是"
-          }
-        ]
-      }
-    },
-    {
-      "id": "read_share_2_0",
-      "header": "Question 65",
       "question": "請問您分享的管道為何？",
       "question_type": "multi_select",
       "options": [
@@ -3880,122 +1223,12 @@
             "value": "我有點入閱讀"
           },
           {
-            "id": "base_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_7",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_8",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_9",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_10",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_11",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_12",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_13",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_14",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
             "id": "read_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_2",
             "operation": "equals",
-            "value": "是"
+            "value": "了解"
           },
           {
-            "id": "read_share_1_0",
+            "id": "read_share_1",
             "operation": "equals",
             "value": "有"
           }
@@ -4003,8 +1236,8 @@
       }
     },
     {
-      "id": "read_share_3_0",
-      "header": "Question 66",
+      "id": "read_share_4",
+      "header": "Question 35",
       "question": "分享此則新聞原因為何？",
       "question_type": "multi_select",
       "options": [
@@ -4034,137 +1267,22 @@
             "value": "我有點入閱讀"
           },
           {
-            "id": "base_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_7",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_8",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_9",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_10",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_11",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_12",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_13",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_14",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
             "id": "read_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_2",
             "operation": "equals",
-            "value": "是"
+            "value": "了解"
           },
           {
-            "id": "read_share_1_0",
+            "id": "read_share_1",
             "operation": "equals",
             "value": "有"
-          },
-          {
-            "id": "read_share_2_0",
-            "operation": "not equals",
-            "value": "***"
           }
         ]
       }
     },
     {
-      "id": "read_not_share_1_0",
-      "header": "Question 67",
-      "question": "不分享此則新聞原因為何？",
+      "id": "read_not_share_1",
+      "header": "Question 36",
+      "question": "沒有分享此則新聞原因為何？",
       "question_type": "multi_select",
       "options": [
         "看起來不太可信",
@@ -4193,122 +1311,12 @@
             "value": "我有點入閱讀"
           },
           {
-            "id": "base_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "recieve_moment_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_7",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_8",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_9",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_10",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_11",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_12",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_13",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_behaf_14",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
             "id": "read_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "read_moment_2",
             "operation": "equals",
-            "value": "是"
+            "value": "了解"
           },
           {
-            "id": "read_share_1_0",
+            "id": "read_share_1",
             "operation": "equals",
             "value": "沒有"
           }
@@ -4317,7 +1325,7 @@
     },
     {
       "id": "not_read_1",
-      "header": "Question 36",
+      "header": "Question 37",
       "question": "請問你未點擊此通知進入閱讀的原因為何？",
       "question_type": "multi_select",
       "options": [
@@ -4348,18 +1356,43 @@
       }
     },
     {
-      "id": "not_read_receive_1",
-      "header": "Question 37",
-      "question": "請問您在該則通知出現當下(抵達時間)，約有多少時間可以「閱讀新聞」？\n(請以分鐘為單位回答)",
+      "id": "not_read_2",
+      "header": "Question 38",
+      "question": "請問你有以任何形式分享此則新聞嗎？",
+      "question_type": "single_select",
+      "options": [
+        "是，我有分享此則新聞通知",
+        "無，我未分享此則新聞通知"
+      ],
+      "show_if": {
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "base_1",
+            "operation": "equals",
+            "value": "有，我有印象看到此則通知出現"
+          },
+          {
+            "id": "base_2",
+            "operation": "equals",
+            "value": "我沒有點入閱讀"
+          }
+        ]
+      }
+    },
+    {
+      "id": "not_read_recieve_moment_1",
+      "header": "Question 39",
+      "question": "請問您在「該則通知出現當下」(抵達時間)，約有多少時間可以「閱讀新聞」？",
       "question_type": "single_text_field",
       "label": "分鐘",
       "input_type": "number",
       "max_chars": "2",
       "validations": [
         {
-          "operation": "greater than",
-          "value": 1,
-          "on_fail_message": "time must be at least 1"
+          "operation": "greater than or equal to",
+          "value": 0,
+          "on_fail_message": "time must be at least 0"
         },
         {
           "operation": "less than",
@@ -4379,110 +1412,148 @@
             "id": "base_2",
             "operation": "equals",
             "value": "我沒有點入閱讀"
-          },
-          {
-            "id": "not_read_1",
-            "operation": "not equals",
-            "value": "***"
           }
         ]
       }
     },
     {
-      "id": "not_read_receive_2",
-      "header": "Question 38",
-      "question": "在該則通知出現當下(抵達時間)，您是否正在從事以下活動？",
-      "question_type": "single_select",
-      "options": [
-        "處理家務",
-        "移動中",
-        "工作或學習",
-        "開會",
-        "用餐",
-        "從事娛樂或休閒運動",
-        "上廁所",
-        "與親友聊天",
-        "休息",
-        "未從事特定活動"
-      ],
-      "show_if": {
-        "operation": "and",
-        "subconditions": [
-          {
-            "id": "base_1",
-            "operation": "equals",
-            "value": "有，我有印象看到此則通知出現"
-          },
-          {
-            "id": "base_2",
-            "operation": "equals",
-            "value": "我沒有點入閱讀"
-          },
-          {
-            "id": "not_read_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_1",
-            "operation": "not equals",
-            "value": "***"
-          }
-        ]
-      }
-    },
-    {
-      "id": "not_read_receive_3",
-      "header": "Question 39",
-      "question": "承上題，該項您該則通知出現當下(抵達時間)從事的活動，對您來說，該活動的複雜程度為何？\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)",
-      "question_type": "single_select",
-      "options": [
-        "處理家務",
-        "移動中",
-        "工作或學習",
-        "開會",
-        "用餐",
-        "從事娛樂或休閒運動",
-        "上廁所",
-        "與親友聊天",
-        "休息",
-        "未從事特定活動"
-      ],
-      "show_if": {
-        "operation": "and",
-        "subconditions": [
-          {
-            "id": "base_1",
-            "operation": "equals",
-            "value": "有，我有印象看到此則通知出現"
-          },
-          {
-            "id": "base_2",
-            "operation": "equals",
-            "value": "我沒有點入閱讀"
-          },
-          {
-            "id": "not_read_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_2",
-            "operation": "not equals",
-            "value": "***"
-          }
-        ]
-      }
-    },
-    {
-      "id": "not_read_receive_4",
+      "id": "not_read_recieve_moment_2",
       "header": "Question 40",
-      "question": "請選擇最符合您該則通知出現當下(抵達時間)所處地點",
+      "question": "在「該則通知出現當下」(抵達時間)，您是否正在從事以下活動？",
+      "question_type": "single_select",
+      "options": [
+        "處理家務",
+        "移動中",
+        "工作或學習",
+        "開會",
+        "用餐",
+        "從事娛樂或休閒運動",
+        "上廁所",
+        "與親友聊天",
+        "休息",
+        "未從事特定活動",
+        "忘記了",
+        {
+          "title": "其他",
+          "type": "freeform"
+        }
+      ],
+      "show_if": {
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "base_1",
+            "operation": "equals",
+            "value": "有，我有印象看到此則通知出現"
+          },
+          {
+            "id": "base_2",
+            "operation": "equals",
+            "value": "我沒有點入閱讀"
+          }
+        ]
+      }
+    },
+    {
+      "id": "not_read_recieve_moment_3",
+      "header": "Question 41",
+      "question": "承上題，該項您「該則通知出現當下」(抵達時間)從事的活動，對您來說，該活動的複雜程度為何？",
+      "question_type": "segment_select",
+      "low_tag": "非常不複雜",
+      "high_tag": "非常複雜",
+      "values": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "show_if": {
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "base_1",
+            "operation": "equals",
+            "value": "有，我有印象看到此則通知出現"
+          },
+          {
+            "id": "base_2",
+            "operation": "equals",
+            "value": "我沒有點入閱讀"
+          }
+        ]
+      }
+    },
+    {
+      "id": "not_read_recieve_moment_4",
+      "header": "Question 42",
+      "question": "對我來說，這是個可以被通知打擾的時機，請選擇您對此句描述的感受為何。",
+      "question_type": "segment_select",
+      "low_tag": "非常不同意",
+      "high_tag": "非常同意",
+      "values": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "show_if": {
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "base_1",
+            "operation": "equals",
+            "value": "有，我有印象看到此則通知出現"
+          },
+          {
+            "id": "base_2",
+            "operation": "equals",
+            "value": "我沒有點入閱讀"
+          }
+        ]
+      }
+    },
+    {
+      "id": "not_read_recieve_moment_5",
+      "header": "Question 43",
+      "question": "對我來說，這是個適合閱讀新聞的時機。請選擇您對此句描述的感受。",
+      "question_type": "segment_select",
+      "low_tag": "非常不同意",
+      "high_tag": "非常同意",
+      "values": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "show_if": {
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "base_1",
+            "operation": "equals",
+            "value": "有，我有印象看到此則通知出現"
+          },
+          {
+            "id": "base_2",
+            "operation": "equals",
+            "value": "我沒有點入閱讀"
+          }
+        ]
+      }
+    },
+    {
+      "id": "not_read_recieve_moment_6",
+      "header": "Question 44",
+      "question": "請選擇最符合您「該則通知出現當下」(抵達時間)所處地點",
       "question_type": "single_select",
       "options": [
         "住所",
@@ -4508,33 +1579,196 @@
             "id": "base_2",
             "operation": "equals",
             "value": "我沒有點入閱讀"
-          },
-          {
-            "id": "not_read_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_3",
-            "operation": "not equals",
-            "value": "***"
           }
         ]
       }
     },
     {
-      "id": "not_read_receive_5",
-      "header": "Question 41",
+      "id": "not_read_seen_1",
+      "header": "Question 45",
+      "question": "請問您「該則通知出現當下」與「看到該則通知當下」這兩個時機當下正在從事的活動與所處地點是否相同？",
+      "question_type": "single_select",
+      "options": [
+        "活動與地點皆相同",
+        "活動相同，地點不同",
+        "活動不同，地點相同",
+        "活動、地點均不相同"
+      ],
+      "show_if": {
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "base_1",
+            "operation": "equals",
+            "value": "有，我有印象看到此則通知出現"
+          },
+          {
+            "id": "base_2",
+            "operation": "equals",
+            "value": "我沒有點入閱讀"
+          },
+          {
+            "id": "not_read_2",
+            "operation": "equals",
+            "value": "是，我有分享此則新聞通知"
+          }
+        ]
+      }
+    },
+    {
+      "id": "not_read_seen_2",
+      "header": "Question 46",
+      "question": "請問您在「看到該則通知當下」，約有多少時間可以閱讀新聞？(覺得沒空請填0)",
+      "question_type": "single_text_field",
+      "label": "分鐘",
+      "input_type": "number",
+      "max_chars": "2",
+      "validations": [
+        {
+          "operation": "greater than or equal to",
+          "value": 0,
+          "on_fail_message": "time must be at least 0"
+        },
+        {
+          "operation": "less than",
+          "value": 61,
+          "on_fail_message": "time must <= 60"
+        }
+      ],
+      "show_if": {
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "base_1",
+            "operation": "equals",
+            "value": "有，我有印象看到此則通知出現"
+          },
+          {
+            "id": "base_2",
+            "operation": "equals",
+            "value": "我沒有點入閱讀"
+          },
+          {
+            "id": "not_read_2",
+            "operation": "equals",
+            "value": "是，我有分享此則新聞通知"
+          },
+          {
+            "id": "not_read_seen_1",
+            "operation": "not equals",
+            "value": "活動與地點皆相同"
+          },
+          {
+            "id": "not_read_seen_1",
+            "operation": "not equals",
+            "value": "活動相同，地點不同"
+          }
+        ]
+      }
+    },
+    {
+      "id": "not_read_seen_3",
+      "header": "Question 47",
+      "question": "在「看到該則通知當下」，您是否正在從事以下活動？",
+      "question_type": "single_select",
+      "options": [
+        "處理家務",
+        "移動中",
+        "工作或學習",
+        "開會",
+        "用餐",
+        "從事娛樂或休閒運動",
+        "上廁所",
+        "與親友聊天",
+        "休息",
+        "未從事特定活動",
+        "忘記了",
+        {
+          "title": "其他",
+          "type": "freeform"
+        }
+      ],
+      "show_if": {
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "base_1",
+            "operation": "equals",
+            "value": "有，我有印象看到此則通知出現"
+          },
+          {
+            "id": "base_2",
+            "operation": "equals",
+            "value": "我沒有點入閱讀"
+          },
+          {
+            "id": "not_read_2",
+            "operation": "equals",
+            "value": "是，我有分享此則新聞通知"
+          },
+          {
+            "id": "not_read_seen_1",
+            "operation": "not equals",
+            "value": "活動與地點皆相同"
+          },
+          {
+            "id": "not_read_seen_1",
+            "operation": "not equals",
+            "value": "活動相同，地點不同"
+          }
+        ]
+      }
+    },
+    {
+      "id": "not_read_seen_4",
+      "header": "Question 48",
+      "question": "承上題，該項您「看到該則通知當下」從事的活動，對您來說，該活動的複雜程度為何？\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)",
+      "question_type": "segment_select",
+      "low_tag": "非常不複雜",
+      "high_tag": "非常複雜",
+      "values": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "show_if": {
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "base_1",
+            "operation": "equals",
+            "value": "有，我有印象看到此則通知出現"
+          },
+          {
+            "id": "base_2",
+            "operation": "equals",
+            "value": "我沒有點入閱讀"
+          },
+          {
+            "id": "not_read_2",
+            "operation": "equals",
+            "value": "是，我有分享此則新聞通知"
+          },
+          {
+            "id": "not_read_seen_1",
+            "operation": "not equals",
+            "value": "活動與地點皆相同"
+          },
+          {
+            "id": "not_read_seen_1",
+            "operation": "not equals",
+            "value": "活動相同，地點不同"
+          }
+        ]
+      }
+    },
+    {
+      "id": "not_read_seen_5",
+      "header": "Question 49",
       "question": "對我來說，這是個可以被通知打擾的時機，請選擇您對此句描述的感受為何。",
       "question_type": "segment_select",
       "low_tag": "非常不同意",
@@ -4562,36 +1796,26 @@
             "value": "我沒有點入閱讀"
           },
           {
-            "id": "not_read_1",
-            "operation": "not equals",
-            "value": "***"
+            "id": "not_read_2",
+            "operation": "equals",
+            "value": "是，我有分享此則新聞通知"
           },
           {
-            "id": "not_read_receive_1",
+            "id": "not_read_seen_1",
             "operation": "not equals",
-            "value": "***"
+            "value": "活動與地點皆相同"
           },
           {
-            "id": "not_read_receive_2",
+            "id": "not_read_seen_1",
             "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_4",
-            "operation": "not equals",
-            "value": "***"
+            "value": "活動相同，地點不同"
           }
         ]
       }
     },
     {
-      "id": "not_read_receive_6",
-      "header": "Question 42",
+      "id": "not_read_seen_6",
+      "header": "Question 50",
       "question": "對我來說，這是個適合閱讀新聞的時機。請選擇您對此句描述的感受。",
       "question_type": "segment_select",
       "low_tag": "非常不同意",
@@ -4619,41 +1843,74 @@
             "value": "我沒有點入閱讀"
           },
           {
-            "id": "not_read_1",
-            "operation": "not equals",
-            "value": "***"
+            "id": "not_read_2",
+            "operation": "equals",
+            "value": "是，我有分享此則新聞通知"
           },
           {
-            "id": "not_read_receive_1",
+            "id": "not_read_seen_1",
             "operation": "not equals",
-            "value": "***"
+            "value": "活動與地點皆相同"
           },
           {
-            "id": "not_read_receive_2",
+            "id": "not_read_seen_1",
             "operation": "not equals",
-            "value": "***"
+            "value": "活動相同，地點不同"
+          }
+        ]
+      }
+    },
+    {
+      "id": "not_read_seen_7",
+      "header": "Question 51",
+      "question": "請選擇最符合您「看到該則通知當下」所處地點",
+      "question_type": "single_select",
+      "options": [
+        "住所",
+        "運動場所",
+        "用餐地點(如：咖啡廳、餐廳)",
+        "工作學校場所",
+        "公眾場所(如：電影院、大賣場)",
+        "移動中",
+        {
+          "title": "其他",
+          "type": "freeform"
+        }
+      ],
+      "show_if": {
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "base_1",
+            "operation": "equals",
+            "value": "有，我有印象看到此則通知出現"
           },
           {
-            "id": "not_read_receive_3",
-            "operation": "not equals",
-            "value": "***"
+            "id": "base_2",
+            "operation": "equals",
+            "value": "我沒有點入閱讀"
           },
           {
-            "id": "not_read_receive_4",
-            "operation": "not equals",
-            "value": "***"
+            "id": "not_read_2",
+            "operation": "equals",
+            "value": "是，我有分享此則新聞通知"
           },
           {
-            "id": "not_read_receive_5",
+            "id": "not_read_seen_1",
             "operation": "not equals",
-            "value": "***"
+            "value": "活動與地點皆相同"
+          },
+          {
+            "id": "not_read_seen_1",
+            "operation": "not equals",
+            "value": "活動不同，地點相同"
           }
         ]
       }
     },
     {
       "id": "not_read_credibility_1",
-      "header": "Question 43",
+      "header": "Question 52",
       "question": "對我來說，這則新聞標題是真實的。請選擇您對此句描述的感受為何。\n(請依據問題選擇你覺得最適合的答案，若無法判斷或沒意見請選擇4。)",
       "question_type": "segment_select",
       "low_tag": "非常不符合",
@@ -4681,46 +1938,16 @@
             "value": "我沒有點入閱讀"
           },
           {
-            "id": "not_read_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_6",
-            "operation": "not equals",
-            "value": "***"
+            "id": "not_read_2",
+            "operation": "equals",
+            "value": "是，我有分享此則新聞通知"
           }
         ]
       }
     },
     {
       "id": "not_read_credibility_2",
-      "header": "Question 44",
+      "header": "Question 53",
       "question": "對我來說，這則新聞標題是正確的。請選擇您對此句描述的感受為何。\n(請依據問題選擇你覺得最適合的答案，若無法判斷或沒意見請選擇4。)",
       "question_type": "segment_select",
       "low_tag": "非常不符合",
@@ -4748,51 +1975,16 @@
             "value": "我沒有點入閱讀"
           },
           {
-            "id": "not_read_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_1",
-            "operation": "not equals",
-            "value": "***"
+            "id": "not_read_2",
+            "operation": "equals",
+            "value": "是，我有分享此則新聞通知"
           }
         ]
       }
     },
     {
-      "id": "not_read_credibility_3",
-      "header": "Question 45",
+      "id": "not_read_credibility_1",
+      "header": "Question 54",
       "question": "對我來說，這則新聞標題是可信任的。請選擇您對此句描述的感受為何。\n(請依據問題選擇你覺得最適合的答案，若無法判斷或沒意見請選擇4。)",
       "question_type": "segment_select",
       "low_tag": "非常不符合",
@@ -4820,853 +2012,26 @@
             "value": "我沒有點入閱讀"
           },
           {
-            "id": "not_read_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_2",
-            "operation": "not equals",
-            "value": "***"
-          }
-        ]
-      }
-    },
-    {
-      "id": "not_read_seen_1",
-      "header": "Question 46",
-      "question": "請問您「收到該則通知當下」與「看到通知當下」，正在從事的活動是否相同？",
-      "question_type": "single_select",
-      "options": [
-        "是",
-        "否"
-      ],
-      "show_if": {
-        "operation": "and",
-        "subconditions": [
-          {
-            "id": "base_1",
+            "id": "not_read_2",
             "operation": "equals",
-            "value": "有，我有印象看到此則通知出現"
-          },
-          {
-            "id": "base_2",
-            "operation": "equals",
-            "value": "我沒有點入閱讀"
-          },
-          {
-            "id": "not_read_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_3",
-            "operation": "not equals",
-            "value": "***"
-          }
-        ]
-      }
-    },
-    {
-      "id": "not_read_seen_2",
-      "header": "Question 47",
-      "question": "請問您看到通知時間約與通知抵達時間間隔多久？",
-      "question_type": "single_select",
-      "options": [
-        "小於1分鐘",
-        "1 ~ 5 分鐘",
-        "6 ~ 15 分鐘",
-        "15 ~ 30 分鐘",
-        "30 分鐘以上",
-        "忘記了"
-      ],
-      "show_if": {
-        "operation": "and",
-        "subconditions": [
-          {
-            "id": "base_1",
-            "operation": "equals",
-            "value": "有，我有印象看到此則通知出現"
-          },
-          {
-            "id": "base_2",
-            "operation": "equals",
-            "value": "我沒有點入閱讀"
-          },
-          {
-            "id": "not_read_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_1",
-            "operation": "equals",
-            "value": "否"
-          }
-        ]
-      }
-    },
-    {
-      "id": "not_read_seen_3",
-      "header": "Question 48",
-      "question": "請問您在看到該則通知當下，約有多少時間可以閱讀新聞？\n(請以分鐘為單位回答)",
-      "question_type": "single_text_field",
-      "label": "Mins",
-      "input_type": "number",
-      "max_chars": "2",
-      "validations": [
-        {
-          "operation": "greater than",
-          "value": 1,
-          "on_fail_message": "time must be at least 1"
-        },
-        {
-          "operation": "less than",
-          "value": 61,
-          "on_fail_message": "time must <= 60"
-        }
-      ],
-      "show_if": {
-        "operation": "and",
-        "subconditions": [
-          {
-            "id": "base_1",
-            "operation": "equals",
-            "value": "有，我有印象看到此則通知出現"
-          },
-          {
-            "id": "base_2",
-            "operation": "equals",
-            "value": "我沒有點入閱讀"
-          },
-          {
-            "id": "not_read_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_1",
-            "operation": "equals",
-            "value": "否"
-          },
-          {
-            "id": "not_read_seen_2",
-            "operation": "not equals",
-            "value": "***"
-          }
-        ]
-      }
-    },
-    {
-      "id": "not_read_seen_4",
-      "header": "Question 49",
-      "question": "在看到該則通知當下，您是否正在從事以下活動？",
-      "question_type": "single_select",
-      "options": [
-        "處理家務",
-        "移動中",
-        "工作或學習",
-        "開會",
-        "用餐",
-        "從事娛樂或休閒運動",
-        "上廁所",
-        "與親友聊天",
-        "休息",
-        "未從事特定活動"
-      ],
-      "show_if": {
-        "operation": "and",
-        "subconditions": [
-          {
-            "id": "base_1",
-            "operation": "equals",
-            "value": "有，我有印象看到此則通知出現"
-          },
-          {
-            "id": "base_2",
-            "operation": "equals",
-            "value": "我沒有點入閱讀"
-          },
-          {
-            "id": "not_read_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_1",
-            "operation": "equals",
-            "value": "否"
-          },
-          {
-            "id": "not_read_seen_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_3",
-            "operation": "not equals",
-            "value": "***"
-          }
-        ]
-      }
-    },
-    {
-      "id": "not_read_seen_5",
-      "header": "Question 50",
-      "question": "承上題，該項您看到該則通知當下從事的活動，對您來說，該活動的複雜程度為何？\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)",
-      "question_type": "segment_select",
-      "low_tag": "非常不複雜",
-      "high_tag": "非常複雜",
-      "values": [
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7"
-      ],
-      "show_if": {
-        "operation": "and",
-        "subconditions": [
-          {
-            "id": "base_1",
-            "operation": "equals",
-            "value": "有，我有印象看到此則通知出現"
-          },
-          {
-            "id": "base_2",
-            "operation": "equals",
-            "value": "我沒有點入閱讀"
-          },
-          {
-            "id": "not_read_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_1",
-            "operation": "equals",
-            "value": "否"
-          },
-          {
-            "id": "not_read_seen_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_4",
-            "operation": "not equals",
-            "value": "***"
-          }
-        ]
-      }
-    },
-    {
-      "id": "not_read_seen_6",
-      "header": "Question 51",
-      "question": "請選擇最符合您看到該則通知當下所處地點",
-      "question_type": "single_select",
-      "options": [
-        "住所",
-        "運動場所",
-        "用餐地點(如：咖啡廳、餐廳)",
-        "工作學校場所",
-        "公眾場所(如：電影院、大賣場)",
-        "移動中",
-        {
-          "title": "其他",
-          "type": "freeform"
-        }
-      ],
-      "show_if": {
-        "operation": "and",
-        "subconditions": [
-          {
-            "id": "base_1",
-            "operation": "equals",
-            "value": "有，我有印象看到此則通知出現"
-          },
-          {
-            "id": "base_2",
-            "operation": "equals",
-            "value": "我沒有點入閱讀"
-          },
-          {
-            "id": "not_read_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_1",
-            "operation": "equals",
-            "value": "否"
-          },
-          {
-            "id": "not_read_seen_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_5",
-            "operation": "not equals",
-            "value": "***"
-          }
-        ]
-      }
-    },
-    {
-      "id": "not_read_seen_7",
-      "header": "Question 52",
-      "question": "對我來說，這是個可以被通知打擾的時機，請選擇您對此句描述的感受為何。",
-      "question_type": "segment_select",
-      "low_tag": "非常不同意",
-      "high_tag": "非常同意",
-      "values": [
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7"
-      ],
-      "show_if": {
-        "operation": "and",
-        "subconditions": [
-          {
-            "id": "base_1",
-            "operation": "equals",
-            "value": "有，我有印象看到此則通知出現"
-          },
-          {
-            "id": "base_2",
-            "operation": "equals",
-            "value": "我沒有點入閱讀"
-          },
-          {
-            "id": "not_read_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_1",
-            "operation": "equals",
-            "value": "否"
-          },
-          {
-            "id": "not_read_seen_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_6",
-            "operation": "not equals",
-            "value": "***"
-          }
-        ]
-      }
-    },
-    {
-      "id": "not_read_seen_8",
-      "header": "Question 53",
-      "question": "對我來說，這是個適合閱讀新聞的時機。請選擇您對此句描述的感受。",
-      "question_type": "segment_select",
-      "low_tag": "非常不同意",
-      "high_tag": "非常同意",
-      "values": [
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7"
-      ],
-      "show_if": {
-        "operation": "and",
-        "subconditions": [
-          {
-            "id": "base_1",
-            "operation": "equals",
-            "value": "有，我有印象看到此則通知出現"
-          },
-          {
-            "id": "base_2",
-            "operation": "equals",
-            "value": "我沒有點入閱讀"
-          },
-          {
-            "id": "not_read_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_1",
-            "operation": "equals",
-            "value": "否"
-          },
-          {
-            "id": "not_read_seen_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_7",
-            "operation": "not equals",
-            "value": "***"
+            "value": "是，我有分享此則新聞通知"
           }
         ]
       }
     },
     {
       "id": "not_read_share_1",
-      "header": "Question 54",
-      "question": "關於這則新聞，您是否有以任意形式分享給其他人？",
-      "question_type": "single_select",
+      "header": "Question 55",
+      "question": "您分享則新聞通知方式為何？",
+      "question_type": "multi_select",
       "options": [
-        "有",
-        "沒有"
+        "截圖分享",
+        "文字描述分享",
+        "口頭分享",
+        {
+          "title": "其他",
+          "type": "freeform"
+        }
       ],
       "show_if": {
         "operation": "and",
@@ -5682,110 +2047,23 @@
             "value": "我沒有點入閱讀"
           },
           {
-            "id": "not_read_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_1",
+            "id": "not_read_2",
             "operation": "equals",
-            "value": "否"
-          },
-          {
-            "id": "not_read_seen_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_7",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_8",
-            "operation": "not equals",
-            "value": "***"
+            "value": "是，我有分享此則新聞通知"
           }
         ]
       }
     },
     {
       "id": "not_read_share_2",
-      "header": "Question 55",
-      "question": "您分享方式為何？",
+      "header": "Question 56",
+      "question": "請問您分享的管道為何？",
       "question_type": "multi_select",
       "options": [
         "社群軟體(如fb,ig)貼文",
         "通訊軟體(如line, whatsapp)貼文",
         "私人訊息給單一好友",
         "私人訊息給多人群組",
-        "實體聊天時口述",
-        "截圖",
         {
           "title": "其他",
           "type": "freeform"
@@ -5805,546 +2083,20 @@
             "value": "我沒有點入閱讀"
           },
           {
-            "id": "not_read_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_1",
+            "id": "not_read_2",
             "operation": "equals",
-            "value": "否"
-          },
-          {
-            "id": "not_read_seen_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_7",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_8",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_share_1",
-            "operation": "equals",
-            "value": "有"
+            "value": "是，我有分享此則新聞通知"
           }
         ]
       }
     },
     {
       "id": "not_read_share_3",
-      "header": "Question 56",
-      "question": "分享此則新聞原因為何？",
-      "question_type": "single_select",
-      "options": [
-        "這則新聞很重要",
-        "覺得有趣",
-        "嘲諷此則新聞立場",
-        "此則新聞含有錯誤資訊，需澄清",
-        "想與親友討論某議題",
-        "倡議某議題",
-        {
-          "title": "其他",
-          "type": "freeform"
-        }
-      ],
-      "show_if": {
-        "operation": "and",
-        "subconditions": [
-          {
-            "id": "base_1",
-            "operation": "equals",
-            "value": "有，我有印象看到此則通知出現"
-          },
-          {
-            "id": "base_2",
-            "operation": "equals",
-            "value": "我沒有點入閱讀"
-          },
-          {
-            "id": "not_read_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_1",
-            "operation": "equals",
-            "value": "否"
-          },
-          {
-            "id": "not_read_seen_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_7",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_8",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_share_1",
-            "operation": "equals",
-            "value": "有"
-          },
-          {
-            "id": "not_read_share_2",
-            "operation": "not equals",
-            "value": "***"
-          }
-        ]
-      }
-    },
-    {
-      "id": "not_read_share_4",
       "header": "Question 57",
-      "question": "不分享此則新聞原因為何？",
-      "question_type": "single_select",
-      "options": [
-        "看起來不太可信",
-        "無聊",
-        "不重要",
-        "跟我無關",
-        "已過時",
-        "不想表達立場",
-        "覺得麻煩",
-        "沒空分享或是正在忙",
-        "事件仍在發展中",
-        {
-          "title": "其他",
-          "type": "freeform"
-        }
-      ],
-      "show_if": {
-        "operation": "and",
-        "subconditions": [
-          {
-            "id": "base_1",
-            "operation": "equals",
-            "value": "有，我有印象看到此則通知出現"
-          },
-          {
-            "id": "base_2",
-            "operation": "equals",
-            "value": "我沒有點入閱讀"
-          },
-          {
-            "id": "not_read_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_1",
-            "operation": "equals",
-            "value": "否"
-          },
-          {
-            "id": "not_read_seen_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_7",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_8",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_share_1",
-            "operation": "equals",
-            "value": "沒有"
-          }
-        ]
-      }
-    },
-    {
-      "id": "not_read_share_1_0",
-      "header": "Question 68",
-      "question": "關於這則新聞，您是否有以任意形式分享給其他人？",
-      "question_type": "single_select",
-      "options": [
-        "有",
-        "沒有"
-      ],
-      "show_if": {
-        "operation": "and",
-        "subconditions": [
-          {
-            "id": "base_1",
-            "operation": "equals",
-            "value": "有，我有印象看到此則通知出現"
-          },
-          {
-            "id": "base_2",
-            "operation": "equals",
-            "value": "我沒有點入閱讀"
-          },
-          {
-            "id": "not_read_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_1",
-            "operation": "equals",
-            "value": "是"
-          }
-        ]
-      }
-    },
-    {
-      "id": "not_read_share_2_0",
-      "header": "Question 69",
-      "question": "您分享方式為何？",
+      "question": "分享此則新聞原因為何？",
       "question_type": "multi_select",
       "options": [
-        "社群軟體(如fb,ig)貼文",
-        "通訊軟體(如line, whatsapp)貼文",
-        "私人訊息給單一好友",
-        "私人訊息給多人群組",
-        "實體聊天時口述",
-        "截圖",
-        {
-          "title": "其他",
-          "type": "freeform"
-        }
-      ],
-      "show_if": {
-        "operation": "and",
-        "subconditions": [
-          {
-            "id": "base_1",
-            "operation": "equals",
-            "value": "有，我有印象看到此則通知出現"
-          },
-          {
-            "id": "base_2",
-            "operation": "equals",
-            "value": "我沒有點入閱讀"
-          },
-          {
-            "id": "not_read_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_1",
-            "operation": "equals",
-            "value": "是"
-          },
-          {
-            "id": "not_read_share_1_0",
-            "operation": "equals",
-            "value": "有"
-          }
-        ]
-      }
-    },
-    {
-      "id": "not_read_share_3_0",
-      "header": "Question 70",
-      "question": "分享此則新聞原因為何？",
-      "question_type": "single_select",
-      "options": [
+        "這則新聞是可信任的",
         "這則新聞很重要",
         "覺得有趣",
         "嘲諷此則新聞立場",
@@ -6370,165 +2122,9 @@
             "value": "我沒有點入閱讀"
           },
           {
-            "id": "not_read_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_1",
+            "id": "not_read_2",
             "operation": "equals",
-            "value": "是"
-          },
-          {
-            "id": "not_read_share_1_0",
-            "operation": "equals",
-            "value": "有"
-          },
-          {
-            "id": "not_read_share_2_0",
-            "operation": "not equals",
-            "value": "***"
-          }
-        ]
-      }
-    },
-    {
-      "id": "not_read_share_4_0",
-      "header": "Question 71",
-      "question": "不分享此則新聞原因為何？",
-      "question_type": "single_select",
-      "options": [
-        "看起來不太可信",
-        "無聊",
-        "不重要",
-        "跟我無關",
-        "已過時",
-        "不想表達立場",
-        "覺得麻煩",
-        "沒空分享或是正在忙",
-        "事件仍在發展中",
-        {
-          "title": "其他",
-          "type": "freeform"
-        }
-      ],
-      "show_if": {
-        "operation": "and",
-        "subconditions": [
-          {
-            "id": "base_1",
-            "operation": "equals",
-            "value": "有，我有印象看到此則通知出現"
-          },
-          {
-            "id": "base_2",
-            "operation": "equals",
-            "value": "我沒有點入閱讀"
-          },
-          {
-            "id": "not_read_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_5",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_receive_6",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_credibility_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "not_read_seen_1",
-            "operation": "equals",
-            "value": "是"
-          },
-          {
-            "id": "not_read_share_1_0",
-            "operation": "equals",
-            "value": "沒有"
+            "value": "是，我有分享此則新聞通知"
           }
         ]
       }
@@ -6536,16 +2132,16 @@
     {
       "id": "miss_recieve_moment_1",
       "header": "Question 58",
-      "question": "請問您在該則通知出現當下(抵達時間)，約有多少時間可以「閱讀新聞」？\n(接下來，請您回想該則新聞通知出現當下狀態(抵達時間)進行回答。)",
+      "question": "請問您在「該則通知出現當下」(抵達時間)，約有多少時間可以「閱讀新聞」？",
       "question_type": "single_text_field",
       "label": "分鐘",
       "input_type": "number",
       "max_chars": "2",
       "validations": [
         {
-          "operation": "greater than",
-          "value": 1,
-          "on_fail_message": "time must be at least 1"
+          "operation": "greater than or equal to",
+          "value": 0,
+          "on_fail_message": "time must be at least 0"
         },
         {
           "operation": "less than",
@@ -6562,7 +2158,7 @@
     {
       "id": "miss_recieve_moment_2",
       "header": "Question 59",
-      "question": "在該則通知出現當下(抵達時間)，您是否正在從事以下活動？",
+      "question": "在「該則通知出現當下」(抵達時間)，您是否正在從事以下活動？",
       "question_type": "single_select",
       "options": [
         "處理家務",
@@ -6575,31 +2171,22 @@
         "與親友聊天",
         "休息",
         "未從事特定活動",
+        "忘記了",
         {
           "title": "其他",
           "type": "freeform"
         }
       ],
       "show_if": {
-        "operation": "and",
-        "subconditions": [
-          {
-            "id": "base_1",
-            "operation": "equals",
-            "value": "沒有，我沒有注意到這則通知出現"
-          },
-          {
-            "id": "miss_recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          }
-        ]
+        "id": "base_1",
+        "operation": "equals",
+        "value": "沒有，我沒有注意到這則通知出現"
       }
     },
     {
       "id": "miss_recieve_moment_3",
       "header": "Question 60",
-      "question": "承上題，該項您該則通知出現當下(抵達時間)從事的活動，對您來說，該活動的複雜程度為何？\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)",
+      "question": "承上題，該項您「該則通知出現當下」(抵達時間)從事的活動，對您來說，該活動的複雜程度為何？",
       "question_type": "segment_select",
       "low_tag": "非常不複雜",
       "high_tag": "非常複雜",
@@ -6613,72 +2200,14 @@
         "7"
       ],
       "show_if": {
-        "operation": "and",
-        "subconditions": [
-          {
-            "id": "base_1",
-            "operation": "equals",
-            "value": "沒有，我沒有注意到這則通知出現"
-          },
-          {
-            "id": "miss_recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "miss_recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          }
-        ]
+        "id": "base_1",
+        "operation": "equals",
+        "value": "沒有，我沒有注意到這則通知出現"
       }
     },
     {
       "id": "miss_recieve_moment_4",
       "header": "Question 61",
-      "question": "請選擇最符合您該則通知出現當下(抵達時間)所處地點",
-      "question_type": "single_select",
-      "options": [
-        "住所",
-        "運動場所",
-        "用餐地點(如：咖啡廳、餐廳)",
-        "工作學校場所",
-        "公眾場所(如：電影院、大賣場)",
-        "移動中",
-        {
-          "title": "其他",
-          "type": "freeform"
-        }
-      ],
-      "show_if": {
-        "operation": "and",
-        "subconditions": [
-          {
-            "id": "base_1",
-            "operation": "equals",
-            "value": "沒有，我沒有注意到這則通知出現"
-          },
-          {
-            "id": "miss_recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "miss_recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "miss_recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          }
-        ]
-      }
-    },
-    {
-      "id": "miss_recieve_moment_5",
-      "header": "Question 62",
       "question": "對我來說，這是個可以被通知打擾的時機，請選擇您對此句描述的感受為何。",
       "question_type": "segment_select",
       "low_tag": "非常不同意",
@@ -6693,39 +2222,14 @@
         "7"
       ],
       "show_if": {
-        "operation": "and",
-        "subconditions": [
-          {
-            "id": "base_1",
-            "operation": "equals",
-            "value": "沒有，我沒有注意到這則通知出現"
-          },
-          {
-            "id": "miss_recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "miss_recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "miss_recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "miss_recieve_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          }
-        ]
+        "id": "base_1",
+        "operation": "equals",
+        "value": "沒有，我沒有注意到這則通知出現"
       }
     },
     {
-      "id": "miss_recieve_moment_6",
-      "header": "Question 63",
+      "id": "miss_recieve_moment_5",
+      "header": "Question 62",
       "question": "對我來說，這是個適合閱讀新聞的時機。請選擇您對此句描述的感受。",
       "question_type": "segment_select",
       "low_tag": "非常不同意",
@@ -6740,39 +2244,32 @@
         "7"
       ],
       "show_if": {
-        "operation": "and",
-        "subconditions": [
-          {
-            "id": "base_1",
-            "operation": "equals",
-            "value": "沒有，我沒有注意到這則通知出現"
-          },
-          {
-            "id": "miss_recieve_moment_1",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "miss_recieve_moment_2",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "miss_recieve_moment_3",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "miss_recieve_moment_4",
-            "operation": "not equals",
-            "value": "***"
-          },
-          {
-            "id": "miss_recieve_moment_5",
-            "operation": "not equals",
-            "value": "***"
-          }
-        ]
+        "id": "base_1",
+        "operation": "equals",
+        "value": "沒有，我沒有注意到這則通知出現"
+      }
+    },
+    {
+      "id": "miss_recieve_moment_6",
+      "header": "Question 63",
+      "question": "請選擇最符合您「該則通知出現當下」(抵達時間)所處地點",
+      "question_type": "single_select",
+      "options": [
+        "住所",
+        "運動場所",
+        "用餐地點(如：咖啡廳、餐廳)",
+        "工作學校場所",
+        "公眾場所(如：電影院、大賣場)",
+        "移動中",
+        {
+          "title": "其他",
+          "type": "freeform"
+        }
+      ],
+      "show_if": {
+        "id": "base_1",
+        "operation": "equals",
+        "value": "沒有，我沒有注意到這則通知出現"
       }
     }
   ],

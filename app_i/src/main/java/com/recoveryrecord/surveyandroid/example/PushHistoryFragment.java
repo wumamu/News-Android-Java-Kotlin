@@ -100,13 +100,6 @@ public class PushHistoryFragment extends Fragment {
     }
 
     private void loadrecyclerViewData() {
-//.orderBy("name").limit(3)//                db.collectionGroup("news") //
-//        db.collection(TEST_USER_COLLECTION)
-//                .document(device_id)
-//                .collection(PUSH_NEWS_COLLECTION)
-//                .orderBy(PUSH_NEWS_RECEIEVE_TIME, Query.Direction.DESCENDING)
-//                .limit(PUSH_HISTORY_LIMIT_PER_PAGE)
-//                .get()
         db.collection(PUSH_NEWS_COLLECTION)
                 .whereEqualTo(PUSH_NEWS_DEVICE_ID, device_id)
                 .orderBy(PUSH_NEWS_RECEIEVE_TIME, Query.Direction.DESCENDING)

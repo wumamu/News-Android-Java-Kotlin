@@ -7,8 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.recoveryrecord.surveyandroid.example.sqlite.Diary;
-import com.recoveryrecord.surveyandroid.example.sqlite.ESM;
-
 
 
 public class DiaryDbHelper extends SQLiteOpenHelper {
@@ -26,7 +24,8 @@ public class DiaryDbHelper extends SQLiteOpenHelper {
     private static final String KEY_DIARY_SCHEDULE_SOURCE = "diary_schedule_source";
     //open esm query db
     private static final String KEY_DIARY_SAMPLE_TIME = "diary_sample_time";
-    private static final String KEY_ESM_RESULT_SAMPLE = "esm_sample";
+    private static final String KEY_ESM_RESULT_SAMPLE_READ = "esm_sample_read";
+    private static final String KEY_ESM_RESULT_SAMPLE_NOTI = "esm_sample_noti";
 
 
     private static final String KEY_NOTI_TIMESTAMP = "noti_timestamp";
@@ -38,8 +37,10 @@ public class DiaryDbHelper extends SQLiteOpenHelper {
     private static final String KEY_REMOVE_TYPE = "remove_type";
 
     private static final String KEY_RESULT = "result";
-    private static final String KEY_INOPPORTUNTE_RESULT = "inopportune_result";
-    private static final String KEY_OPPORTUNTE_RESULT = "opportune_result";
+    private static final String KEY_INOPPORTUNTE_RESULT_READ = "inopportune_result_read";
+    private static final String KEY_OPPORTUNTE_RESULT_READ = "opportune_result_read";
+    private static final String KEY_INOPPORTUNTE_RESULT_NOTI = "inopportune_result_noti";
+    private static final String KEY_OPPORTUNTE_RESULT_NOTI = "opportune_result_noti";
 
     public DiaryDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -54,7 +55,8 @@ public class DiaryDbHelper extends SQLiteOpenHelper {
                 + KEY_DEVICE_ID + " TEXT,"
                 + KEY_USER_ID + " TEXT,"
 
-                + KEY_ESM_RESULT_SAMPLE + " TEXT,"
+                + KEY_ESM_RESULT_SAMPLE_READ + " TEXT,"
+                + KEY_ESM_RESULT_SAMPLE_NOTI + " TEXT,"
                 + KEY_DIARY_SCHEDULE_SOURCE + " TEXT,"
                 + KEY_DIARY_SAMPLE_TIME + " INT,"//long
 
@@ -68,8 +70,10 @@ public class DiaryDbHelper extends SQLiteOpenHelper {
                 + KEY_REMOVE_TYPE + " TEXT,"
 
                 + KEY_RESULT + " TEXT,"
-                + KEY_INOPPORTUNTE_RESULT + " TEXT,"
-                + KEY_OPPORTUNTE_RESULT + " TEXT"+ ")";
+                + KEY_INOPPORTUNTE_RESULT_NOTI + " TEXT,"
+                + KEY_OPPORTUNTE_RESULT_NOTI + " TEXT,"
+                + KEY_INOPPORTUNTE_RESULT_READ + " TEXT,"
+                + KEY_OPPORTUNTE_RESULT_READ + " TEXT"+ ")";
         db.execSQL(CREATE_TABLE);
     }
 
@@ -90,7 +94,8 @@ public class DiaryDbHelper extends SQLiteOpenHelper {
         cValues.put(KEY_DEVICE_ID, diary.getKEY_DEVICE_ID());//initiate
         cValues.put(KEY_USER_ID, diary.getKEY_USER_ID());//initiate
 
-        cValues.put(KEY_ESM_RESULT_SAMPLE, diary.getKEY_ESM_RESULT_SAMPLE());//click
+        cValues.put(KEY_ESM_RESULT_SAMPLE_READ, diary.getKEY_ESM_RESULT_SAMPLE_READ());//click
+        cValues.put(KEY_ESM_RESULT_SAMPLE_NOTI, diary.getKEY_ESM_RESULT_SAMPLE_NOTI());//click
         cValues.put(KEY_DIARY_SCHEDULE_SOURCE, diary.getKEY_DIARY_SCHEDULE_SOURCE());//initiate
         cValues.put(KEY_DIARY_SAMPLE_TIME, diary.getKEY_DIARY_SAMPLE_TIME());//click
 
@@ -103,8 +108,10 @@ public class DiaryDbHelper extends SQLiteOpenHelper {
         cValues.put(KEY_REMOVE_TYPE, diary.getKEY_REMOVE_TYPE());//remove
 
         cValues.put(KEY_RESULT, diary.getKEY_RESULT());//submit
-        cValues.put(KEY_INOPPORTUNTE_RESULT, diary.getKEY_INOPPORTUNTE_RESULT());//submit
-        cValues.put(KEY_OPPORTUNTE_RESULT, diary.getKEY_OPPORTUNTE_RESULT());//submit
+        cValues.put(KEY_INOPPORTUNTE_RESULT_READ, diary.getKEY_INOPPORTUNTE_RESULT_READ());//submit
+        cValues.put(KEY_OPPORTUNTE_RESULT_READ, diary.getKEY_OPPORTUNTE_RESULT_READ());//submit
+        cValues.put(KEY_INOPPORTUNTE_RESULT_NOTI, diary.getKEY_INOPPORTUNTE_RESULT_NOTI());//submit
+        cValues.put(KEY_OPPORTUNTE_RESULT_NOTI, diary.getKEY_OPPORTUNTE_RESULT_NOTI());//submit
 
         // Insert the new row, returning the primary key value of the new row
         long newRowId = db.insert(TABLE_NAME_PUSH_DIARY,null, cValues);
@@ -122,7 +129,8 @@ public class DiaryDbHelper extends SQLiteOpenHelper {
         //esm loading page
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cValues = new ContentValues();
-        cValues.put(KEY_ESM_RESULT_SAMPLE, diary.getKEY_ESM_RESULT_SAMPLE());
+        cValues.put(KEY_ESM_RESULT_SAMPLE_READ, diary.getKEY_ESM_RESULT_SAMPLE_READ());
+        cValues.put(KEY_ESM_RESULT_SAMPLE_NOTI, diary.getKEY_ESM_RESULT_SAMPLE_NOTI());
         cValues.put(KEY_DIARY_SAMPLE_TIME, diary.getKEY_DIARY_SAMPLE_TIME());
 
         db.update(TABLE_NAME_PUSH_DIARY, cValues, KEY_DOC_ID + " = ?", new String[]{String.valueOf(diary.getKEY_DOC_ID())});
@@ -147,8 +155,10 @@ public class DiaryDbHelper extends SQLiteOpenHelper {
         ContentValues cValues = new ContentValues();
         cValues.put(KEY_SUBMIT_TIMESTAMP, diary.getKEY_SUBMIT_TIMESTAMP());
         cValues.put(KEY_RESULT, diary.getKEY_RESULT());
-        cValues.put(KEY_INOPPORTUNTE_RESULT, diary.getKEY_INOPPORTUNTE_RESULT());
-        cValues.put(KEY_OPPORTUNTE_RESULT, diary.getKEY_OPPORTUNTE_RESULT());
+        cValues.put(KEY_INOPPORTUNTE_RESULT_READ, diary.getKEY_INOPPORTUNTE_RESULT_READ());
+        cValues.put(KEY_OPPORTUNTE_RESULT_READ, diary.getKEY_OPPORTUNTE_RESULT_READ());
+        cValues.put(KEY_INOPPORTUNTE_RESULT_NOTI, diary.getKEY_INOPPORTUNTE_RESULT_NOTI());
+        cValues.put(KEY_OPPORTUNTE_RESULT_NOTI, diary.getKEY_OPPORTUNTE_RESULT_NOTI());
         db.update(TABLE_NAME_PUSH_DIARY, cValues, KEY_DOC_ID + " = ?", new String[]{String.valueOf(diary.getKEY_DOC_ID())});
     }
 
@@ -163,7 +173,7 @@ public class DiaryDbHelper extends SQLiteOpenHelper {
     public Cursor getALL() {
         SQLiteDatabase db = this.getReadableDatabase();
 //        Cursor res =  db.rawQuery( "select * from contacts where id="+id+"", null );
-        Cursor res =  db.rawQuery( "SELECT  * FROM " + TABLE_NAME_PUSH_DIARY + " as tmp WHERE tmp.user_id <> 'upload';", null );
+        Cursor res =  db.rawQuery( "SELECT  * FROM " + TABLE_NAME_PUSH_DIARY + ";", null );
         return res;
     }
 
