@@ -43,9 +43,9 @@ public class ReadHistoryActivity extends AppCompatActivity {
             switch (position) {
                 case 0:
                     return ReadingHistoryFragment.newInstance();
-                case 1:
-                    return ReadHistorySummaryFragment.newInstance();
                 case 2:
+                    return ReadHistorySummaryFragment.newInstance();
+                case 1:
                     return ReadHistoryDailyFragment.newInstance();
                 default:
                     return TestTab3Fragment.newInstance();
@@ -64,9 +64,9 @@ public class ReadHistoryActivity extends AppCompatActivity {
                 case 0:
                     return "近50則";
                 case 1:
-                    return "總統計";
-                case 2:
                     return "一週統計";
+                case 2:
+                    return "總統計";
             }
             return null;
         }

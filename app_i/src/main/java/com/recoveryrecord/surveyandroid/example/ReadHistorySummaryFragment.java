@@ -85,8 +85,10 @@ public class ReadHistorySummaryFragment extends Fragment {
         pieChart.getDescription().setEnabled(false);
 
         Legend l = pieChart.getLegend();
+        l.setTextSize(15f);
+        l.setForm(Legend.LegendForm.CIRCLE);
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
         l.setOrientation(Legend.LegendOrientation.VERTICAL);
         l.setDrawInside(false);
         l.setEnabled(true);
@@ -153,7 +155,7 @@ public class ReadHistorySummaryFragment extends Fragment {
             colors.add(color);
         }
 
-        PieDataSet dataSet = new PieDataSet(entries, "新聞媒體");
+        PieDataSet dataSet = new PieDataSet(entries, "");
         dataSet.setColors(colors);
 
         PieData data = new PieData(dataSet);

@@ -57,7 +57,7 @@
     {
       "id": "recieve_moment_1",
       "header": "Question",
-      "question": "請問您在「該則通知出現當下」(抵達時間)，約有幾分鐘可以閱讀新聞？(覺得沒空請填0)",
+      "question": "請問您在「該則通知出現當下」(抵達時間)，約有幾分鐘可以閱讀新聞？(覺得沒空請填0沒有印象填99)",
       "question_type": "single_text_field",
       "label": "分鐘",
       "input_type": "number",
@@ -70,8 +70,8 @@
         },
         {
           "operation": "less than",
-          "value": 61,
-          "on_fail_message": "time must <= 60"
+          "value": 100,
+          "on_fail_message": "time must <= 100"
         }
       ],
       "show_if": {
@@ -312,7 +312,7 @@
     {
       "id": "read_moment_3",
       "header": "Question",
-      "question": "請問您「閱讀該篇新聞當下」約有幾分鐘可以「閱讀新聞」？(覺得沒空請填0)",
+      "question": "請問您「閱讀該篇新聞當下」約有幾分鐘可以「閱讀新聞」？(覺得沒空請填0沒有印象填99)",
       "question_type": "single_text_field",
       "label": "分鐘",
       "input_type": "number",
@@ -325,8 +325,8 @@
         },
         {
           "operation": "less than",
-          "value": 61,
-          "on_fail_message": "time must <= 60"
+          "value": 100,
+          "on_fail_message": "time must <= 100"
         }
       ],
       "show_if": {
@@ -1386,7 +1386,7 @@
     {
       "id": "not_read_recieve_moment_1",
       "header": "Question",
-      "question": "請問您在「該則通知出現當下」(抵達時間)，約有幾分鐘可以「閱讀新聞」？(覺得沒空請填0)",
+      "question": "請問您在「該則通知出現當下」(抵達時間)，約有幾分鐘可以「閱讀新聞」？(覺得沒空請填0沒有印象填99)",
       "question_type": "single_text_field",
       "label": "分鐘",
       "input_type": "number",
@@ -1399,8 +1399,8 @@
         },
         {
           "operation": "less than",
-          "value": 61,
-          "on_fail_message": "time must <= 60"
+          "value": 100,
+          "on_fail_message": "time must <= 100"
         }
       ],
       "show_if": {
@@ -1622,7 +1622,7 @@
     {
       "id": "not_read_seen_2",
       "header": "Question",
-      "question": "請問您在「看到該則通知當下」，約有幾分鐘可以閱讀新聞？(覺得沒空請填0)",
+      "question": "請問您在「看到該則通知當下」，約有幾分鐘可以閱讀新聞？(覺得沒空請填0沒有印象填99)",
       "question_type": "single_text_field",
       "label": "分鐘",
       "input_type": "number",
@@ -1635,8 +1635,8 @@
         },
         {
           "operation": "less than",
-          "value": 61,
-          "on_fail_message": "time must <= 60"
+          "value": 100,
+          "on_fail_message": "time must <= 100"
         }
       ],
       "show_if": {
@@ -2138,7 +2138,7 @@
     {
       "id": "miss_recieve_moment_1",
       "header": "Question",
-      "question": "請問您在「該則通知出現當下」(抵達時間)，約有幾分鐘可以「閱讀新聞」？(沒空請填0)",
+      "question": "請問您在「該則通知出現當下」(抵達時間)，約有幾分鐘可以「閱讀新聞」？(覺得沒空請填0沒有印象填99)",
       "question_type": "single_text_field",
       "label": "分鐘",
       "input_type": "number",
@@ -2151,8 +2151,8 @@
         },
         {
           "operation": "less than",
-          "value": 61,
-          "on_fail_message": "time must <= 60"
+          "value": 100,
+          "on_fail_message": "time must <= 100"
         }
       ],
       "show_if": {

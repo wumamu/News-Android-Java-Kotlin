@@ -70,7 +70,7 @@
     {
       "id": "active_read_moment_2",
       "header": "Question 5",
-      "question": "請問您閱讀該篇新聞當下約有幾分鐘可以「閱讀新聞」？(覺得沒空請填0)",
+      "question": "請問您閱讀該篇新聞當下約有幾分鐘可以「閱讀新聞」？(覺得沒空請填0沒有印象填99)",
       "question_type": "single_text_field",
       "label": "分鐘",
       "input_type": "number",
@@ -83,8 +83,8 @@
         },
         {
           "operation": "less than",
-          "value": 61,
-          "on_fail_message": "time must <= 60"
+          "value": 100,
+          "on_fail_message": "time must <= 100"
         }
       ],
       "show_if": {
