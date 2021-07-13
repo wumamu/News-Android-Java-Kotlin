@@ -193,8 +193,8 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                                     if (jsonAnswerObject.has("recieve_moment_2")) {
                                         receieve_situation = jsonAnswerObject.getString("recieve_moment_2");
                                     }
-                                    if (jsonAnswerObject.has("recieve_moment_6")) {
-                                        receieve_place =  jsonAnswerObject.getString("recieve_moment_6");
+                                    if (jsonAnswerObject.has("recieve_moment_7")) {
+                                        receieve_place =  jsonAnswerObject.getString("recieve_moment_7");
                                     }
                                     if (jsonAnswerObject.has("read_moment_2")) {
                                         String answer = jsonAnswerObject.getString("read_moment_2");
@@ -204,8 +204,8 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                                             read_place = receieve_place;
                                         } else if (answer.equals("活動相同，地點不同")){
                                             read_situation = receieve_situation;
-                                            if (jsonAnswerObject.has("read_moment_8")) {
-                                                read_place =  jsonAnswerObject.getString("read_moment_8");
+                                            if (jsonAnswerObject.has("read_moment_9")) {
+                                                read_place =  jsonAnswerObject.getString("read_moment_9");
                                             }
                                         } else if (answer.equals("活動不同，地點相同")){
                                             read_place = receieve_place;
@@ -213,15 +213,15 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                                                 read_situation = jsonAnswerObject.getString("read_moment_4");
                                             }
                                         } else { //活動、地點均不相同
-                                            if (jsonAnswerObject.has("read_moment_8")) {
-                                                read_place =  jsonAnswerObject.getString("read_moment_8");
+                                            if (jsonAnswerObject.has("read_moment_9")) {
+                                                read_place =  jsonAnswerObject.getString("read_moment_9");
                                             }
                                             if (jsonAnswerObject.has("read_moment_4")) {
                                                 read_situation = jsonAnswerObject.getString("read_moment_4");
                                             }
                                         }
                                     }
-                                } else if (jsonAnswerObject.getString("base_2").equals("我沒有點入閱讀")){
+                                } else if (jsonAnswerObject.getString("base_2").equals("我沒有點入閱讀") || jsonAnswerObject.getString("base_2").equals("沒有印象")){
                                     //B ############################################################
                                     target_id = sharedPrefs.getString(SAMPLE_ID, "NA");
                                     target_title = sharedPrefs.getString(SAMPLE_TITLE, "NA");
@@ -229,8 +229,8 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                                     if (jsonAnswerObject.has("not_read_recieve_moment_2")) {
                                         receieve_situation = jsonAnswerObject.getString("not_read_recieve_moment_2");
                                     }
-                                    if (jsonAnswerObject.has("not_read_recieve_moment_6")) {
-                                        receieve_place =  jsonAnswerObject.getString("not_read_recieve_moment_6");
+                                    if (jsonAnswerObject.has("not_read_recieve_moment_7")) {
+                                        receieve_place =  jsonAnswerObject.getString("not_read_recieve_moment_7");
                                     }
                                 }
                             } else {
@@ -241,8 +241,8 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                                 if (jsonAnswerObject.has("miss_recieve_moment_2")) {
                                     receieve_situation = jsonAnswerObject.getString("miss_recieve_moment_2");
                                 }
-                                if (jsonAnswerObject.has("miss_recieve_moment_6")) {
-                                    receieve_place =  jsonAnswerObject.getString("miss_recieve_moment_6");
+                                if (jsonAnswerObject.has("miss_recieve_moment_7")) {
+                                    receieve_place =  jsonAnswerObject.getString("miss_recieve_moment_7");
                                 }
                             }
                         } catch (JSONException e) {
@@ -261,8 +261,8 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                                     if (jsonAnswerObject.has("active_read_moment_3")) {
                                         read_situation = jsonAnswerObject.getString("active_read_moment_3");
                                     }
-                                    if (jsonAnswerObject.has("active_read_moment_5")) {
-                                        read_place =  jsonAnswerObject.getString("active_read_moment_5");
+                                    if (jsonAnswerObject.has("active_read_moment_8")) {
+                                        read_place =  jsonAnswerObject.getString("active_read_moment_8");
                                     }
                                 }
                             }

@@ -149,6 +149,7 @@ public class UploadPagesActivity extends AppCompatActivity {
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
                 // cursor.getString(cursor.getColumnIndex("news_id"))
+//                Log.d ("Servicestatus", "Running" + cursor.getString(cursor.getColumnIndex("doc_id")));
                 Map<String, Object> esm = new HashMap<>();
                 esm.put(PUSH_ESM_DOC_ID, cursor.getString(cursor.getColumnIndex("doc_id")));
                 esm.put(PUSH_ESM_DEVICE_ID, cursor.getString(cursor.getColumnIndex("device_id")));
