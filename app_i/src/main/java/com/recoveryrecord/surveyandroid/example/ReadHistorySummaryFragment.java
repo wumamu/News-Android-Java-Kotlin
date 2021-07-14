@@ -77,7 +77,7 @@ public class ReadHistorySummaryFragment extends Fragment {
     }
     private void setupPieChart() {
         pieChart.setDrawHoleEnabled(true);
-        pieChart.setUsePercentValues(false);
+        pieChart.setUsePercentValues(true);
         pieChart.setEntryLabelTextSize(12);
         pieChart.setEntryLabelColor(Color.BLACK);
         pieChart.setCenterText("各媒體閱讀總計");
@@ -160,7 +160,7 @@ public class ReadHistorySummaryFragment extends Fragment {
 
         PieData data = new PieData(dataSet);
         data.setDrawValues(true);
-//        data.setValueFormatter(new PercentFormatter(pieChart));
+        data.setValueFormatter(new PercentFormatter());
         data.setValueTextSize(12f);
         data.setValueTextColor(Color.BLACK);
 

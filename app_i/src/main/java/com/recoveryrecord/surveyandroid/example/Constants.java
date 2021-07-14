@@ -111,7 +111,7 @@ public class Constants {
 
     public static final String USER_COLLECTION = "user";
     public static final String APP_VERSION_KEY = "app_version";
-    public static final String APP_VERSION_VALUE = "21.07.12-1";
+    public static final String APP_VERSION_VALUE = "21.07.14-1";
     public static final String UPDATE_TIME = "update_timestamp";
     public static final String INITIAL_TIME = "initial_timestamp";
     public static final String LAST_LAUNCH_TIME = "last_launch_timestamp";
