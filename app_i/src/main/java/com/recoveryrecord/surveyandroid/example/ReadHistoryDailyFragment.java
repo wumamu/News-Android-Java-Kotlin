@@ -1,6 +1,7 @@
 package com.recoveryrecord.surveyandroid.example;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -91,7 +92,7 @@ public class ReadHistoryDailyFragment extends Fragment {
             calendar.add(Calendar.DAY_OF_YEAR, 1);
         }
         barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(xAxisLabel));
-
+//        barChart.getXAxis().setTextSize(5);
         XAxis xAxis = barChart.getXAxis();
         //change the position of x-axis to the bottom
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -108,6 +109,14 @@ public class ReadHistoryDailyFragment extends Fragment {
         //hiding the right y-axis line, default true if not set
         rightAxis.setEnabled(false);
         rightAxis.setDrawAxisLine(false);
+
+        Legend l = barChart.getLegend();
+        l.setTextSize(15f);
+        l.setTextColor(Color.BLACK);
+        l.setForm(Legend.LegendForm.CIRCLE);
+        l.setWordWrapEnabled(true);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+//        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
 
 
         showBarChart();
@@ -171,6 +180,9 @@ public class ReadHistoryDailyFragment extends Fragment {
         barDataSet.setStackLabels(getStackLabels());
 
         BarData data = new BarData(barDataSet);
+        data.setValueTextColor(Color.BLACK);
+        data.setBarWidth(0.7f);
+        data.setHighlightEnabled(false);
 
 
         //origin

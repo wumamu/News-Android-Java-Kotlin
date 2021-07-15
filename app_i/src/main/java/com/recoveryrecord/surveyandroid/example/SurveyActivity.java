@@ -117,7 +117,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
         if (is_esm){
             ESM myesm = new ESM();
             myesm.setKEY_DOC_ID(device_id + " " + esm_id);
-            myesm.setKEY_OPEN_TIMESTAMP(Timestamp.now().getSeconds());
+            myesm.setKEY_OPEN_TIMESTAMP(current_now.getSeconds());
             ESMDbHelper dbHandler = new ESMDbHelper(getApplicationContext());
             dbHandler.UpdatePushESMDetailsOpen(myesm);
 
@@ -152,8 +152,9 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
             });
         } else if(is_diary){
             Diary mydiary = new Diary();
-            mydiary.setKEY_DOC_ID(device_id + " " + esm_id);
-            mydiary.setKEY_OPEN_TIMESTAMP(Timestamp.now().getSeconds());
+            Log.d("lognewsselect", "open diary" + current_now.toString());
+            mydiary.setKEY_DOC_ID(device_id + " " + diary_id);
+            mydiary.setKEY_OPEN_TIMESTAMP(current_now.getSeconds());
             DiaryDbHelper dbHandler = new DiaryDbHelper(getApplicationContext());
             dbHandler.UpdatePushDiaryDetailsOpen(mydiary);
 
@@ -323,7 +324,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
         if (is_esm){
             ESM myesm = new ESM();
             myesm.setKEY_DOC_ID(device_id + " " + esm_id);
-            myesm.setKEY_CLOSE_TIMESTAMP(Timestamp.now().getSeconds());
+            myesm.setKEY_CLOSE_TIMESTAMP(current_end.getSeconds());
             ESMDbHelper dbHandler = new ESMDbHelper(getApplicationContext());
             dbHandler.UpdatePushESMDetailsClose(myesm);
 
@@ -358,8 +359,9 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
             });
         } else if(is_diary){
             Diary mydiary = new Diary();
-            mydiary.setKEY_DOC_ID(device_id + " " + esm_id);
-            mydiary.setKEY_CLOSE_TIMESTAMP(Timestamp.now().getSeconds());
+            Log.d("lognewsselect", "close diary" + current_end.toString());
+            mydiary.setKEY_DOC_ID(device_id + " " + diary_id);
+            mydiary.setKEY_CLOSE_TIMESTAMP(current_end.getSeconds());
             DiaryDbHelper dbHandler = new DiaryDbHelper(getApplicationContext());
             dbHandler.UpdatePushDiaryDetailsClose(mydiary);
 
@@ -416,6 +418,30 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 one.putOpt("question", "根據資料顯示，您在" + my_in + "閱讀該篇新聞");
                 continue;
             }
+            if(one.optString("id").equals("active_read_moment_2")){
+                one.putOpt("question", "請問您「閱讀該篇新聞當下」" + my_in + "約有幾分鐘可以「閱讀新聞」？(覺得沒空請填0，沒有印象請填99)");
+                continue;
+            }
+            if(one.optString("id").equals("active_read_moment_3")){
+                one.putOpt("question", "請問您「閱讀該篇新聞當下」" + my_in + "，您正在從事以下哪個活動?");
+                continue;
+            }
+            if(one.optString("id").equals("active_read_moment_4")){
+                one.putOpt("question", "承上題，該項您「閱讀該篇新聞當下」" + my_in + "從事的活動，對您來說，該活動的複雜程度為何？(沒有印象請選4)(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)");
+                continue;
+            }
+            if(one.optString("id").equals("active_read_moment_5")){
+                one.putOpt("question", "對我來說，「閱讀該篇新聞當下」" + my_in + "是個適合收到該新聞通知的時機。請選擇您對此句描述的感受為何。(沒有印象請選4)");
+                continue;
+            }
+            if(one.optString("id").equals("active_read_moment_6")){
+                one.putOpt("question", "對我來說，「閱讀該篇新聞當下」" + my_in + "是個適合我瀏覽該篇新聞標題的時機。請選擇您對此句描述的感受為何。(沒有印象請選4)");
+                continue;
+            }
+            if(one.optString("id").equals("active_read_moment_7")){
+                one.putOpt("question", "對我來說，「閱讀該篇新聞當下」" + my_in + "是個適合我閱讀該篇新聞完整內容的時機。請選擇您對此句描述的感受為何。(沒有印象請選4)");
+                continue;
+            }
             if(one.optString("id").equals("active_read_behaf_8")){
                 one.putOpt("question", "請問您點入「" + my_media + "」的新聞進行閱讀之動機為何？");
                 continue;
@@ -450,19 +476,42 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 one.putOpt("question", "你是否有印象注意到在" + my_re + "「" + my_title + "」這則新聞通知的出現？");
                 continue;
             }
+            if(one.optString("id").equals("base_2")){
+                if(!my_in.equals("NA")){
+                    one.putOpt("question", "你是否有印象注意到在" + my_re + "「" + my_title + "」這則新聞通知的出現？");
+                } else {
+                    one.putOpt("question", "資料顯示，您並沒有在NewsMoment閱讀此篇新聞，請選擇 我沒有點入閱讀 繼續作答");
+                    JSONArray op_arr = new JSONArray();
+                    op_arr.put("我沒有點入閱讀");
+                    one.putOpt("options", op_arr);
+                }
+                continue;
+            }
             if(one.optString("id").equals("recieve_moment_1")){
-                one.putOpt("question", "請問您在「該則通知出現當下」" + my_re + "，約有多少時間可以閱讀新聞？(覺得沒空請填0)");
+                one.putOpt("question", "請問您在「該則通知出現當下」" + my_re + "，約有幾分鐘可以閱讀新聞？(覺得沒空請填0，沒有印象請填99)");
                 continue;
             }
             if(one.optString("id").equals("recieve_moment_2")){
-                one.putOpt("question", "在「該則通知出現當下」" + my_re + "，您是否正在從事以下活動？");
+                one.putOpt("question", "在「該則通知出現當下」" + my_re + "，您正在從事以下哪個活動?");
                 continue;
             }
             if(one.optString("id").equals("recieve_moment_3")){
-                one.putOpt("question", "承上題，該項您「該則通知出現當下」" + my_re + "從事的活動，對您來說，該活動的複雜程度為何？\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)");
+                one.putOpt("question", "承上題，該項您「該則通知出現當下」" + my_re + "從事的活動，對您來說，該活動的複雜程度為何？(沒有印象請選4)\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)");
+                continue;
+            }
+            if(one.optString("id").equals("recieve_moment_4")){
+                one.putOpt("question", "對我來說，「該則通知出現的當下」" + my_re + "是個適合收到該新聞通知的時機。請選擇您對此句描述的感受為何。(沒有印象請選4)");
+                continue;
+            }
+            if(one.optString("id").equals("recieve_moment_5")){
+                one.putOpt("question", "對我來說，「該則通知出現的當下」" + my_re + "，是個適合我瀏覽該篇新聞標題的時機。請選擇您對此句描述的感受為何。(沒有印象請選4)");
                 continue;
             }
             if(one.optString("id").equals("recieve_moment_6")){
+                one.putOpt("question", "對我來說，「該則通知出現的當下」" + my_re + "，是個適合我閱讀該篇新聞完整內容的時機。請選擇您對此句描述的感受為何。(沒有印象請選4)");
+                continue;
+            }
+            if(one.optString("id").equals("recieve_moment_7")){
                 one.putOpt("question", "請選擇最符合您「該則通知出現當下」" + my_re + "所處地點");
                 continue;
             }
@@ -474,39 +523,87 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 }
                 continue;
             }
+            if(one.optString("id").equals("read_moment_3")){
+                one.putOpt("question", "請問您「閱讀該篇新聞當下」" + my_in + "約有幾分鐘可以「閱讀新聞」？(覺得沒空請填0，沒有印象請填99)");
+                continue;
+            }
+            if(one.optString("id").equals("read_moment_4")){
+                one.putOpt("question", "在「閱讀該篇新聞當下」" + my_in + "，您正在從事以下哪個活動?");
+                continue;
+            }
+            if(one.optString("id").equals("read_moment_5")){
+                one.putOpt("question", "承上題，該項您「閱讀該篇新聞當下」" + my_in + "從事的活動，對您來說，該活動的複雜程度為何？(沒有印象請選4)\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)");
+                continue;
+            }
+            if(one.optString("id").equals("read_moment_6")){
+                one.putOpt("question", "對我來說，「閱讀該篇新聞當下」」" + my_in + "是個適合收到該新聞通知的時機。請選擇您對此句描述的感受為何。(沒有印象請選4)");
+                continue;
+            }
+            if(one.optString("id").equals("read_moment_7")){
+                one.putOpt("question", "對我來說，「閱讀該篇新聞當下」」" + my_in + "是個適合我瀏覽該篇新聞標題的時機。請選擇您對此句描述的感受為何。(沒有印象請選4)");
+                continue;
+            }
+            if(one.optString("id").equals("read_moment_8")){
+                one.putOpt("question", "對我來說，「閱讀該篇新聞當下」」" + my_in + "是個適合我閱讀該篇新聞完整內容的時機。請選擇您對此句描述的感受為何。(沒有印象請選4)");
+                continue;
+            }
             if(one.optString("id").equals("read_behaf_9")){
-                one.putOpt("question", "請問您點入「" + my_media + "」的新聞進行閱讀之動機為何？");
+                one.putOpt("question", "請問您點入「" + my_media + "」的新聞進行閱讀之原因為何？");
                 continue;
             }
             if(one.optString("id").equals("not_read_recieve_moment_1")){
-                one.putOpt("question", "請問您在「該則通知出現當下」" + my_re + "，約有多少時間可以「閱讀新聞」？(覺得沒空請填0)");
+                one.putOpt("question", "請問您在「該則通知出現當下」" + my_re + "，約有幾分鐘可以「閱讀新聞」？(覺得沒空請填0，沒有印象請填99)");
                 continue;
             }
             if(one.optString("id").equals("not_read_recieve_moment_2")){
-                one.putOpt("question", "在「該則通知出現當下」" + my_re + "，您是否正在從事以下活動？");
+                one.putOpt("question", "在「該則通知出現當下」" + my_re + "，您正在從事以下哪個活動?");
                 continue;
             }
             if(one.optString("id").equals("not_read_recieve_moment_3")){
-                one.putOpt("question", "承上題，該項您「該則通知出現當下」" + my_re + "從事的活動，對您來說，該活動的複雜程度為何？\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)");
+                one.putOpt("question", "承上題，該項您「該則通知出現當下」" + my_re + "從事的活動，對您來說，該活動的複雜程度為何？(沒有印象請選4)\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)");
+                continue;
+            }
+            if(one.optString("id").equals("not_read_recieve_moment_4")){
+                one.putOpt("question", "對我來說，「該則通知出現的當下」" + my_re + "是個適合收到該新聞通知的時機。請選擇您對此句描述的感受為何。(沒有印象請選4)");
+                continue;
+            }
+            if(one.optString("id").equals("not_read_recieve_moment_5")){
+                one.putOpt("question", "對我來說，「該則通知出現的當下」" + my_re + "是個適合我瀏覽該篇新聞標題的時機。請選擇您對此句描述的感受為何。(沒有印象請選4)");
                 continue;
             }
             if(one.optString("id").equals("not_read_recieve_moment_6")){
+                one.putOpt("question", "對我來說，「該則通知出現的當下」" + my_re + "是個適合我閱讀該篇新聞完整內容的時機。請選擇您對此句描述的感受為何。(沒有印象請選4)");
+                continue;
+            }
+            if(one.optString("id").equals("not_read_recieve_moment_7")){
                 one.putOpt("question", "請選擇最符合您「該則通知出現當下」" + my_re + "所處地點");
                 continue;
             }
             if(one.optString("id").equals("miss_recieve_moment_1")){
-                one.putOpt("question", "請問您在「該則通知出現當下」" + my_re + "，約有多少時間可以「閱讀新聞」？(覺得沒空請填0)\n(接下來，請您回想該則新聞通知出現當下狀態(抵達時間)進行回答。)");
+                one.putOpt("question", "請問您在「該則通知出現當下」" + my_re + "，約有幾分鐘可以「閱讀新聞」？(覺得沒空請填0，沒有印象請填99)\n(接下來，請您回想該則新聞通知出現當下狀態(抵達時間)進行回答。)");
                 continue;
             }
             if(one.optString("id").equals("miss_recieve_moment_2")){
-                one.putOpt("question", "在「該則通知出現當下」" + my_re + "，您是否正在從事以下活動？");
+                one.putOpt("question", "在「該則通知出現當下」" + my_re + "，您正在從事以下哪個活動?");
                 continue;
             }
             if(one.optString("id").equals("miss_recieve_moment_3")){
-                one.putOpt("question", "承上題，該項您「該則通知出現當下」" + my_re + "從事的活動，對您來說，該活動的複雜程度為何？\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)");
+                one.putOpt("question", "承上題，該項您「該則通知出現當下」" + my_re + "從事的活動，對您來說，該活動的複雜程度為何？(沒有印象請選4)\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)");
+                continue;
+            }
+            if(one.optString("id").equals("miss_recieve_moment_4")){
+                one.putOpt("question", "對我來說，「該則通知出現的當下」" + my_re + "是個適合收到該新聞通知的時機。請選擇您對此句描述的感受為何。(沒有印象請選4)");
+                continue;
+            }
+            if(one.optString("id").equals("miss_recieve_moment_5")){
+                one.putOpt("question", "對我來說，「該則通知出現的當下」" + my_re + " 是個適合我瀏覽該篇新聞標題的時機。請選擇您對此句描述的感受為何。(沒有印象請選4)");
                 continue;
             }
             if(one.optString("id").equals("miss_recieve_moment_6")){
+                one.putOpt("question", "對我來說，「該則通知出現的當下」" + my_re + "是個適合我閱讀該篇新聞完整內容的時機。請選擇您對此句描述的感受為何。(沒有印象請選4)");
+                continue;
+            }
+            if(one.optString("id").equals("miss_recieve_moment_7")){
                 one.putOpt("question", "請選擇最符合您「該則通知出現當下」" + my_re + "所處地點");
                 continue;
             }

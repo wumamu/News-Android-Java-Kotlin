@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -44,6 +45,7 @@ import androidx.preference.PreferenceManager;
 
 
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TYPE;
+import static com.recoveryrecord.surveyandroid.example.Constants.LAST_ESM_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_ESM_TYPE_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_NOTIFICATION_EXIST;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_READ_EXIST;
@@ -58,6 +60,8 @@ import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_IN;
 import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_MEDIA;
 import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_RECEIEVE;
 import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_TITLE;
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_CLEAR_CACHE;
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.SURVEY_PAGE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TARGET_RANGE;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TIME_ON_PAGE_THRESHOLD;
@@ -180,8 +184,6 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
         //read
         //noti
         PushNewsDbHelper dbHandler = new PushNewsDbHelper(getApplicationContext());
-        noti_query.clear();
-        rb_query.clear();
         Boolean noti_read = false, self_read = false, noti_not_read = false;
         int click = 1;//not click
         Cursor cursor = dbHandler.getNotiDataForESM(my_time.getSeconds());
@@ -228,12 +230,24 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
                 SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
                 String[] mysplit = formatter.format(date).split(" ");
                 if(!title.equals("NA") || !title.equals("") ){
+                    noti_query.clear();
                     noti_query.add(news_id);
                     noti_query.add(title);
                     noti_query.add(media);
                     noti_query.add(mysplit[2]);
 //                    exist_notification = true;
-                    break;
+                    if(click==0){
+                        //only noti
+                        break;
+                    } else {
+                        Random rand = new Random();
+                        int n = rand.nextInt(3);//0 1 2
+                        if(n==0){
+                            //1/3
+                            break;
+                        }
+                    }
+
                 }
                 cursor.moveToNext();
             }
@@ -265,45 +279,56 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
             if (!cursor_rb.isClosed())  {
                 cursor_rb.close();
             }
-        } else {
-            //not exist read query self read
-            ReadingBehaviorDbHelper dbHandler_rb_self = new ReadingBehaviorDbHelper(getApplicationContext());
-            Cursor cursor_rb_self = dbHandler_rb_self.getReadingDataSelf(my_time.getSeconds());
-            if (cursor_rb_self.moveToFirst()) {
-                while(!cursor_rb_self.isAfterLast()) {
-                    String news_id = cursor_rb_self.getString(cursor_rb_self.getColumnIndex("news_id"));
-                    String title = cursor_rb_self.getString(cursor_rb_self.getColumnIndex("title"));
-                    title = title.replace("\n", "");
-                    String media = cursor_rb_self.getString(cursor_rb_self.getColumnIndex("media"));
-                    long in_time = cursor_rb_self.getLong(cursor_rb_self.getColumnIndex("in_timestamp"));
-                    Date date = new Date();
-                    date.setTime(in_time*1000);
-                    @SuppressLint("SimpleDateFormat")
-                    SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-                    String[] myssplit = formatter.format(date).split(" ");
-                    Log.d("lognewsselect", formatter.format(date));
-                    if(in_time!=0){
-                        rb_query.clear();
-                        rb_query.add(news_id);
-                        rb_query.add(title);
-                        rb_query.add(media);
-                        rb_query.add(myssplit[2]);
-                        self_read = true;
-                        break;
-                    }
-                    cursor_rb_self.moveToNext();
+        }
+        //query reading
+        //not exist read query self read
+        ReadingBehaviorDbHelper dbHandler_rb_self = new ReadingBehaviorDbHelper(getApplicationContext());
+        Cursor cursor_rb_self = dbHandler_rb_self.getReadingDataSelf(my_time.getSeconds());
+        if (cursor_rb_self.moveToFirst()) {
+            while(!cursor_rb_self.isAfterLast()) {
+                String news_id = cursor_rb_self.getString(cursor_rb_self.getColumnIndex("news_id"));
+                String title = cursor_rb_self.getString(cursor_rb_self.getColumnIndex("title"));
+                title = title.replace("\n", "");
+                String media = cursor_rb_self.getString(cursor_rb_self.getColumnIndex("media"));
+                long in_time = cursor_rb_self.getLong(cursor_rb_self.getColumnIndex("in_timestamp"));
+                Date date = new Date();
+                date.setTime(in_time*1000);
+                @SuppressLint("SimpleDateFormat")
+                SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+                String[] myssplit = formatter.format(date).split(" ");
+                Log.d("lognewsselect", formatter.format(date));
+                if(in_time!=0){
+                    rb_query.clear();
+                    rb_query.add(news_id);
+                    rb_query.add(title);
+                    rb_query.add(media);
+                    rb_query.add(myssplit[2]);
+                    self_read = true;
+                    break;
                 }
-            }
-            if (!cursor_rb_self.isClosed())  {
-                cursor_rb_self.close();
+                cursor_rb_self.moveToNext();
             }
         }
-        if(!noti_read && !self_read){
+        if (!cursor_rb_self.isClosed())  {
+            cursor_rb_self.close();
+        }
+        //alternate two esm
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        int last_type = sharedPrefs.getInt(ESM_TYPE, 3);
+        if(noti_read && self_read){
+            //同時成立
+            if (last_type==0){
+                noti_read = false;
+                self_read = true;
+            } else {
+                noti_read = true;
+                self_read = false;
+            }
+        } else if(!noti_read && !self_read){
             noti_not_read = true;
         }
         if(noti_read){
             type_esm = 0;
-            SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
             SharedPreferences.Editor editor = sharedPrefs.edit();
             editor.putString(SAMPLE_ID, noti_query.get(0));
             editor.putString(SAMPLE_TITLE, noti_query.get(1));
@@ -314,7 +339,6 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
             editor.apply();
         } else if (self_read){
             type_esm = 1;
-            SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
             SharedPreferences.Editor editor = sharedPrefs.edit();
             editor.putString(SAMPLE_ID, rb_query.get(0));
             editor.putString(SAMPLE_TITLE, rb_query.get(1));
@@ -324,7 +348,6 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
             editor.apply();
         } else if (noti_not_read){
             type_esm = 2;
-            SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
             SharedPreferences.Editor editor = sharedPrefs.edit();
             editor.putString(SAMPLE_ID, noti_query.get(0));
             editor.putString(SAMPLE_TITLE, noti_query.get(1));
@@ -333,13 +356,13 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
             editor.putInt(ESM_TYPE, type_esm);
             editor.apply();
         }
-
-        Log.d("lognewsselect", String.valueOf(noti_query));
+//        Log.d("lognewsselect", String.valueOf(noti_query));
     }
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void openESM() {
+
 
         Intent intent_esm = new Intent();
         intent_esm.setClass(this, SurveyActivity.class);
@@ -347,14 +370,15 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
         intent_esm.putExtra(NOTIFICATION_TYPE_KEY, NOTIFICATION_TYPE_VALUE_ESM);
         intent_esm.putExtra(NOTIFICATION_ESM_TYPE_KEY, type_esm);
 
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         ESM myesm = new ESM();
         myesm.setKEY_DOC_ID(device_id + " " + esm_id);
-        myesm.setKEY_ESM_TYPE(0);
-        myesm.setKEY_NOTI_SAMPLE(String.join("#", noti_query));
-//        myesm.setKEY_SELF_READ_SAMPLE(String.join("#", noti_query));
+        myesm.setKEY_ESM_TYPE(type_esm);
         myesm.setKEY_ESM_SAMPLE_TIME(my_time.getSeconds());
+        myesm.setKEY_NOTI_SAMPLE(String.join("#", noti_query));
+        myesm.setKEY_SELF_READ_SAMPLE(String.join("#", rb_query));
         ESMDbHelper dbHandler_esm = new ESMDbHelper(getApplicationContext());
         dbHandler_esm.UpdatePushESMDetailsClick(myesm);
 
@@ -370,7 +394,7 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
                             rbRef.update(PUSH_ESM_TYPE, type_esm,
                                     PUSH_ESM_NOTI_ARRAY, noti_query,
                                     PUSH_ESM_READ_ARRAY, rb_query,
-                                    PUSH_ESM_SAMPLE_TIME, my_time.getSeconds()
+                                    PUSH_ESM_SAMPLE_TIME, my_time
                             )//another field
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override

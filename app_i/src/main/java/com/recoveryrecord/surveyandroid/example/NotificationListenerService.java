@@ -505,7 +505,8 @@ public class NotificationListenerService extends android.service.notification.No
                         mark = true;
                         Diary mydiary = new Diary();
                         mydiary.setKEY_DOC_ID(doc_id);
-                        mydiary.setKEY_RECEIEVE_TIMESTAMP(Timestamp.now().getSeconds());;
+                        mydiary.setKEY_REMOVE_TIMESTAMP(Timestamp.now().getSeconds());
+                        mydiary.setKEY_REMOVE_TYPE(remove_reason);
                         DiaryDbHelper dbHandler = new DiaryDbHelper(getApplicationContext());
                         dbHandler.UpdatePushESMDetailsRemove(mydiary);
                         break;

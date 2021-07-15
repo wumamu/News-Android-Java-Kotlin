@@ -123,7 +123,7 @@
       "question": "請問您除了NewsMoment，今天是否還有從以下任一管道接觸新聞？",
       "question_type": "multi_select",
       "options": [
-        "各媒體新聞推薦入口網站/app\n(ex: yahoo,google news, google now)",
+        "各媒體新聞推薦入口網站/app\n(ex: yahoo,google news, google now, Line today)",
         "新聞媒體app\n(ex: 中時、華視、東森等)",
         "彙整各媒體新聞之入口網站/app\n(類似NewsMoment設計 ex:台灣報紙)",
         "無"
@@ -132,8 +132,22 @@
     {
       "id": "media_channel_2",
       "header": "Question 11",
-      "question": "請簡答您選擇該管道接觸新聞原因為何。\n(ex: 想看熱門新聞, 從多元觀點切入議題, 想獲得客製化推薦功能, 想獲得重大新聞推薦, 想獲得客製化推薦功能, 想深入了解某議題論點, 想查看特定媒體內容)",
-      "question_type": "single_text_area",
+      "question": "請簡答您選擇該管道接觸新聞原因為何。",
+      "question_type": "multi_select",
+      "options": [
+        "想看熱門新聞",
+        "從多元觀點切入議題",
+        "想獲得客製化推薦功能",
+        "想獲得重大新聞推薦",
+        "想閱讀特定新聞主題內容",
+        "想深入了解某議題論點",
+        "想查看特定媒體內容",
+        "藉由查看多家媒體確認事件實際情況",
+        {
+          "title": "其他",
+          "type": "freeform"
+        }
+      ],
       "show_if": {
         "id": "media_channel_1",
         "operation": "not contains",
