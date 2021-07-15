@@ -30,7 +30,6 @@ import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIO
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_OUT_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_TITLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.READ_HISTORY_LIMIT_PER_PAGE;
-import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
 
 public class ReadingHistoryFragment extends Fragment {
 
@@ -72,7 +71,7 @@ public class ReadingHistoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 //        return inflater.inflate(R.layout.fragment_nest1_category, container, false);
-        View view = inflater.inflate(R.layout.fragment_nest1_category, container, false);
+        View view = inflater.inflate(R.layout.nested_layer2_category, container, false);
         // initializing our variables.
         courseRV = view.findViewById(R.id.idRVItems);
 

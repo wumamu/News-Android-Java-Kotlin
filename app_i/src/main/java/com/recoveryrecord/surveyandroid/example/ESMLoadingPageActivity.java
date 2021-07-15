@@ -25,7 +25,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.recoveryrecord.surveyandroid.example.DbHelper.ESMDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.PushNewsDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.ReadingBehaviorDbHelper;
@@ -44,48 +43,33 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
 
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_SAMPLE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TYPE;
-import static com.recoveryrecord.surveyandroid.example.Constants.LAST_ESM_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_ESM_TYPE_KEY;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_NOTIFICATION_EXIST;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_READ_EXIST;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_SAMPLE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TYPE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_DEVICE_ID;
 //import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_SAMPLE_CHECK_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_DEVICE_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_SAMPLE_CHECK_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_IN;
 import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_MEDIA;
 import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_RECEIEVE;
 import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_TITLE;
-import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_CLEAR_CACHE;
-import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.SURVEY_PAGE_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TARGET_RANGE;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TIME_ON_PAGE_THRESHOLD;
 import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_KEY;
-import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TARGET_RANGE;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_ESM;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOTIFICATION_UNCLICKED_CANDIDATE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_CLICK;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_NOTI_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_TITLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_NOTI_ARRAY;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_READ_ARRAY;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_IN_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_OUT_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_SAMPLE_CHECK;
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_TIME_ON_PAGE;
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_TITLE;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_READ_HISTORY_CANDIDATE;
-import static com.recoveryrecord.surveyandroid.example.Constants.ZERO_RESULT_STRING;
 
 public class ESMLoadingPageActivity extends AppCompatActivity {
     private Button button;
@@ -180,20 +164,22 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
 
 
     private void sql_query_noti() {
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        long mysampletime = sharedPrefs.getLong(ESM_SAMPLE_TIME, 0);
         //noti
         //read
         //noti
         PushNewsDbHelper dbHandler = new PushNewsDbHelper(getApplicationContext());
         Boolean noti_read = false, self_read = false, noti_not_read = false;
         int click = 1;//not click
-        Cursor cursor = dbHandler.getNotiDataForESM(my_time.getSeconds());
-        if (cursor.moveToFirst()) {
-            while(!cursor.isAfterLast()) {
-                String news_id = cursor.getString(cursor.getColumnIndex("news_id"));
-                String title = cursor.getString(cursor.getColumnIndex("title"));
+        Cursor cursor_click = dbHandler.getNotiClickDataForESM(mysampletime);
+        if (cursor_click.moveToFirst()) {
+            while(!cursor_click.isAfterLast()) {
+                String news_id = cursor_click.getString(cursor_click.getColumnIndex("news_id"));
+                String title = cursor_click.getString(cursor_click.getColumnIndex("title"));
                 title = title.replace("\n", "");
-                String media = cursor.getString(cursor.getColumnIndex("media"));
-                click = cursor.getInt(cursor.getColumnIndex("click"));
+                String media = cursor_click.getString(cursor_click.getColumnIndex("media"));
+                click = cursor_click.getInt(cursor_click.getColumnIndex("click"));
                 switch (media) {
                     case "cna":
                         media = "中央社";
@@ -223,7 +209,7 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
                         media = "三立";
                         break;
                 }
-                long re_time = cursor.getLong(cursor.getColumnIndex("receieve_timestamp"));
+                long re_time = cursor_click.getLong(cursor_click.getColumnIndex("receieve_timestamp"));
                 Date date = new Date();
                 date.setTime(re_time*1000);
                 @SuppressLint("SimpleDateFormat")
@@ -235,30 +221,31 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
                     noti_query.add(title);
                     noti_query.add(media);
                     noti_query.add(mysplit[2]);
+                    break;
 //                    exist_notification = true;
-                    if(click==0){
-                        //only noti
-                        break;
-                    } else {
-                        Random rand = new Random();
-                        int n = rand.nextInt(3);//0 1 2
-                        if(n==0){
-                            //1/3
-                            break;
-                        }
-                    }
+//                    if(click==0){
+//                        //only noti
+//                        break;
+//                    } else {
+//                        Random rand = new Random();
+//                        int n = rand.nextInt(3);//0 1 2
+//                        if(n==0){
+//                            //1/3
+//                            break;
+//                        }
+//                    }
 
                 }
-                cursor.moveToNext();
+                cursor_click.moveToNext();
             }
         }
-        if (!cursor.isClosed())  {
-            cursor.close();
+        if (!cursor_click.isClosed())  {
+            cursor_click.close();
         }
         if(click==0){
             //exist read find reading behavior
             ReadingBehaviorDbHelper dbHandler_rb = new ReadingBehaviorDbHelper(getApplicationContext());
-            Cursor cursor_rb = dbHandler_rb.getReadingDataFromNoti(my_time.getSeconds(), "\"" + noti_query.get(0) + "\"");
+            Cursor cursor_rb = dbHandler_rb.getReadingDataFromNoti(mysampletime, "\"" + noti_query.get(0) + "\"");
             if (cursor_rb.moveToFirst()) {
                 while(!cursor_rb.isAfterLast()) {
                     long in_time = cursor_rb.getLong(cursor_rb.getColumnIndex("in_timestamp"));
@@ -283,7 +270,7 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
         //query reading
         //not exist read query self read
         ReadingBehaviorDbHelper dbHandler_rb_self = new ReadingBehaviorDbHelper(getApplicationContext());
-        Cursor cursor_rb_self = dbHandler_rb_self.getReadingDataSelf(my_time.getSeconds());
+        Cursor cursor_rb_self = dbHandler_rb_self.getReadingDataSelf(mysampletime);
         if (cursor_rb_self.moveToFirst()) {
             while(!cursor_rb_self.isAfterLast()) {
                 String news_id = cursor_rb_self.getString(cursor_rb_self.getColumnIndex("news_id"));
@@ -313,7 +300,6 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
             cursor_rb_self.close();
         }
         //alternate two esm
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         int last_type = sharedPrefs.getInt(ESM_TYPE, 3);
         if(noti_read && self_read){
             //同時成立
@@ -326,6 +312,63 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
             }
         } else if(!noti_read && !self_read){
             noti_not_read = true;
+            Cursor cursor_unclick = dbHandler.getNotiUnclickDataForESM(mysampletime);
+            if (cursor_unclick.moveToFirst()) {
+                while(!cursor_unclick.isAfterLast()) {
+                    String news_id = cursor_unclick.getString(cursor_unclick.getColumnIndex("news_id"));
+                    String title = cursor_unclick.getString(cursor_unclick.getColumnIndex("title"));
+                    title = title.replace("\n", "");
+                    String media = cursor_unclick.getString(cursor_unclick.getColumnIndex("media"));
+                    switch (media) {
+                        case "cna":
+                            media = "中央社";
+                            break;
+                        case "chinatimes":
+                            media = "中時";
+                            break;
+                        case "cts":
+                            media = "華視";
+                            break;
+                        case "ebc":
+                            media = "東森";
+                            break;
+                        case "ltn":
+                            media = "自由時報";
+                            break;
+                        case "storm":
+                            media = "風傳媒";
+                            break;
+                        case "udn":
+                            media = "聯合";
+                            break;
+                        case "ettoday":
+                            media = "ettoday";
+                            break;
+                        case "setn":
+                            media = "三立";
+                            break;
+                    }
+                    long re_time = cursor_unclick.getLong(cursor_unclick.getColumnIndex("receieve_timestamp"));
+                    Date date = new Date();
+                    date.setTime(re_time*1000);
+                    @SuppressLint("SimpleDateFormat")
+                    SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+                    String[] mysplit = formatter.format(date).split(" ");
+                    if(!title.equals("NA") || !title.equals("") ){
+                        noti_query.clear();
+                        noti_query.add(news_id);
+                        noti_query.add(title);
+                        noti_query.add(media);
+                        noti_query.add(mysplit[2]);
+                        break;
+                    }
+                    cursor_unclick.moveToNext();
+                }
+            }
+            if (!cursor_unclick.isClosed())  {
+                cursor_unclick.close();
+            }
+
         }
         if(noti_read){
             type_esm = 0;

@@ -3,6 +3,8 @@ package com.recoveryrecord.surveyandroid.example;
 import android.os.Bundle;
 
 import com.google.android.material.tabs.TabLayout;
+import com.recoveryrecord.surveyandroid.example.chinatimes.ChinatimesMainFragment;
+import com.recoveryrecord.surveyandroid.example.dailyreadinghistory.ReadingHistoryDailyMainFragment;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -43,10 +45,13 @@ public class ReadHistoryActivity extends AppCompatActivity {
             switch (position) {
                 case 0:
                     return ReadingHistoryFragment.newInstance();
-                case 2:
-                    return ReadHistorySummaryFragment.newInstance();
                 case 1:
-                    return ReadHistoryDailyFragment.newInstance();
+//                    return ReadingHistoryDailyFragment.newInstance();
+                    return new ReadingHistoryDailyMainFragment();
+                case 2:
+                    return ReadHistoryWeeklyFragment.newInstance();
+                case 3:
+                    return ReadHistorySummaryFragment.newInstance();
                 default:
                     return TestTab3Fragment.newInstance();
             }
@@ -55,7 +60,7 @@ public class ReadHistoryActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 4;
         }
 
         @Override
@@ -64,8 +69,10 @@ public class ReadHistoryActivity extends AppCompatActivity {
                 case 0:
                     return "近50則";
                 case 1:
-                    return "一週統計";
+                    return "每日";
                 case 2:
+                    return "一週統計";
+                case 3:
                     return "總統計";
             }
             return null;

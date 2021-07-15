@@ -7,16 +7,6 @@ import android.view.ViewGroup;
 
 import com.recoveryrecord.surveyandroid.example.R;
 import com.recoveryrecord.surveyandroid.example.TestNest2Fragment;
-import com.recoveryrecord.surveyandroid.example.chinatimes.Chinatimes10Fragment;
-import com.recoveryrecord.surveyandroid.example.chinatimes.Chinatimes1Fragment;
-import com.recoveryrecord.surveyandroid.example.chinatimes.Chinatimes2Fragment;
-import com.recoveryrecord.surveyandroid.example.chinatimes.Chinatimes3Fragment;
-import com.recoveryrecord.surveyandroid.example.chinatimes.Chinatimes4Fragment;
-import com.recoveryrecord.surveyandroid.example.chinatimes.Chinatimes5Fragment;
-import com.recoveryrecord.surveyandroid.example.chinatimes.Chinatimes6Fragment;
-import com.recoveryrecord.surveyandroid.example.chinatimes.Chinatimes7Fragment;
-import com.recoveryrecord.surveyandroid.example.chinatimes.Chinatimes8Fragment;
-import com.recoveryrecord.surveyandroid.example.chinatimes.Chinatimes9Fragment;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -28,7 +18,7 @@ public class SetnMainFragment extends Fragment {
 //    private Toolbar toolbar;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_tab2_media, container, false);
+        View view = inflater.inflate(R.layout.nested_layer1_media, container, false);
         ViewPager mViewPager = (ViewPager) view.findViewById(R.id.container_main);
         SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
         mViewPager.setAdapter(mSectionsPagerAdapter);

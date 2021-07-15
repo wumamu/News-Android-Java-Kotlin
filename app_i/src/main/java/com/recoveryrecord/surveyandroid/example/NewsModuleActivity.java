@@ -110,6 +110,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIO
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_FONT_SIZE;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_HAS_IMAGE;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_IN_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_IN_TIME_LONG;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_MEDIA;
 //import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_MID;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_NEWS_ID;
@@ -1555,11 +1556,12 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         } else if (id == android.R.id.home){
             Intent intent_back = new Intent(NewsModuleActivity.this, NewsHybridActivity.class);
             startActivity(intent_back);
-        } else if (id == R.id.web){
-            Intent i = new Intent(Intent.ACTION_VIEW);
-            i.setData(Uri.parse(mUrl));
-            startActivity(i);
         }
+//        else if (id == R.id.web){
+//            Intent i = new Intent(Intent.ACTION_VIEW);
+//            i.setData(Uri.parse(mUrl));
+//            startActivity(i);
+//        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -1630,7 +1632,9 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         readingBehavior.put(READING_BEHAVIOR_DISPLAY_WIDTH, myReadingBehavior.getKEY_DISPLAY_WIDTH());
         readingBehavior.put(READING_BEHAVIOR_DISPLAY_HEIGHT, myReadingBehavior.getKEY_DISPLAY_HEIGHT());
         readingBehavior.put(READING_BEHAVIOR_IN_TIME, enter_timestamp);
+        readingBehavior.put(READING_BEHAVIOR_IN_TIME_LONG, enter_timestamp.getSeconds());
         readingBehavior.put(READING_BEHAVIOR_OUT_TIME, Timestamp.now());
+//        readingBehavior.put(READING_BEHAVIOR_OUT_TIME_LONG, Timestamp.now().getSeconds());
         readingBehavior.put(READING_BEHAVIOR_TIME_ON_PAGE, myReadingBehavior.getKEY_TIME_ON_PAGE());
         readingBehavior.put(READING_BEHAVIOR_PAUSE_COUNT, myReadingBehavior.getKEY_PAUSE_ON_PAGE());
         readingBehavior.put(READING_BEHAVIOR_VIEWPORT_NUM, "NA");
@@ -1670,6 +1674,19 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         List<String> drag_record_list = new ArrayList<String>(Arrays.asList(myReadingBehavior.getKEY_DRAG_RECORD().split("#")));
         List<String> fling_record_list = new ArrayList<String>(Arrays.asList(myReadingBehavior.getKEY_FLING_RECORD().split("#")));
 
+        myReadingBehavior.setKEY_TITLE(mTitle);
+        myReadingBehavior.setKEY_HAS_IMG(has_img);
+        if((mPubdate !=null)){
+            myReadingBehavior.setKEY_PUBDATE(mPubdate.getSeconds());
+        } else {
+            myReadingBehavior.setKEY_PUBDATE(0);
+        }
+
+        myReadingBehavior.setKEY_OUT_TIMESTAMP(Timestamp.now().getSeconds());
+
+        ReadingBehaviorDbHelper dbHandler = new ReadingBehaviorDbHelper(getApplicationContext());
+        dbHandler.UpdateReadingBehaviorDetails(myReadingBehavior);
+
         rbRef.update(
                 READING_BEHAVIOR_NEWS_ID,  myReadingBehavior.getKEY_NEWS_ID(),
                 READING_BEHAVIOR_TITLE, myReadingBehavior.getKEY_TITLE(),
@@ -1682,7 +1699,9 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
 
                 READING_BEHAVIOR_CONTENT_LENGTH, myReadingBehavior.getKEY_CONTENT_LENGTH(),
 
-                READING_BEHAVIOR_OUT_TIME, myReadingBehavior.getKEY_OUT_TIMESTAMP(),
+//                READING_BEHAVIOR_OUT_TIME, myReadingBehavior.getKEY_OUT_TIMESTAMP(),
+                READING_BEHAVIOR_OUT_TIME, new Timestamp(myReadingBehavior.getKEY_OUT_TIMESTAMP(), 0),
+//                READING_BEHAVIOR_OUT_TIME_LONG, myReadingBehavior.getKEY_OUT_TIMESTAMP(),
 
                 READING_BEHAVIOR_TIME_ON_PAGE, myReadingBehavior.getKEY_TIME_ON_PAGE(),//auto
                 READING_BEHAVIOR_PAUSE_COUNT, myReadingBehavior.getKEY_PAUSE_ON_PAGE(),//auto
@@ -1707,18 +1726,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                     }
                 });
 
-        myReadingBehavior.setKEY_TITLE(mTitle);
-        myReadingBehavior.setKEY_HAS_IMG(has_img);
-        if((mPubdate !=null)){
-            myReadingBehavior.setKEY_PUBDATE(mPubdate.getSeconds());
-        } else {
-            myReadingBehavior.setKEY_PUBDATE(0);
-        }
 
-        myReadingBehavior.setKEY_OUT_TIMESTAMP(Timestamp.now().getSeconds());
-
-        ReadingBehaviorDbHelper dbHandler = new ReadingBehaviorDbHelper(getApplicationContext());
-        dbHandler.UpdateReadingBehaviorDetails(myReadingBehavior);
 
     }
 

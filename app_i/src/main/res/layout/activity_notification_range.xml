@@ -100,7 +100,7 @@
             android:id="@+id/button_restart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="重置問卷" />
+            android:text="重置問卷時間(發送端)" />
     </LinearLayout>
 
 </LinearLayout>

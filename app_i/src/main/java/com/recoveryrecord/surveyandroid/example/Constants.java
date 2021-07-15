@@ -216,6 +216,8 @@ public class Constants {
 
     public static final String READING_BEHAVIOR_IN_TIME = "in_timestamp";
     public static final String READING_BEHAVIOR_OUT_TIME = "out_timestamp";
+    public static final String READING_BEHAVIOR_IN_TIME_LONG = "in_timestamp_long";
+//    public static final String READING_BEHAVIOR_OUT_TIME_LONG = "out_timestamp_long";
 
     public static final String READING_BEHAVIOR_TIME_ON_PAGE = "time_on_page(s)";
     public static final String READING_BEHAVIOR_PAUSE_COUNT = "pause_count";
@@ -406,6 +408,7 @@ public class Constants {
 
 
     public static final String ESM_DELAY_COUNT = "esm_delay_count";
+    public static final String ESM_SAMPLE_TIME = "esm_sample_time";
 
 
 

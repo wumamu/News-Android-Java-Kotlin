@@ -200,7 +200,7 @@ public class ReadingBehaviorDbHelper extends SQLiteOpenHelper {
                         "\tFROM reading_behavior rb\n" +
                         "\tWHERE rb.time_on_page > 1\n" +
                         ") as tmp\n" +
-                        "WHERE tmp.diff <= 2700 AND tmp.diff >=0\n" +
+                        "WHERE tmp.diff <= 1800 AND tmp.diff >=0\n" +
                         "ORDER BY tmp.in_timestamp DESC;"
                 , null );
         return res;
@@ -224,8 +224,8 @@ public class ReadingBehaviorDbHelper extends SQLiteOpenHelper {
 //                        "\tWHERE rb.time_on_page > 1\n" +
                         "\tWHERE rb.news_id = " + target_news_id + "\n" +
                         ") as tmp\n" +
-                        "WHERE tmp.diff <= 2700 AND tmp.diff >=0\n" +
-                        "ORDER BY tmp.time_on_page DESC;"
+                        "WHERE tmp.diff <= 1800 AND tmp.diff >=0\n" +
+                        "ORDER BY tmp.time_on_page DESC LIMIT 1;"
                 , null );
         return res;
     }
@@ -245,8 +245,9 @@ public class ReadingBehaviorDbHelper extends SQLiteOpenHelper {
                         "\tWHERE rb.time_on_page > 1\n" +
 //                        "\tWHERE rb.news_id = " + target_news_id + "\n" +
                         ") as tmp\n" +
-                        "WHERE tmp.diff <= 2700 AND tmp.diff >=0\n" +
-                        "ORDER BY tmp.in_timestamp DESC;"
+                        "WHERE tmp.diff <= 1800 AND tmp.diff >=0\n" +
+//                        "ORDER BY tmp.in_timestamp DESC;"
+                        " ORDER BY RANDOM() LIMIT 1;"
                 , null );
         return res;
     }
@@ -267,7 +268,7 @@ public class ReadingBehaviorDbHelper extends SQLiteOpenHelper {
 //                        "\tWHERE rb.news_id = " + target_news_id + "\n" +
                         ") as tmp\n" +
                         "WHERE tmp.diff <= 1800 AND tmp.diff >=0\n" +
-                        "ORDER BY tmp.in_timestamp DESC;"
+                        "LIMIT 1;"
                 , null );
         return res;
     }

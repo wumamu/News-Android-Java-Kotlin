@@ -18,7 +18,7 @@ public class ChinatimesMainFragment extends Fragment {
 //    private Toolbar toolbar;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_tab2_media, container, false);
+        View view = inflater.inflate(R.layout.nested_layer1_media, container, false);
         ViewPager mViewPager = (ViewPager) view.findViewById(R.id.container_main);
         SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -39,6 +39,7 @@ public class ChinatimesMainFragment extends Fragment {
 //        }
         @Override
         public Fragment getItem(int position) {
+//            Log.d("lognewsselect1231", "getItemchina" + position);
             switch (position) {
                 case 0:
                     return Chinatimes1Fragment.newInstance(1);

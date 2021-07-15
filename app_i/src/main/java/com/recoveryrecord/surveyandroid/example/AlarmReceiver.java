@@ -90,8 +90,13 @@ public class AlarmReceiver extends BroadcastReceiver {
                 esm_source = intent.getExtras().getString(SCHEDULE_SOURCE);
             }
             PushNewsDbHelper dbHandler_noti = new PushNewsDbHelper(context.getApplicationContext());
+            long sample_long = Timestamp.now().getSeconds();
+//            SharedPreferences.Editor editor = sharedPrefs.edit();
+//            editor.putLong(ESM_SAMPLE_TIME, sample_long);
+//            editor.apply();
+
             Boolean exist_noti = false, exist_read = false;
-            Cursor cursor_noti = dbHandler_noti.checkNotiDataForESM(Timestamp.now().getSeconds());
+            Cursor cursor_noti = dbHandler_noti.checkNotiDataForESM(sample_long);
             if (cursor_noti.moveToFirst()) {
                 while(!cursor_noti.isAfterLast()) {
                     //returns true when cursor is at last row position
@@ -105,7 +110,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 cursor_noti.close();
             }
             ReadingBehaviorDbHelper dbHandler_read = new ReadingBehaviorDbHelper(context.getApplicationContext());
-            Cursor cursor_read = dbHandler_read.checkReadDataForESM(Timestamp.now().getSeconds());
+            Cursor cursor_read = dbHandler_read.checkReadDataForESM(sample_long);
             if (cursor_read.moveToFirst()) {
                 while(!cursor_read.isAfterLast()) {
                     //returns true when cursor is at last row position
@@ -121,6 +126,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             if (exist_noti || exist_read){
                 scheduleNotification_esm(context, getNotification_esm(context, esm_name, esm_source), 1000);
                 SharedPreferences.Editor editor = sharedPrefs.edit();
+                editor.putLong(ESM_SAMPLE_TIME, sample_long);
                 editor.putInt(ESM_DELAY_COUNT, 0);
                 editor.apply();
             } else {
@@ -128,6 +134,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 int my_delay_count = sharedPrefs.getInt(ESM_DELAY_COUNT, 0);
                 if(my_delay_count<3){
                     SharedPreferences.Editor editor = sharedPrefs.edit();
+                    editor.putLong(ESM_SAMPLE_TIME, 0);
                     editor.putInt(ESM_DELAY_COUNT, my_delay_count+1);
                     editor.apply();
                     //delay 10 up 2 times
@@ -396,13 +403,13 @@ public class AlarmReceiver extends BroadcastReceiver {
             if(i==0){
                 randomNumber_esm = r_esm.nextInt(30);
             } else {
-                randomNumber_esm = r_esm.nextInt(20);
+                randomNumber_esm = r_esm.nextInt(30);
             }
             sum+= randomNumber_esm;
             cal_esm.add(Calendar.MINUTE, sum);//"配置鬧終於+sum 分鐘後
             //generate same day alarm
 //            Log.d("AlarmReceiver", "before " + cal_esm.getTime().toString());
-            sum+=80;
+            sum+=60;
             if(sum>=1440){
                 break;//24*60
             }

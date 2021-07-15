@@ -116,7 +116,7 @@ public class PushNewsDbHelper extends SQLiteOpenHelper {
         db.update(TABLE_NAME_PUSH_NEWS, cValues, KEY_DOC_ID + " = ?", new String[]{String.valueOf(pushnews.getKEY_DOC_ID())});
     }
 
-    public Cursor getNotiDataForESM(long now_timestamp) {//45min
+    public Cursor getNotiClickDataForESM(long now_timestamp) {//30min
         SQLiteDatabase db = this.getReadableDatabase();
 //        Cursor res =  db.rawQuery( "select * from contacts where id="+id+"", null );
         Cursor res =  db.rawQuery( "SELECT tmp.news_id, tmp.title, tmp.receieve_timestamp, tmp.media, tmp.click\n" +
@@ -131,9 +131,32 @@ public class PushNewsDbHelper extends SQLiteOpenHelper {
                         "                                FROM push_news pn\n" +
                         "                                WHERE pn.type = 'target add'" +
                         "                        ) as tmp\n" +
-                        "                WHERE tmp.diff <= 2700\n" +
-                        "                ORDER BY  tmp.click ASC, tmp.receieve_timestamp DESC;"
+                        "                WHERE tmp.diff <= 1800 AND tmp.click=0\n" +
+                        "                ORDER BY RANDOM() LIMIT 1;"
+//                        "                ORDER BY  tmp.click ASC, tmp.receieve_timestamp DESC;"
         , null );
+        return res;
+    }
+
+    public Cursor getNotiUnclickDataForESM(long now_timestamp) {//45min
+        SQLiteDatabase db = this.getReadableDatabase();
+//        Cursor res =  db.rawQuery( "select * from contacts where id="+id+"", null );
+        Cursor res =  db.rawQuery( "SELECT tmp.news_id, tmp.title, tmp.receieve_timestamp, tmp.media, tmp.click\n" +
+                        "                FROM\n" +
+                        "                        (\n" +
+                        "                                SELECT DISTINCT pn.news_id,\n" +
+                        "                                pn.title,\n" +
+                        "                                pn.media,\n" +
+                        "                                pn.receieve_timestamp,\n" +
+                        "                                pn.click,\n" +
+                        "                                (" + now_timestamp + "-pn.receieve_timestamp) as diff\n" +
+                        "                                FROM push_news pn\n" +
+                        "                                WHERE pn.type = 'target add'" +
+                        "                        ) as tmp\n" +
+                        "                WHERE tmp.diff <= 1800 AND tmp.click=1\n" +
+                        "                ORDER BY RANDOM() LIMIT 1;"
+//                        "                ORDER BY  tmp.click ASC, tmp.receieve_timestamp DESC;"
+                , null );
         return res;
     }
 
@@ -153,7 +176,7 @@ public class PushNewsDbHelper extends SQLiteOpenHelper {
                         "                                WHERE pn.type = 'target add'" +
                         "                        ) as tmp\n" +
                         "                WHERE tmp.diff <= 1800\n" +
-                        "                ORDER BY  tmp.click ASC, tmp.receieve_timestamp DESC;"
+                        "                LIMIT 1;"
                 , null );
         return res;
     }

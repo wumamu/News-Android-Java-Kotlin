@@ -55,7 +55,7 @@ public class Storm11Fragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_nest1_category, container, false);
+        View view = inflater.inflate(R.layout.nested_layer2_category, container, false);
         // initializing our variables.
         courseRV = view.findViewById(R.id.idRVItems);
 

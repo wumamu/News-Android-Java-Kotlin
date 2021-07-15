@@ -21,15 +21,13 @@ import com.google.firebase.Timestamp;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
 import static com.recoveryrecord.surveyandroid.example.Constants.READ_TOTAL;
 
-public class ReadHistoryDailyFragment extends Fragment {
+public class ReadHistoryWeeklyFragment extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -41,14 +39,14 @@ public class ReadHistoryDailyFragment extends Fragment {
     private String mParam2;
 
 
-    public ReadHistoryDailyFragment() {
+    public ReadHistoryWeeklyFragment() {
         // Required empty public constructor
     }
 
 
     // TODO: Rename and change types and number of parameters
-    public static ReadHistoryDailyFragment newInstance() {
-        ReadHistoryDailyFragment fragment = new ReadHistoryDailyFragment();
+    public static ReadHistoryWeeklyFragment newInstance() {
+        ReadHistoryWeeklyFragment fragment = new ReadHistoryWeeklyFragment();
 
         return fragment;
     }
@@ -66,7 +64,7 @@ public class ReadHistoryDailyFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.activity_read_history_daily, container, false);
+        View view = inflater.inflate(R.layout.activity_read_history_weekly, container, false);
         barChart  = view.findViewById(R.id.barChart_view);
         //remove border of the chart, default false if not set
         barChart.setDrawBorders(false);
