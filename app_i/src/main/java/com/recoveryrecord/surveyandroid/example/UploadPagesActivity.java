@@ -25,6 +25,7 @@ import com.recoveryrecord.surveyandroid.example.DbHelper.PushNewsDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.ReadingBehaviorDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.RingModeReceiverDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.ScreenStateReceiverDbHelper;
+import com.recoveryrecord.surveyandroid.example.DbHelper.SessionDbHelper;
 import com.recoveryrecord.surveyandroid.example.sqlite.ESM;
 
 import java.text.SimpleDateFormat;
@@ -81,6 +82,7 @@ public class UploadPagesActivity extends AppCompatActivity {
                 upload_network();
                 upload_RingMode();
                 upload_Screen();
+                upload_session();
                 Toast.makeText(getApplicationContext(), "上傳資料完成", Toast.LENGTH_SHORT).show();
 
                 Long new_time = Timestamp.now().getSeconds();
@@ -441,6 +443,31 @@ public class UploadPagesActivity extends AppCompatActivity {
                         .collection("Screen sql")
                         .document(cursor.getString(cursor.getColumnIndex("doc_id")))
                         .set(screen);
+                cursor.moveToNext();
+            }
+//            Log.e("upload", "close");
+            cursor.close();
+        }
+//        Log.e("upload", "updateall");
+        dbHelper.UpdateAll();
+    }
+    private void upload_session(){
+        SessionDbHelper dbHelper = new SessionDbHelper(getApplicationContext());
+        Cursor cursor = dbHelper.getALL();
+        if(cursor.moveToFirst()){
+//            Log.e("upload", "move to first");
+            while(!cursor.isAfterLast()){
+//                Log.e("upload", "isafterlast");
+                Map<String, Object> session = new HashMap<>();
+                session.put(SENSOR_DOC_ID, cursor.getString(cursor.getColumnIndex("doc_id")));
+                session.put(SENSOR_DEVICE_ID, cursor.getString(cursor.getColumnIndex("device_id")));
+                session.put(SENSOR_TIMESTAMP, new Timestamp(cursor.getLong(cursor.getColumnIndex("timestamp")), 0));
+                session.put(SENSOR_USER_ID, cursor.getString(cursor.getColumnIndex("user_id")));
+                session.put(SENSOR_SESSION, cursor.getInt(cursor.getColumnIndex("session")));
+                session.put(SENSOR_STATE, cursor.getString(cursor.getColumnIndex("state")));
+                db.collection("Session_List_sql")
+                        .document(cursor.getString(cursor.getColumnIndex("doc_id")))
+                        .set(session);
                 cursor.moveToNext();
             }
 //            Log.e("upload", "close");
