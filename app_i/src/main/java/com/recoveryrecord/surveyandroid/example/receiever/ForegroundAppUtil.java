@@ -19,7 +19,7 @@ import java.util.List;
 
 public class ForegroundAppUtil{
     private static final long END_TIME = System.currentTimeMillis();
-    private static final long TIME_INTERVAL = 1 * 24 * 60 * 60 * 1000L;
+    private static final long TIME_INTERVAL = 1 * 1 * 60 * 60 * 1000L;
     private static final long START_TIME = END_TIME - TIME_INTERVAL;
 
     //get the name of package in the top of stack
