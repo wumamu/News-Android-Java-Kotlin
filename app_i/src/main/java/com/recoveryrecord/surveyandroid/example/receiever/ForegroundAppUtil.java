@@ -19,7 +19,7 @@ import java.util.List;
 
 public class ForegroundAppUtil{
     private static final long END_TIME = System.currentTimeMillis();
-    private static final long TIME_INTERVAL = 7 * 24 * 60 * 60 * 1000L;
+    private static final long TIME_INTERVAL = 1 * 24 * 60 * 60 * 1000L;
     private static final long START_TIME = END_TIME - TIME_INTERVAL;
 
     //get the name of package in the top of stack
@@ -29,10 +29,12 @@ public class ForegroundAppUtil{
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             ActivityManager manager = (ActivityManager) context.getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
             currentClassName = manager.getRunningTasks(1).get(0).topActivity.getPackageName();
+            Log.e("currentClassName1", currentClassName);
         } else {
             UsageStats initStat = getForegroundUsageStats(context, START_TIME, END_TIME);
             if (initStat != null) {
                 currentClassName = initStat.getPackageName();
+                Log.e("currentClassName2", currentClassName);
             }
         }
         return currentClassName;
@@ -54,6 +56,7 @@ public class ForegroundAppUtil{
         return 0;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @SuppressLint("LongLogTag")
     private static UsageStats getForegroundUsageStats(Context context, long startTime, long endTime) {
         UsageStats usageStatsResult = null;
@@ -61,8 +64,10 @@ public class ForegroundAppUtil{
             List<UsageStats> usageStatses = getUsageStatsList(context, startTime, endTime);
             if (usageStatses == null || usageStatses.isEmpty()) return null;
             for (UsageStats usageStats : usageStatses) {
+//                Log.e("usageStateResult1", usageStats.getPackageName());
                 if (usageStatsResult == null || usageStatsResult.getLastTimeUsed() < usageStats.getLastTimeUsed()) {
                     usageStatsResult = usageStats;
+                    Log.e("usageStateResult2", usageStats.getPackageName());
                 }
             }
         }
@@ -95,6 +100,7 @@ public class ForegroundAppUtil{
 //                context.getApplicationContext().startActivity(intent);
 //                return null;
 //            }
+//            Log.e("usageStates", String.valueOf(usageStatses));
             return usageStatses;
         }
         return null;

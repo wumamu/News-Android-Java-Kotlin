@@ -40,6 +40,8 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.recoveryrecord.surveyandroid.example.DbHelper.ScreenStateReceiverDbHelper;
+import com.recoveryrecord.surveyandroid.example.DbHelper.SessionDbHelper;
 import com.recoveryrecord.surveyandroid.example.chinatimes.ChinatimesMainFragment;
 import com.recoveryrecord.surveyandroid.example.cna.CnaMainFragment;
 import com.recoveryrecord.surveyandroid.example.cts.CtsMainFragment;
@@ -56,6 +58,8 @@ import com.recoveryrecord.surveyandroid.example.receiever.NetworkChangeReceiver;
 import com.recoveryrecord.surveyandroid.example.receiever.RingModeReceiver;
 import com.recoveryrecord.surveyandroid.example.receiever.ScreenStateReceiver;
 import com.recoveryrecord.surveyandroid.example.setn.SetnMainFragment;
+import com.recoveryrecord.surveyandroid.example.sqlite.ScreenState;
+import com.recoveryrecord.surveyandroid.example.sqlite.Session;
 import com.recoveryrecord.surveyandroid.example.storm.StormMainFragment;
 import com.recoveryrecord.surveyandroid.example.udn.UdnMainFragment;
 
@@ -458,10 +462,21 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
             db.collection("Session_List")
                     .document(device_id + " " + formatter.format(date))
                     .set(sessiontime);
+            final SharedPreferences sharedPrefs1 = PreferenceManager.getDefaultSharedPreferences(context);
+            com.recoveryrecord.surveyandroid.example.sqlite.Session mysession = new Session();//sqlite//add new to db
+            mysession.setKEY_TIMESTAMP(Timestamp.now().getSeconds());
+            mysession.setKEY_DOC_ID(device_id + " " + formatter.format(date));
+            mysession.setKEY_DEVICE_ID(device_id);
+            mysession.setKEY_USER_ID(sharedPrefs1.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+            mysession.setKEY_SESSION(SessionID);
+            mysession.setKEY_STATE(0);
+            SessionDbHelper dbHandler = new SessionDbHelper(context);
+            dbHandler.insertSessionDetailsCreate(mysession);
         }
     }
     @Override
     protected void onResume() {
+        Log.e("onResume", "onResume");
         super.onResume();
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -473,6 +488,24 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 
         if(TimerRunning == true) {
             pauseTimer();
+
+            sessiontime.put("session", SessionID);
+            sessiontime.put("state", 2);
+            sessiontime.put("time", formatter.format(date));
+            sessiontime.put("device_id", device_id);
+            db.collection("Session_List")
+                    .document(device_id + " " + formatter.format(date))
+                    .set(sessiontime);
+            final SharedPreferences sharedPrefs1 = PreferenceManager.getDefaultSharedPreferences(context);
+            com.recoveryrecord.surveyandroid.example.sqlite.Session mysession = new Session();//sqlite//add new to db
+            mysession.setKEY_TIMESTAMP(Timestamp.now().getSeconds());
+            mysession.setKEY_DOC_ID(device_id + " " + formatter.format(date));
+            mysession.setKEY_DEVICE_ID(device_id);
+            mysession.setKEY_USER_ID(sharedPrefs1.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+            mysession.setKEY_SESSION(SessionID);
+            mysession.setKEY_STATE(2);
+            SessionDbHelper dbHandler = new SessionDbHelper(context);
+            dbHandler.insertSessionDetailsCreate(mysession);
         }else{
 //            Log.e("TimerRunning", "FALSE");
 //            Log.e("TimeLeftInMillis", String.valueOf(TimeLeftInMillis));
@@ -485,6 +518,16 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 db.collection("Session_List")
                         .document(device_id + " " + formatter.format(date))
                         .set(sessiontime);
+                final SharedPreferences sharedPrefs1 = PreferenceManager.getDefaultSharedPreferences(context);
+                com.recoveryrecord.surveyandroid.example.sqlite.Session mysession = new Session();//sqlite//add new to db
+                mysession.setKEY_TIMESTAMP(Timestamp.now().getSeconds());
+                mysession.setKEY_DOC_ID(device_id + " " + formatter.format(date));
+                mysession.setKEY_DEVICE_ID(device_id);
+                mysession.setKEY_USER_ID(sharedPrefs1.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+                mysession.setKEY_SESSION(SessionID);
+                mysession.setKEY_STATE(0);
+                SessionDbHelper dbHandler = new SessionDbHelper(context);
+                dbHandler.insertSessionDetailsCreate(mysession);
             }
         }
 
@@ -519,6 +562,16 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         db.collection("Session_List")
                 .document(device_id + " " + formatter.format(date))
                 .set(sessiontime);
+        final SharedPreferences sharedPrefs1 = PreferenceManager.getDefaultSharedPreferences(context);
+        com.recoveryrecord.surveyandroid.example.sqlite.Session mysession = new Session();//sqlite//add new to db
+        mysession.setKEY_TIMESTAMP(Timestamp.now().getSeconds());
+        mysession.setKEY_DOC_ID(device_id + " " + formatter.format(date));
+        mysession.setKEY_DEVICE_ID(device_id);
+        mysession.setKEY_USER_ID(sharedPrefs1.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+        mysession.setKEY_SESSION(SessionID);
+        mysession.setKEY_STATE(1);
+        SessionDbHelper dbHandler = new SessionDbHelper(context);
+        dbHandler.insertSessionDetailsCreate(mysession);
     }
 
     @Override
@@ -1008,6 +1061,16 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 db.collection("Session_List")
                         .document(device_id + " " + formatter.format(date))
                         .set(sessiontime);
+                final SharedPreferences sharedPrefs1 = PreferenceManager.getDefaultSharedPreferences(context);
+                com.recoveryrecord.surveyandroid.example.sqlite.Session mysession = new Session();//sqlite//add new to db
+                mysession.setKEY_TIMESTAMP(Timestamp.now().getSeconds());
+                mysession.setKEY_DOC_ID(device_id + " " + formatter.format(date));
+                mysession.setKEY_DEVICE_ID(device_id);
+                mysession.setKEY_USER_ID(sharedPrefs1.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+                mysession.setKEY_SESSION(SessionID);
+                mysession.setKEY_STATE(1);
+                SessionDbHelper dbHandler = new SessionDbHelper(context);
+                dbHandler.insertSessionDetailsCreate(mysession);
             }
         }.start();
         TimerRunning = true;
