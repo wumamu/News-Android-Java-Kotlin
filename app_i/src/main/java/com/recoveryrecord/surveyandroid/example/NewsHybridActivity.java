@@ -568,7 +568,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         mysession.setKEY_DOC_ID(device_id + " " + formatter.format(date));
         mysession.setKEY_DEVICE_ID(device_id);
         mysession.setKEY_USER_ID(sharedPrefs1.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
-        mysession.setKEY_SESSION(SessionID);
+        mysession.setKEY_SESSION(-1);
         mysession.setKEY_STATE(1);
         SessionDbHelper dbHandler = new SessionDbHelper(context);
         dbHandler.insertSessionDetailsCreate(mysession);
