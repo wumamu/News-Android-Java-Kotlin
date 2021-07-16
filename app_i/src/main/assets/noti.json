@@ -157,6 +157,11 @@
             "id": "base_2",
             "operation": "equals",
             "value": "我有點入閱讀"
+          },
+          {
+            "id": "recieve_moment_2",
+            "operation": "not equals",
+            "value": "忘記了"
           }
         ]
       }
@@ -189,6 +194,11 @@
             "id": "base_2",
             "operation": "equals",
             "value": "我有點入閱讀"
+          },
+          {
+            "id": "recieve_moment_2",
+            "operation": "not equals",
+            "value": "忘記了"
           }
         ]
       }
@@ -221,6 +231,11 @@
             "id": "base_2",
             "operation": "equals",
             "value": "我有點入閱讀"
+          },
+          {
+            "id": "recieve_moment_2",
+            "operation": "not equals",
+            "value": "忘記了"
           }
         ]
       }
@@ -253,6 +268,11 @@
             "id": "base_2",
             "operation": "equals",
             "value": "我有點入閱讀"
+          },
+          {
+            "id": "recieve_moment_2",
+            "operation": "not equals",
+            "value": "忘記了"
           }
         ]
       }
@@ -287,6 +307,11 @@
             "id": "base_2",
             "operation": "equals",
             "value": "我有點入閱讀"
+          },
+          {
+            "id": "recieve_moment_2",
+            "operation": "not equals",
+            "value": "忘記了"
           }
         ]
       }
@@ -473,6 +498,11 @@
             "id": "read_moment_2",
             "operation": "not equals",
             "value": "活動相同，地點不同"
+          },
+          {
+            "id": "read_moment_4",
+            "operation": "not equals",
+            "value": "忘記了"
           }
         ]
       }
@@ -515,6 +545,11 @@
             "id": "read_moment_2",
             "operation": "not equals",
             "value": "活動相同，地點不同"
+          },
+          {
+            "id": "read_moment_4",
+            "operation": "not equals",
+            "value": "忘記了"
           }
         ]
       }
@@ -557,6 +592,11 @@
             "id": "read_moment_2",
             "operation": "not equals",
             "value": "活動相同，地點不同"
+          },
+          {
+            "id": "read_moment_4",
+            "operation": "not equals",
+            "value": "忘記了"
           }
         ]
       }
@@ -599,6 +639,11 @@
             "id": "read_moment_2",
             "operation": "not equals",
             "value": "活動相同，地點不同"
+          },
+          {
+            "id": "read_moment_4",
+            "operation": "not equals",
+            "value": "忘記了"
           }
         ]
       }
@@ -643,6 +688,11 @@
             "id": "read_moment_2",
             "operation": "not equals",
             "value": "活動不同，地點相同"
+          },
+          {
+            "id": "read_moment_4",
+            "operation": "not equals",
+            "value": "忘記了"
           }
         ]
       }
@@ -1561,6 +1611,11 @@
             "id": "base_2",
             "operation": "not equals",
             "value": "我有點入閱讀"
+          },
+          {
+            "id": "not_read_recieve_moment_2",
+            "operation": "not equals",
+            "value": "忘記了"
           }
         ]
       }
@@ -1593,6 +1648,11 @@
             "id": "base_2",
             "operation": "not equals",
             "value": "我有點入閱讀"
+          },
+          {
+            "id": "not_read_recieve_moment_2",
+            "operation": "not equals",
+            "value": "忘記了"
           }
         ]
       }
@@ -1625,6 +1685,11 @@
             "id": "base_2",
             "operation": "not equals",
             "value": "我有點入閱讀"
+          },
+          {
+            "id": "not_read_recieve_moment_2",
+            "operation": "not equals",
+            "value": "忘記了"
           }
         ]
       }
@@ -1657,6 +1722,11 @@
             "id": "base_2",
             "operation": "not equals",
             "value": "我有點入閱讀"
+          },
+          {
+            "id": "not_read_recieve_moment_2",
+            "operation": "not equals",
+            "value": "忘記了"
           }
         ]
       }
@@ -1691,6 +1761,11 @@
             "id": "base_2",
             "operation": "not equals",
             "value": "我有點入閱讀"
+          },
+          {
+            "id": "not_read_recieve_moment_2",
+            "operation": "not equals",
+            "value": "忘記了"
           }
         ]
       }
@@ -1874,6 +1949,11 @@
             "id": "not_read_seen_1",
             "operation": "not equals",
             "value": "活動相同，地點不同"
+          },
+          {
+            "id": "not_read_seen_3",
+            "operation": "not equals",
+            "value": "忘記了"
           }
         ]
       }
@@ -1921,6 +2001,11 @@
             "id": "not_read_seen_1",
             "operation": "not equals",
             "value": "活動相同，地點不同"
+          },
+          {
+            "id": "not_read_seen_3",
+            "operation": "not equals",
+            "value": "忘記了"
           }
         ]
       }
@@ -1968,6 +2053,11 @@
             "id": "not_read_seen_1",
             "operation": "not equals",
             "value": "活動相同，地點不同"
+          },
+          {
+            "id": "not_read_seen_3",
+            "operation": "not equals",
+            "value": "忘記了"
           }
         ]
       }
@@ -2015,6 +2105,11 @@
             "id": "not_read_seen_1",
             "operation": "not equals",
             "value": "活動相同，地點不同"
+          },
+          {
+            "id": "not_read_seen_3",
+            "operation": "not equals",
+            "value": "忘記了"
           }
         ]
       }
@@ -2064,6 +2159,11 @@
             "id": "not_read_seen_1",
             "operation": "not equals",
             "value": "活動不同，地點相同"
+          },
+          {
+            "id": "not_read_seen_3",
+            "operation": "not equals",
+            "value": "忘記了"
           }
         ]
       }
@@ -2361,9 +2461,19 @@
         "7"
       ],
       "show_if": {
-        "id": "base_1",
-        "operation": "equals",
-        "value": "沒有，我沒有注意到這則通知出現"
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "base_1",
+            "operation": "equals",
+            "value": "沒有，我沒有注意到這則通知出現"
+          },
+          {
+            "id": "miss_recieve_moment_2",
+            "operation": "not equals",
+            "value": "忘記了"
+          }
+        ]
       }
     },
     {
@@ -2383,9 +2493,19 @@
         "7"
       ],
       "show_if": {
-        "id": "base_1",
-        "operation": "equals",
-        "value": "沒有，我沒有注意到這則通知出現"
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "base_1",
+            "operation": "equals",
+            "value": "沒有，我沒有注意到這則通知出現"
+          },
+          {
+            "id": "miss_recieve_moment_2",
+            "operation": "not equals",
+            "value": "忘記了"
+          }
+        ]
       }
     },
     {
@@ -2405,9 +2525,19 @@
         "7"
       ],
       "show_if": {
-        "id": "base_1",
-        "operation": "equals",
-        "value": "沒有，我沒有注意到這則通知出現"
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "base_1",
+            "operation": "equals",
+            "value": "沒有，我沒有注意到這則通知出現"
+          },
+          {
+            "id": "miss_recieve_moment_2",
+            "operation": "not equals",
+            "value": "忘記了"
+          }
+        ]
       }
     },
     {
@@ -2427,9 +2557,19 @@
         "7"
       ],
       "show_if": {
-        "id": "base_1",
-        "operation": "equals",
-        "value": "沒有，我沒有注意到這則通知出現"
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "base_1",
+            "operation": "equals",
+            "value": "沒有，我沒有注意到這則通知出現"
+          },
+          {
+            "id": "miss_recieve_moment_2",
+            "operation": "not equals",
+            "value": "忘記了"
+          }
+        ]
       }
     },
     {
@@ -2451,9 +2591,19 @@
         }
       ],
       "show_if": {
-        "id": "base_1",
-        "operation": "equals",
-        "value": "沒有，我沒有注意到這則通知出現"
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "base_1",
+            "operation": "equals",
+            "value": "沒有，我沒有注意到這則通知出現"
+          },
+          {
+            "id": "miss_recieve_moment_2",
+            "operation": "not equals",
+            "value": "忘記了"
+          }
+        ]
       }
     }
   ],

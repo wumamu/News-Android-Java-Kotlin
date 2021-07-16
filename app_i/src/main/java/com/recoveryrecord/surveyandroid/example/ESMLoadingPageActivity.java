@@ -117,7 +117,7 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
         editor.putString(SAMPLE_MEDIA, "NA");
         editor.putString(SAMPLE_RECEIEVE, "NA");
         editor.putString(SAMPLE_IN, "NA");
-        editor.putInt(ESM_TYPE, 3);
+//        editor.putInt(ESM_TYPE, 3);
         editor.apply();
         my_time = Timestamp.now();
         rb_query.clear();
@@ -301,6 +301,7 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
         }
         //alternate two esm
         int last_type = sharedPrefs.getInt(ESM_TYPE, 3);
+        Log.d("lognewsselect", "last esm type" + last_type);
         if(noti_read && self_read){
             //同時成立
             if (last_type==0){

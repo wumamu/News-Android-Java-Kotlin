@@ -9,6 +9,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -142,6 +143,8 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
             public void onClick(View v) {
                 submitSurveyHandler.submit(submitData.url, answerProvider.allAnswersJson());
                 String device_id = Settings.Secure.getString(((Activity)v.getContext()).getContentResolver(), Settings.Secure.ANDROID_ID);
+
+
                 if (((Activity)v.getContext()).getIntent().getExtras() != null) {
                     Bundle b = ((Activity)v.getContext()).getIntent().getExtras();
                     type = Objects.requireNonNull(b.getString(NOTIFICATION_TYPE_KEY));
@@ -171,6 +174,110 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
 //                    Boolean exist_read = sharedPrefs.getBoolean(EXIST_READ, false);
                     int esm_type = sharedPrefs.getInt(ESM_TYPE, 3);
                     if(esm_type==0 || esm_type==2){
+                        //check answer complete
+                        try{
+                            assert result_json != null;
+                            JSONObject jsonRootObject = new JSONObject(result_json);
+                            JSONObject jsonAnswerObject = jsonRootObject.getJSONObject("answers");
+                            if(jsonAnswerObject.has("base_1")){
+                                if(jsonAnswerObject.getString("base_1").equals("有，我有印象看到此則通知出現")){
+                                    if (jsonAnswerObject.has("base_2")) {
+                                        if(jsonAnswerObject.getString("base_2").equals("我有點入閱讀")){
+                                            //A
+                                            if(jsonAnswerObject.has("read_behaf_1")){
+                                                if(jsonAnswerObject.getJSONArray("read_behaf_1").length()==0){
+                                                    Toast.makeText(((Activity)v.getContext()), "read_behaf_1" + "必填問題未作答", Toast.LENGTH_SHORT).show();
+                                                    return;
+                                                }
+                                            }
+                                            if(jsonAnswerObject.has("read_behaf_9")){
+                                                if(jsonAnswerObject.getJSONArray("read_behaf_9").length()==0){
+                                                    Toast.makeText(((Activity)v.getContext()), "read_behaf_9" + "必填問題未作答", Toast.LENGTH_SHORT).show();
+                                                    return;
+                                                }
+                                            }
+                                            if(jsonAnswerObject.has("read_behaf_14")){
+                                                if(jsonAnswerObject.getJSONArray("read_behaf_14").length()==0){
+                                                    Toast.makeText(((Activity)v.getContext()), "read_behaf_14"+ "必填問題未作答", Toast.LENGTH_SHORT).show();
+                                                    return;
+                                                }
+                                            }
+                                            if(jsonAnswerObject.has("read_behaf_15")){
+                                                if(jsonAnswerObject.getJSONArray("read_behaf_15").length()==0){
+                                                    Toast.makeText(((Activity)v.getContext()), "read_behaf_15" + "必填問題未作答", Toast.LENGTH_SHORT).show();
+                                                    return;
+                                                }
+                                            }
+                                            if(jsonAnswerObject.has("read_share_1")){
+                                                if(jsonAnswerObject.getString("read_share_1").equals("有")){
+                                                    if(jsonAnswerObject.has("read_share_2")){
+                                                        if(jsonAnswerObject.getJSONArray("read_share_2").length()==0){
+                                                            Toast.makeText(((Activity)v.getContext()), "read_share_2" + "必填問題未作答", Toast.LENGTH_SHORT).show();
+                                                            return;
+                                                        }
+                                                    }
+                                                    if(jsonAnswerObject.has("read_share_3")){
+                                                        if(jsonAnswerObject.getJSONArray("read_share_3").length()==0){
+                                                            Toast.makeText(((Activity)v.getContext()), "read_share_3" + "必填問題未作答", Toast.LENGTH_SHORT).show();
+                                                            return;
+                                                        }
+                                                    }
+                                                    if(jsonAnswerObject.has("read_share_4")){
+                                                        if(jsonAnswerObject.getJSONArray("read_share_4").length()==0){
+                                                            Toast.makeText(((Activity)v.getContext()), "read_share_4" + "必填問題未作答", Toast.LENGTH_SHORT).show();
+                                                            return;
+                                                        }
+                                                    }
+                                                } else if ((jsonAnswerObject.getString("read_share_1").equals("沒有"))){
+                                                    if(jsonAnswerObject.has("read_not_share_1")){
+                                                        if(jsonAnswerObject.getJSONArray("read_not_share_1").length()==0){
+                                                            Toast.makeText(((Activity)v.getContext()), "必填問題未作答", Toast.LENGTH_SHORT).show();
+                                                            return;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        } else if ((jsonAnswerObject.getString("base_2").equals("我沒有點入閱讀")) || (jsonAnswerObject.getString("base_2").equals("沒有印象"))){
+                                            //B
+                                            if(jsonAnswerObject.has("not_read_1")){
+                                                if(jsonAnswerObject.getJSONArray("not_read_1").length()==0){
+                                                    Toast.makeText(((Activity)v.getContext()), "必填問題未作答", Toast.LENGTH_SHORT).show();
+                                                    return;
+                                                }
+                                            }
+                                            if(jsonAnswerObject.has("not_read_2")){
+                                                if(jsonAnswerObject.getString("not_read_2").equals("是，我有分享此則新聞通知")){
+                                                    if(jsonAnswerObject.has("not_read_share_1")){
+                                                        if(jsonAnswerObject.getJSONArray("not_read_share_1").length()==0){
+                                                            Toast.makeText(((Activity)v.getContext()), "必填問題未作答", Toast.LENGTH_SHORT).show();
+                                                            return;
+                                                        }
+                                                    }
+                                                    if(jsonAnswerObject.has("not_read_share_2")){
+                                                        if(jsonAnswerObject.getJSONArray("not_read_share_2").length()==0){
+                                                            Toast.makeText(((Activity)v.getContext()), "必填問題未作答", Toast.LENGTH_SHORT).show();
+                                                            return;
+                                                        }
+                                                    }
+                                                    if(jsonAnswerObject.has("not_read_share_3")){
+                                                        if(jsonAnswerObject.getJSONArray("not_read_share_3").length()==0){
+                                                            Toast.makeText(((Activity)v.getContext()), "必填問題未作答", Toast.LENGTH_SHORT).show();
+                                                            return;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    //c
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
                         try {
                             assert result_json != null;
                             JSONObject jsonRootObject = new JSONObject(result_json);
@@ -255,6 +362,71 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                             JSONObject jsonAnswerObject = jsonRootObject.getJSONObject("answers");
                             if(jsonAnswerObject.has("active_base_1")){
                                 if(jsonAnswerObject.getString("active_base_1").equals("有")){
+                                    if(jsonAnswerObject.has("active_base_3")){
+                                        if(jsonAnswerObject.getJSONArray("active_base_3").length()==0){
+                                            Toast.makeText(((Activity)v.getContext()), "必填問題未作答", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+                                    }
+                                    if(jsonAnswerObject.has("active_read_behaf_8")){
+                                        if(jsonAnswerObject.getJSONArray("active_read_behaf_8").length()==0){
+                                            Toast.makeText(((Activity)v.getContext()), "必填問題未作答", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+                                    }
+                                    if(jsonAnswerObject.has("active_read_behaf_13")){
+                                        if(jsonAnswerObject.getJSONArray("active_read_behaf_13").length()==0){
+                                            Toast.makeText(((Activity)v.getContext()), "必填問題未作答", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+                                    }
+                                    if(jsonAnswerObject.has("active_read_behaf_14")){
+                                        if(jsonAnswerObject.getJSONArray("active_read_behaf_14").length()==0){
+                                            Toast.makeText(((Activity)v.getContext()), "必填問題未作答", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+                                    }
+                                    if(jsonAnswerObject.has("active_read_share_1")){
+                                        if(jsonAnswerObject.getString("active_read_share_1").equals("有")){
+                                            if(jsonAnswerObject.has("active_read_share_2")){
+                                                if(jsonAnswerObject.getJSONArray("active_read_share_2").length()==0){
+                                                    Toast.makeText(((Activity)v.getContext()), "必填問題未作答", Toast.LENGTH_SHORT).show();
+                                                    return;
+                                                }
+                                            }
+                                            if(jsonAnswerObject.has("active_read_share_3")){
+                                                if(jsonAnswerObject.getJSONArray("active_read_share_3").length()==0){
+                                                    Toast.makeText(((Activity)v.getContext()), "必填問題未作答", Toast.LENGTH_SHORT).show();
+                                                    return;
+                                                }
+                                            }
+                                            if(jsonAnswerObject.has("active_read_share_4")){
+                                                if(jsonAnswerObject.getJSONArray("active_read_share_4").length()==0){
+                                                    Toast.makeText(((Activity)v.getContext()), "必填問題未作答", Toast.LENGTH_SHORT).show();
+                                                    return;
+                                                }
+                                            }
+                                        } else if ((jsonAnswerObject.getString("active_read_share_1").equals("沒有"))){
+                                            if(jsonAnswerObject.has("active_read_not_share_1")){
+                                                if(jsonAnswerObject.getJSONArray("active_read_not_share_1").length()==0){
+                                                    Toast.makeText(((Activity)v.getContext()), "必填問題未作答", Toast.LENGTH_SHORT).show();
+                                                    return;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        try{
+                            assert result_json != null;
+                            JSONObject jsonRootObject = new JSONObject(result_json);
+                            JSONObject jsonAnswerObject = jsonRootObject.getJSONObject("answers");
+                            if(jsonAnswerObject.has("active_base_1")){
+                                if(jsonAnswerObject.getString("active_base_1").equals("有")){
                                     target_id = sharedPrefs.getString(SAMPLE_ID, "NA");
                                     target_title = sharedPrefs.getString(SAMPLE_TITLE, "NA");
                                     target_in_time = sharedPrefs.getString(SAMPLE_IN, "NA");
@@ -320,14 +492,6 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                     myesm.setKEY_NOTI_READ_RECEIEVE_TIME(target_receieve_time);
                     myesm.setKEY_NOTI_READ_SITUATION(receieve_situation);
                     myesm.setKEY_NOTI_READ_PLACE(receieve_place);
-//                    myesm.setKEY_NOTI_NOT_READ_NEWS_ID(device_id + " " + esm_id);
-//                    myesm.setKEY_NOTI_NOT_READ_TITLE(device_id + " " + esm_id);
-//                    myesm.setKEY_NOTI_NOT_READ_RECEIEVE_TIME(device_id + " " + esm_id);
-
-//                    myesm.setKEY_SELF_READ_NEWS_ID(device_id + " " + esm_id);
-//                    myesm.setKEY_SELF_READ_TITLE(device_id + " " + esm_id);
-//                    myesm.setKEY_SELF_READ_IN_TIME(device_id + " " + esm_id);
-//                    myesm.setKEY_SELF_READ_RECEIEVE_TIME(device_id + " " + esm_id);
                     myesm.setKEY_SELF_READ_SITUATION(read_situation);
                     myesm.setKEY_SELF_READ_PLACE(read_place);
 
@@ -335,6 +499,50 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                     ESMDbHelper dbHandler = new ESMDbHelper((Activity)v.getContext());
                     dbHandler.UpdatePushESMDetailsSubmit(myesm);
                 } else if(is_diary) {
+                    try{
+                        assert result_json != null;
+                        JSONObject jsonRootObject = new JSONObject(result_json);
+                        JSONObject jsonAnswerObject = jsonRootObject.getJSONObject("answers");
+                        if(jsonAnswerObject.has("opportune_noti_2")){
+                            if(jsonAnswerObject.getJSONArray("opportune_noti_2").length()==0){
+                                Toast.makeText(((Activity)v.getContext()), "必填問題未作答", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        }
+                        if(jsonAnswerObject.has("inopportune_noti_2")){
+                            if(jsonAnswerObject.getJSONArray("inopportune_noti_2").length()==0){
+                                Toast.makeText(((Activity)v.getContext()), "必填問題未作答", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        }
+                        if(jsonAnswerObject.has("opportune_read_2")){
+                            if(jsonAnswerObject.getJSONArray("opportune_read_2").length()==0){
+                                Toast.makeText(((Activity)v.getContext()), "必填問題未作答", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        }
+                        if(jsonAnswerObject.has("inopportune_read_2")){
+                            if(jsonAnswerObject.getJSONArray("inopportune_read_2").length()==0){
+                                Toast.makeText(((Activity)v.getContext()), "必填問題未作答", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        }
+                        if(jsonAnswerObject.has("media_channel_1")){
+                            if(jsonAnswerObject.getJSONArray("media_channel_1").length()==0){
+                                Toast.makeText(((Activity)v.getContext()), "必填問題未作答", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        }
+                        if(jsonAnswerObject.has("media_channel_2")){
+                            if(jsonAnswerObject.getJSONArray("media_channel_2").length()==0){
+                                Toast.makeText(((Activity)v.getContext()), "必填問題未作答", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
                     SharedPreferences.Editor editor = sharedPrefs.edit();
                     Calendar calendar = Calendar.getInstance();
                     int day_index = calendar.get(Calendar.DAY_OF_YEAR);
@@ -481,7 +689,6 @@ public class SubmitViewHolder extends RecyclerView.ViewHolder {
                         }
                     });
                 }
-//                Toast.makeText((Activity)v.getContext(), "Post Inserted Successfully", Toast.LENGTH_SHORT).show();
                 ((Activity)v.getContext()).finish();
 
             }

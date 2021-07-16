@@ -138,9 +138,19 @@
         "7"
       ],
       "show_if": {
-        "id": "active_base_1",
-        "operation": "equals",
-        "value": "有"
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "active_base_1",
+            "operation": "equals",
+            "value": "有"
+          },
+          {
+            "id": "active_read_moment_3",
+            "operation": "not equals",
+            "value": "忘記了"
+          }
+        ]
       }
     },
     {
@@ -160,9 +170,19 @@
         "7"
       ],
       "show_if": {
-        "id": "active_base_1",
-        "operation": "equals",
-        "value": "有"
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "active_base_1",
+            "operation": "equals",
+            "value": "有"
+          },
+          {
+            "id": "active_read_moment_3",
+            "operation": "not equals",
+            "value": "忘記了"
+          }
+        ]
       }
     },
     {
@@ -182,9 +202,19 @@
         "7"
       ],
       "show_if": {
-        "id": "active_base_1",
-        "operation": "equals",
-        "value": "有"
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "active_base_1",
+            "operation": "equals",
+            "value": "有"
+          },
+          {
+            "id": "active_read_moment_3",
+            "operation": "not equals",
+            "value": "忘記了"
+          }
+        ]
       }
     },
     {
@@ -204,9 +234,19 @@
         "7"
       ],
       "show_if": {
-        "id": "active_base_1",
-        "operation": "equals",
-        "value": "有"
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "active_base_1",
+            "operation": "equals",
+            "value": "有"
+          },
+          {
+            "id": "active_read_moment_3",
+            "operation": "not equals",
+            "value": "忘記了"
+          }
+        ]
       }
     },
     {
@@ -227,9 +267,19 @@
         }
       ],
       "show_if": {
-        "id": "active_base_1",
-        "operation": "equals",
-        "value": "有"
+        "operation": "and",
+        "subconditions": [
+          {
+            "id": "active_base_1",
+            "operation": "equals",
+            "value": "有"
+          },
+          {
+            "id": "active_read_moment_3",
+            "operation": "not equals",
+            "value": "忘記了"
+          }
+        ]
       }
     },
     {
