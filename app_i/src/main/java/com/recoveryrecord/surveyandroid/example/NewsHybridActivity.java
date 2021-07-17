@@ -120,6 +120,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENC
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.UPDATE_TIME;
 //import static com.recoveryrecord.surveyandroid.example.Constants.USER_ANDROID;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_ANDROID_RELEASE;
@@ -251,6 +252,10 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
             first.put(PUSH_MEDIA_SELECTION, media_push_result);
 
             db.collection(USER_COLLECTION)
+                    .document(device_id)
+                    .set(first);
+
+            db.collection(TEST_USER_COLLECTION)
                     .document(device_id)
                     .set(first);
         } else {

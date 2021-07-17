@@ -54,7 +54,7 @@ public class ReadingHistoryDailyMainFragment extends Fragment {
         @Override
         public int getCount() {
             // Show 4 total pages.
-            return 14;
+            return 30;
         }
 
         @Override

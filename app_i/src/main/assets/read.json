@@ -2,7 +2,7 @@
   "questions": [
     {
       "id": "active_base_1",
-      "header": "Question",
+      "header": "Question 1",
       "question": "請問您有印象在NewsMoment上閱讀「新聞標題」嗎？(加上閱讀時間)",
       "question_type": "single_select",
       "options": [
@@ -12,7 +12,7 @@
     },
     {
       "id": "active_base_2",
-      "header": "Question",
+      "header": "Question 2",
       "question": "請問您以甚麼甚麼方式進入閱讀？",
       "question_type": "single_select",
       "options": [
@@ -31,7 +31,7 @@
     },
     {
       "id": "active_base_3",
-      "header": "Question",
+      "header": "Question 3",
       "question": "請問你主動點擊此新聞進入閱讀的原因為何？",
       "question_type": "multi_select",
       "options": [
@@ -55,7 +55,7 @@
     },
     {
       "id": "active_read_moment_1",
-      "header": "Question",
+      "header": "Question 4",
       "question": "根據資料顯示，您在(rb上頭點入閱讀的時間記錄)閱讀該篇新聞",
       "question_type": "single_select",
       "options": [
@@ -69,17 +69,16 @@
     },
     {
       "id": "active_read_moment_2",
-      "header": "Question",
-      "question": "請問您「閱讀該篇新聞當下」(點開閱讀時間)約有幾分鐘可以「閱讀新聞」？(覺得沒空請填0，沒有印象請填99)",
+      "header": "Question 5",
+      "question": "請問您「閱讀該篇新聞當下」(點開閱讀時間)約有幾分鐘可以「閱讀新聞」？(覺得沒空請填0，沒有印象請填-1)",
       "question_type": "single_text_field",
       "label": "分鐘",
-      "input_type": "number",
       "max_chars": "2",
       "validations": [
         {
           "operation": "greater than or equal to",
-          "value": 0,
-          "on_fail_message": "time must be at least 0"
+          "value": -1,
+          "on_fail_message": "time must be at least -1"
         },
         {
           "operation": "less than",
@@ -95,7 +94,7 @@
     },
     {
       "id": "active_read_moment_3",
-      "header": "Question",
+      "header": "Question 6-1",
       "question": "請問您「閱讀該篇新聞當下」(點開閱讀時間)，您正在從事以下哪個活動?",
       "question_type": "single_select",
       "options": [
@@ -123,7 +122,7 @@
     },
     {
       "id": "active_read_moment_4",
-      "header": "Question",
+      "header": "Question 6-2",
       "question": "承上題，該項您閱讀該篇新聞當下從事的活動，對您來說，該活動的複雜程度為何？(沒有印象請選4)\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)",
       "question_type": "segment_select",
       "low_tag": "非常不複雜",
@@ -155,7 +154,7 @@
     },
     {
       "id": "active_read_moment_5",
-      "header": "Question",
+      "header": "Question 6-3",
       "question": "對我來說，「閱讀該篇新聞當下」(點開閱讀時間)是個適合收到該新聞通知的時機。請選擇您對此句描述的感受為何。(沒有印象請選4)",
       "question_type": "segment_select",
       "low_tag": "非常不同意",
@@ -187,7 +186,7 @@
     },
     {
       "id": "active_read_moment_6",
-      "header": "Question",
+      "header": "Question 6-4",
       "question": "對我來說，「閱讀該篇新聞當下」(點開閱讀時間) 是個適合我瀏覽該篇新聞標題的時機。請選擇您對此句描述的感受為何。(沒有印象請選4)",
       "question_type": "segment_select",
       "low_tag": "非常不同意",
@@ -219,7 +218,7 @@
     },
     {
       "id": "active_read_moment_7",
-      "header": "Question",
+      "header": "Question 6-5",
       "question": "對我來說，「閱讀該篇新聞當下」(點開閱讀時間) 是個適合我閱讀該篇新聞完整內容的時機。請選擇您對此句描述的感受為何。(沒有印象請選4)",
       "question_type": "segment_select",
       "low_tag": "非常不同意",
@@ -251,11 +250,11 @@
     },
     {
       "id": "active_read_moment_8",
-      "header": "Question",
+      "header": "Question 6-6",
       "question": "請選擇最符合您閱讀該篇新聞當下所處地點。(沒有印象請選4)",
       "question_type": "single_select",
       "options": [
-        "住所",
+        "自己住所(家裡、宿舍)",
         "運動場所",
         "用餐地點(如：咖啡廳、餐廳)",
         "工作學校場所",
@@ -284,7 +283,7 @@
     },
     {
       "id": "active_read_behaf_1",
-      "header": "Question",
+      "header": "Question 7",
       "question": "在閱讀該篇新聞之前，是否有看過其它媒體或平台「引用相同新聞稿，闡述字句幾乎相同」的新聞？\n(舉例來說，可能ET 新聞雲的新聞被Yahoo新聞轉發，則在這兩個不同的媒體上看到的新聞會是同樣的內容，即為上述問題情況。)",
       "question_type": "single_select",
       "options": [
@@ -299,7 +298,7 @@
     },
     {
       "id": "active_read_behaf_2",
-      "header": "Question",
+      "header": "Question 8",
       "question": "關於這篇新聞，主觀來說，您認為您閱讀多少比例的新聞內容？",
       "question_type": "segment_select",
       "low_tag": "0%",
@@ -324,7 +323,7 @@
     },
     {
       "id": "active_read_behaf_3",
-      "header": "Question",
+      "header": "Question 9",
       "question": "關於此次新聞閱讀，你投入程度為何？",
       "question_type": "segment_select",
       "low_tag": "非常不投入",
@@ -346,7 +345,7 @@
     },
     {
       "id": "active_read_behaf_4",
-      "header": "Question",
+      "header": "Question 10",
       "question": "關於這篇新聞內容，你理解程度為何？",
       "question_type": "segment_select",
       "low_tag": "非常不理解",
@@ -368,7 +367,7 @@
     },
     {
       "id": "active_read_behaf_5",
-      "header": "Question",
+      "header": "Question 11",
       "question": "關於這篇新聞，在閱讀文章內容時感到困難程度。\n(如文章用字艱澀、或有許多專有名詞，需要具備一定背景知識才能完整閱讀。)",
       "question_type": "segment_select",
       "low_tag": "非常不困難",
@@ -390,7 +389,7 @@
     },
     {
       "id": "active_read_behaf_6",
-      "header": "Question",
+      "header": "Question 12",
       "question": "關於這篇新聞，與您自身相關程度。",
       "question_type": "segment_select",
       "low_tag": "非常不相關",
@@ -412,7 +411,7 @@
     },
     {
       "id": "active_read_behaf_7",
-      "header": "Question",
+      "header": "Question 13",
       "question": "關於這篇新聞，您感興趣程度。",
       "question_type": "segment_select",
       "low_tag": "非常不感興趣",
@@ -434,7 +433,7 @@
     },
     {
       "id": "active_read_behaf_8",
-      "header": "Question",
+      "header": "Question 14",
       "question": "請問您點入「該(媒體)」的新聞進行閱讀之動機為何？",
       "question_type": "multi_select",
       "options": [
@@ -456,7 +455,7 @@
     },
     {
       "id": "active_read_behaf_9",
-      "header": "Question",
+      "header": "Question 15",
       "question": "對我來說，這則新聞是真實的(Authentic)。請選擇您對此句描述的感受為何。\n(請依據問題選擇你覺得最適合的答案，若無法判斷或沒意見請選擇4。)",
       "question_type": "segment_select",
       "low_tag": "非常不符合",
@@ -478,7 +477,7 @@
     },
     {
       "id": "active_read_behaf_10",
-      "header": "Question",
+      "header": "Question 16",
       "question": "對我來說，這則新聞是正確的(Accurate)。請選擇您對此句描述的感受為何。\n(請依據問題選擇你覺得最適合的答案，若無法判斷或沒意見請選擇4。)",
       "question_type": "segment_select",
       "low_tag": "非常不符合",
@@ -500,7 +499,7 @@
     },
     {
       "id": "active_read_behaf_11",
-      "header": "Question",
+      "header": "Question 17",
       "question": "對我來說，這則新聞是可信任的(Believable)。請選擇您對此句描述的感受為何。\n(請依據問題選擇你覺得最適合的答案，若無法判斷或沒意見請選擇4。)",
       "question_type": "segment_select",
       "low_tag": "非常不符合",
@@ -522,7 +521,7 @@
     },
     {
       "id": "active_read_behaf_12",
-      "header": "Question",
+      "header": "Question 18",
       "question": "關於這次的新聞閱讀的時機，對您來說屬於何種性質？",
       "question_type": "single_select",
       "options": [
@@ -541,7 +540,7 @@
     },
     {
       "id": "active_read_behaf_13",
-      "header": "Question",
+      "header": "Question 19",
       "question": "關於這次新聞閱讀，您的閱讀目標最接近以下何種？",
       "question_type": "multi_select",
       "options": [
@@ -563,7 +562,7 @@
     },
     {
       "id": "active_read_behaf_14",
-      "header": "Question",
+      "header": "Question 20",
       "question": "承上題，甚麼因素讓你採取此閱讀方式(策略)？",
       "question_type": "multi_select",
       "options": [
@@ -585,7 +584,7 @@
     },
     {
       "id": "active_read_share_1",
-      "header": "Question",
+      "header": "Question 21-1",
       "question": "關於這篇新聞，您是否有以任意形式分享給其他人？",
       "question_type": "single_select",
       "options": [
@@ -600,7 +599,7 @@
     },
     {
       "id": "active_read_share_2",
-      "header": "Question",
+      "header": "Question 21-2",
       "question": "您分享則新聞通知方式為何？",
       "question_type": "multi_select",
       "options": [
@@ -631,7 +630,7 @@
     },
     {
       "id": "active_read_share_3",
-      "header": "Question",
+      "header": "Question 21-3",
       "question": "請問您分享的管道為何？",
       "question_type": "multi_select",
       "options": [
@@ -664,7 +663,7 @@
     },
     {
       "id": "active_read_share_4",
-      "header": "Question",
+      "header": "Question 21-4",
       "question": "分享此則新聞原因為何？",
       "question_type": "multi_select",
       "options": [
@@ -698,7 +697,7 @@
     },
     {
       "id": "active_read_not_share_1",
-      "header": "Question",
+      "header": "Question 21-2",
       "question": "沒有分享此則新聞原因為何？",
       "question_type": "multi_select",
       "options": [

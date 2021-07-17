@@ -11,7 +11,7 @@
     },
     {
       "id": "opportune_noti_1",
-      "header": "Question 2",
+      "header": "Question 2-1",
       "question": "請參考今天的通知時機，選擇一則對你來說「最適合推播新聞通知的時機」，若無則選無。",
       "question_type": "single_select",
       "options": [
@@ -20,25 +20,30 @@
     },
     {
       "id": "opportune_noti_2",
-      "header": "Question 3",
+      "header": "Question 2-2",
       "question": "關於這次「最適合推播新聞通知時機」，你最在乎甚麼因素？(可複選，最多2項)",
       "question_type": "multi_select",
       "options": [
-        "時間(time-of-day)",
-        "地點(location)",
-        "正在執行的任務種類(task category)",
-        "精神多寡(注意力資源)(cognition resource)",
-        "可運用時間多寡(time resource)",
-        "及時(in time)",
+        "通知當下時間(time-of-day)",
+        "通知當下地點(location)",
+        "通知當下正在執行的任務種類(task category)",
+        "通知當下精神多寡(注意力資源)(cognition resource)",
+        "通知當下可運用時間多寡(time resource)",
+        "當下通知及時性(in time)",
         {
           "title": "其他",
           "type": "freeform"
         }
-      ]
+      ],
+      "show_if": {
+        "id": "opportune_noti_1",
+        "operation": "not equals",
+        "value": "無"
+      }
     },
     {
       "id": "inopportune_noti_1",
-      "header": "Question 4",
+      "header": "Question 3-1",
       "question": "請參考今天的通知時機，選擇一則對你來說「最不適合推播新聞通知的時機」，若無則選無。",
       "question_type": "single_select",
       "options": [
@@ -47,25 +52,30 @@
     },
     {
       "id": "inopportune_noti_2",
-      "header": "Question 5",
+      "header": "Question 3-2",
       "question": "關於這次「最不適合推播新聞通知時機」，你最在乎甚麼因素？(可複選，最多2項)",
       "question_type": "multi_select",
       "options": [
-        "時間(time-of-day)",
-        "地點(location)",
-        "正在執行的任務種類(task category)",
-        "精神多寡(注意力資源)(cognition resource)",
-        "可運用時間多寡(time resource)",
-        "及時(in time)",
+        "通知當下時間(time-of-day)",
+        "通知當下地點(location)",
+        "通知當下正在執行的任務種類(task category)",
+        "通知當下精神多寡(注意力資源)(cognition resource)",
+        "通知當下可運用時間多寡(time resource)",
+        "當下通知及時性(in time)",
         {
           "title": "其他",
           "type": "freeform"
         }
-      ]
+      ],
+      "show_if": {
+        "id": "inopportune_noti_1",
+        "operation": "not equals",
+        "value": "無"
+      }
     },
     {
       "id": "opportune_read_1",
-      "header": "Question 6",
+      "header": "Question 4-1",
       "question": "請參考今天的閱讀行為，選擇一則對你來說「最適合閱讀新聞的時機」，若無則選無。",
       "question_type": "single_select",
       "options": [
@@ -74,25 +84,30 @@
     },
     {
       "id": "opportune_read_2",
-      "header": "Question 7",
+      "header": "Question 4-2",
       "question": "關於這次「最適合閱讀新聞時機」，你最在乎甚麼因素？(可複選，最多2項)",
       "question_type": "multi_select",
       "options": [
-        "時間(time-of-day)",
-        "地點(location)",
-        "正在執行的任務種類(task category)",
-        "精神多寡(注意力資源)(cognition resource)",
-        "可運用時間多寡(time resource)",
-        "及時(in time)",
+        "閱讀當下時間(time-of-day)",
+        "閱讀當下地點(location)",
+        "閱讀當下正在執行的任務種類(task category)",
+        "閱讀當下精神多寡(注意力資源)(cognition resource)",
+        "閱讀當下可運用時間多寡(time resource)",
+        "當下通知及時性(in time)",
         {
           "title": "其他",
           "type": "freeform"
         }
-      ]
+      ],
+      "show_if": {
+        "id": "opportune_read_1",
+        "operation": "not equals",
+        "value": "無"
+      }
     },
     {
       "id": "inopportune_read_1",
-      "header": "Question 8",
+      "header": "Question 5-1",
       "question": "請參考今天的閱讀行為，選擇一則對你來說「最不適合閱讀新聞的時機」，若無則選無。",
       "question_type": "single_select",
       "options": [
@@ -101,25 +116,30 @@
     },
     {
       "id": "inopportune_read_2",
-      "header": "Question 5",
+      "header": "Question 5-2",
       "question": "關於這次「最不適合閱讀新聞時機」，你最在乎甚麼因素？(可複選，最多2項)",
       "question_type": "multi_select",
       "options": [
-        "時間(time-of-day)",
-        "地點(location)",
-        "正在執行的任務種類(task category)",
-        "精神多寡(注意力資源)(cognition resource)",
-        "可運用時間多寡(time resource)",
-        "及時(in time)",
+        "閱讀當下時間(time-of-day)",
+        "閱讀當下地點(location)",
+        "閱讀當下正在執行的任務種類(task category)",
+        "閱讀當下精神多寡(注意力資源)(cognition resource)",
+        "閱讀當下可運用時間多寡(time resource)",
+        "當下通知及時性(in time)",
         {
           "title": "其他",
           "type": "freeform"
         }
-      ]
+      ],
+      "show_if": {
+        "id": "inopportune_read_1",
+        "operation": "not equals",
+        "value": "無"
+      }
     },
     {
       "id": "media_channel_1",
-      "header": "Question 10",
+      "header": "Question 6-1",
       "question": "請問您除了NewsMoment，今天是否還有從以下任一管道接觸新聞？",
       "question_type": "multi_select",
       "options": [
@@ -131,7 +151,7 @@
     },
     {
       "id": "media_channel_2",
-      "header": "Question 11",
+      "header": "Question 6-2",
       "question": "請簡答您選擇該管道接觸新聞原因為何。",
       "question_type": "multi_select",
       "options": [

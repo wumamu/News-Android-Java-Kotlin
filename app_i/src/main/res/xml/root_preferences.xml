@@ -46,7 +46,7 @@
         </PreferenceScreen>
         <Preference
             app:key="SharePreferenceClear"
-            android:title="清除暫存"
+            android:title="重置初始設定"
             app:summary="清除本地端設定資料"/>
     </PreferenceCategory>
     <PreferenceCategory app:title="偏好">

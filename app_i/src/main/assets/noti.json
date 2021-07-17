@@ -2,7 +2,7 @@
   "questions": [
     {
       "id": "base_1",
-      "header": "Question",
+      "header": "Question 1",
       "question": "你是否有印象注意到在(通知抵達時間)「某新聞標題」這則新聞通知的出現？",
       "question_type": "single_select",
       "options": [
@@ -12,7 +12,7 @@
     },
     {
       "id": "base_2",
-      "header": "Question",
+      "header": "Question 2",
       "question": "請問你是否有印象當時有點擊此新聞通知進入閱讀？",
       "question_type": "single_select",
       "options": [
@@ -28,7 +28,7 @@
     },
     {
       "id": "base_3",
-      "header": "Question",
+      "header": "Question 3",
       "question": "請問您以甚麼甚麼方式進入閱讀？",
       "question_type": "single_select",
       "options": [
@@ -57,17 +57,16 @@
     },
     {
       "id": "recieve_moment_1",
-      "header": "Question",
-      "question": "請問您在「該則通知出現當下」(抵達時間)，約有幾分鐘可以閱讀新聞？(覺得沒空請填0，沒有印象請填99)",
+      "header": "Question 4",
+      "question": "請問您在「該則通知出現當下」(抵達時間)，約有幾分鐘可以閱讀新聞？(覺得沒空請填0，沒有印象請填-1)",
       "question_type": "single_text_field",
       "label": "分鐘",
-      "input_type": "number",
       "max_chars": "2",
       "validations": [
         {
           "operation": "greater than or equal to",
-          "value": 0,
-          "on_fail_message": "time must be at least 0"
+          "value": -1,
+          "on_fail_message": "time must be at least -1"
         },
         {
           "operation": "less than",
@@ -93,7 +92,7 @@
     },
     {
       "id": "recieve_moment_2",
-      "header": "Question",
+      "header": "Question 5-1",
       "question": "在「該則通知出現當下」(抵達時間)，您正在從事以下哪個活動?",
       "question_type": "single_select",
       "options": [
@@ -131,7 +130,7 @@
     },
     {
       "id": "recieve_moment_3",
-      "header": "Question",
+      "header": "Question 5-2",
       "question": "承上題，該項您「該則通知出現當下」(抵達時間)從事的活動，對您來說，該活動的複雜程度為何？(沒有印象請選4)\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)",
       "question_type": "segment_select",
       "low_tag": "非常不複雜",
@@ -168,7 +167,7 @@
     },
     {
       "id": "recieve_moment_4",
-      "header": "Question",
+      "header": "Question 5-3",
       "question": "對我來說，「該則通知出現的當下」(抵達時間) 是個適合收到該新聞通知的時機。請選擇您對此句描述的感受為何。(沒有印象請選4)",
       "question_type": "segment_select",
       "low_tag": "非常不同意",
@@ -205,7 +204,7 @@
     },
     {
       "id": "recieve_moment_5",
-      "header": "Question",
+      "header": "Question 5-4",
       "question": "對我來說，「該則通知出現的當下」(抵達時間) 是個適合我瀏覽該篇新聞標題的時機。請選擇您對此句描述的感受為何。(沒有印象請選4)",
       "question_type": "segment_select",
       "low_tag": "非常不同意",
@@ -242,7 +241,7 @@
     },
     {
       "id": "recieve_moment_6",
-      "header": "Question",
+      "header": "Question 5-5",
       "question": "對我來說，「該則通知出現的當下」(抵達時間) 是個適合我閱讀該篇新聞完整內容的時機。請選擇您對此句描述的感受為何。(沒有印象請選4)",
       "question_type": "segment_select",
       "low_tag": "非常不同意",
@@ -279,11 +278,11 @@
     },
     {
       "id": "recieve_moment_7",
-      "header": "Question",
+      "header": "Question 5-6",
       "question": "請選擇最符合您「該則通知出現當下」(抵達時間)所處地點",
       "question_type": "single_select",
       "options": [
-        "住所",
+        "自己住所(家裡、宿舍)",
         "運動場所",
         "用餐地點(如：咖啡廳、餐廳)",
         "工作學校場所",
@@ -318,7 +317,7 @@
     },
     {
       "id": "read_moment_1",
-      "header": "Question",
+      "header": "Question 6",
       "question": "根據資料顯示，您在(rb上頭點入閱讀的時間記錄)閱讀該篇新聞",
       "question_type": "single_select",
       "options": [
@@ -342,7 +341,7 @@
     },
     {
       "id": "read_moment_2",
-      "header": "Question",
+      "header": "Question 7",
       "question": "請問您「閱讀該篇新聞當下」與「該則通知出現當下」這兩個時機當下正在從事的活動與所處地點是否相同？",
       "question_type": "single_select",
       "options": [
@@ -369,17 +368,16 @@
     },
     {
       "id": "read_moment_3",
-      "header": "Question",
-      "question": "請問您「閱讀該篇新聞當下」(點開閱讀時間)約有幾分鐘可以「閱讀新聞」？(覺得沒空請填0，沒有印象請填99)",
+      "header": "Question 8",
+      "question": "請問您「閱讀該篇新聞當下」(點開閱讀時間)約有幾分鐘可以「閱讀新聞」？(覺得沒空請填0，沒有印象請填-1)",
       "question_type": "single_text_field",
       "label": "分鐘",
-      "input_type": "number",
       "max_chars": "2",
       "validations": [
         {
           "operation": "greater than or equal to",
-          "value": 0,
-          "on_fail_message": "time must be at least 0"
+          "value": -1,
+          "on_fail_message": "time must be at least -1"
         },
         {
           "operation": "less than",
@@ -415,7 +413,7 @@
     },
     {
       "id": "read_moment_4",
-      "header": "Question",
+      "header": "Question 9-1",
       "question": "「閱讀該篇新聞當下」(點開閱讀時間)，您正在從事以下哪個活動?",
       "question_type": "single_select",
       "options": [
@@ -462,7 +460,7 @@
     },
     {
       "id": "read_moment_5",
-      "header": "Question",
+      "header": "Question 9-2",
       "question": "承上題，該項您「閱讀該篇新聞當下」(點開閱讀時間)從事的活動，對您來說，該活動的複雜程度為何？(沒有印象請選4)\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)",
       "question_type": "segment_select",
       "low_tag": "非常不複雜",
@@ -509,7 +507,7 @@
     },
     {
       "id": "read_moment_6",
-      "header": "Question",
+      "header": "Question 9-3",
       "question": "對我來說，「閱讀該篇新聞當下」」(點開閱讀時間)是個適合收到該新聞通知的時機。請選擇您對此句描述的感受為何。(沒有印象請選4)",
       "question_type": "segment_select",
       "low_tag": "非常不同意",
@@ -556,7 +554,7 @@
     },
     {
       "id": "read_moment_7",
-      "header": "Question",
+      "header": "Question 9-4",
       "question": "對我來說，「閱讀該篇新聞當下」(點開閱讀時間)是個適合我瀏覽該篇新聞標題的時機。請選擇您對此句描述的感受為何。(沒有印象請選4)",
       "question_type": "segment_select",
       "low_tag": "非常不同意",
@@ -603,7 +601,7 @@
     },
     {
       "id": "read_moment_8",
-      "header": "Question",
+      "header": "Question 9-5",
       "question": "對我來說，「閱讀該篇新聞當下」(點開閱讀時間)是個適合我閱讀該篇新聞完整內容的時機。請選擇您對此句描述的感受為何。(沒有印象請選4)",
       "question_type": "segment_select",
       "low_tag": "非常不同意",
@@ -650,11 +648,11 @@
     },
     {
       "id": "read_moment_9",
-      "header": "Question",
+      "header": "Question 9-6",
       "question": "請選擇最符合您「閱讀該篇新聞當下」所處地點",
       "question_type": "single_select",
       "options": [
-        "住所",
+        "自己住所(家裡、宿舍)",
         "運動場所",
         "用餐地點(如：咖啡廳、餐廳)",
         "工作學校場所",
@@ -699,7 +697,7 @@
     },
     {
       "id": "read_behaf_1",
-      "header": "Question",
+      "header": "Question 10",
       "question": "請問你點擊此通知進入閱讀的原因為何？",
       "question_type": "multi_select",
       "options": [
@@ -738,7 +736,7 @@
     },
     {
       "id": "read_behaf_2",
-      "header": "Question",
+      "header": "Question 11",
       "question": "在閱讀該篇新聞之前，是否有看過其它媒體或平台「引用相同新聞稿，闡述字句幾乎相同」的新聞？\n(舉例來說，可能ET 新聞雲的新聞被Yahoo新聞轉發，則在這兩個不同的媒體上看到的新聞會是同樣的內容，即為上述問題情況。)",
       "question_type": "single_select",
       "options": [
@@ -768,7 +766,7 @@
     },
     {
       "id": "read_behaf_3",
-      "header": "Question",
+      "header": "Question 12",
       "question": "關於這篇新聞，主觀來說，您認為您閱讀多少比例的新聞內容？",
       "question_type": "segment_select",
       "low_tag": "0%",
@@ -808,7 +806,7 @@
     },
     {
       "id": "read_behaf_4",
-      "header": "Question",
+      "header": "Question 13",
       "question": "關於此次新聞閱讀，你投入程度為何？",
       "question_type": "segment_select",
       "low_tag": "非常不投入",
@@ -845,7 +843,7 @@
     },
     {
       "id": "read_behaf_5",
-      "header": "Question",
+      "header": "Question 14",
       "question": "關於這篇新聞內容，你理解程度為何？",
       "question_type": "segment_select",
       "low_tag": "非常不理解",
@@ -882,7 +880,7 @@
     },
     {
       "id": "read_behaf_6",
-      "header": "Question",
+      "header": "Question 15",
       "question": "關於這篇新聞，在閱讀文章內容時感到困難程度。\n(如文章用字艱澀、或有許多專有名詞，需要具備一定背景知識才能完整閱讀。)",
       "question_type": "segment_select",
       "low_tag": "非常不困難",
@@ -919,7 +917,7 @@
     },
     {
       "id": "read_behaf_7",
-      "header": "Question",
+      "header": "Question 16",
       "question": "關於這篇新聞，與您自身相關程度。",
       "question_type": "segment_select",
       "low_tag": "非常不相關",
@@ -956,7 +954,7 @@
     },
     {
       "id": "read_behaf_8",
-      "header": "Question",
+      "header": "Question 17",
       "question": "關於這篇新聞，您感興趣程度。",
       "question_type": "segment_select",
       "low_tag": "非常不感興趣",
@@ -993,7 +991,7 @@
     },
     {
       "id": "read_behaf_9",
-      "header": "Question",
+      "header": "Question 18",
       "question": "請問您點入「該(媒體)」的新聞進行閱讀之原因為何？",
       "question_type": "multi_select",
       "options": [
@@ -1030,7 +1028,7 @@
     },
     {
       "id": "read_behaf_10",
-      "header": "Question",
+      "header": "Question 19",
       "question": "對我來說，這則新聞是真實的(Authentic)。請選擇您對此句描述的感受為何。\n(請依據問題選擇你覺得最適合的答案，若無法判斷或沒意見請選擇4。)",
       "question_type": "segment_select",
       "low_tag": "非常不符合",
@@ -1067,7 +1065,7 @@
     },
     {
       "id": "read_behaf_11",
-      "header": "Question",
+      "header": "Question 20",
       "question": "對我來說，這則新聞是正確的(Accurate)。請選擇您對此句描述的感受為何。\n(請依據問題選擇你覺得最適合的答案，若無法判斷或沒意見請選擇4。)",
       "question_type": "segment_select",
       "low_tag": "非常不符合",
@@ -1104,7 +1102,7 @@
     },
     {
       "id": "read_behaf_12",
-      "header": "Question",
+      "header": "Question 21",
       "question": "對我來說，這則新聞是可信任的(Believable)。請選擇您對此句描述的感受為何。\n(請依據問題選擇你覺得最適合的答案，若無法判斷或沒意見請選擇4。)",
       "question_type": "segment_select",
       "low_tag": "非常不符合",
@@ -1141,7 +1139,7 @@
     },
     {
       "id": "read_behaf_13",
-      "header": "Question",
+      "header": "Question 22",
       "question": "關於這次的新聞閱讀的時機，對您來說屬於何種性質？",
       "question_type": "single_select",
       "options": [
@@ -1175,7 +1173,7 @@
     },
     {
       "id": "read_behaf_14",
-      "header": "Question",
+      "header": "Question 23",
       "question": "關於這次新聞閱讀，您的閱讀目標最接近以下何種？",
       "question_type": "multi_select",
       "options": [
@@ -1212,7 +1210,7 @@
     },
     {
       "id": "read_behaf_15",
-      "header": "Question",
+      "header": "Question 24",
       "question": "承上題，甚麼因素讓你採取此閱讀方式(策略)？",
       "question_type": "multi_select",
       "options": [
@@ -1249,7 +1247,7 @@
     },
     {
       "id": "read_share_1",
-      "header": "Question",
+      "header": "Question 25-1",
       "question": "關於這篇新聞，您是否有以任意形式分享給其他人？",
       "question_type": "single_select",
       "options": [
@@ -1279,7 +1277,7 @@
     },
     {
       "id": "read_share_2",
-      "header": "Question",
+      "header": "Question 25-2",
       "question": "您分享則新聞方式為何？",
       "question_type": "multi_select",
       "options": [
@@ -1320,7 +1318,7 @@
     },
     {
       "id": "read_share_3",
-      "header": "Question",
+      "header": "Question 25-3",
       "question": "請問您分享此則新聞的管道為何？",
       "question_type": "multi_select",
       "options": [
@@ -1363,7 +1361,7 @@
     },
     {
       "id": "read_share_4",
-      "header": "Question",
+      "header": "Question 25-4",
       "question": "分享此則新聞原因為何？",
       "question_type": "multi_select",
       "options": [
@@ -1407,7 +1405,7 @@
     },
     {
       "id": "read_not_share_1",
-      "header": "Question",
+      "header": "Question 25-2",
       "question": "沒有分享此則新聞原因為何？",
       "question_type": "multi_select",
       "options": [
@@ -1453,7 +1451,7 @@
     },
     {
       "id": "not_read_1",
-      "header": "Question",
+      "header": "Question 3",
       "question": "請問你未點擊此通知進入閱讀的原因為何？",
       "question_type": "multi_select",
       "options": [
@@ -1486,7 +1484,7 @@
     },
     {
       "id": "not_read_2",
-      "header": "Question",
+      "header": "Question 4",
       "question": "請問你有以任何形式分享此則新聞嗎？",
       "question_type": "single_select",
       "options": [
@@ -1511,17 +1509,16 @@
     },
     {
       "id": "not_read_recieve_moment_1",
-      "header": "Question",
-      "question": "請問您在「該則通知出現當下」(抵達時間)，約有幾分鐘可以「閱讀新聞」？(覺得沒空請填0，沒有印象請填99)",
+      "header": "Question 5",
+      "question": "請問您在「該則通知出現當下」(抵達時間)，約有幾分鐘可以「閱讀新聞」？(覺得沒空請填0，沒有印象請填-1)",
       "question_type": "single_text_field",
       "label": "分鐘",
-      "input_type": "number",
       "max_chars": "2",
       "validations": [
         {
           "operation": "greater than or equal to",
-          "value": 0,
-          "on_fail_message": "time must be at least 0"
+          "value": -1,
+          "on_fail_message": "time must be at least -1"
         },
         {
           "operation": "less than",
@@ -1547,7 +1544,7 @@
     },
     {
       "id": "not_read_recieve_moment_2",
-      "header": "Question",
+      "header": "Question 6-1",
       "question": "在「該則通知出現當下」(抵達時間)，您正在從事以下哪個活動?",
       "question_type": "single_select",
       "options": [
@@ -1585,7 +1582,7 @@
     },
     {
       "id": "not_read_recieve_moment_3",
-      "header": "Question",
+      "header": "Question 6-2",
       "question": "承上題，該項您「該則通知出現當下」(抵達時間)從事的活動，對您來說，該活動的複雜程度為何？(沒有印象請選4)\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)",
       "question_type": "segment_select",
       "low_tag": "非常不複雜",
@@ -1622,7 +1619,7 @@
     },
     {
       "id": "not_read_recieve_moment_4",
-      "header": "Question",
+      "header": "Question 6-3",
       "question": "對我來說，「該則通知出現的當下」(抵達時間) 是個適合收到該新聞通知的時機。請選擇您對此句描述的感受為何。(沒有印象請選4)",
       "question_type": "segment_select",
       "low_tag": "非常不同意",
@@ -1659,7 +1656,7 @@
     },
     {
       "id": "not_read_recieve_moment_5",
-      "header": "Question",
+      "header": "Question 6-4",
       "question": "對我來說，「該則通知出現的當下」(抵達時間) 是個適合我瀏覽該篇新聞標題的時機。請選擇您對此句描述的感受為何。(沒有印象請選4)",
       "question_type": "segment_select",
       "low_tag": "非常不同意",
@@ -1696,7 +1693,7 @@
     },
     {
       "id": "not_read_recieve_moment_6",
-      "header": "Question",
+      "header": "Question 6-5",
       "question": "對我來說，「該則通知出現的當下」(抵達時間) 是個適合我閱讀該篇新聞完整內容的時機。請選擇您對此句描述的感受為何。(沒有印象請選4)",
       "question_type": "segment_select",
       "low_tag": "非常不同意",
@@ -1733,11 +1730,11 @@
     },
     {
       "id": "not_read_recieve_moment_7",
-      "header": "Question",
+      "header": "Question 6-6",
       "question": "請選擇最符合您「該則通知出現當下」(抵達時間)所處地點。",
       "question_type": "single_select",
       "options": [
-        "住所",
+        "自己住所(家裡、宿舍)",
         "運動場所",
         "用餐地點(如：咖啡廳、餐廳)",
         "工作學校場所",
@@ -1772,7 +1769,7 @@
     },
     {
       "id": "not_read_seen_1",
-      "header": "Question",
+      "header": "Question 7",
       "question": "請問您「該則通知出現當下」與「看到該則通知當下」這兩個時機當下正在從事的活動與所處地點是否相同？",
       "question_type": "single_select",
       "options": [
@@ -1804,17 +1801,16 @@
     },
     {
       "id": "not_read_seen_2",
-      "header": "Question",
-      "question": "請問您在「看到該則通知當下」，約有幾分鐘可以閱讀新聞？(覺得沒空請填0，沒有印象請填99)",
+      "header": "Question 8",
+      "question": "請問您在「看到該則通知當下」，約有幾分鐘可以閱讀新聞？(覺得沒空請填0，沒有印象請填-1)",
       "question_type": "single_text_field",
       "label": "分鐘",
-      "input_type": "number",
       "max_chars": "2",
       "validations": [
         {
           "operation": "greater than or equal to",
-          "value": 0,
-          "on_fail_message": "time must be at least 0"
+          "value": -1,
+          "on_fail_message": "time must be at least -1"
         },
         {
           "operation": "less than",
@@ -1855,7 +1851,7 @@
     },
     {
       "id": "not_read_seen_3",
-      "header": "Question",
+      "header": "Question 9-1",
       "question": "在「看到該則通知當下」，您正在從事以下哪個活動?",
       "question_type": "single_select",
       "options": [
@@ -1908,7 +1904,7 @@
     },
     {
       "id": "not_read_seen_4",
-      "header": "Question",
+      "header": "Question 9-2",
       "question": "承上題，該項您「看到該則通知當下」從事的活動，對您來說，該活動的複雜程度為何？(沒有印象請選4)\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)",
       "question_type": "segment_select",
       "low_tag": "非常不複雜",
@@ -1960,7 +1956,7 @@
     },
     {
       "id": "not_read_seen_5",
-      "header": "Question",
+      "header": "Question 9-3",
       "question": "對我來說，「看到該則通知當下」是個適合收到該新聞通知的時機。請選擇您對此句描述的感受為何。(沒有印象請選4)",
       "question_type": "segment_select",
       "low_tag": "非常不同意",
@@ -2012,7 +2008,7 @@
     },
     {
       "id": "not_read_seen_6",
-      "header": "Question",
+      "header": "Question 9-4",
       "question": "對我來說，「看到該則通知當下」是個適合我瀏覽該篇新聞標題的時機。請選擇您對此句描述的感受為何。(沒有印象請選4)",
       "question_type": "segment_select",
       "low_tag": "非常不同意",
@@ -2064,7 +2060,7 @@
     },
     {
       "id": "not_read_seen_7",
-      "header": "Question",
+      "header": "Question 9-5",
       "question": "對我來說，「看到該則通知當下」是個適合我閱讀該篇新聞完整內容的時機。請選擇您對此句描述的感受為何。(沒有印象請選4)",
       "question_type": "segment_select",
       "low_tag": "非常不同意",
@@ -2116,11 +2112,11 @@
     },
     {
       "id": "not_read_seen_8",
-      "header": "Question",
+      "header": "Question 9-6",
       "question": "請選擇最符合您「看到該則通知當下」所處地點",
       "question_type": "single_select",
       "options": [
-        "住所",
+        "自己住所(家裡、宿舍)",
         "運動場所",
         "用餐地點(如：咖啡廳、餐廳)",
         "工作學校場所",
@@ -2170,7 +2166,7 @@
     },
     {
       "id": "not_read_credibility_1",
-      "header": "Question",
+      "header": "Question 10",
       "question": "對我來說，這則新聞標題是真實的(Authentic)。請選擇您對此句描述的感受為何。\n(請依據問題選擇你覺得最適合的答案，若無法判斷或沒意見請選擇4。)",
       "question_type": "segment_select",
       "low_tag": "非常不符合",
@@ -2207,7 +2203,7 @@
     },
     {
       "id": "not_read_credibility_2",
-      "header": "Question",
+      "header": "Question 11",
       "question": "對我來說，這則新聞標題是正確的(Accurate)。請選擇您對此句描述的感受為何。\n(請依據問題選擇你覺得最適合的答案，若無法判斷或沒意見請選擇4。)",
       "question_type": "segment_select",
       "low_tag": "非常不符合",
@@ -2244,7 +2240,7 @@
     },
     {
       "id": "not_read_credibility_1",
-      "header": "Question",
+      "header": "Question 12",
       "question": "對我來說，這則新聞標題是可信任的(Believable)。請選擇您對此句描述的感受為何。\n(請依據問題選擇你覺得最適合的答案，若無法判斷或沒意見請選擇4。)",
       "question_type": "segment_select",
       "low_tag": "非常不符合",
@@ -2281,7 +2277,7 @@
     },
     {
       "id": "not_read_share_1",
-      "header": "Question",
+      "header": "Question 13-1",
       "question": "您分享則新聞通知方式為何？",
       "question_type": "multi_select",
       "options": [
@@ -2316,7 +2312,7 @@
     },
     {
       "id": "not_read_share_2",
-      "header": "Question",
+      "header": "Question 13-2",
       "question": "請問您分享的管道為何？",
       "question_type": "multi_select",
       "options": [
@@ -2353,7 +2349,7 @@
     },
     {
       "id": "not_read_share_3",
-      "header": "Question",
+      "header": "Question 13-3",
       "question": "分享此則新聞原因為何？",
       "question_type": "multi_select",
       "options": [
@@ -2392,17 +2388,16 @@
     },
     {
       "id": "miss_recieve_moment_1",
-      "header": "Question",
-      "question": "請問您在「該則通知出現當下」(抵達時間)，約有多少時間可以「閱讀新聞」？(覺得沒空請填0，沒有印象請填99)",
+      "header": "Question 2",
+      "question": "請問您在「該則通知出現當下」(抵達時間)，約有多少時間可以「閱讀新聞」？(覺得沒空請填0，沒有印象請填-1)",
       "question_type": "single_text_field",
       "label": "分鐘",
-      "input_type": "number",
       "max_chars": "2",
       "validations": [
         {
           "operation": "greater than or equal to",
-          "value": 0,
-          "on_fail_message": "time must be at least 0"
+          "value": -1,
+          "on_fail_message": "time must be at least -1"
         },
         {
           "operation": "less than",
@@ -2418,7 +2413,7 @@
     },
     {
       "id": "miss_recieve_moment_2",
-      "header": "Question",
+      "header": "Question 3-1",
       "question": "在「該則通知出現當下」(抵達時間)，您正在從事以下哪個活動?",
       "question_type": "single_select",
       "options": [
@@ -2446,7 +2441,7 @@
     },
     {
       "id": "miss_recieve_moment_3",
-      "header": "Question",
+      "header": "Question 3-2",
       "question": "承上題，該項您「該則通知出現當下」(抵達時間)從事的活動，對您來說，該活動的複雜程度為何？(沒有印象請選4)\n(每個活動所需執行的動作不同，因此複雜程度不同。如吃蘋果只需要執行吃的動作，但如上課；則需要聆聽、作筆記、思考，是個相對複雜的活動。請依您主觀感受回答。)",
       "question_type": "segment_select",
       "low_tag": "非常不複雜",
@@ -2478,7 +2473,7 @@
     },
     {
       "id": "miss_recieve_moment_4",
-      "header": "Question",
+      "header": "Question 3-3",
       "question": "對我來說，「該則通知出現的當下」(抵達時間) 是個適合收到該新聞通知的時機。請選擇您對此句描述的感受為何。(沒有印象請選4)",
       "question_type": "segment_select",
       "low_tag": "非常不同意",
@@ -2510,7 +2505,7 @@
     },
     {
       "id": "miss_recieve_moment_5",
-      "header": "Question",
+      "header": "Question 3-4",
       "question": "對我來說，「該則通知出現的當下」(抵達時間) 是個適合我瀏覽該篇新聞標題的時機。請選擇您對此句描述的感受為何。(沒有印象請選4)",
       "question_type": "segment_select",
       "low_tag": "非常不同意",
@@ -2542,7 +2537,7 @@
     },
     {
       "id": "miss_recieve_moment_6",
-      "header": "Question",
+      "header": "Question 3-5",
       "question": "對我來說，「該則通知出現的當下」(抵達時間) 是個適合我閱讀該篇新聞完整內容的時機。請選擇您對此句描述的感受為何。(沒有印象請選4)",
       "question_type": "segment_select",
       "low_tag": "非常不同意",
@@ -2574,11 +2569,11 @@
     },
     {
       "id": "miss_recieve_moment_7",
-      "header": "Question",
+      "header": "Question 3-6",
       "question": "請選擇最符合您「該則通知出現當下」(抵達時間)所處地點",
       "question_type": "single_select",
       "options": [
-        "住所",
+        "自己住所(家裡、宿舍)",
         "運動場所",
         "用餐地點(如：咖啡廳、餐廳)",
         "工作學校場所",
