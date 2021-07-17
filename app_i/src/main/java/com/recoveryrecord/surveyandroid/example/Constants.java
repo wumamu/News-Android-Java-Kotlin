@@ -457,6 +457,7 @@ public class Constants {
     public static final String SENSOR_TIMESTAMP = "timestamp";
     public static final String SENSOR_USER_ID = "user_id";
     public static final String SENSOR_SESSION = "session";
+    public static final String SENSOR_STATE = "state";
     public static final String SENSOR_USING_APP = "using_app";
     public static final String SENSOR_ACTIVITYRECOGNITION = "activityrecognition";
     public static final String SENSOR_APPUSAGE = "appusage";
