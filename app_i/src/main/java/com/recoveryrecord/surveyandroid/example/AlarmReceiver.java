@@ -175,6 +175,36 @@ public class AlarmReceiver extends BroadcastReceiver {
             Calendar cal = Calendar.getInstance();
             cal.add(Calendar.HOUR, 2);
             alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() , pendingIntent);
+//            //upload sql data
+//            upload_push_news(context);
+//            upload_reading_behavior(context);
+//            upload_esm(context);
+//            upload_diary(context);
+//            upload_activityrecognition(context);
+//            upload_appusage(context);
+//            upload_light(context);
+//            upload_network(context);
+//            upload_RingMode(context);
+//            upload_Screen(context);
+//            upload_session(context);
+////            Toast.makeText(getApplicationContext(), "上傳資料完成", Toast.LENGTH_SHORT).show();
+//            Long new_time = Timestamp.now().getSeconds();
+//            SharedPreferences.Editor editor = sharedPrefs.edit();
+//            editor.putLong(UPLOAD_TIME, new_time);
+//            editor.apply();
+
+        }
+        if(action.equals(SCHEDULE_ALARM_ACTION) && set_once){
+            Map<String, Object> my_alarm = new HashMap<>();
+            Date date = new Date(System.currentTimeMillis());
+            @SuppressLint("SimpleDateFormat")
+            SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+            my_alarm.put(SCHEDULE_ALARM_ACTION_TYPE, "schedule");
+            my_alarm.put(SCHEDULE_ALARM_DEVICE_ID, device_id);
+            db.collection(SCHEDULE_ALARM_COLLECTION)
+                    .document(device_id + " schedule " + formatter.format(date))
+                    .set(my_alarm);
+            schedule_alarm(context);
             //upload sql data
             upload_push_news(context);
             upload_reading_behavior(context);
@@ -192,20 +222,6 @@ public class AlarmReceiver extends BroadcastReceiver {
             SharedPreferences.Editor editor = sharedPrefs.edit();
             editor.putLong(UPLOAD_TIME, new_time);
             editor.apply();
-
-        }
-        if(action.equals(SCHEDULE_ALARM_ACTION) && set_once){
-            Map<String, Object> my_alarm = new HashMap<>();
-            Date date = new Date(System.currentTimeMillis());
-            @SuppressLint("SimpleDateFormat")
-            SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-            my_alarm.put(SCHEDULE_ALARM_ACTION_TYPE, "schedule");
-            my_alarm.put(SCHEDULE_ALARM_DEVICE_ID, device_id);
-            db.collection(SCHEDULE_ALARM_COLLECTION)
-                    .document(device_id + " schedule " + formatter.format(date))
-                    .set(my_alarm);
-            schedule_alarm(context);
-
         }
         if(action.equals(RESTART_ALARM_ACTION) && set_once){
             //cancel diary request code 100

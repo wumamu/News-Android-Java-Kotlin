@@ -580,7 +580,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 continue;
             }
             if(one.optString("id").equals("miss_recieve_moment_1")){
-                one.putOpt("question", "請問您在「該則通知出現當下」" + my_re + "，約有幾分鐘可以「閱讀新聞」？(覺得沒空請填0，沒有印象請填99)\n(接下來，請您回想該則新聞通知出現當下狀態(抵達時間)進行回答。)");
+                one.putOpt("question", "請問您在「該則通知出現當下」" + my_re + "，約有幾分鐘可以「閱讀新聞」？(覺得沒空請填0，沒有印象請填-1)\n(接下來，請您回想該則新聞通知出現當下狀態(抵達時間)進行回答。)");
                 continue;
             }
             if(one.optString("id").equals("miss_recieve_moment_2")){
