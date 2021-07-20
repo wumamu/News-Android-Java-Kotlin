@@ -332,9 +332,9 @@ public class NewsNotificationService extends Service {
                                     record_noti.put(PUSH_NEWS_PUBDATE, dc.getDocument().getTimestamp(COMPARE_RESULT_PUBDATE));
 
                                     record_noti.put(PUSH_NEWS_NOTI_TIME, Timestamp.now());
-                                    record_noti.put(PUSH_NEWS_RECEIEVE_TIME, 0);
-                                    record_noti.put(PUSH_NEWS_OPEN_TIME, 0);
-                                    record_noti.put(PUSH_NEWS_REMOVE_TIME, 0);
+                                    record_noti.put(PUSH_NEWS_RECEIEVE_TIME, new Timestamp(0, 0));
+                                    record_noti.put(PUSH_NEWS_OPEN_TIME, new Timestamp(0, 0));
+                                    record_noti.put(PUSH_NEWS_REMOVE_TIME, new Timestamp(0, 0));
                                     record_noti.put(PUSH_NEWS_REMOVE_TYPE, "NA");
 
 //                                    record_noti.put(PUSH_NEWS_TYPE, "NA");//ABOVE
