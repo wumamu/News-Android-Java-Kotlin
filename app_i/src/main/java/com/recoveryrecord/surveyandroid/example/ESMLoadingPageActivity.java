@@ -406,7 +406,7 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void openESM() {
-
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         Intent intent_esm = new Intent();
         intent_esm.setClass(this, SurveyActivity.class);
@@ -420,7 +420,7 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
         ESM myesm = new ESM();
         myesm.setKEY_DOC_ID(device_id + " " + esm_id);
         myesm.setKEY_ESM_TYPE(type_esm);
-        myesm.setKEY_ESM_SAMPLE_TIME(my_time.getSeconds());
+        myesm.setKEY_ESM_SAMPLE_TIME(sharedPrefs.getLong(ESM_SAMPLE_TIME, 0));
         myesm.setKEY_NOTI_SAMPLE(String.join("#", noti_query));
         myesm.setKEY_SELF_READ_SAMPLE(String.join("#", rb_query));
         ESMDbHelper dbHandler_esm = new ESMDbHelper(getApplicationContext());
@@ -438,7 +438,7 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
                             rbRef.update(PUSH_ESM_TYPE, type_esm,
                                     PUSH_ESM_NOTI_ARRAY, noti_query,
                                     PUSH_ESM_READ_ARRAY, rb_query,
-                                    PUSH_ESM_SAMPLE_TIME, my_time
+                                    PUSH_ESM_SAMPLE_TIME, new Timestamp(sharedPrefs.getLong(ESM_SAMPLE_TIME, 0), 0)
                             )//another field
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override

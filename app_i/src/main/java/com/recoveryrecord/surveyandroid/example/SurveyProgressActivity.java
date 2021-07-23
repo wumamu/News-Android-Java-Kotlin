@@ -15,6 +15,14 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,6 +31,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
@@ -35,6 +44,13 @@ import static com.recoveryrecord.surveyandroid.example.Constants.ESM_DAY_PUSH_PR
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_DONE_TOTAL;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_PUSH_TOTAL;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_SET_ONCE;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_CLICK;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_DEVICE_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_NOTI_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_IN_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_IN_TIME_LONG;
 
 public class SurveyProgressActivity extends AppCompatActivity {
     Boolean set_once = false;
@@ -88,6 +104,44 @@ public class SurveyProgressActivity extends AppCompatActivity {
             ((LinearLayout) findViewById(R.id.layout_inside)).addView(diaryDailySumTextView);
             ((LinearLayout) findViewById(R.id.layout_inside)).addView(esmSumTextView);
             ((LinearLayout) findViewById(R.id.layout_inside)).addView(diarySumTextView);
+
+//            FirebaseFirestore db = FirebaseFirestore.getInstance();
+//            db.collection(READING_BEHAVIOR_COLLECTION)
+//                    .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//                @Override
+//                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                    if (!queryDocumentSnapshots.isEmpty()) {
+//                        List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
+//                        for (DocumentSnapshot d : list) {
+////                            Log.d("lognewsselect", String.valueOf(d.getTimestamp(READING_BEHAVIOR_IN_TIME)));
+////                            Log.d("lognewsselect", String.valueOf(d.getTimestamp(READING_BEHAVIOR_IN_TIME).getSeconds()));
+//                            //mark as check
+//                            db.collection(READING_BEHAVIOR_COLLECTION)
+//                                    .document(d.getId())
+//                                    .update(READING_BEHAVIOR_IN_TIME_LONG, d.getTimestamp(READING_BEHAVIOR_IN_TIME).getSeconds())
+//                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                        @Override
+//                                        public void onSuccess(Void aVoid) {
+//                                            Log.d("lognewsselect", "DocumentSnapshot successfully updated!");
+//                                        }
+//                                    })
+//                                    .addOnFailureListener(new OnFailureListener() {
+//                                        @Override
+//                                        public void onFailure(@NonNull Exception e) {
+//                                            Log.w("lognewsselect", "Error updating document", e);
+//                                        }
+//                                    });
+//                        }
+//                    }
+//                    Log.d("lognewsselect", "**********COMPLETE TASK1");
+//                }
+//            }).addOnFailureListener(new OnFailureListener() {
+//                @Override
+//                public void onFailure(@NonNull Exception e) {
+//                    Log.d("lognewsselect", String.valueOf(e));
+//                }
+//            });
+
         } else {
             TextView dynamicTextView = new TextView(this);
             Button dynamicButton = new Button(this);
@@ -97,19 +151,6 @@ public class SurveyProgressActivity extends AppCompatActivity {
             dynamicTextView.setText("您尚未設定問券發送區間");
             dynamicTextView.setGravity(Gravity.CENTER);
             dynamicTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 25);
-//            rowTextView.setTextColor(Color.parseColor("black"));
-//            rowTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, text_size);
-//            dynamicButton.setLayoutParams(params);
-//            dynamicButton.setText("點我去設定");
-//            dynamicButton.setGravity(Gravity.CENTER);
-//            dynamicButton.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Intent intent= new Intent();
-//                    intent.setClass(getApplicationContext(), NotificationRangeActivity.class);
-//                    startActivity(intent);
-//                }
-//            });
             ((LinearLayout) findViewById(R.id.layout_inside)).addView(dynamicTextView);
 //            ((LinearLayout) findViewById(R.id.layout_inside)).addView(dynamicButton);
         }

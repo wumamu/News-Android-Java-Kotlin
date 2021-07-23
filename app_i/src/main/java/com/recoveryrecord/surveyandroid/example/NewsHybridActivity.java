@@ -98,11 +98,15 @@ import javax.annotation.Nullable;
 import static com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_VALUE;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_ALARM_ACTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_DONE_TOTAL;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_LAST_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_PUSH_TOTAL;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_TIME_OUT;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_ALARM_ACTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_DONE_TOTAL;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_INTERVAL;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_LAST_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_PUSH_TOTAL;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TIME_OUT;
 import static com.recoveryrecord.surveyandroid.example.Constants.MEDIA_BAR_ORDER;
 import static com.recoveryrecord.surveyandroid.example.Constants.MY_DEVICE;
@@ -288,6 +292,12 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                                     USER_SURVEY_NUMBER, sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"),
                                     UPDATE_TIME, Timestamp.now(),
                                     APP_VERSION_KEY, APP_VERSION_VALUE,
+
+                                    ESM_PUSH_TOTAL, sharedPrefs.getInt(ESM_PUSH_TOTAL, 0),
+                                    ESM_DONE_TOTAL, sharedPrefs.getInt(ESM_DONE_TOTAL, 0),
+                                    DIARY_PUSH_TOTAL, sharedPrefs.getInt(DIARY_PUSH_TOTAL, 0),
+                                    DIARY_DONE_TOTAL, sharedPrefs.getInt(DIARY_DONE_TOTAL, 0),
+
                                     USER_DEVICE_ID, device_id,
                                     USER_ANDROID_SDK, Build.VERSION.SDK_INT,
                                     USER_ANDROID_RELEASE, Build.VERSION.RELEASE)

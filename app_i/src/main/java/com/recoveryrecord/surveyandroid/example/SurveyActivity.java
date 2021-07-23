@@ -419,7 +419,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 continue;
             }
             if(one.optString("id").equals("active_read_moment_2")){
-                one.putOpt("question", "請問您「閱讀該篇新聞當下」" + my_in + "約有幾分鐘可以「閱讀新聞」？(覺得沒空請填0，沒有印象請填-1)");
+                one.putOpt("question", "請問您「閱讀該篇新聞當下」" + my_in + "約有幾分鐘可以使用手機閱讀新聞？(覺得沒空請填0，沒有印象請填-1)");
                 continue;
             }
             if(one.optString("id").equals("active_read_moment_3")){
@@ -488,7 +488,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 continue;
             }
             if(one.optString("id").equals("recieve_moment_1")){
-                one.putOpt("question", "請問您在「該則通知出現當下」" + my_re + "，約有幾分鐘可以閱讀新聞？(覺得沒空請填0，沒有印象請填-1)");
+                one.putOpt("question", "請問您在「該則通知出現當下」" + my_re + "，約有幾分鐘可以使用手機閱讀新聞？(覺得沒空請填0，沒有印象請填-1)");
                 continue;
             }
             if(one.optString("id").equals("recieve_moment_2")){
@@ -524,7 +524,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 continue;
             }
             if(one.optString("id").equals("read_moment_3")){
-                one.putOpt("question", "請問您「閱讀該篇新聞當下」" + my_in + "約有幾分鐘可以「閱讀新聞」？(覺得沒空請填0，沒有印象請填-1)");
+                one.putOpt("question", "請問您「閱讀該篇新聞當下」" + my_in + "約有幾分鐘可以使用手機閱讀新聞？(覺得沒空請填0，沒有印象請填-1)");
                 continue;
             }
             if(one.optString("id").equals("read_moment_4")){
@@ -552,7 +552,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 continue;
             }
             if(one.optString("id").equals("not_read_recieve_moment_1")){
-                one.putOpt("question", "請問您在「該則通知出現當下」" + my_re + "，約有幾分鐘可以「閱讀新聞」？(覺得沒空請填0，沒有印象請填-1)");
+                one.putOpt("question", "請問您在「該則通知出現當下」" + my_re + "，約有幾分鐘可以使用手機閱讀新聞？(覺得沒空請填0，沒有印象請填-1)");
                 continue;
             }
             if(one.optString("id").equals("not_read_recieve_moment_2")){
@@ -580,7 +580,7 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 continue;
             }
             if(one.optString("id").equals("miss_recieve_moment_1")){
-                one.putOpt("question", "請問您在「該則通知出現當下」" + my_re + "，約有幾分鐘可以「閱讀新聞」？(覺得沒空請填0，沒有印象請填-1)\n(接下來，請您回想該則新聞通知出現當下狀態(抵達時間)進行回答。)");
+                one.putOpt("question", "請問您在「該則通知出現當下」" + my_re + "，約有幾分鐘可以使用手機閱讀新聞？覺得沒空請填0，沒有印象請填-1)\n(接下來，請您回想該則新聞通知出現當下狀態(抵達時間)進行回答。)");
                 continue;
             }
             if(one.optString("id").equals("miss_recieve_moment_2")){

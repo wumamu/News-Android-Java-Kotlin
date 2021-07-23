@@ -1510,7 +1510,7 @@
     {
       "id": "not_read_recieve_moment_1",
       "header": "Question 5",
-      "question": "請問您在「該則通知出現當下」(抵達時間)，約有幾分鐘可以「閱讀新聞」？(覺得沒空請填0，沒有印象請填-1)",
+      "question": "請問您在「該則通知出現當下」(抵達時間)，約有幾分鐘可以使用手機閱讀新聞？(覺得沒空請填0，沒有印象請填-1)",
       "question_type": "single_text_field",
       "label": "分鐘",
       "max_chars": "2",
@@ -1802,7 +1802,7 @@
     {
       "id": "not_read_seen_2",
       "header": "Question 8",
-      "question": "請問您在「看到該則通知當下」，約有幾分鐘可以閱讀新聞？(覺得沒空請填0，沒有印象請填-1)",
+      "question": "請問您在「看到該則通知當下」，約有幾分鐘可以使用手機閱讀新聞？覺得沒空請填0，沒有印象請填-1)",
       "question_type": "single_text_field",
       "label": "分鐘",
       "max_chars": "2",
@@ -2389,7 +2389,7 @@
     {
       "id": "miss_recieve_moment_1",
       "header": "Question 2",
-      "question": "請問您在「該則通知出現當下」(抵達時間)，約有多少時間可以「閱讀新聞」？(覺得沒空請填0，沒有印象請填-1)",
+      "question": "請問您在「該則通知出現當下」(抵達時間)，約有幾分鐘可以使用手機閱讀新聞？(覺得沒空請填0，沒有印象請填-1)",
       "question_type": "single_text_field",
       "label": "分鐘",
       "max_chars": "2",

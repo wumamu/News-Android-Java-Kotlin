@@ -70,7 +70,7 @@
     {
       "id": "active_read_moment_2",
       "header": "Question 5",
-      "question": "請問您「閱讀該篇新聞當下」(點開閱讀時間)約有幾分鐘可以「閱讀新聞」？(覺得沒空請填0，沒有印象請填-1)",
+      "question": "請問您「閱讀該篇新聞當下」(點開閱讀時間)約有幾分鐘可以使用手機閱讀新聞？(覺得沒空請填0，沒有印象請填-1)",
       "question_type": "single_text_field",
       "label": "分鐘",
       "max_chars": "2",
