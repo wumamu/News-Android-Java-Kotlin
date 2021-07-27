@@ -258,6 +258,11 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
             first.put(APP_VERSION_KEY, APP_VERSION_VALUE);
             first.put(USER_SURVEY_NUMBER, sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
             first.put(PUSH_MEDIA_SELECTION, media_push_result);
+            first.put("check_last_service", new Timestamp(0, 0));
+            first.put("check_last_schedule", new Timestamp(0, 0));
+            first.put("check_last_news", new Timestamp(0, 0));
+            first.put("check_last_diary", new Timestamp(0, 0));
+            first.put("check_last_esm", new Timestamp(0, 0));
 
             db.collection(USER_COLLECTION)
                     .document(device_id)
@@ -292,7 +297,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                                     USER_SURVEY_NUMBER, sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"),
                                     UPDATE_TIME, Timestamp.now(),
                                     APP_VERSION_KEY, APP_VERSION_VALUE,
-
+                                    "check_last_service", Timestamp.now(),
                                     ESM_PUSH_TOTAL, sharedPrefs.getInt(ESM_PUSH_TOTAL, 0),
                                     ESM_DONE_TOTAL, sharedPrefs.getInt(ESM_DONE_TOTAL, 0),
                                     DIARY_PUSH_TOTAL, sharedPrefs.getInt(DIARY_PUSH_TOTAL, 0),
@@ -383,6 +388,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         db.collection(NEWS_SERVICE_COLLECTION)
                 .document(device_id + " " + formatter.format(date))
                 .set(log_service);
+
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),this);
         mViewPager = (ViewPager) findViewById(R.id.container_hy);
         tabLayout = (TabLayout) findViewById(R.id.tabs_hy);

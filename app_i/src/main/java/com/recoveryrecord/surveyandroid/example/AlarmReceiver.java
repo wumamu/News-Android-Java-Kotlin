@@ -18,7 +18,10 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.recoveryrecord.surveyandroid.example.DbHelper.ActivityRecognitionReceiverDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.AppUsageReceiverDbHelper;
@@ -44,6 +47,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.preference.PreferenceManager;
@@ -195,15 +199,15 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         }
         if(action.equals(SCHEDULE_ALARM_ACTION) && set_once){
-            Map<String, Object> my_alarm = new HashMap<>();
-            Date date = new Date(System.currentTimeMillis());
-            @SuppressLint("SimpleDateFormat")
-            SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-            my_alarm.put(SCHEDULE_ALARM_ACTION_TYPE, "schedule");
-            my_alarm.put(SCHEDULE_ALARM_DEVICE_ID, device_id);
-            db.collection(SCHEDULE_ALARM_COLLECTION)
-                    .document(device_id + " schedule " + formatter.format(date))
-                    .set(my_alarm);
+//            Map<String, Object> my_alarm = new HashMap<>();
+//            Date date = new Date(System.currentTimeMillis());
+//            @SuppressLint("SimpleDateFormat")
+//            SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+//            my_alarm.put(SCHEDULE_ALARM_ACTION_TYPE, "schedule");
+//            my_alarm.put(SCHEDULE_ALARM_DEVICE_ID, device_id);
+//            db.collection(SCHEDULE_ALARM_COLLECTION)
+//                    .document(device_id + " schedule " + formatter.format(date))
+//                    .set(my_alarm);
             schedule_alarm(context);
             //upload sql data
             upload_push_news(context);
@@ -279,15 +283,15 @@ public class AlarmReceiver extends BroadcastReceiver {
 //                Log.e(TAG, "AlarmManager update was not canceled. " + e.toString());
                 }
             }
-            Map<String, Object> my_alarm = new HashMap<>();
-            Date date = new Date(System.currentTimeMillis());
-            @SuppressLint("SimpleDateFormat")
-            SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-            my_alarm.put(SCHEDULE_ALARM_ACTION_TYPE, "cancel");
-            my_alarm.put(SCHEDULE_ALARM_DEVICE_ID, device_id);
-            db.collection(SCHEDULE_ALARM_COLLECTION)
-                    .document(device_id + " cancel " + formatter.format(date))
-                    .set(my_alarm);
+//            Map<String, Object> my_alarm = new HashMap<>();
+//            Date date = new Date(System.currentTimeMillis());
+//            @SuppressLint("SimpleDateFormat")
+//            SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+//            my_alarm.put(SCHEDULE_ALARM_ACTION_TYPE, "cancel");
+//            my_alarm.put(SCHEDULE_ALARM_DEVICE_ID, device_id);
+//            db.collection(SCHEDULE_ALARM_COLLECTION)
+//                    .document(device_id + " cancel " + formatter.format(date))
+//                    .set(my_alarm);
         }
 
 
@@ -318,6 +322,21 @@ public class AlarmReceiver extends BroadcastReceiver {
         db.collection(NEWS_SERVICE_COLLECTION)
             .document(device_id + " " + formatter.format(date))
             .set(service_check);
+
+        DocumentReference rbRef_check = db.collection(USER_COLLECTION).document(device_id);
+        rbRef_check.update("check_last_service", Timestamp.now())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("log: firebase share", "DocumentSnapshot successfully updated!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("log: firebase share", "Error updating document", e);
+                    }
+                });
         add_ServiceChecker(context);
     }
 
@@ -465,12 +484,27 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
         my_alarm.put(SCHEDULE_ALARM_SURVEY_START, StartHour);
         my_alarm.put(SCHEDULE_ALARM_SURVEY_END, EndHour);
-        my_alarm.put(SCHEDULE_ALARM_TRIGGER_TIME, Timestamp.now().toDate());
+        my_alarm.put(SCHEDULE_ALARM_TRIGGER_TIME, Timestamp.now());
         my_alarm.put(SCHEDULE_ALARM_MAX_ESM, max_esm);
         my_alarm.put(SCHEDULE_ALARM_DEVICE_ID, device_id);
         db.collection(SCHEDULE_ALARM_COLLECTION)
                 .document(device_id + " " + formatter.format(date))
                 .set(my_alarm);
+
+        DocumentReference rbRef_check = db.collection(USER_COLLECTION).document(device_id);
+        rbRef_check.update("check_last_schedule", Timestamp.now())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("log: firebase share", "DocumentSnapshot successfully updated!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("log: firebase share", "Error updating document", e);
+                    }
+                });
     }
 
     private boolean check_esm_time_cal(Calendar cal_esm, Context context) {

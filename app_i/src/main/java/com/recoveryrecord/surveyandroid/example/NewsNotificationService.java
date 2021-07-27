@@ -110,6 +110,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.TRIGGER_BY_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.TRIGGER_BY_VALUE_NOTIFICATION;
 import static com.recoveryrecord.surveyandroid.example.Constants.UPDATE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.UPLOAD_ACTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_PHONE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.VIBRATE_EFFECT;
@@ -241,6 +242,20 @@ public class NewsNotificationService extends Service {
 //                .document(String.valueOf(Timestamp.now().toDate()))
                 .document(device_id + " " + formatter.format(date))
                 .set(service_check);
+        DocumentReference rbRef_check = db.collection(USER_COLLECTION).document(device_id);
+        rbRef_check.update("check_last_service", Timestamp.now())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("log: firebase share", "DocumentSnapshot successfully updated!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("log: firebase share", "Error updating document", e);
+                    }
+                });
 
         db.collection(TEST_USER_COLLECTION)
                 .document(device_id)

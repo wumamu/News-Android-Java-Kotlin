@@ -41,6 +41,8 @@ import androidx.annotation.RequiresApi;
 import androidx.preference.PreferenceManager;
 
 //import static com.recoveryrecord.surveyandroid.example.Constants.ALARM_SERVICE_POST_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_KEY;
+import static com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_VALUE;
 import static com.recoveryrecord.surveyandroid.example.Constants.CHINA_TIMES_PACKAGE_NAME;
 import static com.recoveryrecord.surveyandroid.example.Constants.CNA_PACKAGE_NAME;
 import static com.recoveryrecord.surveyandroid.example.Constants.CTS_PACKAGE_NAME;
@@ -48,6 +50,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_DAY_PUSH_
 //import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_NOT_IN_PUSH_RANGE;
 //import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_OUT_OF_INTERVAL_LIMIT;
 //import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_PUSH;
+import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_DONE_TOTAL;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_LAST_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_PUSH_TOTAL;
 //import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_STATUS;
@@ -57,6 +60,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.ESM_DAY_PUSH_PR
 //import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOT_IN_PUSH_RANGE;
 //import static com.recoveryrecord.surveyandroid.example.Constants.ESM_OUT_OF_INTERVAL_LIMIT;
 //import static com.recoveryrecord.surveyandroid.example.Constants.ESM_PUSH;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_DONE_TOTAL;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_LAST_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_PUSH_TOTAL;
 //import static com.recoveryrecord.surveyandroid.example.Constants.ESM_STATUS;
@@ -96,6 +100,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_COLLEC
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_RECEIEVE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_REMOVE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_REMOVE_TYPE;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_MEDIA_SELECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_RECEIEVE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_REMOVE_TIME;
@@ -107,6 +112,12 @@ import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENC
 import static com.recoveryrecord.surveyandroid.example.Constants.STORM_PACKAGE_NAME;
 import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.UDN_PACKAGE_NAME;
+import static com.recoveryrecord.surveyandroid.example.Constants.UPDATE_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.USER_ANDROID_RELEASE;
+import static com.recoveryrecord.surveyandroid.example.Constants.USER_ANDROID_SDK;
+import static com.recoveryrecord.surveyandroid.example.Constants.USER_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.USER_DEVICE_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.USER_SURVEY_NUMBER;
 
 @SuppressLint("OverrideAbstract")
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
@@ -247,6 +258,7 @@ public class NotificationListenerService extends android.service.notification.No
                 //esm
                 //diary
                 if(mark){
+
 //                    final DocumentReference rbRef = db.collection(TEST_USER_COLLECTION).document(device_id).collection(collection_id).document(doc_id);
                     final DocumentReference rbRef = db.collection(collection_id).document(doc_id);
                     final String finalReceieve_field = receieve_field;
@@ -278,6 +290,21 @@ public class NotificationListenerService extends android.service.notification.No
                             }
                         }
                     });
+
+                    DocumentReference rbRef_check = db.collection(USER_COLLECTION).document(device_id);
+                    rbRef_check.update("check_last_" + type, current_now)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d("log: firebase share", "DocumentSnapshot successfully updated!");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w("log: firebase share", "Error updating document", e);
+                                }
+                            });
                 }
             }
         } else if(is_target) {//new media
