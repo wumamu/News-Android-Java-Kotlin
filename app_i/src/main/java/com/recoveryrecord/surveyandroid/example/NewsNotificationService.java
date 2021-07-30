@@ -347,7 +347,8 @@ public class NewsNotificationService extends Service {
                                     record_noti.put(PUSH_NEWS_PUBDATE, dc.getDocument().getTimestamp(COMPARE_RESULT_PUBDATE));
 
                                     record_noti.put(PUSH_NEWS_NOTI_TIME, Timestamp.now());
-                                    record_noti.put(PUSH_NEWS_RECEIEVE_TIME, new Timestamp(0, 0));
+                                    record_noti.put(PUSH_NEWS_RECEIEVE_TIME, Timestamp.now());
+//                                    record_noti.put(PUSH_NEWS_RECEIEVE_TIME, new Timestamp(0, 0));
                                     record_noti.put(PUSH_NEWS_OPEN_TIME, new Timestamp(0, 0));
                                     record_noti.put(PUSH_NEWS_REMOVE_TIME, new Timestamp(0, 0));
                                     record_noti.put(PUSH_NEWS_REMOVE_TYPE, "NA");
@@ -367,6 +368,7 @@ public class NewsNotificationService extends Service {
                                     myPushNews.setKEY_MEDIA(dc.getDocument().getString(COMPARE_RESULT_MEDIA));
                                     myPushNews.setKEY_PUBDATE(dc.getDocument().getTimestamp(COMPARE_RESULT_PUBDATE).getSeconds());
                                     myPushNews.setKEY_NOTI_TIMESTAMP(Timestamp.now().getSeconds());
+                                    myPushNews.setKEY_RECEIEVE_TIMESTAMP(Timestamp.now().getSeconds());
 
                                     PushNewsDbHelper dbHandler = new PushNewsDbHelper(getApplicationContext());
                                     dbHandler.insertPushNewsDetailsCreate(myPushNews);

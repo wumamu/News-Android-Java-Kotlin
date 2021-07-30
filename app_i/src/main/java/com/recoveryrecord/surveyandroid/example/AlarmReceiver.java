@@ -573,6 +573,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         myesm.setKEY_ESM_SCHEDULE_ID(esm_schedule_name);
         myesm.setKEY_ESM_SCHEDULE_SOURCE(esm_schedule_source);
         myesm.setKEY_NOTI_TIMESTAMP(Timestamp.now().getSeconds());
+        myesm.setKEY_RECEIEVE_TIMESTAMP(Timestamp.now().getSeconds());
         ESMDbHelper dbHandler = new ESMDbHelper(context.getApplicationContext());
         dbHandler.insertPushESMDetailsCreate(myesm);
         //firestore
@@ -593,7 +594,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         esm.put(PUSH_ESM_SAMPLE_ID, "NA");//??
 
         esm.put(PUSH_ESM_NOTI_TIME, Timestamp.now());
-        esm.put(PUSH_ESM_RECEIEVE_TIME, new Timestamp(0, 0));
+//        esm.put(PUSH_ESM_RECEIEVE_TIME, new Timestamp(0, 0));
+        esm.put(PUSH_ESM_RECEIEVE_TIME, Timestamp.now());
         esm.put(PUSH_ESM_OPEN_TIME, new Timestamp(0, 0));
         esm.put(PUSH_ESM_CLOSE_TIME, new Timestamp(0, 0));
         esm.put(PUSH_ESM_SUBMIT_TIME, new Timestamp(0, 0));
@@ -673,6 +675,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         mydiary.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
         mydiary.setKEY_DIARY_SCHEDULE_SOURCE(diary_schedule_source);
         mydiary.setKEY_NOTI_TIMESTAMP(Timestamp.now().getSeconds());
+        mydiary.setKEY_RECEIEVE_TIMESTAMP(Timestamp.now().getSeconds());
         DiaryDbHelper dbHandler = new DiaryDbHelper(context.getApplicationContext());
         dbHandler.insertPushDiaryDetailsCreate(mydiary);
         //firestore
@@ -688,7 +691,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         diary.put(PUSH_DIARY_OPTION_NOTI, "NA");
 
         diary.put(PUSH_DIARY_NOTI_TIME, Timestamp.now());
-        diary.put(PUSH_DIARY_RECEIEVE_TIME, new Timestamp(0, 0));
+        diary.put(PUSH_DIARY_RECEIEVE_TIME, Timestamp.now());
+//        diary.put(PUSH_DIARY_RECEIEVE_TIME, new Timestamp(0, 0));
         diary.put(PUSH_DIARY_OPEN_TIME, new Timestamp(0, 0));
         diary.put(PUSH_DIARY_CLOSE_TIME, new Timestamp(0, 0));
         diary.put(PUSH_DIARY_SUBMIT_TIME, new Timestamp(0, 0));
