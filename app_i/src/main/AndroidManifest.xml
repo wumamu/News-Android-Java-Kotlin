@@ -33,6 +33,9 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="true" />
 
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+
+
     <application
         android:name="androidx.multidex.MultiDexApplication"
         android:allowBackup="true"

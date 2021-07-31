@@ -1,6 +1,8 @@
 package com.recoveryrecord.surveyandroid.example;
 
 import android.annotation.SuppressLint;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -92,10 +94,15 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         final Timestamp current_now = Timestamp.now();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         @SuppressLint("HardwareIds")
         String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+
+//        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//        mNotificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE);
+
         if (getIntent().getExtras() != null) {
             Bundle b = getIntent().getExtras();
             type = Objects.requireNonNull(b.getString(NOTIFICATION_TYPE_KEY));
@@ -308,12 +315,30 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     SurveyActivity.super.onBackPressed();
-
                 }
             }).show();
         }
     }
-
+//    @Override
+//    protected void onResume() {
+////        Log.d("survey", "onPause");
+//        super.onResume();
+//        new AlertDialog.Builder(this)
+//                .setTitle(R.string.close_survey)
+//                .setMessage(R.string.are_you_sure_you_want_to_close)
+//                .setNeutralButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.dismiss();
+//                    }
+//                }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                SurveyActivity.super.finish();
+//            }
+//        }).show();
+//    }
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -321,6 +346,9 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
         final Timestamp current_end = Timestamp.now();
         @SuppressLint("HardwareIds")
         String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+//        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//        mNotificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL);
+
         if (is_esm){
             ESM myesm = new ESM();
             myesm.setKEY_DOC_ID(device_id + " " + esm_id);
@@ -364,8 +392,6 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
             mydiary.setKEY_CLOSE_TIMESTAMP(current_end.getSeconds());
             DiaryDbHelper dbHandler = new DiaryDbHelper(getApplicationContext());
             dbHandler.UpdatePushDiaryDetailsClose(mydiary);
-
-
             final DocumentReference rbRef = db.collection(PUSH_DIARY_COLLECTION).document(device_id + " " + diary_id);
             rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override

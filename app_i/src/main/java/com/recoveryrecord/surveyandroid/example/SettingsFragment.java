@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,6 +14,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -70,6 +72,28 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 return true;
             }
         });
+        Preference clearPref2 = findPreference("notification_policy_access");
+
+        clearPref2.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                // handle click here
+                NotificationManager mNotificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (!mNotificationManager.isNotificationPolicyAccessGranted()) {
+                        Intent intent = null;
+                        intent = new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(getContext(), "權限已經開啟", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(getContext(), "Android 8 以下版本不需要開此權限", Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            }
+        });
+
         Preference clearPref0 = findPreference("PhysicalActivity");
 
         clearPref0.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {

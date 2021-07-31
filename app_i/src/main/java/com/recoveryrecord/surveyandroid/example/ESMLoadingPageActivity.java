@@ -2,6 +2,7 @@ package com.recoveryrecord.surveyandroid.example;
 
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -39,6 +40,7 @@ import java.util.Random;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
@@ -589,5 +591,23 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
             startActivity(back);
         }
         super.onResume();
+    }
+
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setTitle(com.recoveryrecord.surveyandroid.R.string.close_survey)
+                .setMessage(com.recoveryrecord.surveyandroid.R.string.are_you_sure_you_want_to_close)
+                .setNeutralButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ESMLoadingPageActivity.super.onBackPressed();
+            }
+        }).show();
     }
 }

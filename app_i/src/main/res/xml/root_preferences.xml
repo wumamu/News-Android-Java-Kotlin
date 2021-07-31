@@ -23,6 +23,10 @@
             <intent android:action="android.settings.USAGE_ACCESS_SETTINGS"/>
         </Preference>
         <Preference
+            app:key="notification_policy_access"
+            android:title="notification policy access"
+            app:summary="點選允許存取權限"/>
+        <Preference
             app:key="PhysicalActivity"
             android:title="體能紀錄存取權"
             app:summary="點選允許存取權限"/>
