@@ -251,7 +251,7 @@
     {
       "id": "active_read_moment_8",
       "header": "Question 6-6",
-      "question": "請選擇最符合您閱讀該篇新聞當下所處地點。(沒有印象請選4)",
+      "question": "請選擇最符合您閱讀該篇新聞當下所處地點。",
       "question_type": "single_select",
       "options": [
         "自己住所(家裡、宿舍)",

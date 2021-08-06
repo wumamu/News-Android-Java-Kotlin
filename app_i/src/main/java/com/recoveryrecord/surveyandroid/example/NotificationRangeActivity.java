@@ -150,73 +150,70 @@ public class NotificationRangeActivity extends AppCompatActivity {
         button_s.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar snackbar = Snackbar
-                        .make(coordinatorLayout, "設定完成", Snackbar.LENGTH_LONG)
-                        .setAction("UNDO", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Snackbar snackbar1 = Snackbar.make(coordinatorLayout, "設定取消，請重新設定", Snackbar.LENGTH_SHORT);
-                                snackbar1.show();
+                new AlertDialog.Builder(NotificationRangeActivity.this)
+                        .setTitle("儲存設定")
+                        .setMessage("您設定的時間區間為 " + sharedPrefs.getInt(ESM_START_TIME_HOUR, 9) + "-" + sharedPrefs.getInt(ESM_END_TIME_HOUR, 21))
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton("確認", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
                                 SharedPreferences.Editor editor = sharedPrefs.edit();
-                                editor.putBoolean(ESM_SET_ONCE, false);
+                                editor.putBoolean(ESM_SET_ONCE, true);
                                 editor.apply();
-                                set_once = false;
-                                Intent intent_cancel = new Intent(getApplicationContext(), AlarmReceiver.class);
-                                intent_cancel.setAction(CANCEL_ALARM_ACTION);
+                                Intent intent_schedule = new Intent(getApplicationContext(), AlarmReceiver.class);
+                                intent_schedule.setAction(SCHEDULE_ALARM_ACTION);
                                 AlarmManager alarmManager = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-                                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 1001, intent_cancel, 0);
+                                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 1001, intent_schedule, 0);
                                 Calendar cal = Calendar.getInstance();
                                 cal.add(Calendar.SECOND, 2);
                                 alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() , pendingIntent);
-//                                Toast.makeText(NotificationRangeActivity.this, "設定完成", Toast.LENGTH_SHORT).show();
-                                ll_set_time.setAlpha(0.4f);
-                                ee_set_time.setAlpha(0.4f);
-                                button_s.setEnabled(true);
-                                Log.i("dshfdfhjsdjfd","**********  odsfdfsdfds***********");
-                            }
-                        });
-                Log.i("dshfdfhjsdjfd","**********  onNotificationPosted ***********");
-                SharedPreferences.Editor editor = sharedPrefs.edit();
-                editor.putBoolean(ESM_SET_ONCE, true);
-                editor.apply();
-                set_once = true;
-                Intent intent_schedule = new Intent(getApplicationContext(), AlarmReceiver.class);
-                intent_schedule.setAction(SCHEDULE_ALARM_ACTION);
-                AlarmManager alarmManager = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 1001, intent_schedule, 0);
-                Calendar cal = Calendar.getInstance();
-                cal.add(Calendar.SECOND, 2);
-                alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() , pendingIntent);
-//                Toast.makeText(NotificationRangeActivity.this, "設定完成", Toast.LENGTH_SHORT).show();
-                ll_set_time.setAlpha(1);
-                ee_set_time.setAlpha(1);
-                button_s.setEnabled(false);
+                                ll_set_time.setAlpha(1);
+                                ee_set_time.setAlpha(1);
+                                set_once = true;
+                            }})
+                        .setNegativeButton("取消", null).show();
+
+//                Snackbar snackbar = Snackbar
+//                        .make(coordinatorLayout, "設定完成", Snackbar.LENGTH_LONG)
+//                        .setAction("UNDO", view -> {
+//                            Snackbar snackbar1 = Snackbar.make(coordinatorLayout, "設定取消，請重新設定", Snackbar.LENGTH_SHORT);
+//                            snackbar1.show();
+//                            SharedPreferences.Editor editor = sharedPrefs.edit();
+//                            editor.putBoolean(ESM_SET_ONCE, false);
+//                            editor.apply();
+//                            set_once = false;
+//                            Intent intent_cancel = new Intent(getApplicationContext(), AlarmReceiver.class);
+//                            intent_cancel.setAction(CANCEL_ALARM_ACTION);
+//                            AlarmManager alarmManager = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+//                            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 1001, intent_cancel, 0);
+//                            Calendar cal = Calendar.getInstance();
+//                            cal.add(Calendar.SECOND, 2);
+//                            alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() , pendingIntent);
+////                                Toast.makeText(NotificationRangeActivity.this, "設定完成", Toast.LENGTH_SHORT).show();
+//                            ll_set_time.setAlpha(0.4f);
+//                            ee_set_time.setAlpha(0.4f);
+//                            button_s.setEnabled(true);
+////                                Log.i("dshfdfhjsdjfd","**********  odsfdfsdfds***********");
+//                        });
+////                Log.i("dshfdfhjsdjfd","**********  onNotificationPosted ***********");
+//                SharedPreferences.Editor editor = sharedPrefs.edit();
+//                editor.putBoolean(ESM_SET_ONCE, true);
+//                editor.apply();
 //                set_once = true;
-                snackbar.show();
+//                Intent intent_schedule = new Intent(getApplicationContext(), AlarmReceiver.class);
+//                intent_schedule.setAction(SCHEDULE_ALARM_ACTION);
+//                AlarmManager alarmManager = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+//                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 1001, intent_schedule, 0);
+//                Calendar cal = Calendar.getInstance();
+//                cal.add(Calendar.SECOND, 2);
+//                alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() , pendingIntent);
+////                Toast.makeText(NotificationRangeActivity.this, "設定完成", Toast.LENGTH_SHORT).show();
+//                ll_set_time.setAlpha(1);
+//                ee_set_time.setAlpha(1);
+//                button_s.setEnabled(false);
+////                set_once = true;
+//                snackbar.show();
             }
-//                new AlertDialog.Builder(NotificationRangeActivity.this)
-//                        .setTitle("儲存設定")
-//                        .setMessage("只有一次機會，請確認好")
-//                        .setIcon(android.R.drawable.ic_dialog_alert)
-//                        .setPositiveButton("確認", new DialogInterface.OnClickListener() {
-//                            public void onClick(DialogInterface dialog, int whichButton) {
-//                                SharedPreferences.Editor editor = sharedPrefs.edit();
-//                                editor.putBoolean(ESM_SET_ONCE, true);
-//                                editor.apply();
-//                                Intent intent_schedule = new Intent(getApplicationContext(), AlarmReceiver.class);
-//                                intent_schedule.setAction(SCHEDULE_ALARM_ACTION);
-//                                AlarmManager alarmManager = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-//                                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 1001, intent_schedule, 0);
-//                                Calendar cal = Calendar.getInstance();
-//                                cal.add(Calendar.SECOND, 2);
-//                                alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() , pendingIntent);
-//                                Toast.makeText(NotificationRangeActivity.this, "設定完成", Toast.LENGTH_SHORT).show();
-//                                ll_set_time.setAlpha(1);
-//                                ee_set_time.setAlpha(1);
-//                                button_s.setEnabled(false);
-//                                set_once = true;
-//                            }})
-//                        .setNegativeButton("取消", null).show();
+
 
 //            }
         });
@@ -225,22 +222,23 @@ public class NotificationRangeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(set_once){
-                    new AlertDialog.Builder(NotificationRangeActivity.this)
-                            .setTitle("重新配置問卷發送時間")
-                            .setMessage("請勿在非指示下刪除資料!\n可能會影響app運行")
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .setPositiveButton("確認", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    Intent intent_restart = new Intent(NotificationRangeActivity.this, AlarmReceiver.class);
-                                    intent_restart.setAction(RESTART_ALARM_ACTION);
-                                    AlarmManager alarmManager = (AlarmManager)NotificationRangeActivity.this.getSystemService(Context.ALARM_SERVICE);
-                                    PendingIntent pendingIntent = PendingIntent.getBroadcast(NotificationRangeActivity.this, 1050, intent_restart, 0);
-                                    Calendar cal = Calendar.getInstance();
-                                    cal.add(Calendar.SECOND, 2);
-                                    alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() , pendingIntent);
-                                    Toast.makeText(NotificationRangeActivity.this, "重置成功", Toast.LENGTH_SHORT).show();
-                                }})
-                            .setNegativeButton("取消", null).show();
+                    Toast.makeText(NotificationRangeActivity.this, "重置成功", Toast.LENGTH_SHORT).show();
+//                    new AlertDialog.Builder(NotificationRangeActivity.this)
+//                            .setTitle("重新配置問卷發送時間")
+////                            .setMessage("請勿在非指示下刪除資料!\n可能會影響app運行")
+//                            .setIcon(android.R.drawable.ic_dialog_alert)
+//                            .setPositiveButton("確認", new DialogInterface.OnClickListener() {
+//                                public void onClick(DialogInterface dialog, int whichButton) {
+//                                    Intent intent_restart = new Intent(NotificationRangeActivity.this, AlarmReceiver.class);
+//                                    intent_restart.setAction(RESTART_ALARM_ACTION);
+//                                    AlarmManager alarmManager = (AlarmManager)NotificationRangeActivity.this.getSystemService(Context.ALARM_SERVICE);
+//                                    PendingIntent pendingIntent = PendingIntent.getBroadcast(NotificationRangeActivity.this, 1050, intent_restart, 0);
+//                                    Calendar cal = Calendar.getInstance();
+//                                    cal.add(Calendar.SECOND, 2);
+//                                    alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() , pendingIntent);
+//                                    Toast.makeText(NotificationRangeActivity.this, "重置成功", Toast.LENGTH_SHORT).show();
+//                                }})
+//                            .setNegativeButton("取消", null).show();
                 } else {
                     Toast.makeText(getApplicationContext(), "請先設定區間", Toast.LENGTH_SHORT).show();
                 }
@@ -260,7 +258,7 @@ public class NotificationRangeActivity extends AppCompatActivity {
             ll_set_time.setAlpha(0.4f);
             ee_set_time.setAlpha(0.4f);
         } else {
-            button_s.setEnabled(false);
+//            button_s.setEnabled(false);
         }
 
 //        if (!localData.getReminderStatus()){
@@ -271,19 +269,23 @@ public class NotificationRangeActivity extends AppCompatActivity {
         ll_set_time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!set_once){
-                    showTimePickerDialog(localData.get_hour(), localData.get_min(), true);
-                    Log.d("lognewsselect", "onClick ");
-                }
+                showTimePickerDialog(localData.get_hour(), localData.get_min(), true);
+                Toast.makeText(NotificationRangeActivity.this, "調整後記得按儲存才會生效喔", Toast.LENGTH_SHORT).show();
+//                if(!set_once){
+//                    showTimePickerDialog(localData.get_hour(), localData.get_min(), true);
+//                    Log.d("lognewsselect", "onClick ");
+//                }
             }
         });
         ee_set_time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!set_once){
-                    showTimePickerDialog(localData.get_hour(), localData.get_min(), false);
-                    Log.d("lognewsselect", "onClick ");
-                }
+                showTimePickerDialog(localData.get_hour(), localData.get_min(), false);
+                Toast.makeText(NotificationRangeActivity.this, "調整後記得按儲存才會生效喔", Toast.LENGTH_SHORT).show();
+//                if(!set_once){
+//                    showTimePickerDialog(localData.get_hour(), localData.get_min(), false);
+//                    Log.d("lognewsselect", "onClick ");
+//                }
             }
         });
 

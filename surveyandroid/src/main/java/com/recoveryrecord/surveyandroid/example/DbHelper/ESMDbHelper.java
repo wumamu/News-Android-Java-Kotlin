@@ -308,6 +308,34 @@ public class ESMDbHelper extends SQLiteOpenHelper {
 
     }
 
+    public Cursor getAllPush() {
+        SQLiteDatabase db = this.getReadableDatabase();
+//        Cursor res =  db.rawQuery( "select * from contacts where id="+id+"", null );
+        Cursor res =  db.rawQuery( "SELECT * FROM " + TABLE_NAME_PUSH_ESM + ";", null );
+        return res;
+    }
+
+    public Cursor getAllDone() {
+        SQLiteDatabase db = this.getReadableDatabase();
+//        Cursor res =  db.rawQuery( "select * from contacts where id="+id+"", null );
+        Cursor res =  db.rawQuery( "SELECT * FROM " + TABLE_NAME_PUSH_ESM + " WHERE push_esm.result <> 'NA' ;", null );
+        return res;
+    }
+
+    public Cursor getDayPush(long todays, long todaye) {
+        SQLiteDatabase db = this.getReadableDatabase();
+//        Cursor res =  db.rawQuery( "select * from contacts where id="+id+"", null );
+        Cursor res =  db.rawQuery( "SELECT * FROM " + TABLE_NAME_PUSH_ESM + " WHERE push_esm.noti_timestamp >= " + todays + " AND push_esm.noti_timestamp <= " + todaye + ";", null );
+        return res;
+    }
+
+    public Cursor getDayDone(long todays, long todaye) {
+        SQLiteDatabase db = this.getReadableDatabase();
+//        Cursor res =  db.rawQuery( "select * from contacts where id="+id+"", null );
+        Cursor res =  db.rawQuery( "SELECT * FROM " + TABLE_NAME_PUSH_ESM + " WHERE push_esm.noti_timestamp >= " + todays + " AND push_esm.noti_timestamp <= " + todaye + " AND push_esm.result <> 'NA';", null );
+        return res;
+    }
+
     public void deleteDb() {
         // on below line we are creating
         // a variable to write our database.

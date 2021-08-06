@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +23,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.recoveryrecord.surveyandroid.example.DbHelper.DiaryDbHelper;
+import com.recoveryrecord.surveyandroid.example.DbHelper.ESMDbHelper;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -69,14 +72,50 @@ public class SurveyProgressActivity extends AppCompatActivity {
             int day_index = calendar.get(Calendar.DAY_OF_YEAR);
 
 
-            int esm_push_total = sharedPrefs.getInt(ESM_PUSH_TOTAL, 0);
-            int esm_done_total = sharedPrefs.getInt(ESM_DONE_TOTAL, 0);
-            int esm_day_push = sharedPrefs.getInt(ESM_DAY_PUSH_PREFIX + day_index, 0);
-            int esm_day_done = sharedPrefs.getInt(ESM_DAY_DONE_PREFIX + day_index, 0);
-            int diary_push_total = sharedPrefs.getInt(DIARY_PUSH_TOTAL, 0);
-            int diary_done_total = sharedPrefs.getInt(DIARY_DONE_TOTAL, 0);
-            int diary_day_push = sharedPrefs.getInt(DIARY_DAY_PUSH_PREFIX + day_index, 0);
-            int diary_day_done = sharedPrefs.getInt(DIARY_DAY_DONE_PREFIX + day_index, 0);
+//            int esm_push_total = sharedPrefs.getInt(ESM_PUSH_TOTAL, 0);
+//            int esm_done_total = sharedPrefs.getInt(ESM_DONE_TOTAL, 0);
+//            int esm_day_push = sharedPrefs.getInt(ESM_DAY_PUSH_PREFIX + day_index, 0);
+//            int esm_day_done = sharedPrefs.getInt(ESM_DAY_DONE_PREFIX + day_index, 0);
+//            int diary_push_total = sharedPrefs.getInt(DIARY_PUSH_TOTAL, 0);
+//            int diary_done_total = sharedPrefs.getInt(DIARY_DONE_TOTAL, 0);
+//            int diary_day_push = sharedPrefs.getInt(DIARY_DAY_PUSH_PREFIX + day_index, 0);
+//            int diary_day_done = sharedPrefs.getInt(DIARY_DAY_DONE_PREFIX + day_index, 0);
+
+            Calendar start_time, end_time;
+            Long start_long, end_long;
+            start_time = Calendar.getInstance();
+            end_time = Calendar.getInstance();
+            start_time.set(Calendar.HOUR_OF_DAY, 0);
+            start_time.set(Calendar.MINUTE, 0);
+            start_time.set(Calendar.SECOND, 0);
+            end_time.set(Calendar.HOUR_OF_DAY, 23);
+            end_time.set(Calendar.MINUTE, 59);
+            end_time.set(Calendar.SECOND, 59);
+            start_long = start_time.getTimeInMillis()/1000;
+            end_long = end_time.getTimeInMillis()/1000;
+
+            ESMDbHelper esmdbHandler = new ESMDbHelper(getApplicationContext());
+            Cursor cursor_esm = esmdbHandler.getAllPush();
+            int esm_push_total = cursor_esm.getCount();
+            cursor_esm = esmdbHandler.getAllDone();
+            int esm_done_total = cursor_esm.getCount();
+            cursor_esm = esmdbHandler.getDayPush(start_long, end_long);
+            int esm_day_push = cursor_esm.getCount();
+            cursor_esm = esmdbHandler.getDayDone(start_long, end_long);
+            int esm_day_done = cursor_esm.getCount();
+            cursor_esm.close();
+
+            DiaryDbHelper diaryDbHelper = new DiaryDbHelper(getApplicationContext());
+            Cursor cursor_diary = diaryDbHelper.getAllPush();
+            int diary_push_total = cursor_diary.getCount();
+            cursor_diary = diaryDbHelper.getAllDone();
+            int diary_done_total = cursor_diary.getCount();
+            cursor_diary = diaryDbHelper.getDayPush(start_long, end_long);
+            int diary_day_push = cursor_diary.getCount();
+            cursor_diary = diaryDbHelper.getDayDone(start_long, end_long);
+            int diary_day_done = cursor_diary.getCount();
+            cursor_diary.close();
+
             TextView esmSumTextView = new TextView(this);
             TextView diarySumTextView = new TextView(this);
             TextView esmDailySumTextView = new TextView(this);

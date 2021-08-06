@@ -185,6 +185,34 @@ public class DiaryDbHelper extends SQLiteOpenHelper {
 
     }
 
+    public Cursor getAllPush() {
+        SQLiteDatabase db = this.getReadableDatabase();
+//        Cursor res =  db.rawQuery( "select * from contacts where id="+id+"", null );
+        Cursor res =  db.rawQuery( "SELECT * FROM " + TABLE_NAME_PUSH_DIARY + ";", null );
+        return res;
+    }
+
+    public Cursor getAllDone() {
+        SQLiteDatabase db = this.getReadableDatabase();
+//        Cursor res =  db.rawQuery( "select * from contacts where id="+id+"", null );
+        Cursor res =  db.rawQuery( "SELECT * FROM " + TABLE_NAME_PUSH_DIARY + " WHERE push_diary.result <> 'NA' ;", null );
+        return res;
+    }
+
+    public Cursor getDayPush(long todays, long todaye) {
+        SQLiteDatabase db = this.getReadableDatabase();
+//        Cursor res =  db.rawQuery( "select * from contacts where id="+id+"", null );
+        Cursor res =  db.rawQuery( "SELECT * FROM " + TABLE_NAME_PUSH_DIARY + " WHERE push_diary.noti_timestamp >= " + todays + " AND push_diary.noti_timestamp <= " + todaye + ";", null );
+        return res;
+    }
+
+    public Cursor getDayDone(long todays, long todaye) {
+        SQLiteDatabase db = this.getReadableDatabase();
+//        Cursor res =  db.rawQuery( "select * from contacts where id="+id+"", null );
+        Cursor res =  db.rawQuery( "SELECT * FROM " + TABLE_NAME_PUSH_DIARY + " WHERE push_diary.noti_timestamp >= " + todays + " AND push_diary.noti_timestamp <= " + todaye + " AND push_diary.result <> 'NA';", null );
+        return res;
+    }
+
     public void deleteDb() {
         // on below line we are creating
         // a variable to write our database.

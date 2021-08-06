@@ -6,8 +6,8 @@
     <TextView
         android:padding="16dp"
         android:gravity="center"
-        android:textSize="20dp"
-        android:text="一日問卷發送區間"
+        android:textSize="18dp"
+        android:text="中午12點(12PM)\n晚上12點(12AM)"
         android:textStyle="bold"
         android:textColor="@color/LightcolorPrimaryDark"
         android:layout_width="match_parent"
