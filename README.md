@@ -13,14 +13,14 @@ a smartphone news-aggregation app that logs its users’ reading behavior and se
 
 ### screenshot
 <p float="left">
-  <img src="https://github.com/wumamu/NewsMoment-Android-/blob/main/NewsMoment%20Screenshot/ss%20(2).png" width="200" />
-  <img src="https://github.com/wumamu/NewsMoment-Android-/blob/main/NewsMoment%20Screenshot/ss%20(3).png" width="200" />
-  <img src="https://github.com/wumamu/NewsMoment-Android-/blob/main/NewsMoment%20Screenshot/ss%20(4).png" width="200" />
+  <img src="https://github.com/wumamu/NewsMoment-Android-/blob/main/NewsMoment%20Screenshot/ss%20(2).png" width="150" />
+  <img src="https://github.com/wumamu/NewsMoment-Android-/blob/main/NewsMoment%20Screenshot/ss%20(3).png" width="150" />
+  <img src="https://github.com/wumamu/NewsMoment-Android-/blob/main/NewsMoment%20Screenshot/ss%20(4).png" width="150" />
 </p>
 <p float="left">
-  <img src="https://github.com/wumamu/NewsMoment-Android-/blob/main/NewsMoment%20Screenshot/ss%20(6).png" width="200" />
-  <img src="https://github.com/wumamu/NewsMoment-Android-/blob/main/NewsMoment%20Screenshot/ss%20(7).png" width="200" />
-  <img src="https://github.com/wumamu/NewsMoment-Android-/blob/main/NewsMoment%20Screenshot/ss%20(1).png" width="200" />
+  <img src="https://github.com/wumamu/NewsMoment-Android-/blob/main/NewsMoment%20Screenshot/ss%20(6).png" width="150" />
+  <img src="https://github.com/wumamu/NewsMoment-Android-/blob/main/NewsMoment%20Screenshot/ss%20(7).png" width="150" />
+  <img src="https://github.com/wumamu/NewsMoment-Android-/blob/main/NewsMoment%20Screenshot/ss%20(1).png" width="150" />
 </p>
 <!-- ![image]
 ![image]
