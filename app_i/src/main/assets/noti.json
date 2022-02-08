@@ -2239,7 +2239,7 @@
       }
     },
     {
-      "id": "not_read_credibility_1",
+      "id": "not_read_credibility_3",
       "header": "Question 12",
       "question": "對我來說，這則新聞標題是可信任的(Believable)。請選擇您對此句描述的感受為何。\n(請依據問題選擇你覺得最適合的答案，若無法判斷或沒意見請選擇4。)",
       "question_type": "segment_select",
