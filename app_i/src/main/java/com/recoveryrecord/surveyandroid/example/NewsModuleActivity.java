@@ -3,7 +3,6 @@ package com.recoveryrecord.surveyandroid.example;
 import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -12,8 +11,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.icu.lang.UCharacter;
-import android.net.Uri;
+//import android.icu.lang.UCharacter;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,12 +28,10 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-//import android.widget.Toolbar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -52,7 +48,7 @@ import com.recoveryrecord.surveyandroid.example.sqlite.FlingObj;
 import com.recoveryrecord.surveyandroid.example.sqlite.PushNews;
 import com.recoveryrecord.surveyandroid.example.sqlite.ReadingBehavior;
 import com.recoveryrecord.surveyandroid.example.receiever.ApplicationSelectorReceiver;
-import com.recoveryrecord.surveyandroid.example.receiever.ScreenStateReceiver;
+//import com.recoveryrecord.surveyandroid.example.receiever.ScreenStateReceiver;
 
 import java.io.InputStream;
 import java.text.ParseException;
@@ -66,22 +62,19 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+//import java.util.Random;
+//import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.ThreadLocalRandom;
+//import java.util.concurrent.ThreadLocalRandom;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_DAY_PUSH_PREFIX;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_PUSH_TOTAL;
 import static com.recoveryrecord.surveyandroid.example.Constants.MEDIA_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_CONTENT;
@@ -95,7 +88,6 @@ import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_URL;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_CLICK;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_OPEN_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_READING_BEHAVIOR_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_BYTE_PER_LINE;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_CONTENT_LENGTH;
@@ -112,13 +104,11 @@ import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIO
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_IN_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_IN_TIME_LONG;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_MEDIA;
-//import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_MID;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_NEWS_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_OUT_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_PAUSE_COUNT;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_PUBDATE;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_ROW_SPACING;
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_SAMPLE_CHECK;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_SAMPLE_CHECK_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_SHARE;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_TIME_ON_PAGE;
@@ -133,7 +123,6 @@ import static com.recoveryrecord.surveyandroid.example.Constants.READ_TOTAL;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_TEST_SIZE;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.TRIGGER_BY_KEY;
-//import android.support.v7.widget.Toolbar;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class NewsModuleActivity extends AppCompatActivity implements GestureListener.SimpleGestureListener {
@@ -146,7 +135,6 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
     boolean share_clicked = false;
     boolean document_create = false;
     long in_time = System.currentTimeMillis();
-    private ScreenStateReceiver mReceiver;//screen on or off
     boolean first_in = true;
 //    int char_num_total = 0;
     Timestamp enter_timestamp, mPubdate;
@@ -160,23 +148,18 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
 
     private String mUrl = "NA", mImg = "NA", mTitle = "NA", mDate = "NA", mSource = "NA";
 
-    private static final String DEBUG_TAG = "Gestures";
     private GestureListener detector;
     List<DragObj> dragObjArrayListArray = new ArrayList<>();//drag gesture
-    List<String> categoryArray = new ArrayList<>();//cat
 
     ReadingBehavior myReadingBehavior = new ReadingBehavior();//sqlite
-    ReadingBehaviorDbHelper dbHandler;
-
-//    private Toolbar toolbar;
 
     boolean self_trigger = false;
     int has_img = 0;
 
-    private static final HashSet<Character> ch_except = new HashSet<Character>();
-    private static final HashSet<Character> full_num = new HashSet<Character>();
-    private static final HashSet<Character> latin = new HashSet<Character>();
-    private static final HashSet<Character> full_en = new HashSet<Character>();
+    private static final HashSet<Character> ch_except = new HashSet<>();
+    private static final HashSet<Character> full_num = new HashSet<>();
+    private static final HashSet<Character> latin = new HashSet<>();
+    private static final HashSet<Character> full_en = new HashSet<>();
     /// 32    空格
     /// 33-47    標點
     /// 48-57    0~9
@@ -221,7 +204,6 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         ch_except.add('※');
         ch_except.add('／');
         ch_except.add('～');
-        ch_except.add('＋');
         ch_except.add('＋');
         ch_except.add('★');
         ch_except.add('﹔');
@@ -396,13 +378,11 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
 //        setSupportActionBar(toolbar);
 
         //set time in ##############################################################################
-        Date date = new Date(System.currentTimeMillis());
+//        Date date = new Date(System.currentTimeMillis());
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-        String time_now = formatter.format(date);
+//        String time_now = formatter.format(date);
         myReadingBehavior.setKEY_IN_TIMESTAMP(Timestamp.now().getSeconds());
-        //open database ############################################################################
-//        dbHandler = new ReadingBehaviorDbHelper(NewsModuleActivity.this);
         //check trigger from #######################################################################
         if (getIntent().getExtras() != null) {
             Bundle b = getIntent().getExtras();
@@ -430,18 +410,8 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                         .update(PUSH_NEWS_CLICK, 0,
                                 PUSH_NEWS_OPEN_TIME, Timestamp.now())
 //                                PUSH_NEWS_READING_BEHAVIOR_ID, myReadingBehavior.getKEY_IN_TIMESTAMP())
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d("lognewsselect", "mark as click successfully updated!");
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w("lognewsselect", "mark as click Error updating document", e);
-                            }
-                        });
+                        .addOnSuccessListener(aVoid -> Log.d("lognewsselect", "mark as click successfully updated!"))
+                        .addOnFailureListener(e -> Log.w("lognewsselect", "mark as click Error updating document", e));
             } else {
                 self_trigger = true;
             }
@@ -536,7 +506,8 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         //screen off #########################
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
         intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
-        mReceiver = new ScreenStateReceiver();
+        //screen on or off
+//        ScreenStateReceiver mReceiver = new ScreenStateReceiver();
 //        registerReceiver(mReceiver, intentFilter);
         //screen size ##############################################################################
         Display display = getWindowManager().getDefaultDisplay();
@@ -550,29 +521,29 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
 //        Log.d("log: display_width_dp", myReadingBehavior.getKEY_DISPLAY_WIDTH());
 //        Log.d("log: display_height_dp", myReadingBehavior.getKEY_DISPLAY_HEIGHT());
         //whether is chinese #######################################################################
-        final Set<UCharacter.UnicodeBlock> chineseUnicodeBlocks = new HashSet<UCharacter.UnicodeBlock>() {{
-            add(UCharacter.UnicodeBlock.CJK_COMPATIBILITY);
-            add(UCharacter.UnicodeBlock.CJK_COMPATIBILITY_FORMS);
-            add(UCharacter.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS);
-            add(UCharacter.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS_SUPPLEMENT);
-            add(UCharacter.UnicodeBlock.CJK_RADICALS_SUPPLEMENT);
-            add(UCharacter.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION);
-            add(UCharacter.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS);
-            add(UCharacter.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A);
-            add(UCharacter.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_B);
-            add(UCharacter.UnicodeBlock.KANGXI_RADICALS);
-            add(UCharacter.UnicodeBlock.IDEOGRAPHIC_DESCRIPTION_CHARACTERS);
-        }};
+//        final Set<UCharacter.UnicodeBlock> chineseUnicodeBlocks = new HashSet<UCharacter.UnicodeBlock>() {{
+//            add(UCharacter.UnicodeBlock.CJK_COMPATIBILITY);
+//            add(UCharacter.UnicodeBlock.CJK_COMPATIBILITY_FORMS);
+//            add(UCharacter.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS);
+//            add(UCharacter.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS_SUPPLEMENT);
+//            add(UCharacter.UnicodeBlock.CJK_RADICALS_SUPPLEMENT);
+//            add(UCharacter.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION);
+//            add(UCharacter.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS);
+//            add(UCharacter.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A);
+//            add(UCharacter.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_B);
+//            add(UCharacter.UnicodeBlock.KANGXI_RADICALS);
+//            add(UCharacter.UnicodeBlock.IDEOGRAPHIC_DESCRIPTION_CHARACTERS);
+//        }};
         //Scrollview has lost the acceleration######################################################
 //        ScrollView mScrollView = findViewById(R.id.scroll_view);
 //        mScrollView.setNestedScrollingEnabled(false);
         //news generate from server ################################################################
-        Random rand = new Random();
-        int random_news = ThreadLocalRandom.current().nextInt(1, 3 + 1);
-        String doc_id = "";
+//        Random rand = new Random();
+//        int random_news = ThreadLocalRandom.current().nextInt(1, 3 + 1);
+//        String doc_id = "";
 //        Log.d("log: firebase news", String.valueOf(random_news));
-        List<String> list = Arrays.asList("0000e3633ce3f3b0241d69749fc749f0", "0011f17045e0d4f40cc314f27ac91228", "001b575e65a5dd618051065f43b79974", "0030b7b0dada6069a76fb087f631bbb1", "003436a77eccd9d8f0cc9ffbced6844b");
-        doc_id = list.get(rand.nextInt(list.size()));
+//        List<String> list = Arrays.asList("0000e3633ce3f3b0241d69749fc749f0", "0011f17045e0d4f40cc314f27ac91228", "001b575e65a5dd618051065f43b79974", "0030b7b0dada6069a76fb087f631bbb1", "003436a77eccd9d8f0cc9ffbced6844b");
+//        doc_id = list.get(rand.nextInt(list.size()));
 //        Log.d("log: firebase news", doc_id);
         DocumentReference docRef;
         if (news_id.equals("") || media_eng.equals("")){

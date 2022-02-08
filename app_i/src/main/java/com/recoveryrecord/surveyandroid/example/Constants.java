@@ -382,6 +382,8 @@ public class Constants {
 
     public static final String UPLOAD_TIME = "last_upload_time";
 
+    public static final String SHARE_PREFERENCE_IS_LOGIN = "is_login";
+
 
 
 

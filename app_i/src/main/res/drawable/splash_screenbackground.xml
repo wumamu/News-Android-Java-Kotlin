@@ -3,7 +3,13 @@
     android:opacity="opaque"
     android:layout_height="match_parent"
     android:layout_width="match_parent">
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/muilab"/>
     <item android:drawable="@android:color/darker_gray" />
+
 <!--    <item>-->
 <!--        <bitmap-->
 <!--            android:gravity="center"-->
