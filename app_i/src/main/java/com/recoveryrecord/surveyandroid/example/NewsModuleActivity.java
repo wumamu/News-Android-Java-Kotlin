@@ -64,6 +64,7 @@ import java.util.List;
 import java.util.Map;
 //import java.util.Random;
 //import java.util.Set;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -101,6 +102,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIO
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_FLING_RECORD;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_FONT_SIZE;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_HAS_IMAGE;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_IMAGE_URL;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_IN_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_IN_TIME_LONG;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_MEDIA;
@@ -120,6 +122,8 @@ import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIO
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_VIEWPORT_NUM;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_VIEWPORT_RECORD;
 import static com.recoveryrecord.surveyandroid.example.Constants.READ_TOTAL;
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_DEVICE_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_IS_LOGIN;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_TEST_SIZE;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.TRIGGER_BY_KEY;
@@ -379,11 +383,13 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
 
         //set time in ##############################################################################
 //        Date date = new Date(System.currentTimeMillis());
-        @SuppressLint("SimpleDateFormat")
-        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+//        @SuppressLint("SimpleDateFormat")
+//        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 //        String time_now = formatter.format(date);
         myReadingBehavior.setKEY_IN_TIMESTAMP(Timestamp.now().getSeconds());
         //check trigger from #######################################################################
+//        Log.d("555 news LoginActivity", String.valueOf(sharedPrefs.getInt(SHARE_PREFERENCE_IS_LOGIN, 0)));
+//        Log.d("555 news LoginActivity", String.valueOf(sharedPrefs.getString(SHARE_PREFERENCE_DEVICE_ID, "123")));
         if (getIntent().getExtras() != null) {
             Bundle b = getIntent().getExtras();
 
@@ -563,6 +569,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
+                    assert document != null;
                     if (document.exists()) {
 //                        Log.d("log: firebase", "Success");
 //                        Log.d("log: firebase", "DocumentSnapshot data: " + document.getData());
@@ -584,6 +591,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                         mPubdate = Timestamp.now();
                         if(document.getTimestamp(NEWS_PUBDATE)!=null){
                             mPubdate = document.getTimestamp(NEWS_PUBDATE);
+                            assert mPubdate != null;
                             myReadingBehavior.setKEY_PUBDATE(mPubdate.getSeconds());
                         }
 //                        if(document.get(NEWS_CATEGORY)!=null){
@@ -603,7 +611,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                         Date my_date = mPubdate.toDate();
                         @SuppressLint("SimpleDateFormat")
                         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-                        List<String> my_tt = new ArrayList<String>(Arrays.asList(formatter.format(my_date).split(" ")));
+                        List<String> my_tt = new ArrayList<>(Arrays.asList(formatter.format(my_date).split(" ")));
                         mDate = String.format("%s %s", my_tt.get(0), my_tt.get(2));
 //                        mSource = document.getString(NEWS_MEDIA);
                         mSource = media_ch;
@@ -612,7 +620,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                         ArrayList<String> c_list = new ArrayList<>();
                         if(document.get(NEWS_CONTENT)!=null){
                             c_list = (ArrayList<String>) document.get(NEWS_CONTENT);
-                            for (int i = 0; i < c_list.size(); i++) {
+                            for (int i = 0; i < Objects.requireNonNull(c_list).size(); i++) {
                                 c_list.set(i, c_list.get(i).trim().replaceAll("\n", ""));
 //                                Log.d("log: firebase", "DocumentSnapshot content: " + c_list.get(i));
                             }
@@ -629,7 +637,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
 //                        Log.d("log: firebase", "DocumentSnapshot content: end");
                         List<String> divList = new ArrayList<>();
 //                        int cut_size = (int) (dpWidth / 26);
-                        int divided_by = 22;
+                        int divided_by;
                         if(text_size_string.equals("1")){
                             divided_by = 22;
                         } else if (text_size_string.equals("0")){//smaller
@@ -648,23 +656,21 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
 //                                c_list.set(i, c_list.get(i)).trim().replaceAll("\n", "");
 //                                Log.d("log: firebase", "detect new line");
                                 continue;//should not happen
-                            } else if (c_list.get(i).contains("\u3000")){
-                                //全形空白 it works
-//                                Log.d("log: firebase", "detect \u3000");
-                            }
+                            }  //全形空白 it works
+                            //                                Log.d("log: firebase", "detect \u3000");
+
                             //full blank to half
                             String str = c_list.get(i).replaceAll("　", " ");
-                            int front = 0, iter_char_para = 0, para_count = 0;
+                            int front = 0, iter_char_para = 0;
                             boolean last_line_in_p = false;
                             str = str.replaceAll("　", " ");
                             char[] para = str.toCharArray();
                             //one paragraph split to line
                             while (!last_line_in_p){
-                                para_count++;
-//                                Log.d("log: firebase", "this is line " + para_count);
+                                //                                Log.d("log: firebase", "this is line " + para_count);
                                 boolean last_char_in_line = false;
                                 int iter_char_line = 0;
-                                while (!last_char_in_line){
+                                while (true){
                                     //remove line with space first
                                     if (iter_char_line==0 && para[iter_char_para]==' '){
                                         iter_char_para+=1;
@@ -683,7 +689,6 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                                             if (tmp_iter_char_para < para.length){
                                                 //not last one
                                                 iter_char_para = tmp_iter_char_para;
-                                                continue;
                                             } else {
                                                 //is last char in para
                                                 last_line_in_p = true;
@@ -727,7 +732,6 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                                                 break;
                                             }
                                         } else {
-                                            last_char_in_line = true;
                                             break;
                                         }
                                     } else if (is_full_num(para[iter_char_para])){
@@ -1282,7 +1286,6 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                 drag_y_1 = 0;
                 drag_x_2 = 0;
                 drag_y_2 = 0;
-                duration = 0;
             }
         }
         //last drag
@@ -1299,7 +1302,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
             }
             Date d1 = new Date(time_one);
             Date d2 = new Date(time_two);
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 //            Date d1 = new Date(), d2 = new Date();
             try {
                 d1 = format.parse(String.valueOf(time_one));
@@ -1316,7 +1319,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
 //                Log.d("log: nonon", "String.valueOf(d1)");
             }
             List<String> my_d1 = new ArrayList<String>(Arrays.asList(formatter.format(d1).split(" ")));
-            List<String> my_d2 = new ArrayList<String>(Arrays.asList(formatter.format(d2).split(" ")));
+            List<String> my_d2 = new ArrayList<>(Arrays.asList(formatter.format(d2).split(" ")));
             drag_str+=duration + "/";
             drag_str+= my_d1.get(2) + "/"+ my_d2.get(2) + "/";
             drag_str+="(" + drag_x_1 + "," + drag_y_1 + ")/";
@@ -1382,8 +1385,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
 
     public int pxToDp(int px, Context tmp) {
         DisplayMetrics displayMetrics = tmp.getResources().getDisplayMetrics();
-        int dp = Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-        return dp;
+        return Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
     private boolean isChineseChar(char c) {
@@ -1399,7 +1401,8 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
     }
 
     //image download ###############################################################################
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+    private static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        @SuppressLint("StaticFieldLeak")
         ImageView bmImage;
 
         public DownloadImageTask(ImageView bmImage) {
@@ -1413,7 +1416,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                 InputStream in = new java.net.URL(urldisplay).openStream();
                 mIcon11 = BitmapFactory.decodeStream(in);
             } catch (Exception e) {
-                Log.e("Error", e.getMessage());
+                Log.e("Error", Objects.requireNonNull(e.getMessage()));
                 e.printStackTrace();
             }
             return mIcon11;
@@ -1440,69 +1443,45 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
             String share_field = "";
             final DocumentReference rbRef = db.collection(READING_BEHAVIOR_COLLECTION).document(device_id + " " + myReadingBehavior.getKEY_IN_TIMESTAMP());
             if(share_clicked){
-                rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                Log.d("log: firebase", "Success");
-                                List<String> share_result = (List<String>) document.get(READING_BEHAVIOR_SHARE);
-                                share_result.add("none");
+                rbRef.get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        assert document != null;
+                        if (document.exists()) {
+                            Log.d("log: firebase", "Success");
+                            List<String> share_result = (List<String>) document.get(READING_BEHAVIOR_SHARE);
+                            share_result.add("none");
 //                                share_result.set(0,"none");
-                                rbRef.update(READING_BEHAVIOR_SHARE, share_result)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Log.d("log: firebase", "DocumentSnapshot successfully updated!");
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.w("log: firebase", "Error updating document", e);
-                                            }
-                                        });
-                            } else {
-                                Log.d("log: firebase", "NewsModuleActivity No such document");
-                            }
+                            rbRef.update(READING_BEHAVIOR_SHARE, share_result)
+                                    .addOnSuccessListener(aVoid -> Log.d("log: firebase", "DocumentSnapshot successfully updated!"))
+                                    .addOnFailureListener(e -> Log.w("log: firebase", "Error updating document", e));
                         } else {
-                            Log.d("log: firebase", "get failed with ", task.getException());
+                            Log.d("log: firebase", "NewsModuleActivity No such document");
                         }
+                    } else {
+                        Log.d("log: firebase", "get failed with ", task.getException());
                     }
                 });
 
             } else {
                 //first time
                 share_clicked = true;
-                rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                Log.d("log: firebase", "Success");
-                                List<String> share_result = (List<String>) document.get(READING_BEHAVIOR_SHARE);
-                                share_result.set(0, "none");
-                                rbRef.update(READING_BEHAVIOR_SHARE, share_result)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Log.d("log: firebase", "DocumentSnapshot successfully updated!");
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.w("log: firebase", "Error updating document", e);
-                                            }
-                                        });
-                            } else {
-                                Log.d("log: firebase", "NewsModuleActivity No such document");
-                            }
+                rbRef.get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        assert document != null;
+                        if (document.exists()) {
+                            Log.d("log: firebase", "Success");
+                            List<String> share_result = (List<String>) document.get(READING_BEHAVIOR_SHARE);
+                            share_result.set(0, "none");
+                            rbRef.update(READING_BEHAVIOR_SHARE, share_result)
+                                    .addOnSuccessListener(aVoid -> Log.d("log: firebase", "DocumentSnapshot successfully updated!"))
+                                    .addOnFailureListener(e -> Log.w("log: firebase", "Error updating document", e));
                         } else {
-                            Log.d("log: firebase", "get failed with ", task.getException());
+                            Log.d("log: firebase", "NewsModuleActivity No such document");
                         }
+                    } else {
+                        Log.d("log: firebase", "get failed with ", task.getException());
                     }
                 });
             }
@@ -1594,6 +1573,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         readingBehavior.put(READING_BEHAVIOR_TITLE,myReadingBehavior.getKEY_TITLE());
         readingBehavior.put(READING_BEHAVIOR_MEDIA, myReadingBehavior.getKEY_MEDIA());
         readingBehavior.put(READING_BEHAVIOR_HAS_IMAGE, has_img);
+        readingBehavior.put(READING_BEHAVIOR_IMAGE_URL, mImg);
         //pubdate
         readingBehavior.put(READING_BEHAVIOR_ROW_SPACING, "NA");
         readingBehavior.put(READING_BEHAVIOR_BYTE_PER_LINE, "NA");
@@ -1663,6 +1643,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                 READING_BEHAVIOR_TITLE, myReadingBehavior.getKEY_TITLE(),
                 READING_BEHAVIOR_MEDIA, myReadingBehavior.getKEY_MEDIA(),
                 READING_BEHAVIOR_HAS_IMAGE, has_img,
+                READING_BEHAVIOR_IMAGE_URL, mImg,
                 READING_BEHAVIOR_PUBDATE,mPubdate,
 
                 READING_BEHAVIOR_ROW_SPACING, myReadingBehavior.getKEY_ROW_SPACING(),

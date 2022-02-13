@@ -48,6 +48,7 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
+
         tools:ignore="VectorDrawableCompat" />
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

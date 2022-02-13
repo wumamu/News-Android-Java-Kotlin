@@ -1,4 +1,4 @@
-package com.recoveryrecord.surveyandroid.example.storm;
+package com.recoveryrecord.surveyandroid.example.cts;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -25,13 +25,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_LIMIT_PER_PAGE;
 
-public class Storm1Fragment extends Fragment {
+public class Cts13Fragment extends Fragment {
     private RecyclerView courseRV;
     private ArrayList<NewsModel> dataModalArrayList;
     private NewsRecycleViewAdapter dataRVAdapter;
     private FirebaseFirestore db;
-    public static Storm1Fragment newInstance(int position) {
-        Storm1Fragment fragment = new Storm1Fragment();
+    public static Cts13Fragment newInstance(int position) {
+        Cts13Fragment fragment = new Cts13Fragment();
         Bundle args = new Bundle();
         args.putInt("position", position);
         fragment.setArguments(args);
@@ -39,7 +39,7 @@ public class Storm1Fragment extends Fragment {
         return fragment;
     }
 
-    public Storm1Fragment() {
+    public Cts13Fragment() {
 
     }
 
@@ -83,8 +83,8 @@ public class Storm1Fragment extends Fragment {
     private void loadrecyclerViewData() {
 //.orderBy("name").limit(3)//                db.collectionGroup("news") //
         db.collection("news")
-                .whereEqualTo("media", "storm")
-                .whereArrayContains("category", "新新聞")
+                .whereEqualTo("media", "cts")
+                .whereEqualTo("category", "產業")
                 .orderBy("pubdate", Query.Direction.DESCENDING)
                 .limit(NEWS_LIMIT_PER_PAGE)
                 .get()

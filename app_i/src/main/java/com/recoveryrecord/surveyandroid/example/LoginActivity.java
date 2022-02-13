@@ -6,26 +6,30 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Patterns;
-//import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-//import com.google.android.gms.tasks.OnCompleteListener;
-//import com.google.android.gms.tasks.Task;
-//import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-//import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_IS_LOGIN;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.USER_NUM;
+
+//import android.view.View;
+//import com.google.android.gms.tasks.OnCompleteListener;
+//import com.google.android.gms.tasks.Task;
+//import com.google.firebase.auth.AuthResult;
+//import androidx.annotation.NonNull;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText useremail, password;
     private FirebaseAuth mAuth;
+    Boolean isLogin = false;
+//    SharedPreferences sharedPrefs_Login;
     //    private ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,24 +38,31 @@ public class LoginActivity extends AppCompatActivity {
         if (getSupportActionBar() != null){
             getSupportActionBar().hide();
         }
+//        sharedPrefs_Login = getSharedPreferences(SHARE_PREFERENCE_IS_LOGIN, MODE_PRIVATE);
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        Boolean isLogin = sharedPrefs.getBoolean(SHARE_PREFERENCE_IS_LOGIN, false);
+        isLogin = sharedPrefs.getBoolean(SHARE_PREFERENCE_IS_LOGIN, false);
+//        String tmp_sign = sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號");
+//        Log.d("555 LoginActivity", String.valueOf(sharedPrefs.getInt(SHARE_PREFERENCE_IS_LOGIN, 0)));
+        Button button = findViewById(R.id.bt_login);
+        useremail = findViewById(R.id.et_username);
+        password = findViewById(R.id.et_password);
+
+//        if(sharedPrefs_Login.getBoolean(SHARE_PREFERENCE_IS_LOGIN, false)){
         if(isLogin){
             startActivity(new Intent(LoginActivity.this, NewsHybridActivity.class));
             finish();
         }
-        Button button = (Button) findViewById(R.id.bt_login);
-        useremail = (EditText)findViewById(R.id.et_username);
-        password = (EditText)findViewById(R.id.et_password);
 
-        button.setOnClickListener(v -> {
-            user_login();
-        });
+        button.setOnClickListener(v -> user_login());
 
         mAuth = FirebaseAuth.getInstance();
 
+
+
+
     }
 
+    @SuppressLint("ApplySharedPref")
     private void user_login() {
         String string_useremail = useremail.getText().toString().trim();
         String string_password = password.getText().toString().trim();
@@ -77,19 +88,24 @@ public class LoginActivity extends AppCompatActivity {
 //        }
         mAuth.signInWithEmailAndPassword(string_useremail, string_password).addOnCompleteListener(task -> {
             if(task.isSuccessful()){
-//                    Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
-                SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                @SuppressLint("CommitPrefEdits") SharedPreferences.Editor editor = sharedPrefs.edit();
-                editor.putBoolean(SHARE_PREFERENCE_IS_LOGIN, true);
+//                sharedPrefs_Login.edit().putBoolean(SHARE_PREFERENCE_IS_LOGIN, true).apply();
                 String[] split = string_useremail.split("@");
-                editor.putString(SHARE_PREFERENCE_USER_ID, split[0]);
 
-                editor.apply();
+                SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                SharedPreferences.Editor editor = sharedPrefs.edit();
+                editor.putBoolean(SHARE_PREFERENCE_IS_LOGIN, true);
+                editor.putString(SHARE_PREFERENCE_USER_ID, split[0]);
+                editor.commit();
+//                isLogin = true;
                 Toast.makeText(LoginActivity.this, "登入成功", Toast.LENGTH_LONG).show();
-                startActivity(new Intent(LoginActivity.this, NewsHybridActivity.class));
+                Intent i = new Intent(LoginActivity.this, NewsHybridActivity.class);
+                i.putExtra(USER_NUM,split[0]);
+                startActivity(i);
+//                startActivity(new Intent(LoginActivity.this, NewsHybridActivity.class));
             } else {
                 Toast.makeText(LoginActivity.this, "登入失敗QQ，需要幫忙請來信詢問", Toast.LENGTH_LONG).show();
             }
         });
     }
+
 }

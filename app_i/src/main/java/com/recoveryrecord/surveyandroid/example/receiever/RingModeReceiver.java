@@ -66,6 +66,7 @@ public class RingModeReceiver implements StreamGenerator{
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         final String time_now = formatter.format(date);
         sensordb.put("Time", time_now);
+        sensordb.put("TimeStamp", Timestamp.now());
         sensordb.put("RingMode", RingerState);
         sensordb.put("Using APP", UsingApp);
         if(UsingApp == "Using APP")
@@ -110,6 +111,7 @@ public class RingModeReceiver implements StreamGenerator{
 //                    Toast.makeText(context, "Ring Mode = NORMAL", Toast.LENGTH_LONG).show();
                     RingerState = "NORMAL";
                     sensordb.put("Time", time_now);
+                    sensordb.put("TimeStamp", Timestamp.now());
                     sensordb.put("RingMode", "NORMAL");
                 }
                 else if(mod == AudioManager.RINGER_MODE_SILENT){
@@ -117,6 +119,7 @@ public class RingModeReceiver implements StreamGenerator{
 //                    Toast.makeText(context, "Ring Mode = SILENT", Toast.LENGTH_LONG).show();
                     RingerState = "SILENT";
                     sensordb.put("Time", time_now);
+                    sensordb.put("TimeStamp", Timestamp.now());
                     sensordb.put("RingMode", "SILENT");
                 }
                 else if(mod == AudioManager.RINGER_MODE_VIBRATE){
@@ -124,6 +127,7 @@ public class RingModeReceiver implements StreamGenerator{
 //                    Toast.makeText(context, "Ring Mode = VIBRATE", Toast.LENGTH_LONG).show();
                     RingerState = "VIBRATE";
                     sensordb.put("Time", time_now);
+                    sensordb.put("TimeStamp", Timestamp.now());
                     sensordb.put("RingMode", "VIBRATE");
                 }
                 sensordb.put("Using APP", UsingApp);

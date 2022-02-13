@@ -76,6 +76,14 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity android:name=".CheckUpdateActivity"
+            android:theme="@style/ActionBarLight"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.recoveryrecord.surveyandroid.example.UploadPagesActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name=".ReadHistoryActivity"
             android:theme="@style/ActionBarLight"
             android:screenOrientation="portrait">

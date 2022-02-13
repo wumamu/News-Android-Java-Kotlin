@@ -1,16 +1,11 @@
 package com.recoveryrecord.surveyandroid.example;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,29 +13,32 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.ActivityRecognition;
-import com.google.android.gms.location.ActivityRecognitionClient;
-import com.google.android.gms.location.ActivityTransition;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.play.core.appupdate.AppUpdateInfo;
+import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.install.model.AppUpdateType;
+import com.google.android.play.core.install.model.UpdateAvailability;
+import com.google.android.play.core.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.recoveryrecord.surveyandroid.example.DbHelper.ScreenStateReceiverDbHelper;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.recoveryrecord.surveyandroid.example.DbHelper.SessionDbHelper;
 import com.recoveryrecord.surveyandroid.example.chinatimes.ChinatimesMainFragment;
 import com.recoveryrecord.surveyandroid.example.cna.CnaMainFragment;
@@ -48,17 +46,14 @@ import com.recoveryrecord.surveyandroid.example.cts.CtsMainFragment;
 import com.recoveryrecord.surveyandroid.example.ebc.EbcMainFragment;
 import com.recoveryrecord.surveyandroid.example.ettoday.EttodayMainFragment;
 import com.recoveryrecord.surveyandroid.example.ltn.LtnMainFragment;
-//import com.recoveryrecord.surveyandroid.example.receiever.ActivityRecognitionReceiver;
-import com.recoveryrecord.surveyandroid.example.receiever.ActivityRecognitionReceiver;
+import com.recoveryrecord.surveyandroid.example.model.NewsModel;
 import com.recoveryrecord.surveyandroid.example.receiever.AppUsageReceiver;
-import com.recoveryrecord.surveyandroid.example.receiever.BlueToothReceiver;
 import com.recoveryrecord.surveyandroid.example.receiever.LightSensorReceiver;
 import com.recoveryrecord.surveyandroid.example.receiever.MyBackgroudService;
 import com.recoveryrecord.surveyandroid.example.receiever.NetworkChangeReceiver;
 import com.recoveryrecord.surveyandroid.example.receiever.RingModeReceiver;
 import com.recoveryrecord.surveyandroid.example.receiever.ScreenStateReceiver;
 import com.recoveryrecord.surveyandroid.example.setn.SetnMainFragment;
-import com.recoveryrecord.surveyandroid.example.sqlite.ScreenState;
 import com.recoveryrecord.surveyandroid.example.sqlite.Session;
 import com.recoveryrecord.surveyandroid.example.storm.StormMainFragment;
 import com.recoveryrecord.surveyandroid.example.udn.UdnMainFragment;
@@ -66,7 +61,6 @@ import com.recoveryrecord.surveyandroid.example.udn.UdnMainFragment;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -74,124 +68,87 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Timer;
+
+import javax.annotation.Nullable;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
+import androidx.core.view.MenuItemCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
-import javax.annotation.Nullable;
-
 import static com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_VALUE;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_ALARM_ACTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_DONE_TOTAL;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_LAST_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_PUSH_TOTAL;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_TIME_OUT;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_ALARM_ACTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_DONE_TOTAL;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_INTERVAL;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_LAST_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_PUSH_TOTAL;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TIME_OUT;
 import static com.recoveryrecord.surveyandroid.example.Constants.MEDIA_BAR_ORDER;
-import static com.recoveryrecord.surveyandroid.example.Constants.MY_DEVICE;
-import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_DEVICE_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_MEDIA_SELECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_SHARE;
-import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_CLEAR_CACHE;
-//import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_PARCELABLE;
-import static com.recoveryrecord.surveyandroid.example.Constants.OUR_EMAIL;
+import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_LIMIT_PER_PAGE;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_VALUE_FAILED_RESTART;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_VALUE_MAIN_PAGE;
+import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_VALUE_RESTART;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_VALUE_RUNNING;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.OUR_EMAIL;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_MEDIA_SELECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_CLEAR_CACHE;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_DEVICE_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_IS_LOGIN;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.UPDATE_TIME;
-//import static com.recoveryrecord.surveyandroid.example.Constants.USER_ANDROID;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_ANDROID_RELEASE;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_ANDROID_SDK;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_DEVICE_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.USER_NUM;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_PHONE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_SURVEY_NUMBER;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.LastPauseTime;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.SeesionCountDown;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.TimeLeftInMillis;
 
+
 //public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener , GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private DocumentReference noteRef = db.document("server_push_notifications/start");
-    private CollectionReference noteRefqq = db.collection("server_push_notifications");
-    private String signature = "尚未設定實驗編號";
 
-    private Toolbar toolbar;
+    private String signature;
+
     private DrawerLayout drawerLayout;
 //    private SwipeRefreshLayout swipeRefreshLayout;
     private MySwipeRefreshLayout swipeRefreshLayout;
-    private NavigationView navigationView;
     private Context context;
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
     private TabLayout tabLayout;
-
     boolean doubleBackToExitPressedOnce = false;
-    private TextView user_phone, user_id, user_name;
 
     Intent mServiceIntent;
-    private NewsNotificationService mYourService;
 
     String device_id = "";
 
-//    boolean esm_range_flag = false, diary_range_flag = false;
-
-    private static final HashMap<String, String> media_hash = new HashMap<String, String>();
-    static{
-        media_hash.put("中時", "chinatimes");
-        media_hash.put("中央社", "cna");
-        media_hash.put("華視", "cts");
-        media_hash.put("東森", "ebc");
-        media_hash.put("自由時報", "ltn");
-        media_hash.put("風傳媒", "storm");
-        media_hash.put("聯合", "udn");
-        media_hash.put("ettoday", "ettoday");
-        media_hash.put("三立", "setn");
-    }
-    //sensor part
-    BlueToothReceiver _BluetoothReceiver;
-    //    RingModeReceiver _RingModeReceiver;
-    private AudioManager myAudioManager;
-    private boolean activityTrackingEnabled;
-    private List<ActivityTransition> activityTransitionList;
-    //DETECTED ACTIVITY
     public GoogleApiClient mApiClient;
-    public ActivityRecognitionClient mActivityRecognitionClient;
+//    public ActivityRecognitionClient mActivityRecognitionClient;
     NetworkChangeReceiver _NetworkChangeReceiver;
     ScreenStateReceiver _ScreenStateReceiver;
     RingModeReceiver _RingModeReceiver;
@@ -201,34 +158,44 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     //計時離開app的區間
     private CountDownTimer countDownTimer;
     private boolean TimerRunning;
+
+    public NewsHybridActivity() {
+    }
     //private long TimeLeftInMillis = SeesionCountDown;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    @SuppressLint("HardwareIds")
+    @SuppressLint({"HardwareIds", "LongLogTag", "ApplySharedPref"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = getApplicationContext();
 
         setContentView(R.layout.activity_news_hybrid);
+
         //initial value for user (first time)
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         //first in app
-        final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         boolean clear = sharedPrefs.getBoolean(SHARE_PREFERENCE_CLEAR_CACHE, true);
         Map<String, Object> first = new HashMap<>();
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            signature = extras.getString(USER_NUM);
+            //The key argument here must match that used in the other activity
+        } else {
+            signature = sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號");
+        }
+//        Log.d("555 NewsHybridActivity", String.valueOf(sharedPrefs.getInt(SHARE_PREFERENCE_IS_LOGIN, 0)));
         if (clear) {
             SharedPreferences.Editor editor = sharedPrefs.edit();
             editor.putString(SHARE_PREFERENCE_DEVICE_ID, device_id);
             editor.putBoolean(SHARE_PREFERENCE_CLEAR_CACHE, false);
             editor.apply();
-            clear = false;
-
             //initial media list
-            Set<String> ranking = sharedPrefs.getStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, Collections.<String>emptySet());
+            Set<String> ranking = sharedPrefs.getStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, Collections.emptySet());
             if (ranking.isEmpty()){
-                Set<String> set = new HashSet<String>();
+                Set<String> set = new HashSet<>();
                 set.add("中時 1");
                 set.add("中央社 2");
                 set.add("華視 3");
@@ -239,16 +206,16 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 set.add("ettoday 8");
                 set.add("三立 9");
                 SharedPreferences.Editor edit = sharedPrefs.edit();
-                edit.clear();
+//                edit.clear();
                 edit.putStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, set);
                 edit.apply();
             }
             List<String> media_bar_result = new ArrayList<>();
             List<String> media_push_result = new ArrayList<>();
 //        List<String> media_bar_result = (List<String>) document.get(READING_BEHAVIOR_SHARE);
-            media_bar_result.add(sharedPrefs.getStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, Collections.<String>emptySet()).toString());
+            media_bar_result.add(sharedPrefs.getStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, Collections.emptySet()).toString());
 //            media_push_result.add(sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, Collections.<String>emptySet()).toString());
-            media_push_result.add(String.join(",", sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, Collections.<String>emptySet()).toString()));
+            media_push_result.add(String.join(",", sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, Collections.emptySet()).toString()));
             first.put(MEDIA_BAR_ORDER, media_bar_result);
             first.put(USER_DEVICE_ID, device_id);
             first.put(USER_PHONE_ID, Build.MODEL);
@@ -273,87 +240,72 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                     .set(first);
         } else {
             final DocumentReference rbRef = db.collection(USER_COLLECTION).document(device_id);
-            rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            Log.d("log: firebase", "Success");
+            rbRef.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    assert document != null;
+                    if (document.exists()) {
+                        Log.d("log: firebase", "Success");
 
 
-                            List<String> media_push_result = (List<String>) document.get(PUSH_MEDIA_SELECTION);
-                            Log.d("l1231313", media_push_result.get(media_push_result.size() - 1));
-                            //different from last one
+                        List<String> media_push_result = (List<String>) document.get(PUSH_MEDIA_SELECTION);
+                        assert media_push_result != null;
+                        Log.d("l1231313", media_push_result.get(media_push_result.size() - 1));
+                        //different from last one
 //                            for (int)
-                            String tmp = String.join(",", sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, Collections.<String>emptySet()).toString());
-                            Log.d("l1231313", tmp);
+                        String tmp = String.join(",", sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, Collections.emptySet()).toString());
+                        Log.d("l1231313", tmp);
 //                            media_push_result.add(tmp);
-                            if(!media_push_result.get(media_push_result.size() - 1).equals(tmp)){
-                                media_push_result.add(tmp);
-                            }
-//                            media_push_result.add(String.valueOf(media_push_result));
-                            rbRef.update(PUSH_MEDIA_SELECTION, media_push_result,
-                                    USER_SURVEY_NUMBER, sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"),
-                                    UPDATE_TIME, Timestamp.now(),
-                                    APP_VERSION_KEY, APP_VERSION_VALUE,
-                                    "check_last_service", Timestamp.now(),
-                                    ESM_PUSH_TOTAL, sharedPrefs.getInt(ESM_PUSH_TOTAL, 0),
-                                    ESM_DONE_TOTAL, sharedPrefs.getInt(ESM_DONE_TOTAL, 0),
-                                    DIARY_PUSH_TOTAL, sharedPrefs.getInt(DIARY_PUSH_TOTAL, 0),
-                                    DIARY_DONE_TOTAL, sharedPrefs.getInt(DIARY_DONE_TOTAL, 0),
-
-                                    USER_DEVICE_ID, device_id,
-                                    USER_ANDROID_SDK, Build.VERSION.SDK_INT,
-                                    USER_ANDROID_RELEASE, Build.VERSION.RELEASE)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            Log.d("log: firebase share", "DocumentSnapshot successfully updated!");
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Log.w("log: firebase share", "Error updating document", e);
-                                        }
-                                    });
-                        } else {
-
-                            Log.d("log: firebase share", "No such document");
+                        if(!media_push_result.get(media_push_result.size() - 1).equals(tmp)){
+                            media_push_result.add(tmp);
                         }
+//                            media_push_result.add(String.valueOf(media_push_result));
+                        rbRef.update(PUSH_MEDIA_SELECTION, media_push_result,
+                                USER_SURVEY_NUMBER, sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"),
+                                UPDATE_TIME, Timestamp.now(),
+                                APP_VERSION_KEY, APP_VERSION_VALUE,
+                                "check_last_service", Timestamp.now(),
+                                ESM_PUSH_TOTAL, sharedPrefs.getInt(ESM_PUSH_TOTAL, 0),
+                                ESM_DONE_TOTAL, sharedPrefs.getInt(ESM_DONE_TOTAL, 0),
+                                DIARY_PUSH_TOTAL, sharedPrefs.getInt(DIARY_PUSH_TOTAL, 0),
+                                DIARY_DONE_TOTAL, sharedPrefs.getInt(DIARY_DONE_TOTAL, 0),
+
+                                USER_DEVICE_ID, device_id,
+                                USER_ANDROID_SDK, Build.VERSION.SDK_INT,
+                                USER_ANDROID_RELEASE, Build.VERSION.RELEASE)
+                                .addOnSuccessListener(aVoid -> Log.d("log: firebase share", "DocumentSnapshot successfully updated!"))
+                                .addOnFailureListener(e -> Log.w("log: firebase share", "Error updating document", e));
                     } else {
-                        Log.d("log: firebase share", "get failed with ", task.getException());
+
+                        Log.d("log: firebase share", "No such document");
                     }
+                } else {
+                    Log.d("log: firebase share", "get failed with ", task.getException());
                 }
             });
         }
 
 
 
-        swipeRefreshLayout = (MySwipeRefreshLayout) findViewById(R.id.mainSwipeContainer);
+        swipeRefreshLayout = findViewById(R.id.mainSwipeContainer);
 //        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.mainSwipeContainer);
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.setDistanceToTriggerSync(200);
         swipeRefreshLayout.setColorSchemeResources(R.color.blue,R.color.red,R.color.black);
         //navi
-        toolbar = findViewById(R.id.main_toolbar_hy);
+        Toolbar toolbar = findViewById(R.id.main_toolbar_hy);
         setSupportActionBar(toolbar);
         drawerLayout = findViewById(R.id.drawer_layout_hy);
-        navigationView = findViewById(R.id.nav_view_hy);
+        NavigationView navigationView = findViewById(R.id.nav_view_hy);
         View header = navigationView.getHeaderView(0);
-        user_phone = (TextView) header.findViewById(R.id.textView_user_phone);
+        TextView user_phone = header.findViewById(R.id.textView_user_phone);
         user_phone.setText(Build.MODEL);
-        user_id = (TextView) header.findViewById(R.id.textView_user_id);
+        TextView user_id = header.findViewById(R.id.textView_user_id);
         user_id.setText(device_id);
-        user_name = (TextView) header.findViewById(R.id.textView_user_name);
-        signature = sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號");
-        if(signature.equals("尚未設定實驗編號")){
-//            showStartDialog();
-            user_name.setText("尚未設定實驗編號");
-        } else {
-            user_name.setText(signature);
-        }
+        TextView user_name = header.findViewById(R.id.textView_user_name);
+//        signature = sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號");
+        user_name.setText(signature);
+
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
                 this,
                 drawerLayout,
@@ -368,7 +320,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         setTitle("新聞列表");
 
         //check notification service running
-        mYourService = new NewsNotificationService();
+        NewsNotificationService mYourService = new NewsNotificationService();
         mServiceIntent = new Intent(this, NewsNotificationService.class);
         Map<String, Object> log_service = new HashMap<>();
         if (!isMyServiceRunning(mYourService.getClass())) {
@@ -389,9 +341,9 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 .document(device_id + " " + formatter.format(date))
                 .set(log_service);
 
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),this);
-        mViewPager = (ViewPager) findViewById(R.id.container_hy);
-        tabLayout = (TabLayout) findViewById(R.id.tabs_hy);
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), this);
+        mViewPager = findViewById(R.id.container_hy);
+        tabLayout = findViewById(R.id.tabs_hy);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         tabLayout.setupWithViewPager(mViewPager);
 
@@ -425,8 +377,8 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         //Detected Activity
         mApiClient = new GoogleApiClient.Builder(this)
                 .addApi(ActivityRecognition.API)
-                .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
-                .addOnConnectionFailedListener((GoogleApiClient.OnConnectionFailedListener) this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
                 .build();
         mApiClient.connect();
 
@@ -495,6 +447,9 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
             dbHandler.insertSessionDetailsCreate(mysession);
         }
     }
+
+
+    @SuppressLint("HardwareIds")
     @Override
     protected void onResume() {
         Log.e("onResume", "onResume");
@@ -507,7 +462,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         //Sessions
 
-        if(TimerRunning == true) {
+        if(TimerRunning) {
             pauseTimer();
 
             sessiontime.put("session", SessionID);
@@ -555,14 +510,16 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 //        Toast.makeText(this, "SESSION:"+SessionID, Toast.LENGTH_SHORT).show();
     }
 
+    @SuppressLint("LongLogTag")
     @Override
     protected void onStart() {
-        Log.d("log: activity cycle", "NewsHybridActivity On Start");
+//        Log.d("log: activity cycle", "NewsHybridActivity On Start");
         super.onStart();
         //regular timestated period
         startService(new Intent(getApplicationContext(), MyBackgroudService.class));
     }
 
+    @SuppressLint("HardwareIds")
     @Override
     protected void onPause() {
         Log.d("log: activity cycle", "NewsHybridActivity On Pause");
@@ -595,9 +552,10 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         dbHandler.insertSessionDetailsCreate(mysession);
     }
 
+    @SuppressLint("LongLogTag")
     @Override
     protected void onRestart() {
-        Log.d("log: activity cycle", "NewsHybridActivity On Restart");
+//        Log.d("log: activity cycle", "NewsHybridActivity On Restart");
         super.onRestart();
     }
 
@@ -615,37 +573,13 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         _LightSensorReceiver.unregisterLightSensorReceiver(this);
         super.onDestroy();
     }
-    private void showStartDialog() {
-        final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        AlertDialog.Builder editDialog = new AlertDialog.Builder(this);
-        editDialog.setTitle("請輸入您的實驗編號");
-        final EditText editText = new EditText(this);
-        editText.setText("");
-        editDialog.setView(editText);
 
-        editDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            // do something when the button is clicked
-            public void onClick(DialogInterface arg0, int arg1) {
-                signature = editText.getText().toString();
-                SharedPreferences.Editor editor = sharedPrefs.edit();
-                editor.putString(SHARE_PREFERENCE_USER_ID, signature);
-                editor.apply();
-//                textOut.setText(editText.getText().toString());
-            }
-        });
-        editDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            // do something when the button is clicked
-            public void onClick(DialogInterface arg0, int arg1) {
-//...
-            }
-        });
-        editDialog.show();
-    }
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+//        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         switch (item.getItemId()) {
             case R.id.nav_setting :
 //                Log.d("log: navigation", "nav_setting " + item.getItemId());
@@ -692,7 +626,10 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 }
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
-
+            case R.id.nav_update:
+                Intent intent_update = new Intent(NewsHybridActivity.this, CheckUpdateActivity.class);
+                startActivity(intent_update);
+                drawerLayout.closeDrawer(GravityCompat.START);
 //            case R.id.nav_contactt :
 //                Intent intent_esm = new Intent(context, AlarmReceiver.class);
 //                intent_esm.setAction(ESM_ALARM_ACTION);
@@ -733,6 +670,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        assert manager != null;
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (serviceClass.getName().equals(service.service.getClassName())) {
 //                Log.d ("Servicestatus", "Running");
@@ -756,24 +694,20 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
             }
             this.doubleBackToExitPressedOnce = true;
             Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
-            new Handler().postDelayed(new Runnable() {
-
-                @Override
-                public void run() {
-                    doubleBackToExitPressedOnce=false;
-                }
-            }, 2000);
+            new Handler().postDelayed(() -> doubleBackToExitPressedOnce=false, 2000);
         }
     }
     @Override
     public void onRefresh() {
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),context);
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), context);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         tabLayout.setupWithViewPager(mViewPager);
         swipeRefreshLayout.setRefreshing(false);
     }
 
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+
+
+    public static class SectionsPagerAdapter extends FragmentPagerAdapter {
         private final Context context;
         public SectionsPagerAdapter(FragmentManager fm, Context context) {
             super(fm);
@@ -784,17 +718,18 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 //            //super.destroyItem(container, position, object);
 //        }
 
+        @NonNull
         @Override
         public Fragment getItem(int position) {
 //            Log.d ("mediaselect", String.valueOf(position));
             SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-            Set<String> ranking = sharedPrefs.getStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, Collections.<String>emptySet());
+            Set<String> ranking = sharedPrefs.getStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, Collections.emptySet());
             String media_name = "";
             if (!ranking.isEmpty()){
                 switch (position) {
                     case 0:
                         for (String r : ranking){
-                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            List<String> out= new ArrayList<>(Arrays.asList(r.split(" ")));
                             if(Integer.parseInt(out.get(1))==1){
                                 media_name = out.get(0);
                                 break;
@@ -803,7 +738,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                         break;
                     case 1:
                         for (String r : ranking){
-                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            List<String> out= new ArrayList<>(Arrays.asList(r.split(" ")));
                             if(Integer.parseInt(out.get(1))==2){
                                 media_name = out.get(0);
                                 break;
@@ -812,7 +747,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                         break;
                     case 2:
                         for (String r : ranking){
-                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            List<String> out= new ArrayList<>(Arrays.asList(r.split(" ")));
                             if(Integer.parseInt(out.get(1))==3){
                                 media_name = out.get(0);
                                 break;
@@ -821,7 +756,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                         break;
                     case 3:
                         for (String r : ranking){
-                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            List<String> out= new ArrayList<>(Arrays.asList(r.split(" ")));
                             if(Integer.parseInt(out.get(1))==4){
                                 media_name = out.get(0);
                                 break;
@@ -830,7 +765,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                         break;
                     case 4:
                         for (String r : ranking){
-                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            List<String> out= new ArrayList<>(Arrays.asList(r.split(" ")));
                             if(Integer.parseInt(out.get(1))==5){
                                 media_name = out.get(0);
                                 break;
@@ -839,7 +774,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                         break;
                     case 5:
                         for (String r : ranking){
-                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            List<String> out= new ArrayList<>(Arrays.asList(r.split(" ")));
                             if(Integer.parseInt(out.get(1))==6){
                                 media_name = out.get(0);
                                 break;
@@ -848,7 +783,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                         break;
                     case 6:
                         for (String r : ranking){
-                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            List<String> out= new ArrayList<>(Arrays.asList(r.split(" ")));
                             if(Integer.parseInt(out.get(1))==7){
                                 media_name = out.get(0);
                                 break;
@@ -857,7 +792,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                         break;
                     case 7:
                         for (String r : ranking){
-                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            List<String> out= new ArrayList<>(Arrays.asList(r.split(" ")));
                             if(Integer.parseInt(out.get(1))==8){
                                 media_name = out.get(0);
                                 break;
@@ -866,7 +801,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                         break;
                     case 8:
                         for (String r : ranking){
-                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            List<String> out= new ArrayList<>(Arrays.asList(r.split(" ")));
                             if(Integer.parseInt(out.get(1))==9){
                                 media_name = out.get(0);
                                 break;
@@ -933,80 +868,70 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         @Override
         public CharSequence getPageTitle(int position) {
             SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-            Set<String> ranking = sharedPrefs.getStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, Collections.<String>emptySet());
-            String media_name = "";
+            Set<String> ranking = sharedPrefs.getStringSet(SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, Collections.emptySet());
             if (!ranking.isEmpty()){
                 switch (position) {
                     case 0:
                         for (String r : ranking){
-                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            List<String> out= new ArrayList<>(Arrays.asList(r.split(" ")));
                             if(Integer.parseInt(out.get(1))==1){
-                                media_name = out.get(0);
                                 return out.get(0);
 //                                break;
                             }
                         }
                     case 1:
                         for (String r : ranking){
-                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            List<String> out= new ArrayList<>(Arrays.asList(r.split(" ")));
                             if(Integer.parseInt(out.get(1))==2){
-                                media_name = out.get(0);
                                 return out.get(0);
                             }
                         }
                     case 2:
                         for (String r : ranking){
-                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            List<String> out= new ArrayList<>(Arrays.asList(r.split(" ")));
                             if(Integer.parseInt(out.get(1))==3){
-                                media_name = out.get(0);
                                 return out.get(0);
                             }
                         }
                     case 3:
                         for (String r : ranking){
-                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            List<String> out= new ArrayList<>(Arrays.asList(r.split(" ")));
                             if(Integer.parseInt(out.get(1))==4){
-                                media_name = out.get(0);
                                 return out.get(0);
                             }
                         }
                     case 4:
                         for (String r : ranking){
-                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            List<String> out= new ArrayList<>(Arrays.asList(r.split(" ")));
                             if(Integer.parseInt(out.get(1))==5){
-                                media_name = out.get(0);
                                 return out.get(0);
                             }
                         }
                     case 5:
                         for (String r : ranking){
-                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            List<String> out= new ArrayList<>(Arrays.asList(r.split(" ")));
                             if(Integer.parseInt(out.get(1))==6){
-                                media_name = out.get(0);
                                 return out.get(0);
                             }
                         }
                     case 6:
                         for (String r : ranking){
-                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            List<String> out= new ArrayList<>(Arrays.asList(r.split(" ")));
                             if(Integer.parseInt(out.get(1))==7){
-                                media_name = out.get(0);
                                 return out.get(0);
                             }
                         }
                     case 7:
                         for (String r : ranking){
-                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            List<String> out= new ArrayList<>(Arrays.asList(r.split(" ")));
                             if(Integer.parseInt(out.get(1))==8){
-                                media_name = out.get(0);
                                 return out.get(0);
                             }
                         }
                     case 8:
                         for (String r : ranking){
-                            List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                            List<String> out= new ArrayList<>(Arrays.asList(r.split(" ")));
                             if(Integer.parseInt(out.get(1))==9){
-                                media_name = out.get(0);
                                 return out.get(0);
                             }
                         }
@@ -1041,13 +966,15 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 //            Log.d ("mediaselect", media_name);
 //
         }
+
+
     }
     //sensor
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        Intent intent = new Intent( this, ActivityRecognitionReceiver.class );
-        PendingIntent pendingIntent = PendingIntent.getService( this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT );
-        Task<Void> task = ActivityRecognition.getClient(this).requestActivityUpdates(DetectTime, pendingIntent);
+//        Intent intent = new Intent( this, ActivityRecognitionReceiver.class );
+//        PendingIntent pendingIntent = PendingIntent.getService( this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT );
+//        Task<Void> task = ActivityRecognition.getClient(this).requestActivityUpdates(DetectTime, pendingIntent);
         //mApiClient.disconnect();
     }
     @Override
@@ -1056,6 +983,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
     }
+    @SuppressLint("HardwareIds")
     public void startTimer(){
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);

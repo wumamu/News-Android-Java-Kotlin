@@ -72,6 +72,7 @@ public class BlueToothReceiver implements StreamGenerator{
             SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
             final String time_now = formatter.format(date);
             sensordb.put("Time", time_now);
+            sensordb.put("TimeStamp", Timestamp.now());
 //            BluetoothDevice device = (BluetoothDevice) intent.getParcelableArrayExtra(BluetoothDevice.EXTRA_DEVICE);
             if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
                 //discovery starts, we can show progress dialog or perform other tasks
@@ -87,6 +88,7 @@ public class BlueToothReceiver implements StreamGenerator{
 //                Toast.makeText(context, "結束偵測藍芽", Toast.LENGTH_LONG).show();
                 BlueToothState = "Stop Detect BlueTooth";
                 sensordb.put("Time", time_now);
+                sensordb.put("TimeStamp", Timestamp.now());
                 sensordb.put("BlueTooth", "Stop Detect BlueTooth");
 
             } else if (BluetoothDevice.ACTION_FOUND.equals(action)) {
@@ -133,6 +135,7 @@ public class BlueToothReceiver implements StreamGenerator{
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         final String time_now = formatter.format(date);
         sensordb.put("Time", time_now);
+        sensordb.put("TimeStamp", Timestamp.now());
         sensordb.put("BlueTooth", BlueToothState);
         sensordb.put("Using APP", UsingApp);
         sensordb.put("device_id", device_id);

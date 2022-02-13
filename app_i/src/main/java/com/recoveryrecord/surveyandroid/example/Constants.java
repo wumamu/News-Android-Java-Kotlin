@@ -1,11 +1,8 @@
 package com.recoveryrecord.surveyandroid.example;
 
-import java.util.HashSet;
-
 public class Constants {
     //email
     public static final String OUR_EMAIL = "newsmoment.mui@gmail.com";
-    public static final String MY_DEVICE = "564da153307f5547";
     //action
     public static final String CHECK_SERVICE_ACTION = "CheckService";//request code 50 60
     public static final String ESM_ALARM_ACTION = "EsmAlarm";//request code 0-15
@@ -71,6 +68,8 @@ public class Constants {
     public static final String NOT_TARGET_READ_NEWS_TITLE_ANSWER = "沒有點入閱讀過或有看過相同的新聞";
     public static final String NOTI_UNCLICK_LAST_ONE = "沒有印象";
     //INTENT PUT EXTRA
+    //Login
+    public static final String USER_NUM = "user_num";
     //NEWS NewsModuleActivity
     public static final String TRIGGER_BY_KEY = "trigger_by";
     public static final String TRIGGER_BY_VALUE_NOTIFICATION = "Notification";
@@ -111,7 +110,7 @@ public class Constants {
 
     public static final String USER_COLLECTION = "user";
     public static final String APP_VERSION_KEY = "app_version";
-    public static final String APP_VERSION_VALUE = "21.08.06-1";
+    public static final String APP_VERSION_VALUE = "2022-02-13-1";
     public static final String UPDATE_TIME = "update_timestamp";
     public static final String INITIAL_TIME = "initial_timestamp";
     public static final String LAST_LAUNCH_TIME = "last_launch_timestamp";
@@ -204,6 +203,7 @@ public class Constants {
     public static final String READING_BEHAVIOR_TITLE = "title";
     public static final String READING_BEHAVIOR_MEDIA = "media";
     public static final String READING_BEHAVIOR_HAS_IMAGE = "has_img";
+    public static final String READING_BEHAVIOR_IMAGE_URL = "image";
     public static final String READING_BEHAVIOR_PUBDATE = "pubdate";
 //    public static final String READING_BEHAVIOR_CATEGORY = "category";
     public static final String READING_BEHAVIOR_ROW_SPACING = "row_spacing(dp)";

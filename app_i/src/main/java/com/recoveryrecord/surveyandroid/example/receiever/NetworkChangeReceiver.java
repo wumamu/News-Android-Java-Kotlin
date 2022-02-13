@@ -70,6 +70,7 @@ public class NetworkChangeReceiver implements StreamGenerator{
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         final String time_now = formatter.format(date);
         sensordb.put("Time", time_now);
+        sensordb.put("TimeStamp", Timestamp.now());
         sensordb.put("Network", NetworkState);
         sensordb.put("Using APP", UsingApp);
         if(UsingApp == "Using APP")
@@ -120,6 +121,7 @@ public class NetworkChangeReceiver implements StreamGenerator{
 //                        Toast.makeText(context, "用WiFi連的", Toast.LENGTH_SHORT).show();
                         NetworkState = "Connected by Wifi";
                         sensordb.put("Time", time_now);
+                        sensordb.put("TimeStamp", Timestamp.now());
                         sensordb.put("Network", "Connected by Wifi");
 
                     } else {
@@ -127,6 +129,7 @@ public class NetworkChangeReceiver implements StreamGenerator{
 //                        Toast.makeText(context, "用手機網路連的", Toast.LENGTH_SHORT).show();
                         NetworkState = "Connected by Mobile";
                         sensordb.put("Time", time_now);
+                        sensordb.put("TimeStamp", Timestamp.now());
                         sensordb.put("Network", "Connected by Mobile");
                     }
                     //should check null because in airplane mode it will be null
@@ -144,6 +147,7 @@ public class NetworkChangeReceiver implements StreamGenerator{
 //                    Toast.makeText(context, "斷網了", Toast.LENGTH_SHORT).show();
                     NetworkState = "Disconnected";
                     sensordb.put("Time", time_now);
+                    sensordb.put("TimeStamp", Timestamp.now());
                     sensordb.put("Network", "Disconnected");
                 }
                 sensordb.put("Using APP", UsingApp);

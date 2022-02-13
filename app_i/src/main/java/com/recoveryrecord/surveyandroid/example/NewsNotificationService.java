@@ -18,19 +18,12 @@ import android.os.SystemClock;
 import android.provider.Settings;
 import android.util.Log;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.recoveryrecord.surveyandroid.example.DbHelper.PushNewsDbHelper;
 import com.recoveryrecord.surveyandroid.example.sqlite.PushNews;
 
@@ -43,18 +36,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
 
-import static android.app.Notification.EXTRA_NOTIFICATION_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_KEY;
-import static com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_VALUE;
 import static com.recoveryrecord.surveyandroid.example.Constants.CHECK_SERVICE_ACTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.COMPARE_RESULT_CLICK;
 import static com.recoveryrecord.surveyandroid.example.Constants.COMPARE_RESULT_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.COMPARE_RESULT_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.COMPARE_RESULT_MEDIA;
@@ -66,10 +53,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_NEWS_CH
 import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_NEWS_NOTIFICATION;
 import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_NEWS_NOTIFICATION_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.DOC_ID_KEY;
-import static com.recoveryrecord.surveyandroid.example.Constants.GROUP_NEWS;
 import static com.recoveryrecord.surveyandroid.example.Constants.GROUP_NEWS_SERVICE;
-import static com.recoveryrecord.surveyandroid.example.Constants.INITIAL_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.LAST_LAUNCH_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_CHANNEL_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_ID_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_MEDIA_KEY;
@@ -94,8 +78,6 @@ import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_RECEI
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_REMOVE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_REMOVE_TYPE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_USER_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_DEVICE_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_NOTIFICATION_FIRST_CREATE;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_NOTI_TIME;
@@ -108,11 +90,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENC
 import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.TRIGGER_BY_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.TRIGGER_BY_VALUE_NOTIFICATION;
-import static com.recoveryrecord.surveyandroid.example.Constants.UPDATE_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.UPLOAD_ACTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.USER_DEVICE_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.USER_PHONE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.VIBRATE_EFFECT;
 
 public class NewsNotificationService extends Service {
@@ -206,7 +184,7 @@ public class NewsNotificationService extends Service {
     private void add_ServiceChecker() {
         try {
             Thread.sleep(200);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
         Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
@@ -244,162 +222,138 @@ public class NewsNotificationService extends Service {
                 .set(service_check);
         DocumentReference rbRef_check = db.collection(USER_COLLECTION).document(device_id);
         rbRef_check.update("check_last_service", Timestamp.now())
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("log: firebase share", "DocumentSnapshot successfully updated!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("log: firebase share", "Error updating document", e);
-                    }
-                });
+                .addOnSuccessListener(aVoid -> Log.d("log: firebase share", "DocumentSnapshot successfully updated!"))
+                .addOnFailureListener(e -> Log.w("log: firebase share", "Error updating document", e));
 
         db.collection(TEST_USER_COLLECTION)
                 .document(device_id)
                 .collection(COMPARE_RESULT_COLLECTION)
                 .orderBy(COMPARE_RESULT_PUBDATE, Query.Direction.DESCENDING)
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                        if (e != null) {
-                            Log.d("lognewsselect", "listen:error", e);
-                            return;
-                        }
+                .addSnapshotListener((queryDocumentSnapshots, e) -> {
+                    if (e != null) {
+                        Log.d("lognewsselect", "listen:error", e);
+                        return;
+                    }
 //                        Timestamp right_now = Timestamp.now();
-                        Set<String> selections = sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, new HashSet<String>());
-                        Log.d("lognewsselect_", "ss " + Arrays.toString(new Set[]{selections}));
-                        int count = 0;
-                        for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
-                            DocumentSnapshot documentSnapshot = dc.getDocument();
-                            switch (dc.getType()) {
-                                case ADDED:
-                                    //add record
-                                    Map<String, Object> record_noti = new HashMap<>();
-                                    String news_id = "", media = "", title = "", doc_id = "";
-                                    PushNews myPushNews = new PushNews();//sqlite//add new to db
-                                    if(selections.contains(dc.getDocument().getString(COMPARE_RESULT_MEDIA))){
-                                        if(count<20){
-                                            Log.d("lognewsselect", "New doc: " + dc.getDocument().getData());
-                                            news_id = dc.getDocument().getString(COMPARE_RESULT_ID);
-                                            media  = dc.getDocument().getString(COMPARE_RESULT_MEDIA);
-                                            title = dc.getDocument().getString(COMPARE_RESULT_NEW_TITLE);
-                                            doc_id = dc.getDocument().getId();
-                                            switch (media) {
-                                                case "cna":
-                                                    media = "中央社";
-                                                    break;
-                                                case "chinatimes":
-                                                    media = "中時";
-                                                    break;
-                                                case "cts":
-                                                    media = "華視";
-                                                    break;
-                                                case "ebc":
-                                                    media = "東森";
-                                                    break;
-                                                case "ltn":
-                                                    media = "自由時報";
-                                                    break;
-                                                case "storm":
-                                                    media = "風傳媒";
-                                                    break;
-                                                case "udn":
-                                                    media = "聯合";
-                                                    break;
-                                                case "ettoday":
-                                                    media = "ettoday";
-                                                    break;
-                                                case "setn":
-                                                    media = "三立";
-                                                    break;
-                                            }
-                                            scheduleNotification(getNotification(news_id, media, title), 1000 );
-                                            Log.d("lognewsselect", "doc id" + doc_id);
-                                            record_noti.put(PUSH_NEWS_TYPE, "target add");
-                                            record_noti.put(PUSH_NEWS_CLICK, 1);
+                    Set<String> selections = sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, new HashSet<>());
 
-                                            myPushNews.setKEY_TYPE("target add");
-                                            myPushNews.setKEY_CLICK(1);
-                                            count++;
-                                        } else {
-                                            record_noti.put(PUSH_NEWS_TYPE, "target too much");
-                                            record_noti.put(PUSH_NEWS_CLICK, 2);
-                                            myPushNews.setKEY_TYPE("target too much");
-                                            myPushNews.setKEY_CLICK(2);
+                    Log.d("lognewsselect_", "ss " + Arrays.toString(new Set[]{selections}));
+                    int count = 0;
+                    for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
+//                        DocumentSnapshot documentSnapshot = dc.getDocument();
+                        switch (dc.getType()) {
+                            case ADDED:
+                                //add record
+                                Map<String, Object> record_noti = new HashMap<>();
+                                String news_id, media, title, doc_id;
+                                PushNews myPushNews = new PushNews();//sqlite//add new to db
+                                if (selections.contains(dc.getDocument().getString(COMPARE_RESULT_MEDIA))) {
+                                    if (count < 20) {
+                                        Log.d("lognewsselect", "New doc: " + dc.getDocument().getData());
+                                        news_id = dc.getDocument().getString(COMPARE_RESULT_ID);
+                                        media = dc.getDocument().getString(COMPARE_RESULT_MEDIA);
+                                        title = dc.getDocument().getString(COMPARE_RESULT_NEW_TITLE);
+                                        doc_id = dc.getDocument().getId();
+                                        switch (media) {
+                                            case "cna":
+                                                media = "中央社";
+                                                break;
+                                            case "chinatimes":
+                                                media = "中時";
+                                                break;
+                                            case "cts":
+                                                media = "華視";
+                                                break;
+                                            case "ebc":
+                                                media = "東森";
+                                                break;
+                                            case "ltn":
+                                                media = "自由時報";
+                                                break;
+                                            case "storm":
+                                                media = "風傳媒";
+                                                break;
+                                            case "udn":
+                                                media = "聯合";
+                                                break;
+                                            case "ettoday":
+                                                media = "ettoday";
+                                                break;
+                                            case "setn":
+                                                media = "三立";
+                                                break;
                                         }
+                                        scheduleNotification(getNotification(news_id, media, title));
+                                        Log.d("lognewsselect", "doc id" + doc_id);
+                                        record_noti.put(PUSH_NEWS_TYPE, "target add");
+                                        record_noti.put(PUSH_NEWS_CLICK, 1);
+
+                                        myPushNews.setKEY_TYPE("target add");
+                                        myPushNews.setKEY_CLICK(1);
+                                        count++;
                                     } else {
-                                        record_noti.put(PUSH_NEWS_TYPE, "not target");
-                                        record_noti.put(PUSH_NEWS_CLICK, 3);
-                                        myPushNews.setKEY_TYPE("not target");
-                                        myPushNews.setKEY_CLICK(3);
+                                        record_noti.put(PUSH_NEWS_TYPE, "target too much");
+                                        record_noti.put(PUSH_NEWS_CLICK, 2);
+                                        myPushNews.setKEY_TYPE("target too much");
+                                        myPushNews.setKEY_CLICK(2);
                                     }
-                                    record_noti.put(PUSH_NEWS_DOC_ID, device_id + " " + dc.getDocument().getString(COMPARE_RESULT_ID));
-                                    record_noti.put(PUSH_NEWS_DEVICE_ID,  device_id);
-                                    record_noti.put(PUSH_NEWS_USER_ID,  sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+                                } else {
+                                    record_noti.put(PUSH_NEWS_TYPE, "not target");
+                                    record_noti.put(PUSH_NEWS_CLICK, 3);
+                                    myPushNews.setKEY_TYPE("not target");
+                                    myPushNews.setKEY_CLICK(3);
+                                }
+                                record_noti.put(PUSH_NEWS_DOC_ID, device_id + " " + dc.getDocument().getString(COMPARE_RESULT_ID));
+                                record_noti.put(PUSH_NEWS_DEVICE_ID, device_id);
+                                record_noti.put(PUSH_NEWS_USER_ID, sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
 
-                                    record_noti.put(PUSH_NEWS_ID, dc.getDocument().getString(COMPARE_RESULT_ID));
-                                    record_noti.put(PUSH_NEWS_TITLE, dc.getDocument().getString(COMPARE_RESULT_NEW_TITLE));
-                                    record_noti.put(PUSH_NEWS_MEDIA, dc.getDocument().getString(COMPARE_RESULT_MEDIA));
-                                    record_noti.put(PUSH_NEWS_PUBDATE, dc.getDocument().getTimestamp(COMPARE_RESULT_PUBDATE));
+                                record_noti.put(PUSH_NEWS_ID, dc.getDocument().getString(COMPARE_RESULT_ID));
+                                record_noti.put(PUSH_NEWS_TITLE, dc.getDocument().getString(COMPARE_RESULT_NEW_TITLE));
+                                record_noti.put(PUSH_NEWS_MEDIA, dc.getDocument().getString(COMPARE_RESULT_MEDIA));
+                                record_noti.put(PUSH_NEWS_PUBDATE, dc.getDocument().getTimestamp(COMPARE_RESULT_PUBDATE));
 
-                                    record_noti.put(PUSH_NEWS_NOTI_TIME, Timestamp.now());
-                                    record_noti.put(PUSH_NEWS_RECEIEVE_TIME, Timestamp.now());
+                                record_noti.put(PUSH_NEWS_NOTI_TIME, Timestamp.now());
+                                record_noti.put(PUSH_NEWS_RECEIEVE_TIME, Timestamp.now());
 //                                    record_noti.put(PUSH_NEWS_RECEIEVE_TIME, new Timestamp(0, 0));
-                                    record_noti.put(PUSH_NEWS_OPEN_TIME, new Timestamp(0, 0));
-                                    record_noti.put(PUSH_NEWS_REMOVE_TIME, new Timestamp(0, 0));
-                                    record_noti.put(PUSH_NEWS_REMOVE_TYPE, "NA");
+                                record_noti.put(PUSH_NEWS_OPEN_TIME, new Timestamp(0, 0));
+                                record_noti.put(PUSH_NEWS_REMOVE_TIME, new Timestamp(0, 0));
+                                record_noti.put(PUSH_NEWS_REMOVE_TYPE, "NA");
 
 //                                    record_noti.put(PUSH_NEWS_TYPE, "NA");//ABOVE
 //                                    record_noti.put(PUSH_NEWS_CLICK, "NA");//ABOVE
 
-                                    db.collection(PUSH_NEWS_COLLECTION)
-                                            .document(device_id + " " + dc.getDocument().getString(COMPARE_RESULT_ID))
-                                            .set(record_noti);
+                                db.collection(PUSH_NEWS_COLLECTION)
+                                        .document(device_id + " " + dc.getDocument().getString(COMPARE_RESULT_ID))
+                                        .set(record_noti);
 
-                                    myPushNews.setKEY_DOC_ID(device_id + " " + dc.getDocument().getString(COMPARE_RESULT_ID));
-                                    myPushNews.setKEY_DEVICE_ID(device_id);
-                                    myPushNews.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
-                                    myPushNews.setKEY_NEWS_ID(dc.getDocument().getString(COMPARE_RESULT_ID));
-                                    myPushNews.setKEY_TITLE(dc.getDocument().getString(COMPARE_RESULT_NEW_TITLE));
-                                    myPushNews.setKEY_MEDIA(dc.getDocument().getString(COMPARE_RESULT_MEDIA));
-                                    myPushNews.setKEY_PUBDATE(dc.getDocument().getTimestamp(COMPARE_RESULT_PUBDATE).getSeconds());
-                                    myPushNews.setKEY_NOTI_TIMESTAMP(Timestamp.now().getSeconds());
-                                    myPushNews.setKEY_RECEIEVE_TIMESTAMP(Timestamp.now().getSeconds());
+                                myPushNews.setKEY_DOC_ID(device_id + " " + dc.getDocument().getString(COMPARE_RESULT_ID));
+                                myPushNews.setKEY_DEVICE_ID(device_id);
+                                myPushNews.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+                                myPushNews.setKEY_NEWS_ID(dc.getDocument().getString(COMPARE_RESULT_ID));
+                                myPushNews.setKEY_TITLE(dc.getDocument().getString(COMPARE_RESULT_NEW_TITLE));
+                                myPushNews.setKEY_MEDIA(dc.getDocument().getString(COMPARE_RESULT_MEDIA));
+                                myPushNews.setKEY_PUBDATE(dc.getDocument().getTimestamp(COMPARE_RESULT_PUBDATE).getSeconds());
+                                myPushNews.setKEY_NOTI_TIMESTAMP(Timestamp.now().getSeconds());
+                                myPushNews.setKEY_RECEIEVE_TIMESTAMP(Timestamp.now().getSeconds());
 
-                                    PushNewsDbHelper dbHandler = new PushNewsDbHelper(getApplicationContext());
-                                    dbHandler.insertPushNewsDetailsCreate(myPushNews);
+                                PushNewsDbHelper dbHandler = new PushNewsDbHelper(getApplicationContext());
+                                dbHandler.insertPushNewsDetailsCreate(myPushNews);
 
 
-
-                                    //delete
-                                    db.collection(TEST_USER_COLLECTION)
-                                            .document(device_id)
-                                            .collection(COMPARE_RESULT_COLLECTION)
-                                            .document(dc.getDocument().getId())
-                                            .delete()
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    Log.d("lognewsselect", "DocumentSnapshot successfully deleted!");
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Log.d("lognewsselect", "Error deleting document", e);
-                                                }
-                                            });
-                                    break;
-                                case MODIFIED:
-                                    break;
-                                case REMOVED:
-                                    Log.d("lognewsselect", "Removed doc: " + dc.getDocument().getData());
-                                    break;
-                            }
+                                //delete
+                                db.collection(TEST_USER_COLLECTION)
+                                        .document(device_id)
+                                        .collection(COMPARE_RESULT_COLLECTION)
+                                        .document(dc.getDocument().getId())
+                                        .delete()
+                                        .addOnSuccessListener(aVoid -> Log.d("lognewsselect", "DocumentSnapshot successfully deleted!"))
+                                        .addOnFailureListener(e1 -> Log.d("lognewsselect", "Error deleting document", e1));
+                                break;
+                            case MODIFIED:
+                                break;
+                            case REMOVED:
+                                Log.d("lognewsselect", "Removed doc: " + dc.getDocument().getData());
+                                break;
                         }
                     }
                 });
@@ -428,13 +382,13 @@ public class NewsNotificationService extends Service {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void scheduleNotification (Notification notification, int delay) {
+    private void scheduleNotification(Notification notification) {
         Intent notificationIntent = new Intent(this, NotificationListenerNews.class);
         notificationIntent.putExtra(DEFAULT_NEWS_NOTIFICATION_ID, 1 ) ;
         notificationIntent.putExtra(DEFAULT_NEWS_NOTIFICATION, notification) ;
         int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
         PendingIntent pendingIntent = PendingIntent.getBroadcast( this, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+        long futureInMillis = SystemClock.elapsedRealtime() + 1000;
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         assert alarmManager != null;
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
@@ -442,7 +396,7 @@ public class NewsNotificationService extends Service {
     @RequiresApi(api = Build.VERSION_CODES.N)
     private Notification getNotification(String news_id, String media, String title) {
 
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+//        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 //        Boolean first_group = sharedPrefs.getBoolean(SHARE_NOTIFICATION_FIRST_CREATE, true);
 
         int nid = (int) System.currentTimeMillis();

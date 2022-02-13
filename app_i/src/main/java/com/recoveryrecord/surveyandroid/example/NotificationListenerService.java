@@ -348,7 +348,7 @@ public class NotificationListenerService extends android.service.notification.No
             if (check_title && check_text){
 
                 boolean is_me = false;
-                if (device_id.equals("564da153307f5547") || device_id.equals("14f44cefb3a2d7aa")){
+                if (device_id.equals("318f4fea56e7070c") || device_id.equals("046827517ac92b09")){
                     is_me = true;
                     receieve_notification.put("source", device_id);
                 }

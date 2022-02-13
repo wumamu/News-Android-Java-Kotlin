@@ -3,16 +3,17 @@ package com.recoveryrecord.surveyandroid.example.model;
 import com.google.firebase.Timestamp;
 
 public class NewsModel {
-    private String title, media, id;
+    private String title, media, id, image;
     private Timestamp pubdate;
     public NewsModel(){
 
     }
-    public NewsModel(String title, String media, String id, Timestamp pubdate) {
+    public NewsModel(String title, String media, String id, Timestamp pubdate, String image) {
         this.title = title;
         this.media = media;
         this.pubdate = pubdate;
         this.id = id;
+        this.image = image;
     }
 
     public String getTitle() {
@@ -45,5 +46,13 @@ public class NewsModel {
 
     public void setPubdate(Timestamp pubdate) {
         this.pubdate = pubdate;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

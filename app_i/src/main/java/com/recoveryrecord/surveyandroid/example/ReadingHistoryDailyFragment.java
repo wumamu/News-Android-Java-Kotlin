@@ -1,6 +1,7 @@
 package com.recoveryrecord.surveyandroid.example;
 
 import android.annotation.SuppressLint;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -8,20 +9,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.recoveryrecord.surveyandroid.example.model.NewsModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,13 +37,9 @@ public class ReadingHistoryDailyFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private static int position;
-    private RecyclerView courseRV;
     private ArrayList<NewsModel> dataModalArrayList;
     private ReadingHistoryRecycleViewAdapter dataRVAdapter;
     private FirebaseFirestore db;
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     private String device_id = "";
     Calendar start_time, end_time;
     Long start_long, end_long;
@@ -71,7 +66,7 @@ public class ReadingHistoryDailyFragment extends Fragment {
         if (getArguments() != null) {
             mPosition = getArguments().getInt("position");
         }
-        device_id = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
+        device_id = Settings.Secure.getString(requireActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
         start_time = Calendar.getInstance();
         end_time = Calendar.getInstance();
         start_time.add(Calendar.DAY_OF_YEAR, -(mPosition-1));
@@ -90,18 +85,20 @@ public class ReadingHistoryDailyFragment extends Fragment {
         Log.d("lognewsselect1231", String.valueOf(end_long));
         Log.d("lognewsselect1231", String.valueOf(position));
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            // TODO: Rename and change types of parameters
+            String mParam1 = getArguments().getString(ARG_PARAM1);
+            String mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 //        return inflater.inflate(R.layout.fragment_nest1_category, container, false);
         View view = inflater.inflate(R.layout.nested_layer2_readinghistory, container, false);
         // initializing our variables.
-        courseRV = view.findViewById(R.id.idRVItems);
+        RecyclerView courseRV = view.findViewById(R.id.idRVItems);
 
         // initializing our variable for firebase
         // firestore and getting its instance.
@@ -126,6 +123,7 @@ public class ReadingHistoryDailyFragment extends Fragment {
         return view;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void loadrecyclerViewData() {
         db.collection(READING_BEHAVIOR_COLLECTION)
                 .whereEqualTo(READING_BEHAVIOR_DEVICE_ID, device_id)
@@ -135,30 +133,24 @@ public class ReadingHistoryDailyFragment extends Fragment {
 //                .startAfter(test)
 //                .endBefore(Timestamp.now())
                 .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        if (!queryDocumentSnapshots.isEmpty()) {
-                            List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
-                            for (DocumentSnapshot d : list) {
-                                if(d.get(READING_BEHAVIOR_TITLE)!=null && !d.get(READING_BEHAVIOR_TITLE).equals("NA")){
-                                    NewsModel dataModal = d.toObject(NewsModel.class);
-                                    dataModalArrayList.add(dataModal);
-                                }
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
+                        for (DocumentSnapshot d : list) {
+                            if(d.get(READING_BEHAVIOR_TITLE)!=null && !Objects.equals(d.get(READING_BEHAVIOR_TITLE), "NA")){
+                                NewsModel dataModal = d.toObject(NewsModel.class);
+//                                Log.d("lognewsselect", (String) Objects.requireNonNull(d.get("image")));
+                                dataModalArrayList.add(dataModal);
                             }
-                            dataRVAdapter.notifyDataSetChanged();
-                        } else {
                         }
+                        dataRVAdapter.notifyDataSetChanged();
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d("lognewsselect1231", String.valueOf(e));
-                // if we do not get any data or any error we are displaying
-                // a toast message that we do not get any data
-//                Toast.makeText(TestNewsOneActivity.this, "Fail to get the data.", Toast.LENGTH_SHORT).show();
-            }
-        });
+                }).addOnFailureListener(e -> {
+                    Log.d("lognewsselect1231", String.valueOf(e));
+                    // if we do not get any data or any error we are displaying
+                    // a toast message that we do not get any data
+    //                Toast.makeText(TestNewsOneActivity.this, "Fail to get the data.", Toast.LENGTH_SHORT).show();
+                });
     }
 
 }

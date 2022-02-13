@@ -4,14 +4,19 @@ package com.recoveryrecord.surveyandroid.example;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.recoveryrecord.surveyandroid.example.model.NewsModel;
 
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,7 +56,13 @@ public class ReadingHistoryRecycleViewAdapter extends RecyclerView.Adapter<Readi
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         List<String> my_tt = new ArrayList<String>(Arrays.asList(formatter.format(date).split(" ")));
         holder.newsPubTime.setText(String.format("%s %s", my_tt.get(0), my_tt.get(2)));
-
+        if(model.getImage()!=null && model.getImage()!="NA"){
+            new NewsRecycleViewAdapter.DownloadImageTask(holder.newsImg).execute(model.getImage());
+            holder.newsImg.setAdjustViewBounds(true);
+            holder.newsImg.setMaxHeight(200);
+        } else {
+            holder.newsImg.setVisibility(View.GONE);
+        }
 
         String media_name = model.getMedia();//from data base
         switch (media_name) {
@@ -88,51 +99,6 @@ public class ReadingHistoryRecycleViewAdapter extends RecyclerView.Adapter<Readi
 
         }
         holder.newsMedia.setText(media_name);
-//        if(model.getPubdate()==null){
-//            FirebaseFirestore db = FirebaseFirestore.getInstance();
-//            DocumentReference docRef = db.collection("server_push_notifications").document(model.getId());
-//            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                @Override
-//                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                    if (task.isSuccessful()) {
-//                        DocumentSnapshot document = task.getResult();
-//                        assert document != null;
-//                        if (document.exists()) {
-//                            Date date = document.getTimestamp("pubdate").toDate();
-//                            @SuppressLint("SimpleDateFormat")
-//                            SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-//                            List<String> my_tt = new ArrayList<String>(Arrays.asList(formatter.format(date).split(" ")));
-//                            holder.newsPubTime.setText(String.format("%s %s", my_tt.get(0), my_tt.get(2)));
-//                            holder.newsMedia.setText(document.getString("media"));
-//                        } else {
-//                            Log.d("lognewsselect", "No such document");
-//                        }
-//                    } else {
-//                        Log.d("lognewsselect", "get failed with ", task.getException());
-//                    }
-//                }
-//            });
-//        } else {
-//            Date date = model.getPubdate().toDate();
-//            @SuppressLint("SimpleDateFormat")
-//            SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-//            List<String> my_tt = new ArrayList<String>(Arrays.asList(formatter.format(date).split(" ")));
-//            holder.newsPubTime.setText(String.format("%s %s", my_tt.get(0), my_tt.get(2)));
-//            holder.newsMedia.setText(model.getMedia());
-//        }
-
-
-        // we are using Picasso to load images
-        // from URL inside our image view.
-//        Picasso.get().load(modal.getImgUrl()).into(holder.courseIV);
-//        holder.itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                // setting on click listener
-//                // for our items of recycler items.
-//                Toast.makeText(context, "Clicked item is " + modal.getName(), Toast.LENGTH_SHORT).show();
-//            }
-//        });
     }
 
     @Override
@@ -144,7 +110,10 @@ public class ReadingHistoryRecycleViewAdapter extends RecyclerView.Adapter<Readi
     public class ViewHolder extends RecyclerView.ViewHolder {
         // creating variables for our
         // views of recycler items.
-        private TextView newsTitle, newsPubTime, newsMedia;
+        private final TextView newsTitle;
+        private final TextView newsPubTime;
+        private final TextView newsMedia;
+        private final ImageView newsImg;
 //        private ImageView courseIV;
 
         public ViewHolder(@NonNull View itemView) {
@@ -153,6 +122,7 @@ public class ReadingHistoryRecycleViewAdapter extends RecyclerView.Adapter<Readi
             newsTitle = itemView.findViewById(R.id.text_view_title);
             newsPubTime = itemView.findViewById(R.id.text_view_pubtime);
             newsMedia = itemView.findViewById(R.id.text_view_media);
+            newsImg = itemView.findViewById(R.id.imgView);
 //            courseIV = itemView.findViewById(R.id.idIVimage);
 //            itemView.setCardBackgroundColor(Color.parseColor("#e0efff"));
             // 點擊項目時
@@ -206,6 +176,31 @@ public class ReadingHistoryRecycleViewAdapter extends RecyclerView.Adapter<Readi
                 }
             });
 
+        }
+    }
+    //image download ###############################################################################
+    private static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            bmImage.setImageBitmap(result);
         }
     }
 }

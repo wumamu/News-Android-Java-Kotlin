@@ -252,6 +252,7 @@ public class TransportationModeReceiver implements StreamGenerator {
 
 
         sensordb.put("Time", time_now);
+        sensordb.put("TimeStamp", Timestamp.now());
         sensordb.put("Confirmed Activity Recognition", getConfirmedActivityString());
         sensordb.put("device_id", device_id);
         sensordb.put("Using APP", UsingApp);

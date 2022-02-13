@@ -102,6 +102,7 @@ public class LightSensorReceiver implements StreamGenerator{
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         final String time_now = formatter.format(date);
         sensordb.put("Time", time_now);
+        sensordb.put("TimeStamp", Timestamp.now());
         sensordb.put("Light Sensor", LightState);
         sensordb.put("Using APP", UsingApp);
         if(UsingApp == "Using APP")

@@ -2,37 +2,22 @@ package com.recoveryrecord.surveyandroid.example.receiever;
 
 import android.annotation.SuppressLint;
 import android.app.IntentService;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.preference.PreferenceManager;
-
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
-import com.google.android.gms.tasks.Task;
-import com.google.common.eventbus.EventBus;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.recoveryrecord.surveyandroid.example.CSVDataRecord.ActivityRecognitionDataRecord;
 import com.recoveryrecord.surveyandroid.example.CSVDataRecord.ActivityRecognitionStream;
 import com.recoveryrecord.surveyandroid.example.CSVDataRecord.CSVHelper;
-import com.recoveryrecord.surveyandroid.example.CSVDataRecord.StreamAlreadyExistsException;
 import com.recoveryrecord.surveyandroid.example.CSVDataRecord.StreamNotFoundException;
 import com.recoveryrecord.surveyandroid.example.CSVDataRecord.TransportationModeDataRecord;
-import com.recoveryrecord.surveyandroid.example.Constants;
 import com.recoveryrecord.surveyandroid.example.DbHelper.ActivityRecognitionReceiverDbHelper;
 import com.recoveryrecord.surveyandroid.example.R;
 import com.recoveryrecord.surveyandroid.example.sqlite.ActivityRecognition;
@@ -49,34 +34,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
-import javax.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.preference.PreferenceManager;
 
-import static android.icu.lang.UCharacter.IndicPositionalCategory.NA;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.NotificationScheduler.TAG;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.ACTIVITY_DELIMITER;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.DATE_FORMAT_NOW_SLASH;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.MILLISECONDS_PER_MINUTE;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.MILLISECONDS_PER_SECOND;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.getCurrentTimeInMillis;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.getCurrentTimeString;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.sharedPrefString;
-import static com.recoveryrecord.surveyandroid.example.receiever.TransportationModeReceiver.NO_ACTIVITY_TYPE;
-import static com.recoveryrecord.surveyandroid.example.receiever.TransportationModeReceiver.STRING_DETECTED_ACTIVITY_IN_VEHICLE;
-import static com.recoveryrecord.surveyandroid.example.receiever.TransportationModeReceiver.STRING_DETECTED_ACTIVITY_NA;
-import static com.recoveryrecord.surveyandroid.example.receiever.TransportationModeReceiver.STRING_DETECTED_ACTIVITY_ON_BICYCLE;
-import static com.recoveryrecord.surveyandroid.example.receiever.TransportationModeReceiver.STRING_DETECTED_ACTIVITY_ON_FOOT;
-import static com.recoveryrecord.surveyandroid.example.receiever.TransportationModeReceiver.STRING_DETECTED_ACTIVITY_RUNNING;
-import static com.recoveryrecord.surveyandroid.example.receiever.TransportationModeReceiver.STRING_DETECTED_ACTIVITY_STILL;
-import static com.recoveryrecord.surveyandroid.example.receiever.TransportationModeReceiver.STRING_DETECTED_ACTIVITY_TILTING;
-import static com.recoveryrecord.surveyandroid.example.receiever.TransportationModeReceiver.STRING_DETECTED_ACTIVITY_UNKNOWN;
-import static com.recoveryrecord.surveyandroid.example.receiever.TransportationModeReceiver.STRING_DETECTED_ACTIVITY_WALKING;
 import static com.recoveryrecord.surveyandroid.example.receiever.TransportationModeReceiver.getConfirmedActivityString;
 
 public class ActivityRecognitionReceiver extends IntentService implements StreamGenerator{
@@ -100,12 +72,13 @@ public class ActivityRecognitionReceiver extends IntentService implements Stream
     public static final String STRING_DETECTED_ACTIVITY_NA = "NA";
     public static final int NO_ACTIVITY_TYPE = -1;
 //    private ActivityRecognitionDataRecord activityRecognitionDataRecord;
-    final Timestamp current_end = Timestamp.now();
+//    final Timestamp current_end = Timestamp.now();
     Date date = new Date(System.currentTimeMillis());
+    @SuppressLint("SimpleDateFormat")
     SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
     final String time_now = formatter.format(date);
     Map<String, Object> sensordb = new HashMap<>();
-    Intent intent;
+//    Intent intent;
     private static int Vehicle = 0;
     private static int Bicycle = 0;
     private static int Foot = 0;
@@ -130,12 +103,11 @@ public class ActivityRecognitionReceiver extends IntentService implements Stream
 
     public static List<DetectedActivity> sProbableActivities;
     public static DetectedActivity sMostProbableActivity;
-    public static boolean ReadNews;
+//    public static boolean ReadNews;
     private static long sLatestDetectionTime;
 
-    public static int ACTIVITY_RECOGNITION_DEFAULT_UPDATE_INTERVAL_IN_SECONDS = 0;
-    public static long ACTIVITY_RECOGNITION_DEFAULT_UPDATE_INTERVAL =
-            ACTIVITY_RECOGNITION_DEFAULT_UPDATE_INTERVAL_IN_SECONDS * MILLISECONDS_PER_SECOND;
+//    public static int ACTIVITY_RECOGNITION_DEFAULT_UPDATE_INTERVAL_IN_SECONDS = 0;
+//    public static long ACTIVITY_RECOGNITION_DEFAULT_UPDATE_INTERVAL = ACTIVITY_RECOGNITION_DEFAULT_UPDATE_INTERVAL_IN_SECONDS * MILLISECONDS_PER_SECOND;
 
     public static ArrayList<ActivityRecognitionDataRecord> mLocalRecordPool;
     TransportationModeReceiver transportationModeStreamGenerator = new TransportationModeReceiver();
@@ -148,12 +120,12 @@ public class ActivityRecognitionReceiver extends IntentService implements Stream
 //        Log.e("ActivityRecognition", "onCreate");
         super.onCreate();
         device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
-        mLocalRecordPool = new ArrayList<ActivityRecognitionDataRecord>();
+        mLocalRecordPool = new ArrayList<>();
         sLatestDetectionTime = -1;
         recordCount = 0;
         sKeepalive = KEEPALIVE_MINUTE * MILLISECONDS_PER_MINUTE;
         this.mStream = new ActivityRecognitionStream(50);
-        sharedPrefs = this.getSharedPreferences(sharedPrefString, mContext.MODE_PRIVATE);
+        sharedPrefs = this.getSharedPreferences(sharedPrefString, MODE_PRIVATE);
 
         transportationModeStreamGenerator.TransportationModeStreamGenerator(this);
         this.register();
@@ -179,8 +151,9 @@ public class ActivityRecognitionReceiver extends IntentService implements Stream
     protected void onHandleIntent(Intent intent) {
         device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         sensordb.put("Time", time_now);
+        sensordb.put("TimeStamp", Timestamp.now());
         sensordb.put("Using APP", UsingApp);
-        if(UsingApp == "Using APP")
+        if(UsingApp.equals("Using APP"))
             sensordb.put("Session", SessionID);
         else
             sensordb.put("Session", -1);
@@ -204,8 +177,9 @@ public class ActivityRecognitionReceiver extends IntentService implements Stream
     public void updateStream(Context context) {
 //        device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 //        Log.e("Activity Recognution", "update");
-        final Timestamp current_end = Timestamp.now();
+//        final Timestamp current_end = Timestamp.now();
         Date date = new Date(System.currentTimeMillis());
+        @SuppressLint("SimpleDateFormat")
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         final String time_now = formatter.format(date);
         sensordb.put("Time", time_now);
@@ -226,7 +200,7 @@ public class ActivityRecognitionReceiver extends IntentService implements Stream
 //                .set(sensordb);
         sensordb.put("device_id", device_id);
         sensordb.put("Using APP", UsingApp);
-        if(UsingApp == "Using APP")
+        if(UsingApp.equals("Using APP"))
             sensordb.put("Session", SessionID);
         else
             sensordb.put("Session", -1);
@@ -275,7 +249,7 @@ public class ActivityRecognitionReceiver extends IntentService implements Stream
         device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         sensordb.put("device_id", device_id);
         sensordb.put("Using APP", UsingApp);
-        if(UsingApp == "Using APP")
+        if(UsingApp.equals("Using APP"))
             sensordb.put("Session", SessionID);
         else
             sensordb.put("Session", -1);
@@ -291,7 +265,7 @@ public class ActivityRecognitionReceiver extends IntentService implements Stream
                 .collection("Activity Recognition")
                 .document(device_id + " " + time_now);
         ref.update("period", "GPS Connected");
-        Handler handler = new Handler(Looper.getMainLooper());
+//        Handler handler = new Handler(Looper.getMainLooper());
         int largerconfidence = 0;
         for (final DetectedActivity activity : probableActivities) {
             switch (activity.getType()) {
@@ -452,16 +426,16 @@ public class ActivityRecognitionReceiver extends IntentService implements Stream
             e.printStackTrace();
         }
     }
-    public long getUpdateFrequency() {
-        return 1;
-    }
-    public void sendStateChangeEvent() {
+//    public long getUpdateFrequency() {
+//        return 1;
+//    }
+//    public void sendStateChangeEvent() {
+//
+//    }
 
-    }
-
-    public void offer(ActivityRecognitionDataRecord dataRecord) {
-        Log.e(TAG, "Offer for ActivityRecognition data record does nothing!");
-    }
+//    public void offer(ActivityRecognitionDataRecord dataRecord) {
+//        Log.e(TAG, "Offer for ActivityRecognition data record does nothing!");
+//    }
 
     @SuppressLint("LongLogTag")
     public void setActivitiesandDetectedtime (List<DetectedActivity> probableActivities, DetectedActivity mostProbableActivity, long detectedtime) throws StreamNotFoundException {
@@ -485,7 +459,7 @@ public class ActivityRecognitionReceiver extends IntentService implements Stream
 
 }
     public void saveRecordToLocalRecordPool(DetectedActivity MostProbableActivity,long Detectedtime) throws StreamNotFoundException {
-        /** create a Record to save timestamp, session it belongs to, and Data**/
+//        /** create a Record to save timestamp, session it belongs to, and Data**/
 
 //        Log.e("ActivityRecognition", "saveRecordToLocalRecordPool");
         ActivityRecognitionDataRecord record;
@@ -512,7 +486,6 @@ public class ActivityRecognitionReceiver extends IntentService implements Stream
             e.printStackTrace();
         }
 
-        /**we set data in Record**/
         record.setData(data);
         record.setTimestamp(sLatestDetectionTime);
 
@@ -531,15 +504,13 @@ public class ActivityRecognitionReceiver extends IntentService implements Stream
     @SuppressLint("LongLogTag")
     protected void addRecord(ActivityRecognitionDataRecord activityRecognitionDataRecord) throws StreamNotFoundException {
 //        Log.e("add record", "start");
-        /**1. add record to the local pool **/
-//        long id = recordCount++;
+        //        long id = recordCount++;
 //        activityRecognitionDataRecord.setID(id);
 //        Log.d(TAG,"CreateTime:" + activityRecognitionDataRecord.getCreationTime()+ " MostProbableActivity:"+activityRecognitionDataRecord.getMostProbableActivity());
 
         mLocalRecordPool.add(activityRecognitionDataRecord); //it's working.
         Log.d(TAG, "[test logging]add record " + "logged at " + activityRecognitionDataRecord.getTimeString() );
 //        Log.e("mlocalrecord size before remove", String.valueOf(mLocalRecordPool.size()));
-        /**2. check whether we should remove old record **/
         removeOutDatedRecord();
         //**** update the latest ActivityRecognitionDataRecord in mLocalRecordPool to MinukuStreamManager;
 //        Log.e("mlocalrecord size after remove", String.valueOf(mLocalRecordPool.size()));
@@ -571,12 +542,12 @@ public class ActivityRecognitionReceiver extends IntentService implements Stream
                     activityRecognitionDataRecord.getMostProbableActivity().toString(),
                     activityRecognitionDataRecord.getProbableActivities().toString());
 
-            String suspectedStartActivity = getActivityNameFromType(transportationModeStreamGenerator.getSuspectedStartActivityType());
-            String suspectedEndActivity = getActivityNameFromType(transportationModeStreamGenerator.getSuspectedStopActivityType());
+            String suspectedStartActivity = getActivityNameFromType(TransportationModeReceiver.getSuspectedStartActivityType());
+            String suspectedEndActivity = getActivityNameFromType(TransportationModeReceiver.getSuspectedStopActivityType());
 
             TransportationModeDataRecord transportationModeDataRecord =
                     new TransportationModeDataRecord(getConfirmedActivityString(),
-                            transportationModeStreamGenerator.getSuspectTime(),
+                            TransportationModeReceiver.getSuspectTime(),
                             suspectedStartActivity, suspectedEndActivity);
 
             MyStreamManager.getInstance().setTransportationModeDataRecord(transportationModeDataRecord, mContext, sharedPrefs);
@@ -609,26 +580,25 @@ public class ActivityRecognitionReceiver extends IntentService implements Stream
         return mLocalRecordPool;
     }
 
-    public static ActivityRecognitionDataRecord getLastSavedRecord(){
-        if(mLocalRecordPool==null){
-            Log.e("getLastSavedRecord","null");
-            return null;
-        }
-        if (mLocalRecordPool.size()>0)
-            return mLocalRecordPool.get(mLocalRecordPool.size()-1);
-        else{
-            Log.e("getLastSavedRecord","mLocalRecordPool.size()<0");
-            return null;
-        }
-    }
+//    public static ActivityRecognitionDataRecord getLastSavedRecord(){
+//        if(mLocalRecordPool==null){
+//            Log.e("getLastSavedRecord","null");
+//            return null;
+//        }
+//        if (mLocalRecordPool.size()>0)
+//            return mLocalRecordPool.get(mLocalRecordPool.size()-1);
+//        else{
+//            Log.e("getLastSavedRecord","mLocalRecordPool.size()<0");
+//            return null;
+//        }
+//    }
 
     /**get the current time in milliseconds**/
     public static long getCurrentTimeInMillis(){
         //get timzone
         TimeZone tz = TimeZone.getDefault();
         Calendar cal = Calendar.getInstance(tz);
-        long t = cal.getTimeInMillis();
-        return t;
+        return cal.getTimeInMillis();
     }
 
 
@@ -647,45 +617,46 @@ public class ActivityRecognitionReceiver extends IntentService implements Stream
 
     }
 
-    public void onConnectionSuspended(int i) {
-
-    }
+//    public void onConnectionSuspended(int i) {
+//
+//    }
 
     @SuppressLint("LongLogTag")
 
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        if (connectionResult.hasResolution()) {
-            // Log.d(LOG_TAG,"[onConnectionFailed] Conntection to Google Play services is failed");
+//    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+//        if (connectionResult.hasResolution()) {
+//            // Log.d(LOG_TAG,"[onConnectionFailed] Conntection to Google Play services is failed");
+//
+//        } else {
+//            Log.e(TAG, "[onConnectionFailed] No Google Play services is available, the error code is "
+//                    + connectionResult.getErrorCode());
+//        }
+//    }
 
-        } else {
-            Log.e(TAG, "[onConnectionFailed] No Google Play services is available, the error code is "
-                    + connectionResult.getErrorCode());
-        }
-    }
-
-    public static int getActivityTypeFromName(String activityName) {
-
-        if (activityName.equals(STRING_DETECTED_ACTIVITY_IN_VEHICLE)) {
-            return DetectedActivity.IN_VEHICLE;
-        }else if(activityName.equals(STRING_DETECTED_ACTIVITY_ON_BICYCLE)) {
-            return DetectedActivity.ON_BICYCLE;
-        }else if(activityName.equals(STRING_DETECTED_ACTIVITY_ON_FOOT)) {
-            return DetectedActivity.ON_FOOT;
-        }else if(activityName.equals(STRING_DETECTED_ACTIVITY_STILL)) {
-            return DetectedActivity.STILL;
-        }else if(activityName.equals(STRING_DETECTED_ACTIVITY_UNKNOWN)) {
-            return DetectedActivity.UNKNOWN ;
-        }else if(activityName.equals(STRING_DETECTED_ACTIVITY_RUNNING)) {
-            return DetectedActivity.RUNNING ;
-        }else if (activityName.equals(STRING_DETECTED_ACTIVITY_WALKING)){
-            return DetectedActivity.WALKING;
-        }else if(activityName.equals(STRING_DETECTED_ACTIVITY_TILTING)) {
-            return DetectedActivity.TILTING;
-        }else {
-            return NO_ACTIVITY_TYPE;
-        }
-
-    }
+//    public static int getActivityTypeFromName(String activityName) {
+//
+//        switch (activityName) {
+//            case STRING_DETECTED_ACTIVITY_IN_VEHICLE:
+//                return DetectedActivity.IN_VEHICLE;
+//            case STRING_DETECTED_ACTIVITY_ON_BICYCLE:
+//                return DetectedActivity.ON_BICYCLE;
+//            case STRING_DETECTED_ACTIVITY_ON_FOOT:
+//                return DetectedActivity.ON_FOOT;
+//            case STRING_DETECTED_ACTIVITY_STILL:
+//                return DetectedActivity.STILL;
+//            case STRING_DETECTED_ACTIVITY_UNKNOWN:
+//                return DetectedActivity.UNKNOWN;
+//            case STRING_DETECTED_ACTIVITY_RUNNING:
+//                return DetectedActivity.RUNNING;
+//            case STRING_DETECTED_ACTIVITY_WALKING:
+//                return DetectedActivity.WALKING;
+//            case STRING_DETECTED_ACTIVITY_TILTING:
+//                return DetectedActivity.TILTING;
+//            default:
+//                return NO_ACTIVITY_TYPE;
+//        }
+//
+//    }
 
     public static String getActivityNameFromType(int activityType) {
         switch(activityType) {
@@ -712,10 +683,9 @@ public class ActivityRecognitionReceiver extends IntentService implements Stream
     }
     public static String getTimeString(long time){
 
-        SimpleDateFormat sdf_now = new SimpleDateFormat(DATE_FORMAT_NOW_SLASH);
-        String currentTimeString = sdf_now.format(time);
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf_now = new SimpleDateFormat(DATE_FORMAT_NOW_SLASH);
 
-        return currentTimeString;
+        return sdf_now.format(time);
     }
 }
 
