@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
@@ -13,32 +12,22 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.ActivityRecognition;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
-import com.google.android.play.core.appupdate.AppUpdateInfo;
-import com.google.android.play.core.appupdate.AppUpdateManager;
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
-import com.google.android.play.core.install.model.AppUpdateType;
-import com.google.android.play.core.install.model.UpdateAvailability;
-import com.google.android.play.core.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.recoveryrecord.surveyandroid.example.DbHelper.SessionDbHelper;
 import com.recoveryrecord.surveyandroid.example.chinatimes.ChinatimesMainFragment;
 import com.recoveryrecord.surveyandroid.example.cna.CnaMainFragment;
@@ -46,7 +35,6 @@ import com.recoveryrecord.surveyandroid.example.cts.CtsMainFragment;
 import com.recoveryrecord.surveyandroid.example.ebc.EbcMainFragment;
 import com.recoveryrecord.surveyandroid.example.ettoday.EttodayMainFragment;
 import com.recoveryrecord.surveyandroid.example.ltn.LtnMainFragment;
-import com.recoveryrecord.surveyandroid.example.model.NewsModel;
 import com.recoveryrecord.surveyandroid.example.receiever.AppUsageReceiver;
 import com.recoveryrecord.surveyandroid.example.receiever.LightSensorReceiver;
 import com.recoveryrecord.surveyandroid.example.receiever.MyBackgroudService;
@@ -77,14 +65,11 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
-import androidx.core.view.MenuItemCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.preference.PreferenceManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
@@ -95,7 +80,6 @@ import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_PUSH_TOTA
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_DONE_TOTAL;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_PUSH_TOTAL;
 import static com.recoveryrecord.surveyandroid.example.Constants.MEDIA_BAR_ORDER;
-import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_LIMIT_PER_PAGE;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_VALUE_FAILED_RESTART;
@@ -109,7 +93,6 @@ import static com.recoveryrecord.surveyandroid.example.Constants.OUR_EMAIL;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_MEDIA_SELECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_CLEAR_CACHE;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_DEVICE_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_IS_LOGIN;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
@@ -119,6 +102,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.USER_ANDROID_RE
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_ANDROID_SDK;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_DEVICE_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.USER_FIRESTORE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_NUM;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_PHONE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_SURVEY_NUMBER;
@@ -133,7 +117,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 
 
     private String signature;
-
+    private FirebaseAuth mAuth;
     private DrawerLayout drawerLayout;
 //    private SwipeRefreshLayout swipeRefreshLayout;
     private MySwipeRefreshLayout swipeRefreshLayout;
@@ -186,7 +170,6 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         } else {
             signature = sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號");
         }
-//        Log.d("555 NewsHybridActivity", String.valueOf(sharedPrefs.getInt(SHARE_PREFERENCE_IS_LOGIN, 0)));
         if (clear) {
             SharedPreferences.Editor editor = sharedPrefs.edit();
             editor.putString(SHARE_PREFERENCE_DEVICE_ID, device_id);
@@ -218,13 +201,17 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
             media_push_result.add(String.join(",", sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, Collections.emptySet()).toString()));
             first.put(MEDIA_BAR_ORDER, media_bar_result);
             first.put(USER_DEVICE_ID, device_id);
+            mAuth = FirebaseAuth.getInstance();
+            FirebaseUser user = mAuth.getCurrentUser();
+            first.put(USER_FIRESTORE_ID, user.getUid());
+            first.put(USER_SURVEY_NUMBER, sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
             first.put(USER_PHONE_ID, Build.MODEL);
             first.put(USER_ANDROID_SDK, Build.VERSION.SDK_INT);
             first.put(USER_ANDROID_RELEASE, Build.VERSION.RELEASE);
             first.put(UPDATE_TIME, Timestamp.now());
             first.put(APP_VERSION_KEY, APP_VERSION_VALUE);
-            first.put(USER_SURVEY_NUMBER, sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
             first.put(PUSH_MEDIA_SELECTION, media_push_result);
+
             first.put("check_last_service", new Timestamp(0, 0));
             first.put("check_last_schedule", new Timestamp(0, 0));
             first.put("check_last_news", new Timestamp(0, 0));
@@ -246,8 +233,6 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                     assert document != null;
                     if (document.exists()) {
                         Log.d("log: firebase", "Success");
-
-
                         List<String> media_push_result = (List<String>) document.get(PUSH_MEDIA_SELECTION);
                         assert media_push_result != null;
                         Log.d("l1231313", media_push_result.get(media_push_result.size() - 1));
@@ -431,6 +416,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
             sessiontime.put("session", SessionID);
             sessiontime.put("state", 0);
             sessiontime.put("time", formatter.format(date));
+            sessiontime.put("timestamp", Timestamp.now());
             sessiontime.put("device_id", device_id);
             db.collection("Session_List")
                     .document(device_id + " " + formatter.format(date))
@@ -468,6 +454,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
             sessiontime.put("session", SessionID);
             sessiontime.put("state", 2);
             sessiontime.put("time", formatter.format(date));
+            sessiontime.put("timestamp", Timestamp.now());
             sessiontime.put("device_id", device_id);
             db.collection("Session_List")
                     .document(device_id + " " + formatter.format(date))
@@ -490,6 +477,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 sessiontime.put("session", SessionID);
                 sessiontime.put("state", 0);
                 sessiontime.put("time", formatter.format(date));
+                sessiontime.put("timestamp", Timestamp.now());
                 sessiontime.put("device_id", device_id);
                 db.collection("Session_List")
                         .document(device_id + " " + formatter.format(date))
@@ -536,6 +524,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         sessiontime.put("session", -1);
         sessiontime.put("state", 1);
         sessiontime.put("time", formatter.format(date));
+        sessiontime.put("timestamp", Timestamp.now());
         sessiontime.put("device_id", device_id);
         db.collection("Session_List")
                 .document(device_id + " " + formatter.format(date))
@@ -1002,6 +991,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 sessiontime.put("session", SessionID);
                 sessiontime.put("state", 1);
                 sessiontime.put("time", formatter.format(date));
+                sessiontime.put("timestamp", Timestamp.now());
                 sessiontime.put("device_id", device_id);
                 db.collection("Session_List")
                         .document(device_id + " " + formatter.format(date))

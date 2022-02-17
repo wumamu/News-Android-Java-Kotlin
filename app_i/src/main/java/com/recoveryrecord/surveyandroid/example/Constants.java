@@ -27,19 +27,19 @@ public class Constants {
     public static final String STORM_PACKAGE_NAME = "cc.nexdoor.stormmedia";
     public static final String SETS_PACKAGE_NAME = "com.set.newsapp";
     public static final String ZERO_RESULT_STRING = "zero_result";
-    public static final String NA_STRING = "NA";
-    public static final String NONE_STRING = "none";
+//    public static final String NA_STRING = "NA";
+//    public static final String NONE_STRING = "none";
     public static final int NEWS_LIMIT_PER_PAGE = 30;
     public static final int PUSH_HISTORY_LIMIT_PER_PAGE = 50;
     public static final int READ_HISTORY_LIMIT_PER_PAGE = 50;
     //GENERATE ESM
 
-    public static final int REPEAT_ALARM_CHECKER = 10 * 60 * 1000;//10 min
-    public static final int ESM_TIME_ON_PAGE_THRESHOLD = 1;//5 seconds
-    public static final int ESM_INTERVAL = 60 * 60 * 1000;//one hour
-    public static final int DIARY_INTERVAL = 23 * 60 * 60 * 1000;//23 hour
-    public static final int ESM_TARGET_RANGE = 60 * 60;//60 min (seconds)
-    public static final int NOTIFICATION_TARGET_RANGE = 60 * 60;//60 min (seconds)
+//    public static final int REPEAT_ALARM_CHECKER = 10 * 60 * 1000;//10 min
+//    public static final int ESM_TIME_ON_PAGE_THRESHOLD = 1;//5 seconds
+//    public static final int ESM_INTERVAL = 60 * 60 * 1000;//one hour
+//    public static final int DIARY_INTERVAL = 23 * 60 * 60 * 1000;//23 hour
+//    public static final int ESM_TARGET_RANGE = 60 * 60;//60 min (seconds)
+//    public static final int NOTIFICATION_TARGET_RANGE = 60 * 60;//60 min (seconds)
     public static final String ESM_NOTIFICATION_CONTENT_TITLE = "ESM";
     public static final String ESM_NOTIFICATION_CONTENT_TEXT = "是時候填寫問卷咯!";
     public static final String DIARY_NOTIFICATION_CONTENT_TITLE = "DIARY";
@@ -110,11 +110,12 @@ public class Constants {
 
     public static final String USER_COLLECTION = "user";
     public static final String APP_VERSION_KEY = "app_version";
-    public static final String APP_VERSION_VALUE = "2022-02-13-1";
+    public static final String APP_VERSION_VALUE = "2022-02-17-1";
     public static final String UPDATE_TIME = "update_timestamp";
     public static final String INITIAL_TIME = "initial_timestamp";
     public static final String LAST_LAUNCH_TIME = "last_launch_timestamp";
     public static final String USER_DEVICE_ID = "device_id";
+    public static final String USER_FIRESTORE_ID = "firestore_id";
     public static final String USER_PHONE_ID = "phone_id";
     public static final String USER_ANDROID_SDK = "android_sdk";
     public static final String USER_ANDROID_RELEASE = "android_release";
@@ -133,7 +134,7 @@ public class Constants {
     public static final String NEWS_MEDIA = "media";
     public static final String NEWS_ID = "id";
     //ALARM SERVICE
-    public static final String ALARM_SERVICE_COLLECTION = "alarm_service";
+//    public static final String ALARM_SERVICE_COLLECTION = "alarm_service";
 //    public static final String ALARM_SERVICE_POST_COLLECTION = "alarm_service_post";
 //    public static final String DIARY_STATUS = "diary_status";
 //    public static final String DIARY_PUSH = "success";
@@ -232,10 +233,9 @@ public class Constants {
 
 
     public static final String READING_BEHAVIOR_TRIGGER_BY_NOTIFICATION = "Notification";
-    public static final String READING_BEHAVIOR_TRIGGER_BY_SELF_TRIGGER = "self_trigger";
+//    public static final String READING_BEHAVIOR_TRIGGER_BY_SELF_TRIGGER = "self_trigger";
 
-
-    public static final String READING_BEHAVIOR_CHECK_MARK = "check_mark";
+//    public static final String READING_BEHAVIOR_CHECK_MARK = "check_mark";
     public static final String READING_BEHAVIOR_SAMPLE_CHECK = "select";
 
     //PUSH NEWS
@@ -306,20 +306,16 @@ public class Constants {
 
 
     public static final String PUSH_ESM_READ_EXIST = "ExistReadSample";
-    public static final String PUSH_ESM_NOTIFICATION_EXIST = "ExistNotificationSample";
-    public static final String PUSH_ESM_NOT_SAMPLE_READ_SHORT = "NotSampleReadShort";
-    public static final String PUSH_ESM_NOT_SAMPLE_READ_FAR = "NotSampleReadFar";
-    public static final String PUSH_ESM_NOT_SAMPLE_NOTIFICATION_FAR = "NotSampleNotificationFar";
+//    public static final String PUSH_ESM_NOTIFICATION_EXIST = "ExistNotificationSample";
+//    public static final String PUSH_ESM_NOT_SAMPLE_READ_SHORT = "NotSampleReadShort";
+//    public static final String PUSH_ESM_NOT_SAMPLE_READ_FAR = "NotSampleReadFar";
+//    public static final String PUSH_ESM_NOT_SAMPLE_NOTIFICATION_FAR = "NotSampleNotificationFar";
 
-
-
-
-
-    public static final String SAMPLE_NEWS_ID = "sample_news_id";
-    public static final String SAMPLE_NEWS_TITLE = "sample_news_title";
-    public static final String SAMPLE_NEWS_MEDIA = "sample_news_media";
-    public static final String SAMPLE_NEWS_RECEIEVE_TIME = "sample_news_receieve_time";
-    public static final String SAMPLE_NEWS_IN_TIME = "sample_news_in_time";
+//    public static final String SAMPLE_NEWS_ID = "sample_news_id";
+//    public static final String SAMPLE_NEWS_TITLE = "sample_news_title";
+//    public static final String SAMPLE_NEWS_MEDIA = "sample_news_media";
+//    public static final String SAMPLE_NEWS_RECEIEVE_TIME = "sample_news_receieve_time";
+//    public static final String SAMPLE_NEWS_IN_TIME = "sample_news_in_time";
 
 
 
@@ -349,11 +345,11 @@ public class Constants {
     public static final String PUSH_DIARY_INOPPORTUNE_TARGET_NOTI = "inopportune_noti_target";
     public static final String PUSH_DIARY_OPPORTUNE_TARGET_NOTI = "opportune_noti_target";
 
-    public static final String PUSH_DIARY_DONE = "done";
-    public static final String PUSH_DIARY_TRIGGER_BY_NOTIFICATION = "notification_service";
-    public static final String PUSH_DIARY_TRIGGER_BY_ALARM = "alarm";
-    public static final String PUSH_DIARY_TRIGGER_BY_SELF = "self";
-    public static final String PUSH_DIARY_TRIGGER_BY = "trigger_by";
+//    public static final String PUSH_DIARY_DONE = "done";
+//    public static final String PUSH_DIARY_TRIGGER_BY_NOTIFICATION = "notification_service";
+//    public static final String PUSH_DIARY_TRIGGER_BY_ALARM = "alarm";
+//    public static final String PUSH_DIARY_TRIGGER_BY_SELF = "self";
+//    public static final String PUSH_DIARY_TRIGGER_BY = "trigger_by";
 
     //PUSH SERVICE
     public static final String PUSH_SERVICE_COLLECTION = "push_service";
@@ -382,30 +378,30 @@ public class Constants {
 
     public static final String UPLOAD_TIME = "last_upload_time";
 
-    public static final String SHARE_PREFERENCE_IS_LOGIN = "is_login";
+//    public static final String SHARE_PREFERENCE_IS_LOGIN = "is_login";
 
 
 
 
 
     //ESM
-    public static final String ESM_NOTIFICATION_UNCLICKED_CANDIDATE = "PushNotificationNewsTitleArray";
-    public static final String ESM_READ_HISTORY_CANDIDATE = "ReadingBehaviorNewsTitleArray";
+//    public static final String ESM_NOTIFICATION_UNCLICKED_CANDIDATE = "PushNotificationNewsTitleArray";
+//    public static final String ESM_READ_HISTORY_CANDIDATE = "ReadingBehaviorNewsTitleArray";
     public static final String ESM_TARGET_NEWS_TITLE = "TargetNewsTitleArray";
     public static final String ESM_START_TIME_HOUR = "ESMStartTimeHour";
     public static final String ESM_START_TIME_MIN = "ESMStartTimeMin";
     public static final String ESM_END_TIME_HOUR = "ESMEndTimeHour";
     public static final String ESM_END_TIME_MIN = "ESMEndTimeMin";
     public static final String ESM_SET_ONCE = "ESMSetOnce";
-    public static final String LAST_ESM_TIME = "LastEsmTime";
-    public static final String LAST_DIARY_TIME = "LastDiaryTime";
+//    public static final String LAST_ESM_TIME = "LastEsmTime";
+//    public static final String LAST_DIARY_TIME = "LastDiaryTime";
 
     public static final String SAMPLE_ID = "sample_id";
     public static final String SAMPLE_TITLE = "sample_title";
     public static final String SAMPLE_MEDIA = "sample_media";
     public static final String SAMPLE_RECEIEVE = "sample_receieve";
     public static final String SAMPLE_IN = "sample_in";
-    public static final String EXIST_READ = "exist_read";
+//    public static final String EXIST_READ = "exist_read";
     public static final String ESM_TYPE = "esm_type";
 
 
@@ -421,7 +417,7 @@ public class Constants {
     public static final String DIARY_NOTI_HISTORY_CANDIDATE = "DiaryTargetOptionArrayNoti";
     public static final String EXIST_ESM = "exist_esm";
     //{news_title}\n{news_time}\n{news_situation}\n{news_place}\n{news_id}#
-    public static final String TO_DIARY_LIST = "DiaryList";
+//    public static final String TO_DIARY_LIST = "DiaryList";
     //OTHER
 
     //ESM DIARY COUNT
@@ -444,11 +440,8 @@ public class Constants {
 //    public static final String CATEGORY_HASH_SET_SIZE = "category_hash_set_size";
 //    public static final String CATEGORY_HASH_SET_PREFIX = "category_";
 
-
-
-
-    public static final String DIARY_TITLE_CONTENT = "請填寫今天的日誌";
-    public static final String DIARY_TEXT = "謝謝您的合作";
+//    public static final String DIARY_TITLE_CONTENT = "請填寫今天的日誌";
+//    public static final String DIARY_TEXT = "謝謝您的合作";
 
 
 //    public static String JSON_TEMPLATE = "";

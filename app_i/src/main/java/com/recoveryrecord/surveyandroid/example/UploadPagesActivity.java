@@ -76,13 +76,13 @@ public class UploadPagesActivity extends AppCompatActivity {
                 upload_reading_behavior();
                 upload_esm();
                 upload_diary();
-                upload_activityrecognition();
-                upload_appusage();
-                upload_light();
-                upload_network();
-                upload_RingMode();
-                upload_Screen();
-                upload_session();
+//                upload_activityrecognition();
+//                upload_appusage();
+//                upload_light();
+//                upload_network();
+//                upload_RingMode();
+//                upload_Screen();
+//                upload_session();
                 Toast.makeText(getApplicationContext(), "上傳資料完成", Toast.LENGTH_SHORT).show();
 
                 Long new_time = Timestamp.now().getSeconds();

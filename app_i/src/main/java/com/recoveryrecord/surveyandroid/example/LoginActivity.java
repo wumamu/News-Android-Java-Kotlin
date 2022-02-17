@@ -11,11 +11,11 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
-import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_IS_LOGIN;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_NUM;
 
@@ -28,7 +28,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.USER_NUM;
 public class LoginActivity extends AppCompatActivity {
     private EditText useremail, password;
     private FirebaseAuth mAuth;
-    Boolean isLogin = false;
+//    Boolean isLogin = false;
 //    SharedPreferences sharedPrefs_Login;
     //    private ProgressBar progressBar;
     @Override
@@ -39,27 +39,46 @@ public class LoginActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 //        sharedPrefs_Login = getSharedPreferences(SHARE_PREFERENCE_IS_LOGIN, MODE_PRIVATE);
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        isLogin = sharedPrefs.getBoolean(SHARE_PREFERENCE_IS_LOGIN, false);
+//        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+//        isLogin = sharedPrefs.getBoolean(SHARE_PREFERENCE_IS_LOGIN, false);
 //        String tmp_sign = sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號");
 //        Log.d("555 LoginActivity", String.valueOf(sharedPrefs.getInt(SHARE_PREFERENCE_IS_LOGIN, 0)));
-        Button button = findViewById(R.id.bt_login);
-        useremail = findViewById(R.id.et_username);
-        password = findViewById(R.id.et_password);
-
-//        if(sharedPrefs_Login.getBoolean(SHARE_PREFERENCE_IS_LOGIN, false)){
-        if(isLogin){
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if(user != null){
+//            String[] split = user.getEmail().split("@");
+            addInfoToSharePreference(user.getUid(), user.getEmail().split("@"));
             startActivity(new Intent(LoginActivity.this, NewsHybridActivity.class));
             finish();
         }
 
+        Button button = findViewById(R.id.bt_login);
+        useremail = findViewById(R.id.et_username);
+        password = findViewById(R.id.et_password);
         button.setOnClickListener(v -> user_login());
 
-        mAuth = FirebaseAuth.getInstance();
+//        if(sharedPrefs_Login.getBoolean(SHARE_PREFERENCE_IS_LOGIN, false)){
+//        if(isLogin){
+//            startActivity(new Intent(LoginActivity.this, NewsHybridActivity.class));
+//            finish();
+//        }
 
+    }
 
-
-
+    @SuppressLint("HardwareIds")
+    private void addInfoToSharePreference(String userId, String[] split) {
+//        Map<String, Object> toFirestore = new HashMap<>();
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        toFirestore.put(USER_FIRESTORE_ID, userId);
+//        toFirestore.put(USER_SURVEY_NUMBER, split[0]);
+//        db.collection(USER_COLLECTION)
+//                .document(Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID))
+//                .set(toFirestore);
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+//                editor.putBoolean(SHARE_PREFERENCE_IS_LOGIN, true);
+        editor.putString(SHARE_PREFERENCE_USER_ID, split[0]);
+        editor.apply();
     }
 
     @SuppressLint("ApplySharedPref")
@@ -88,18 +107,14 @@ public class LoginActivity extends AppCompatActivity {
 //        }
         mAuth.signInWithEmailAndPassword(string_useremail, string_password).addOnCompleteListener(task -> {
             if(task.isSuccessful()){
+                FirebaseUser user = mAuth.getCurrentUser();
+                addInfoToSharePreference(user.getUid(), user.getEmail().split("@"));
 //                sharedPrefs_Login.edit().putBoolean(SHARE_PREFERENCE_IS_LOGIN, true).apply();
-                String[] split = string_useremail.split("@");
-
-                SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                SharedPreferences.Editor editor = sharedPrefs.edit();
-                editor.putBoolean(SHARE_PREFERENCE_IS_LOGIN, true);
-                editor.putString(SHARE_PREFERENCE_USER_ID, split[0]);
-                editor.commit();
+//                String[] split = string_useremail.split("@");
 //                isLogin = true;
                 Toast.makeText(LoginActivity.this, "登入成功", Toast.LENGTH_LONG).show();
                 Intent i = new Intent(LoginActivity.this, NewsHybridActivity.class);
-                i.putExtra(USER_NUM,split[0]);
+                i.putExtra(USER_NUM,user.getEmail().split("@")[0]);
                 startActivity(i);
 //                startActivity(new Intent(LoginActivity.this, NewsHybridActivity.class));
             } else {

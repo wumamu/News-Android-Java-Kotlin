@@ -169,6 +169,7 @@ public class NotificationRangeActivity extends AppCompatActivity {
                                 ll_set_time.setAlpha(1);
                                 ee_set_time.setAlpha(1);
                                 set_once = true;
+                                Toast.makeText(getApplicationContext(), "通知區間設定完成", Toast.LENGTH_SHORT).show();
                             }})
                         .setNegativeButton("取消", null).show();
 

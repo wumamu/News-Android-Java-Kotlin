@@ -183,6 +183,7 @@ public class ActivityRecognitionReceiver extends IntentService implements Stream
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         final String time_now = formatter.format(date);
         sensordb.put("Time", time_now);
+        sensordb.put("TimeStamp", Timestamp.now());
         sensordb.put("Activity Recognition 1", "In Vehicle: " + Vehicle);
         sensordb.put("Activity Recognition 2", "On Bicycle: " + Bicycle);
         sensordb.put("Activity Recognition 3", "On Foot: " + Foot);
