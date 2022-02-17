@@ -12,7 +12,7 @@ public class Constants {
     public static final String RESTART_ALARM_ACTION = "RestartAlarm";//request code 1050
     public static final String CANCEL_ALARM_ACTION = "CancelAlarm";//request code 1050
     public static final String SCHEDULE_ALARM_ACTION = "ScheduleAlarm";//request code 1000 1001
-    public static final String UPLOAD_ACTION = "UploadSQLite";//request code 1000 1001
+//    public static final String UPLOAD_ACTION = "UploadSQLite";//request code 1000 1001
 
     public static final int SERVICE_CHECKER_INTERVAL = 20 * 60 * 1000;//every 20 min
     //other
@@ -73,7 +73,7 @@ public class Constants {
     //NEWS NewsModuleActivity
     public static final String TRIGGER_BY_KEY = "trigger_by";
     public static final String TRIGGER_BY_VALUE_NOTIFICATION = "Notification";
-    public static final String TRIGGER_BY_VALUE_SELF_TRIGGER = "self_trigger";
+//    public static final String TRIGGER_BY_VALUE_SELF_TRIGGER = "self_trigger";
     public static final String NEWS_ID_KEY = "news_id";
     public static final String NEWS_MEDIA_KEY = "media";
     //NotificationListenerService
@@ -95,7 +95,7 @@ public class Constants {
     public static final String LOADING_PAGE_TYPE_ESM = "esm";
     public static final String LOADING_PAGE_TYPE_DIARY = "diary";
     //DiaryLoadingPageActivity SurveyActivity
-    public static final String DIARY_ID = "diary_id";
+//    public static final String DIARY_ID = "diary_id";
     //Survey
     public static final String ESM_EXIST_READ_SAMPLE = "esm_exist_read";
     public static final String ESM_EXIST_NOTIFICATION_SAMPLE = "esm_exist_notification";
@@ -110,10 +110,10 @@ public class Constants {
 
     public static final String USER_COLLECTION = "user";
     public static final String APP_VERSION_KEY = "app_version";
-    public static final String APP_VERSION_VALUE = "2022-02-17-1";
+    public static final String APP_VERSION_VALUE = "2022-02-18-1";
     public static final String UPDATE_TIME = "update_timestamp";
-    public static final String INITIAL_TIME = "initial_timestamp";
-    public static final String LAST_LAUNCH_TIME = "last_launch_timestamp";
+//    public static final String INITIAL_TIME = "initial_timestamp";
+//    public static final String LAST_LAUNCH_TIME = "last_launch_timestamp";
     public static final String USER_DEVICE_ID = "device_id";
     public static final String USER_FIRESTORE_ID = "firestore_id";
     public static final String USER_PHONE_ID = "phone_id";
@@ -126,12 +126,12 @@ public class Constants {
     public static final String MEDIA_COLLECTION = "medias";
     public static final String NEWS_COLLECTION = "news";
     public static final String NEWS_URL = "url";
-    public static final String NEWS_CATEGORY = "category";
+//    public static final String NEWS_CATEGORY = "category";
     public static final String NEWS_TITLE = "title";
     public static final String NEWS_PUBDATE = "pubdate";
     public static final String NEWS_IMAGE = "image";
     public static final String NEWS_CONTENT = "content";
-    public static final String NEWS_MEDIA = "media";
+//    public static final String NEWS_MEDIA = "media";
     public static final String NEWS_ID = "id";
     //ALARM SERVICE
 //    public static final String ALARM_SERVICE_COLLECTION = "alarm_service";
@@ -165,7 +165,7 @@ public class Constants {
     public static final String COMPARE_RESULT_ID = "id";
     public static final String COMPARE_RESULT_NEW_TITLE = "news_title";
 //    public static final String COMPARE_RESULT_TYPE = "type";
-    public static final String COMPARE_RESULT_CLICK = "click";
+//    public static final String COMPARE_RESULT_CLICK = "click";
     //ALARM SCHEDULE
     public static final String SCHEDULE_ALARM_COLLECTION = "schedule_alarm";
     public static final String SCHEDULE_ALARM_TRIGGER_TIME = "trigger_time";
@@ -180,7 +180,7 @@ public class Constants {
     public static final String NEWS_SERVICE_TIME = "service_timestamp";
     public static final String NEWS_SERVICE_STATUS_KEY = "service_status";
     public static final String NEWS_SERVICE_STATUS_VALUE_RESTART = "service_restart";
-    public static final String NEWS_SERVICE_STATUS_VALUE_FAILED = "service_failed";
+//    public static final String NEWS_SERVICE_STATUS_VALUE_FAILED = "service_failed";
     public static final String NEWS_SERVICE_STATUS_VALUE_RUNNING = "service_running";
     public static final String NEWS_SERVICE_STATUS_VALUE_INITIAL = "service_initial";
     public static final String NEWS_SERVICE_CYCLE_KEY = "service_cycle";
@@ -254,7 +254,7 @@ public class Constants {
     public static final String PUSH_NEWS_OPEN_TIME = "open_timestamp";
     public static final String PUSH_NEWS_REMOVE_TIME = "remove_timestamp";
     public static final String PUSH_NEWS_REMOVE_TYPE = "remove_type";
-    public static final String PUSH_NEWS_READING_BEHAVIOR_ID = "reading_behavior_id";
+//    public static final String PUSH_NEWS_READING_BEHAVIOR_ID = "reading_behavior_id";
 
     public static final String PUSH_NEWS_CLICK = "click";
     public static final String PUSH_NEWS_TYPE = "type";
@@ -294,7 +294,7 @@ public class Constants {
     public static final String PUSH_ESM_REMOVE_TYPE = "remove_type";
 
     public static final String PUSH_ESM_RESULT = "result";
-    public static final String PUSH_ESM_TARGET = "target";
+//    public static final String PUSH_ESM_TARGET = "target";
     public static final String PUSH_ESM_TARGET_NEWS_ID = "target_news_id";
     public static final String PUSH_ESM_TARGET_TITLE = "target_read_title";
     public static final String PUSH_ESM_TARGET_IN_TIME = "target_in_time";

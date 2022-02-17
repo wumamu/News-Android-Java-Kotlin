@@ -232,14 +232,14 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                     DocumentSnapshot document = task.getResult();
                     assert document != null;
                     if (document.exists()) {
-                        Log.d("log: firebase", "Success");
+//                        Log.d("log: firebase", "Success");
                         List<String> media_push_result = (List<String>) document.get(PUSH_MEDIA_SELECTION);
                         assert media_push_result != null;
-                        Log.d("l1231313", media_push_result.get(media_push_result.size() - 1));
+//                        Log.d("l1231313", media_push_result.get(media_push_result.size() - 1));
                         //different from last one
 //                            for (int)
                         String tmp = String.join(",", sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, Collections.emptySet()).toString());
-                        Log.d("l1231313", tmp);
+//                        Log.d("l1231313", tmp);
 //                            media_push_result.add(tmp);
                         if(!media_push_result.get(media_push_result.size() - 1).equals(tmp)){
                             media_push_result.add(tmp);
@@ -618,6 +618,14 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
             case R.id.nav_update:
                 Intent intent_update = new Intent(NewsHybridActivity.this, CheckUpdateActivity.class);
                 startActivity(intent_update);
+                drawerLayout.closeDrawer(GravityCompat.START);
+            case R.id.nav_listen:
+                if(signature.equals("test")){
+                    Intent intent_listen = new Intent(NewsHybridActivity.this, ListenActivity.class);
+                    startActivity(intent_listen);
+                } else {
+                    Toast.makeText(this, "抱歉您沒有權限",Toast.LENGTH_LONG).show();
+                }
                 drawerLayout.closeDrawer(GravityCompat.START);
 //            case R.id.nav_contactt :
 //                Intent intent_esm = new Intent(context, AlarmReceiver.class);
