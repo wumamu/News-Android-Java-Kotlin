@@ -599,6 +599,11 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 startActivity(intent_up);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
+            case R.id.nav_update:
+                Intent intent_update = new Intent(NewsHybridActivity.this, CheckUpdateActivity.class);
+                startActivity(intent_update);
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
             case R.id.nav_contact:
                 Intent selectorIntent = new Intent(Intent.ACTION_SENDTO);
                 selectorIntent.setData(Uri.parse("mailto:"));
@@ -615,10 +620,6 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 }
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
-            case R.id.nav_update:
-                Intent intent_update = new Intent(NewsHybridActivity.this, CheckUpdateActivity.class);
-                startActivity(intent_update);
-                drawerLayout.closeDrawer(GravityCompat.START);
             case R.id.nav_listen:
                 if(signature.equals("test")){
                     Intent intent_listen = new Intent(NewsHybridActivity.this, ListenActivity.class);
@@ -627,6 +628,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                     Toast.makeText(this, "抱歉您沒有權限",Toast.LENGTH_LONG).show();
                 }
                 drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
 //            case R.id.nav_contactt :
 //                Intent intent_esm = new Intent(context, AlarmReceiver.class);
 //                intent_esm.setAction(ESM_ALARM_ACTION);

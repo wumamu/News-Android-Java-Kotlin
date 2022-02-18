@@ -44,6 +44,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -69,9 +70,9 @@ import static com.recoveryrecord.surveyandroid.example.Constants.*;
 
 
 public class AlarmReceiver extends BroadcastReceiver {
-    String device_id = "";
+//    String device_id = "";
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    String esm_status = "NA", diary_status = "NA";
+//    String esm_status = "NA", diary_status = "NA";
     Intent mServiceIntent;
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -79,9 +80,10 @@ public class AlarmReceiver extends BroadcastReceiver {
         @SuppressLint("HardwareIds")
         String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
         final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-        Boolean set_once = sharedPrefs.getBoolean(ESM_SET_ONCE, false);
+        boolean set_once = sharedPrefs.getBoolean(ESM_SET_ONCE, false);
         String action = intent.getAction();
 //        Log.d("AlarmReceiver", action);
+        assert action != null;
         if(action.equals(CHECK_SERVICE_ACTION)){
             isServiceAlive(context);
         }
@@ -90,7 +92,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 //        }
         if(action.equals(ESM_ALARM_ACTION) && set_once) {
             String esm_name = "NA", esm_source = "NA";
-            if (intent.getExtras().getString(ESM_SCHEDULE_ID) != null && intent.getExtras().getString(SCHEDULE_SOURCE) != null ) {
+            if (Objects.requireNonNull(intent.getExtras()).getString(ESM_SCHEDULE_ID) != null && intent.getExtras().getString(SCHEDULE_SOURCE) != null ) {
                 esm_name = intent.getExtras().getString(ESM_SCHEDULE_ID);
                 esm_source = intent.getExtras().getString(SCHEDULE_SOURCE);
             }

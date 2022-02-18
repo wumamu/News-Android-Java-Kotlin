@@ -75,9 +75,9 @@
     <!-- alarm-->
     <string name="sett_reminder_header">允許發問卷時間區間</string>
     <string name="sett_reminder_label">Remind Me</string>
-    <string name="sett_reminder_desc">請至少設定12小時，並以整點為單位(只能設定一次)</string>
-    <string name="sett_reminder_time_label">設定開始時間</string>
-    <string name="sett_reminder_time_label_ee">設定結束時間</string>
+    <string name="sett_reminder_desc">請至少設定12小時，並以整點為單位</string>
+    <string name="sett_reminder_time_label">問卷開始時間</string>
+    <string name="sett_reminder_time_label_ee">問卷結束時間</string>
     <string name="sett_reminder_time_content">8 : 00 AM</string>
 
     <string name="chart_label_Others">Other Countries</string>

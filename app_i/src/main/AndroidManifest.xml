@@ -62,54 +62,23 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".SurveyProgressActivity"
             android:theme="@style/ActionBarLight"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="com.recoveryrecord.surveyandroid.example.SurveyProgressActivity" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
+            android:screenOrientation="portrait"/>
         <activity android:name=".UploadPagesActivity"
             android:theme="@style/ActionBarLight"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="com.recoveryrecord.surveyandroid.example.UploadPagesActivity" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
+            android:screenOrientation="portrait"/>
         <activity android:name=".CheckUpdateActivity"
             android:theme="@style/ActionBarLight"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="com.recoveryrecord.surveyandroid.example.UploadPagesActivity" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
+            android:screenOrientation="portrait"/>
         <activity android:name=".ListenActivity"
             android:theme="@style/ActionBarLight"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="com.recoveryrecord.surveyandroid.example.UploadPagesActivity" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
+            android:screenOrientation="portrait"/>
         <activity android:name=".ReadHistoryActivity"
             android:theme="@style/ActionBarLight"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="com.recoveryrecord.surveyandroid.example.ReadHistoryActivity" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
+            android:screenOrientation="portrait"/>
         <activity android:name=".PushHistoryActivity"
             android:theme="@style/ActionBarLight"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="com.recoveryrecord.surveyandroid.example.PushHistoryActivity" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
+            android:screenOrientation="portrait"/>
         <activity android:name=".NotificationRangeActivity"
-
             android:theme="@style/ActionBarLight"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -129,12 +98,7 @@
             android:parentActivityName=".NewsHybridActivity"
             android:theme="@style/ActionBarLight"
             tools:targetApi="jelly_bean"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="com.recoveryrecord.surveyandroid.example.NewsModuleActivity" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
+            android:screenOrientation="portrait"/>
         <activity android:name=".SurveyActivity"
             android:launchMode="singleTask"
             android:excludeFromRecents="true"
