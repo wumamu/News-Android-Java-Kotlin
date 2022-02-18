@@ -2,32 +2,23 @@ package com.recoveryrecord.surveyandroid.example.receiever;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
-import android.provider.Settings;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.gson.internal.$Gson$Preconditions;
 import com.recoveryrecord.surveyandroid.example.CSVDataRecord.ActivityRecognitionDataRecord;
 import com.recoveryrecord.surveyandroid.example.CSVDataRecord.DataRecord;
-import com.recoveryrecord.surveyandroid.example.CSVDataRecord.StreamAlreadyExistsException;
 import com.recoveryrecord.surveyandroid.example.CSVDataRecord.StreamNotFoundException;
 import com.recoveryrecord.surveyandroid.example.CSVDataRecord.TransportationModeDataRecord;
-import com.recoveryrecord.surveyandroid.example.R;
 
-import java.nio.file.SecureDirectoryStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
 import static androidx.constraintlayout.motion.utils.Oscillator.TAG;
+
+//import com.google.gson.internal.$Gson$Preconditions;
 
 public class MyStreamManager{
 //    private static ScreenStateReceiver screenStateReceiver = new ScreenStateReceiver();

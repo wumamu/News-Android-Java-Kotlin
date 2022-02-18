@@ -16,6 +16,7 @@ import com.google.firebase.firestore.Query;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -33,6 +34,11 @@ public class ListenActivity extends AppCompatActivity {
         device_map = new HashMap<>();
         device_map.put("318f4fea56e7070c (pixel 4a)","318f4fea56e7070c");
         device_map.put("046827517ac92b09 (sm a52s)","046827517ac92b09");
+        device_map.put("152821f11c28ba38 (sony)","152821f11c28ba38");
+        device_map.put("e058f98bffc294fe (asus zenfone3)","e058f98bffc294fe");
+        device_map.put("25b143070cd8e420 (sm_a51)","25b143070cd8e420");
+        device_map.put("a7a44570861f9f64 (xiaomi)","a7a44570861f9f64");
+        device_map.put("286c25bc68ef882d (pixel 6)","286c25bc68ef882d");
     }
     @SuppressLint({"HardwareIds", "SetTextI18n"})
     protected void onCreate (Bundle savedInstanceState) {
@@ -98,12 +104,14 @@ public class ListenActivity extends AppCompatActivity {
                     if (!queryDocumentSnapshots.isEmpty()) {
                         List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
                         for (DocumentSnapshot d : list) {
-                            if(d.getString("type").equals("target add")){
-                                tmpNews+=d.getTimestamp("receieve_timestamp").toDate()+"\n";
+                            if(Objects.equals(d.getString("type"), "target add")){
+                                if(d.getTimestamp("receieve_timestamp")!=null) {
+                                    tmpNews+= Objects.requireNonNull(d.getTimestamp("receieve_timestamp")).toDate()+"\n";
+                                }
                             }
                         }
                     } else {
-                        tmpNews+="push_news no data\n";
+                        tmpNews+="no data\n";
                     }
                     pushNews.setText(tmpNews);
                 }).addOnFailureListener(e -> Log.d("lognewsselect", String.valueOf(e)));
@@ -126,7 +134,9 @@ public class ListenActivity extends AppCompatActivity {
                     if (!queryDocumentSnapshots.isEmpty()) {
                         List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
                         for (DocumentSnapshot d : list) {
-                            tmpEsm+=d.getTimestamp("receieve_timestamp").toDate()+"\n";
+                            if(d.getTimestamp("receieve_timestamp")!=null) {
+                                tmpEsm+= Objects.requireNonNull(d.getTimestamp("receieve_timestamp")).toDate()+"\n";
+                            }
                         }
                     } else {
                         tmpEsm+="no data\n";
@@ -152,10 +162,12 @@ public class ListenActivity extends AppCompatActivity {
                     if (!queryDocumentSnapshots.isEmpty()) {
                         List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
                         for (DocumentSnapshot d : list) {
-                            tmpDiary+=d.getTimestamp("receieve_timestamp").toDate()+"\n";
+                            if(d.getTimestamp("receieve_timestamp")!=null) {
+                                tmpDiary+= Objects.requireNonNull(d.getTimestamp("receieve_timestamp")).toDate()+"\n";
+                            }
                         }
                     } else {
-                        tmpDiary+="push_diary no data\n";
+                        tmpDiary+="no data\n";
                     }
                     pushDiary.setText(tmpDiary);
                 }).addOnFailureListener(e -> Log.d("lognewsselect", String.valueOf(e)));

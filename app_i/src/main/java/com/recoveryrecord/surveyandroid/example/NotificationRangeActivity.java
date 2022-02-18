@@ -104,6 +104,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.ESM_START_TIME_
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_START_TIME_MIN;
 import static com.recoveryrecord.surveyandroid.example.Constants.RESTART_ALARM_ACTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_ACTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.SWITCH_STATE;
 
 //import android.support.v7.app.AppCompatActivity;
 //import android.support.v7.widget.SwitchCompat;
@@ -113,6 +114,7 @@ public class NotificationRangeActivity extends AppCompatActivity {
     String TAG = "RemindMe";
     LocalData localData;
     Boolean set_once = false;
+    Boolean switch_state = false;
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     Switch switchButton;
     TextView tvTime, ee_tvTime;
@@ -133,23 +135,26 @@ public class NotificationRangeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_notification_range);
         final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         set_once = sharedPrefs.getBoolean(ESM_SET_ONCE, false);
+        switch_state = sharedPrefs.getBoolean(SWITCH_STATE, false);
         localData = new LocalData(getApplicationContext());
         ll_set_time = (LinearLayout) findViewById(R.id.ll_set_time);
         ee_set_time = (LinearLayout) findViewById(R.id.ee_set_time);
         tvTime = (TextView) findViewById(R.id.tv_reminder_time_desc);
         ee_tvTime = (TextView) findViewById(R.id.ee_tv_reminder_time_desc);
-
         coordinatorLayout = (LinearLayout) findViewById(R.id.coordinatorLayout);
-
         switchButton = findViewById(R.id.switch_Above);
+
+        switchButton.setChecked(switch_state);
         switchButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
+                ll_set_time.setAlpha(1);
+                ee_set_time.setAlpha(1);
                 ((TextView) findViewById(R.id.tv_reminder_time_label)).setTypeface(null, Typeface.BOLD);
                 ((TextView) findViewById(R.id.tv_reminder_time_label_e)).setTypeface(null, Typeface.BOLD);
                 ((TextView) findViewById(R.id.tv_reminder_time_desc)).setTypeface(null, Typeface.BOLD);
                 ((TextView) findViewById(R.id.ee_tv_reminder_time_desc)).setTypeface(null, Typeface.BOLD);
                 // The toggle is enabled
-                if(set_once){
+                if(!set_once){
                     SharedPreferences.Editor editor = sharedPrefs.edit();
                     editor.putBoolean(ESM_SET_ONCE, true);
                     editor.apply();
@@ -161,8 +166,6 @@ public class NotificationRangeActivity extends AppCompatActivity {
                     cal.add(Calendar.SECOND, 2);
                     assert alarmManager != null;
                     alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() , pendingIntent);
-                    ll_set_time.setAlpha(1);
-                    ee_set_time.setAlpha(1);
                     set_once = true;
                 } else {
                     Intent intent_restart = new Intent(NotificationRangeActivity.this, AlarmReceiver.class);
@@ -178,13 +181,11 @@ public class NotificationRangeActivity extends AppCompatActivity {
             } else {
                 ll_set_time.setAlpha(0.4f);
                 ee_set_time.setAlpha(0.4f);
-//                if(!set_once){
-//                    //not set
-//                    ll_set_time.setAlpha(0.4f);
-//                    ee_set_time.setAlpha(0.4f);
-//                }
             }
-
+//            SharedPreferences settings = getSharedPreferences(SWITCH_STATE, 0);
+            SharedPreferences.Editor editor = sharedPrefs.edit();
+            editor.putBoolean(SWITCH_STATE, true);
+            editor.apply();
         });
 //        final Button button_s = (Button) findViewById(R.id.button_s);
 //        final Button button_restart = (Button) findViewById(R.id.button_restart);
