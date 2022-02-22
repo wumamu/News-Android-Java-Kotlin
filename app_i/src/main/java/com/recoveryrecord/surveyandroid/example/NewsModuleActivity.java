@@ -564,6 +564,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
             myReadingBehavior.setKEY_NEWS_ID(news_id);
         }
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @SuppressLint("RtlHardcoded")
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -666,9 +667,8 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                             str = str.replaceAll("　", " ");
                             char[] para = str.toCharArray();
                             //one paragraph split to line
-                            while (!last_line_in_p){
+                            while (true){
                                 //                                Log.d("log: firebase", "this is line " + para_count);
-                                boolean last_char_in_line = false;
                                 int iter_char_line = 0;
                                 while (true){
                                     //remove line with space first
@@ -692,13 +692,11 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                                             } else {
                                                 //is last char in para
                                                 last_line_in_p = true;
-                                                last_char_in_line = true;
                                                 break;
                                             }
                                         } else {
                                             //line space not enough
 //                                            Log.d("log: firebase", "new line");
-                                            last_char_in_line = true;
                                             break;
                                         }
                                     } else if (is_full_en(para[iter_char_para])){
@@ -723,12 +721,10 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                                             //second check if last char in para
                                             if (tmp_iter_char_para < para.length){
                                                 iter_char_para = tmp_iter_char_para+1;
-                                                continue;
                                             } else {
                                                 //is last char in para
                                                 iter_char_para = tmp_iter_char_para-1;
                                                 last_line_in_p = true;
-                                                last_char_in_line = true;
                                                 break;
                                             }
                                         } else {
@@ -754,16 +750,13 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                                             //second check if last char in para
                                             if (tmp_iter_char_para < para.length){
                                                 iter_char_para = tmp_iter_char_para+1;
-                                                continue;
                                             } else {
                                                 //is last char in para
                                                 iter_char_para = tmp_iter_char_para-1;
                                                 last_line_in_p = true;
-                                                last_char_in_line = true;
                                                 break;
                                             }
                                         } else {
-                                            last_char_in_line = true;
                                             break;
                                         }
                                     } else if ((para[iter_char_para] >= '0' && para[iter_char_para] <= '9')){
@@ -786,16 +779,13 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                                             //second check if last char in para
                                             if (tmp_iter_char_para < para.length){
                                                 iter_char_para = tmp_iter_char_para+1;
-                                                continue;
                                             } else {
                                                 //is last char in para
                                                 iter_char_para = tmp_iter_char_para-1;
                                                 last_line_in_p = true;
-                                                last_char_in_line = true;
                                                 break;
                                             }
                                         } else {
-                                            last_char_in_line = true;
                                             break;
                                         }
                                     } else if ((para[iter_char_para] >= 'a' && para[iter_char_para] <= 'z') || (para[iter_char_para] >= 'A' && para[iter_char_para] <= 'Z') || is_latin(para[iter_char_para])){
@@ -820,18 +810,15 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                                             if (tmp_iter_char_para < para.length){
                                                 iter_char_para = tmp_iter_char_para+1;
 //                                                Log.d("log: firebase", "en2 " + para[iter_char_para]);
-                                                continue;
                                             } else {
                                                 //is last char in para
                                                 iter_char_para = tmp_iter_char_para-1;
                                                 last_line_in_p = true;
-                                                last_char_in_line = true;
-//                                                Log.d("log: firebase", "en3 " + para[iter_char_para]);
+                                                //                                                Log.d("log: firebase", "en3 " + para[iter_char_para]);
                                                 break;
                                             }
                                         } else {
-                                            last_char_in_line = true;
-//                                            Log.d("log: firebase", "en4 " + para[iter_char_para]);
+                                            //                                            Log.d("log: firebase", "en4 " + para[iter_char_para]);
                                             break;
                                         }
                                     } else {
@@ -844,16 +831,13 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                                             //second check if last char in para
                                             if (tmp_iter_char_para < para.length){
                                                 iter_char_para = tmp_iter_char_para;
-                                                continue;
                                             } else {
                                                 //is last char in para
                                                 last_line_in_p = true;
-                                                last_char_in_line = true;
                                                 break;
                                             }
                                         } else {
                                             //line space not enough
-                                            last_char_in_line = true;
                                             break;
                                         }
                                     }
@@ -885,7 +869,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                         //##########################################################################
                         //put title into layout
                         //int text_size = (int) (dpWidth /30);
-                        int text_size = 20;
+                        int text_size;
                         if(text_size_string.equals("1")){
                             text_size = 20;
                         } else if (text_size_string.equals("0")){
@@ -964,12 +948,9 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                         class VisibleChecker {
                             private ExecutorService executor = Executors.newFixedThreadPool(1);
                             public Future<Integer> calculate(final Integer input) {
-                                return executor.submit(new Callable<Integer>() {
-                                    @Override
-                                    public Integer call() throws Exception {
-                                        Thread.sleep(1000);
-                                        return input * input;
-                                    }
+                                return executor.submit(() -> {
+                                    Thread.sleep(1000);
+                                    return input * input;
                                 });
                             }
                             public Future<Integer> visibility_check(final int input, final int start_count) {
@@ -1026,11 +1007,8 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                                             } else {
 //                                                Log.d("log: layout", "2");
                                                 new_flag_top[0] = true;
-                                                if(first_view==-100){//-1
-                                                    first_view = initial_start;
-                                                } else {
-                                                    last_view = initial_start;
-                                                }
+                                                //-1
+                                                first_view = initial_start;
                                             }
                                             if (old_flag_top[0] && new_flag_top[0]) {
                                                 count_top[0]++;
@@ -1039,7 +1017,6 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                                             } else if (!old_flag_top[0] && new_flag_top[0]) {
                                                 count_top[0]++;
                                                 old_flag_top[0] = new_flag_top[0];
-                                            } else {
                                             }
                                             //time #################################################
                                             if (!myTextViewsDate.getLocalVisibleRect(scrollBounds)) {
@@ -1107,7 +1084,6 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                                             } else if (!old_flag_top[3] && new_flag_top[3]) {
                                                 count_top[3]++;
                                                 old_flag_top[3] = new_flag_top[3];
-                                            } else {
                                             }
                                             //content ##############################################
                                             for (int i = 0; i < N; i++) {
@@ -1132,9 +1108,8 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                                                     //start visible
                                                     count[i]++;
                                                     old_flag[i] = new_flag[i];
-                                                } else {
-                                                    // still not visible
-                                                }
+                                                }  // still not visible
+
                                             }
                                             Thread.sleep(100);
                                             count_running++;
@@ -1620,10 +1595,10 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         @SuppressLint("MissingPermission")
         DocumentReference rbRef = db.collection(READING_BEHAVIOR_COLLECTION).document(device_id + " " +  myReadingBehavior.getKEY_IN_TIMESTAMP());
 
-        List<String> time_series_list = new ArrayList<String>(Arrays.asList(myReadingBehavior.getKEY_TIME_SERIES().split("#")));
-        List<String> viewport_record_list = new ArrayList<String>(Arrays.asList(myReadingBehavior.getKEY_VIEW_PORT_RECORD().split("#")));
-        List<String> drag_record_list = new ArrayList<String>(Arrays.asList(myReadingBehavior.getKEY_DRAG_RECORD().split("#")));
-        List<String> fling_record_list = new ArrayList<String>(Arrays.asList(myReadingBehavior.getKEY_FLING_RECORD().split("#")));
+        List<String> time_series_list = new ArrayList<>(Arrays.asList(myReadingBehavior.getKEY_TIME_SERIES().split("#")));
+        List<String> viewport_record_list = new ArrayList<>(Arrays.asList(myReadingBehavior.getKEY_VIEW_PORT_RECORD().split("#")));
+        List<String> drag_record_list = new ArrayList<>(Arrays.asList(myReadingBehavior.getKEY_DRAG_RECORD().split("#")));
+        List<String> fling_record_list = new ArrayList<>(Arrays.asList(myReadingBehavior.getKEY_FLING_RECORD().split("#")));
 
         myReadingBehavior.setKEY_TITLE(mTitle);
         myReadingBehavior.setKEY_HAS_IMG(has_img);

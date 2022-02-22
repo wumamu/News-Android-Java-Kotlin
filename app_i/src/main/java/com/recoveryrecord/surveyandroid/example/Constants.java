@@ -369,6 +369,7 @@ public class Constants {
     //SHARE PREFERENCE #############################################################################
     public static final String SHARE_PREFERENCE_CLEAR_CACHE = "SharePreferenceClear";
     public static final String SHARE_PREFERENCE_TEST_SIZE = "text_size";
+    public static final String SHARE_PREFERENCE_SILENT_ESM = "silent";
     public static final String SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION = "media_select";
     public static final String SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER = "media_rank";
     public static final String SHARE_PREFERENCE_USER_ID = "signature";

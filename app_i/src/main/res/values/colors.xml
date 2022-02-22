@@ -31,6 +31,11 @@
     <color name="track_color">#66A5A5A5</color>
     <color name="switch_color">#66A5A5A5</color>
 
+    <color name="float_color">#ffba00</color>
+    <color name="float_icon">#76410e</color>
+
+
+
     <color name="chart_color_US">#576F86</color>
     <color name="chart_color_JP">#E7655A</color>
     <color name="chart_color_KR">#F6CE5D</color>

@@ -293,6 +293,13 @@ public class ESMDbHelper extends SQLiteOpenHelper {
         return res;
     }
 
+    public Cursor getRecentEsmRecord(long now_timestamp) {//15 hour
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "SELECT * FROM " +  TABLE_NAME_PUSH_ESM + " ORDER BY push_esm.noti_timestamp DESC LIMIT 1;"
+                , null );
+        return res;
+    }
+
     public Cursor getALL() {
         SQLiteDatabase db = this.getReadableDatabase();
 //        Cursor res =  db.rawQuery( "select * from contacts where id="+id+"", null );

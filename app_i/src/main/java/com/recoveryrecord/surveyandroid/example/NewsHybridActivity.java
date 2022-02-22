@@ -2,9 +2,12 @@ package com.recoveryrecord.surveyandroid.example;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,6 +23,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.ActivityRecognition;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.Timestamp;
@@ -28,6 +32,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.recoveryrecord.surveyandroid.example.DbHelper.ESMDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.SessionDbHelper;
 import com.recoveryrecord.surveyandroid.example.chinatimes.ChinatimesMainFragment;
 import com.recoveryrecord.surveyandroid.example.cna.CnaMainFragment;
@@ -49,6 +54,7 @@ import com.recoveryrecord.surveyandroid.example.udn.UdnMainFragment;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -77,6 +83,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_KEY
 import static com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_VALUE;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_DONE_TOTAL;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_PUSH_TOTAL;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_ALARM_ACTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_DONE_TOTAL;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_PUSH_TOTAL;
 import static com.recoveryrecord.surveyandroid.example.Constants.MEDIA_BAR_ORDER;
@@ -115,9 +122,8 @@ import static com.recoveryrecord.surveyandroid.example.config.Constants.TimeLeft
 //public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener , GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
-
+    private FloatingActionButton myFab;
     private String signature;
-    private FirebaseAuth mAuth;
     private DrawerLayout drawerLayout;
 //    private SwipeRefreshLayout swipeRefreshLayout;
     private MySwipeRefreshLayout swipeRefreshLayout;
@@ -148,7 +154,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     //private long TimeLeftInMillis = SeesionCountDown;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    @SuppressLint({"HardwareIds", "LongLogTag", "ApplySharedPref"})
+    @SuppressLint({"HardwareIds", "LongLogTag", "ApplySharedPref", "RestrictedApi"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -201,8 +207,9 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
             media_push_result.add(String.join(",", sharedPrefs.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, Collections.emptySet()).toString()));
             first.put(MEDIA_BAR_ORDER, media_bar_result);
             first.put(USER_DEVICE_ID, device_id);
-            mAuth = FirebaseAuth.getInstance();
+            FirebaseAuth mAuth = FirebaseAuth.getInstance();
             FirebaseUser user = mAuth.getCurrentUser();
+            assert user != null;
             first.put(USER_FIRESTORE_ID, user.getUid());
             first.put(USER_SURVEY_NUMBER, sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
             first.put(USER_PHONE_ID, Build.MODEL);
@@ -268,6 +275,36 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                     Log.d("log: firebase share", "get failed with ", task.getException());
                 }
             });
+        }
+
+        myFab = findViewById(R.id.floatButton);
+        ESMDbHelper esmdbHandler = new ESMDbHelper(getApplicationContext());
+        Cursor cursor_esm = esmdbHandler.getRecentEsmRecord(Timestamp.now().getSeconds());
+        if(cursor_esm.getCount() != 0){
+            cursor_esm.moveToFirst();
+            String result = cursor_esm.getString(cursor_esm.getColumnIndex("result"));
+            //田過了
+            long remove_timestamp = cursor_esm.getLong(cursor_esm.getColumnIndex("remove_timestamp"));
+            long receieve_timestamp = cursor_esm.getLong(cursor_esm.getColumnIndex("receieve_timestamp"));
+            long diff = Timestamp.now().getSeconds()-receieve_timestamp;
+            //==0 還在通知藍
+            if(result.equals("NA") && remove_timestamp!=0){
+                if(diff<=900){//15 min
+                    myFab.setOnClickListener(v -> sendEsm());
+//                    myFab.setVisibility(View.GONE);
+                } else {
+                    myFab.setVisibility(View.GONE);
+                }
+            } else {
+                myFab.setVisibility(View.GONE);
+            }
+            if (!cursor_esm.isClosed()) {
+                cursor_esm.close();
+            }
+        } else {
+            //first time database
+            myFab.setOnClickListener(v -> sendEsm());
+//            myFab.setVisibility(View.GONE);
         }
 
 
@@ -432,6 +469,19 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
             SessionDbHelper dbHandler = new SessionDbHelper(context);
             dbHandler.insertSessionDetailsCreate(mysession);
         }
+    }
+
+    private void sendEsm() {
+        Toast.makeText(this, "正在為您生成問卷，請稍等", Toast.LENGTH_SHORT).show();
+        myFab.setVisibility(View.GONE);
+        Intent intent_esm = new Intent(context, AlarmReceiver.class);
+        intent_esm.setAction(ESM_ALARM_ACTION);
+        PendingIntent pendingIntent_esm = PendingIntent.getBroadcast(context, 77, intent_esm, 0);
+        AlarmManager alarmManager_esm = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        Calendar cal_esm = Calendar.getInstance();
+        cal_esm.add(Calendar.SECOND, 1);
+        assert alarmManager_esm != null;
+        alarmManager_esm.setExact(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_esm);
     }
 
 
@@ -629,7 +679,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 }
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
-//            case R.id.nav_contactt :
+//            case R.id.nav_esm :
 //                Intent intent_esm = new Intent(context, AlarmReceiver.class);
 //                intent_esm.setAction(ESM_ALARM_ACTION);
 //                PendingIntent pendingIntent_esm = PendingIntent.getBroadcast(context, 77, intent_esm, 0);

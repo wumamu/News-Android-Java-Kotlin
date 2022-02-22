@@ -5,8 +5,6 @@ import android.content.SharedPreferences;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.recoveryrecord.surveyandroid.example.model.Pagers;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,12 +14,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 
 public class NewsMediaPagerAdapter extends PagerAdapter {
-    private List<View> mPager;
+    private final List<View> mPager;
     private int childCount = 0;
-    private Context context;
+    private final Context context;
     public NewsMediaPagerAdapter(List<View> mPager, Context context) {
         this.mPager = mPager;
         this.context = context;
@@ -44,7 +41,7 @@ public class NewsMediaPagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         mPager.get(position).setTag(position);
-        ((ViewPager) container).addView(mPager.get(position));
+        container.addView(mPager.get(position));
         return mPager.get(position);
     }
 
@@ -78,7 +75,7 @@ public class NewsMediaPagerAdapter extends PagerAdapter {
 //                media_name = "中時";
 //                media_name = "中央社";
                     for (String r : ranking){
-                        List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                        List<String> out= new ArrayList<>(Arrays.asList(r.split(" ")));
                         if(Integer.parseInt(out.get(1))==1){
                             media_name = out.get(0);
                             break;
@@ -88,7 +85,7 @@ public class NewsMediaPagerAdapter extends PagerAdapter {
                 case 1:
 //                media_name = "中央社";
                     for (String r : ranking){
-                        List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                        List<String> out= new ArrayList<>(Arrays.asList(r.split(" ")));
                         if(Integer.parseInt(out.get(1))==2){
                             media_name = out.get(0);
                             break;
@@ -98,7 +95,7 @@ public class NewsMediaPagerAdapter extends PagerAdapter {
                 case 2:
 //                media_name = "華視";
                     for (String r : ranking){
-                        List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                        List<String> out= new ArrayList<>(Arrays.asList(r.split(" ")));
                         if(Integer.parseInt(out.get(1))==3){
                             media_name = out.get(0);
                             break;
@@ -108,7 +105,7 @@ public class NewsMediaPagerAdapter extends PagerAdapter {
                 case 3:
 //                media_name = "東森";
                     for (String r : ranking){
-                        List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                        List<String> out= new ArrayList<>(Arrays.asList(r.split(" ")));
                         if(Integer.parseInt(out.get(1))==4){
                             media_name = out.get(0);
                             break;
@@ -118,7 +115,7 @@ public class NewsMediaPagerAdapter extends PagerAdapter {
                 case 4:
 //                media_name = "自由時報";
                     for (String r : ranking){
-                        List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                        List<String> out= new ArrayList<>(Arrays.asList(r.split(" ")));
                         if(Integer.parseInt(out.get(1))==5){
                             media_name = out.get(0);
                             break;
@@ -128,7 +125,7 @@ public class NewsMediaPagerAdapter extends PagerAdapter {
                 case 5:
 //                media_name = "風傳媒";
                     for (String r : ranking){
-                        List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                        List<String> out= new ArrayList<>(Arrays.asList(r.split(" ")));
                         if(Integer.parseInt(out.get(1))==6){
                             media_name = out.get(0);
                             break;
@@ -138,7 +135,7 @@ public class NewsMediaPagerAdapter extends PagerAdapter {
                 case 6:
 //                media_name = "聯合";
                     for (String r : ranking){
-                        List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                        List<String> out= new ArrayList<>(Arrays.asList(r.split(" ")));
                         if(Integer.parseInt(out.get(1))==7){
                             media_name = out.get(0);
                             break;
@@ -148,7 +145,7 @@ public class NewsMediaPagerAdapter extends PagerAdapter {
                 case 7:
 //                media_name = "ettoday";
                     for (String r : ranking){
-                        List<String> out= new ArrayList<String>(Arrays.asList(r.split(" ")));
+                        List<String> out= new ArrayList<>(Arrays.asList(r.split(" ")));
                         if(Integer.parseInt(out.get(1))==8){
                             media_name = out.get(0);
                             break;
