@@ -13,6 +13,8 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.Objects;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
@@ -47,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         if(user != null){
 //            String[] split = user.getEmail().split("@");
-            addInfoToSharePreference(user.getUid(), user.getEmail().split("@"));
+            addInfoToSharePreference(user.getUid(), Objects.requireNonNull(user.getEmail()).split("@"));
             startActivity(new Intent(LoginActivity.this, NewsHybridActivity.class));
             finish();
         }
@@ -108,6 +110,7 @@ public class LoginActivity extends AppCompatActivity {
         mAuth.signInWithEmailAndPassword(string_useremail, string_password).addOnCompleteListener(task -> {
             if(task.isSuccessful()){
                 FirebaseUser user = mAuth.getCurrentUser();
+                assert user != null;
                 addInfoToSharePreference(user.getUid(), user.getEmail().split("@"));
 //                sharedPrefs_Login.edit().putBoolean(SHARE_PREFERENCE_IS_LOGIN, true).apply();
 //                String[] split = string_useremail.split("@");

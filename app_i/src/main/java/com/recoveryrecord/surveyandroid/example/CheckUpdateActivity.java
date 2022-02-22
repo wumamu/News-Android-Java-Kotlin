@@ -51,7 +51,7 @@ public class CheckUpdateActivity extends AppCompatActivity {
         mybutton = findViewById(R.id.upbutton);
 
         DocumentReference docRef = db.collection("app_info").document("g8FD5IwuIX26rI8tmgHs");
-        docRef.get().addOnCompleteListener((com.google.android.gms.tasks.OnCompleteListener<DocumentSnapshot>) task -> {
+        docRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
                 assert document != null;

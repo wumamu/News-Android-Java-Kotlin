@@ -18,22 +18,13 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.recoveryrecord.surveyandroid.example.DbHelper.ActivityRecognitionReceiverDbHelper;
-import com.recoveryrecord.surveyandroid.example.DbHelper.AppUsageReceiverDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.DiaryDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.ESMDbHelper;
-import com.recoveryrecord.surveyandroid.example.DbHelper.LightSensorReceiverDbHelper;
-import com.recoveryrecord.surveyandroid.example.DbHelper.NetworkChangeReceiverDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.PushNewsDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.ReadingBehaviorDbHelper;
-import com.recoveryrecord.surveyandroid.example.DbHelper.RingModeReceiverDbHelper;
-import com.recoveryrecord.surveyandroid.example.DbHelper.ScreenStateReceiverDbHelper;
-import com.recoveryrecord.surveyandroid.example.DbHelper.SessionDbHelper;
 import com.recoveryrecord.surveyandroid.example.sqlite.Diary;
 import com.recoveryrecord.surveyandroid.example.sqlite.ESM;
 
@@ -48,7 +39,6 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.preference.PreferenceManager;
@@ -74,6 +64,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 //    String esm_status = "NA", diary_status = "NA";
     Intent mServiceIntent;
+    @SuppressLint("ObsoleteSdkInt")
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -102,7 +93,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 //            editor.putLong(ESM_SAMPLE_TIME, sample_long);
 //            editor.apply();
 
-            Boolean exist_noti = false, exist_read = false;
+            boolean exist_noti = false, exist_read = false;
             Cursor cursor_noti = dbHandler_noti.checkNotiDataForESM(sample_long);
             if (cursor_noti.moveToFirst()) {
                 while(!cursor_noti.isAfterLast()) {
@@ -131,7 +122,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 cursor_read.close();
             }
             if (exist_noti || exist_read){
-                scheduleNotification_esm(context, getNotification_esm(context, esm_name, esm_source), 1000);
+                scheduleNotification_esm(context, getNotification_esm(context, esm_name, esm_source));
                 SharedPreferences.Editor editor = sharedPrefs.edit();
                 editor.putLong(ESM_SAMPLE_TIME, sample_long);
                 editor.putInt(ESM_DELAY_COUNT, 0);
@@ -169,10 +160,10 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
         if(action.equals(DIARY_ALARM_ACTION) && set_once){
             String diary_source = "NA";
-            if (intent.getExtras().getString(SCHEDULE_SOURCE) != null ) {
+            if (Objects.requireNonNull(intent.getExtras()).getString(SCHEDULE_SOURCE) != null ) {
                 diary_source = intent.getExtras().getString(SCHEDULE_SOURCE);
             }
-            scheduleNotification_diary(context, getNotification_diary(context, diary_source ),  1000 );
+            scheduleNotification_diary(context, getNotification_diary(context, diary_source ));
             //call next schedule
             Intent intent_schedule = new Intent(context, AlarmReceiver.class);
             intent_schedule.setAction(SCHEDULE_ALARM_ACTION);
@@ -180,6 +171,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1000, intent_schedule, 0);
             Calendar cal = Calendar.getInstance();
             cal.add(Calendar.HOUR, 2);
+            assert alarmManager != null;
             alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() , pendingIntent);
 //            //upload sql data
 //            upload_push_news(context);
@@ -216,15 +208,16 @@ public class AlarmReceiver extends BroadcastReceiver {
             upload_reading_behavior(context);
             upload_esm(context);
             upload_diary(context);
-            upload_activityrecognition(context);
-            upload_appusage(context);
-            upload_light(context);
-            upload_network(context);
-            upload_RingMode(context);
-            upload_Screen(context);
-            upload_session(context);
+//            upload_activityrecognition(context);
+//            upload_appusage(context);
+//            upload_light(context);
+//            upload_network(context);
+//            upload_RingMode(context);
+//            upload_Screen(context);
+//            upload_session(context);
+
 //            Toast.makeText(getApplicationContext(), "上傳資料完成", Toast.LENGTH_SHORT).show();
-            Long new_time = Timestamp.now().getSeconds();
+            long new_time = Timestamp.now().getSeconds();
             SharedPreferences.Editor editor = sharedPrefs.edit();
             editor.putLong(UPLOAD_TIME, new_time);
             editor.apply();
@@ -236,6 +229,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             updateDiaryServiceIntent.setAction(DIARY_ALARM_ACTION);
             PendingIntent pendingUpdateIntent = PendingIntent.getService(context, 100, updateDiaryServiceIntent, 0);
             try {
+                assert alarmManager != null;
                 alarmManager.cancel(pendingUpdateIntent);
             } catch (Exception e) {
 //                Log.e(TAG, "AlarmManager update was not canceled. " + e.toString());
@@ -270,6 +264,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             updateDiaryServiceIntent.setAction(DIARY_ALARM_ACTION);
             PendingIntent pendingUpdateIntent = PendingIntent.getService(context, 100, updateDiaryServiceIntent, 0);
             try {
+                assert alarmManager != null;
                 alarmManager.cancel(pendingUpdateIntent);
             } catch (Exception e) {
 //                Log.e(TAG, "AlarmManager update was not canceled. " + e.toString());
@@ -327,23 +322,14 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         DocumentReference rbRef_check = db.collection(USER_COLLECTION).document(device_id);
         rbRef_check.update("check_last_service", Timestamp.now())
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("log: firebase share", "DocumentSnapshot successfully updated!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("log: firebase share", "Error updating document", e);
-                    }
-                });
+                .addOnSuccessListener(aVoid -> Log.d("log: firebase share", "DocumentSnapshot successfully updated!"))
+                .addOnFailureListener(e -> Log.w("log: firebase share", "Error updating document", e));
         add_ServiceChecker(context);
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass, Context context) {
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        assert manager != null;
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (serviceClass.getName().equals(service.service.getClassName())) {
                 return true;//Running
@@ -356,7 +342,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     public static void add_ServiceChecker(Context context) {
         try {
             Thread.sleep(200);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
         Intent intent = new Intent(context, AlarmReceiver.class);
@@ -366,12 +352,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         AlarmManager am = (AlarmManager) context.getSystemService(ALARM_SERVICE);
         long time_fired = System.currentTimeMillis() + SERVICE_CHECKER_INTERVAL;
         assert am != null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            am.setExact(AlarmManager.RTC_WAKEUP, time_fired, pi);       //註冊鬧鐘
-        } else {
-            am.set(AlarmManager.RTC_WAKEUP, time_fired, pi);       //註冊鬧鐘
-        }
-//        am.setExact(AlarmManager.RTC_WAKEUP, time_fired, pi);       //註冊鬧鐘
+        am.setExact(AlarmManager.RTC_WAKEUP, time_fired, pi);       //註冊鬧鐘
+        //        am.setExact(AlarmManager.RTC_WAKEUP, time_fired, pi);       //註冊鬧鐘
     }
     private void schedule_alarm(Context context) {
         Date date = new Date(System.currentTimeMillis());
@@ -383,11 +365,11 @@ public class AlarmReceiver extends BroadcastReceiver {
         String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
         Map<String, Object> my_alarm = new HashMap<>();
         AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-        ArrayList<PendingIntent> intentEsmArray = new ArrayList<PendingIntent>();
+        ArrayList<PendingIntent> intentEsmArray = new ArrayList<>();
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         int StartHour = sharedPrefs.getInt(ESM_START_TIME_HOUR, 9);
         int EndHour = sharedPrefs.getInt(ESM_END_TIME_HOUR, 21);
-        int hour_interval = 12;
+        int hour_interval;
         if(EndHour==0){
             //StartHour 9 EndHour 0 -> 15
             hour_interval = 24-9;
@@ -427,6 +409,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         intent_diary.setAction(DIARY_ALARM_ACTION);
         intent_diary.putExtra(SCHEDULE_SOURCE, formatter.format(date));
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 100, intent_diary, 0);
+        assert alarmManager != null;
         alarmManager.set(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent);
 
         //esm alarm
@@ -495,18 +478,8 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         DocumentReference rbRef_check = db.collection(USER_COLLECTION).document(device_id);
         rbRef_check.update("check_last_schedule", Timestamp.now())
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("log: firebase share", "DocumentSnapshot successfully updated!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("log: firebase share", "Error updating document", e);
-                    }
-                });
+                .addOnSuccessListener(aVoid -> Log.d("log: firebase share", "DocumentSnapshot successfully updated!"))
+                .addOnFailureListener(e -> Log.w("log: firebase share", "Error updating document", e));
     }
 
     private boolean check_esm_time_cal(Calendar cal_esm, Context context) {
@@ -537,7 +510,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         String time_now = formatter.format(date);
-        String esm_id = "";
+        String esm_id;
         esm_id = time_now;
 
         Intent intent_esm = new Intent();
@@ -622,13 +595,13 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void scheduleNotification_esm(Context context, Notification notification, int delay) {
+    private void scheduleNotification_esm(Context context, Notification notification) {
         Intent notificationIntent = new Intent(context, NotificationListenerESM.class);
         notificationIntent.putExtra(DEFAULT_ESM_NOTIFICATION_ID, 1 ) ;
         notificationIntent.putExtra(DEFAULT_ESM_NOTIFICATION, notification) ;
         int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+        long futureInMillis = SystemClock.elapsedRealtime() + 1000;
         AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         assert alarmManager != null;
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
@@ -636,11 +609,10 @@ public class AlarmReceiver extends BroadcastReceiver {
     @RequiresApi(api = Build.VERSION_CODES.N)
     private Notification getNotification_diary(Context context, String diary_schedule_source) {
         Date date = new Date(System.currentTimeMillis());
-        String diary_id = "";
+        String diary_id;
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-        String time_now = formatter.format(date);
-        diary_id = time_now;
+        diary_id = formatter.format(date);
 
         Intent intent_diary = new Intent();
         intent_diary.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -713,13 +685,13 @@ public class AlarmReceiver extends BroadcastReceiver {
         return builder.build();
     }
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void scheduleNotification_diary (Context context, Notification notification, int delay) {
+    private void scheduleNotification_diary(Context context, Notification notification) {
         Intent notificationIntent = new Intent(context, NotificationListenerDiary.class);
         notificationIntent.putExtra(DEFAULT_DIARY_NOTIFICATION_ID, 1 ) ;
         notificationIntent.putExtra(DEFAULT_DIARY_NOTIFICATION, notification) ;
         int randomNum = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
         PendingIntent pendingIntent = PendingIntent.getBroadcast( context, randomNum, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+        long futureInMillis = SystemClock.elapsedRealtime() + 1000;
         AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         assert alarmManager != null;
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
@@ -740,8 +712,8 @@ public class AlarmReceiver extends BroadcastReceiver {
 
                 diary.put(PUSH_DIARY_SCHEDULE_SOURCE, cursor.getString(cursor.getColumnIndex("diary_schedule_source")));
                 diary.put(PUSH_DIARY_SAMPLE_TIME, new Timestamp(cursor.getLong(cursor.getColumnIndex("diary_sample_time")), 0));//
-                diary.put(PUSH_DIARY_OPTION_READ, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("esm_sample_read")).split("#"))));
-                diary.put(PUSH_DIARY_OPTION_NOTI, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("esm_sample_noti")).split("#"))));
+                diary.put(PUSH_DIARY_OPTION_READ, new ArrayList<>(Arrays.asList(cursor.getString(cursor.getColumnIndex("esm_sample_read")).split("#"))));
+                diary.put(PUSH_DIARY_OPTION_NOTI, new ArrayList<>(Arrays.asList(cursor.getString(cursor.getColumnIndex("esm_sample_noti")).split("#"))));
 
                 diary.put(PUSH_DIARY_NOTI_TIME, new Timestamp(cursor.getLong(cursor.getColumnIndex("noti_timestamp")), 0));
                 diary.put(PUSH_DIARY_RECEIEVE_TIME, new Timestamp(cursor.getLong(cursor.getColumnIndex("receieve_timestamp")), 0));
@@ -751,10 +723,10 @@ public class AlarmReceiver extends BroadcastReceiver {
                 diary.put(PUSH_DIARY_REMOVE_TIME, new Timestamp(cursor.getLong(cursor.getColumnIndex("remove_timestamp")), 0));
                 diary.put(PUSH_DIARY_REMOVE_TYPE, cursor.getString(cursor.getColumnIndex("remove_type")));
                 diary.put(PUSH_DIARY_RESULT, cursor.getString(cursor.getColumnIndex("result")));
-                diary.put(PUSH_DIARY_INOPPORTUNE_TARGET_READ, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("inopportune_result_read")).split("#"))));
-                diary.put(PUSH_DIARY_OPPORTUNE_TARGET_RAED, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("opportune_result_read")).split("#"))));
-                diary.put(PUSH_DIARY_INOPPORTUNE_TARGET_NOTI, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("inopportune_result_noti")).split("#"))));
-                diary.put(PUSH_DIARY_OPPORTUNE_TARGET_NOTI, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("opportune_result_noti")).split("#"))));
+                diary.put(PUSH_DIARY_INOPPORTUNE_TARGET_READ, new ArrayList<>(Arrays.asList(cursor.getString(cursor.getColumnIndex("inopportune_result_read")).split("#"))));
+                diary.put(PUSH_DIARY_OPPORTUNE_TARGET_RAED, new ArrayList<>(Arrays.asList(cursor.getString(cursor.getColumnIndex("opportune_result_read")).split("#"))));
+                diary.put(PUSH_DIARY_INOPPORTUNE_TARGET_NOTI, new ArrayList<>(Arrays.asList(cursor.getString(cursor.getColumnIndex("inopportune_result_noti")).split("#"))));
+                diary.put(PUSH_DIARY_OPPORTUNE_TARGET_NOTI, new ArrayList<>(Arrays.asList(cursor.getString(cursor.getColumnIndex("opportune_result_noti")).split("#"))));
 
                 db.collection(PUSH_DIARY_COLLECTION+"_sql")
                         .document(cursor.getString(cursor.getColumnIndex("doc_id")))
@@ -780,8 +752,8 @@ public class AlarmReceiver extends BroadcastReceiver {
                 esm.put(PUSH_ESM_USER_ID, cursor.getString(cursor.getColumnIndex("user_id")));
 
                 esm.put(PUSH_ESM_TYPE, cursor.getInt(cursor.getColumnIndex("esm_type")));
-                esm.put(PUSH_ESM_NOTI_ARRAY, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("noti_sample")).split("#"))));
-                esm.put(PUSH_ESM_READ_ARRAY, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("self_read_sample")).split("#"))));
+                esm.put(PUSH_ESM_NOTI_ARRAY, new ArrayList<>(Arrays.asList(cursor.getString(cursor.getColumnIndex("noti_sample")).split("#"))));
+                esm.put(PUSH_ESM_READ_ARRAY, new ArrayList<>(Arrays.asList(cursor.getString(cursor.getColumnIndex("self_read_sample")).split("#"))));
                 //new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("self_read_sample")).split("#")))
                 esm.put(PUSH_ESM_SCHEDULE_ID, cursor.getString(cursor.getColumnIndex("esm_schedule_id")));
                 esm.put(PUSH_ESM_SCHEDULE_SOURCE, cursor.getString(cursor.getColumnIndex("esm_schedule_source")));
@@ -844,18 +816,18 @@ public class AlarmReceiver extends BroadcastReceiver {
                 rb.put(READING_BEHAVIOR_CONTENT_LENGTH, cursor.getInt(cursor.getColumnIndex("content_length")));
                 rb.put(READING_BEHAVIOR_DISPLAY_WIDTH, cursor.getFloat(cursor.getColumnIndex("display_width")));
                 rb.put(READING_BEHAVIOR_DISPLAY_HEIGHT, cursor.getFloat(cursor.getColumnIndex("display_height")));
-                rb.put(READING_BEHAVIOR_IN_TIME, new Timestamp(cursor.getLong(cursor.getColumnIndex("in_timestamp")), 0));;
-                rb.put(READING_BEHAVIOR_OUT_TIME, new Timestamp(cursor.getLong(cursor.getColumnIndex("out_timestamp")), 0));;
+                rb.put(READING_BEHAVIOR_IN_TIME, new Timestamp(cursor.getLong(cursor.getColumnIndex("in_timestamp")), 0));
+                rb.put(READING_BEHAVIOR_OUT_TIME, new Timestamp(cursor.getLong(cursor.getColumnIndex("out_timestamp")), 0));
                 rb.put(READING_BEHAVIOR_TIME_ON_PAGE, cursor.getLong(cursor.getColumnIndex("time_on_page")));
                 rb.put(READING_BEHAVIOR_PAUSE_COUNT, cursor.getInt(cursor.getColumnIndex("pause_on_page")));
                 rb.put(READING_BEHAVIOR_VIEWPORT_NUM, cursor.getInt(cursor.getColumnIndex("view_port_num")));
-                rb.put(READING_BEHAVIOR_VIEWPORT_RECORD, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("view_port_record")).split("#"))));//
+                rb.put(READING_BEHAVIOR_VIEWPORT_RECORD, new ArrayList<>(Arrays.asList(cursor.getString(cursor.getColumnIndex("view_port_record")).split("#"))));//
                 rb.put(READING_BEHAVIOR_FLING_NUM, cursor.getInt(cursor.getColumnIndex("fling_num")));
-                rb.put(READING_BEHAVIOR_FLING_RECORD, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("fling_record")).split("#"))));//
+                rb.put(READING_BEHAVIOR_FLING_RECORD, new ArrayList<>(Arrays.asList(cursor.getString(cursor.getColumnIndex("fling_record")).split("#"))));//
                 rb.put(READING_BEHAVIOR_DRAG_NUM, cursor.getInt(cursor.getColumnIndex("drag_num")));
-                rb.put(READING_BEHAVIOR_DRAG_RECORD, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("drag_counter")).split("#"))));//
-                rb.put(READING_BEHAVIOR_SHARE, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("share")).split("#"))));//
-                rb.put(READING_BEHAVIOR_TIME_SERIES, new ArrayList<String>(Arrays.asList(cursor.getString(cursor.getColumnIndex("time_series")).split("#"))));//
+                rb.put(READING_BEHAVIOR_DRAG_RECORD, new ArrayList<>(Arrays.asList(cursor.getString(cursor.getColumnIndex("drag_counter")).split("#"))));//
+                rb.put(READING_BEHAVIOR_SHARE, new ArrayList<>(Arrays.asList(cursor.getString(cursor.getColumnIndex("share")).split("#"))));//
+                rb.put(READING_BEHAVIOR_TIME_SERIES, new ArrayList<>(Arrays.asList(cursor.getString(cursor.getColumnIndex("time_series")).split("#"))));//
 
                 db.collection(READING_BEHAVIOR_COLLECTION+"_sql")
                         .document(cursor.getString(cursor.getColumnIndex("doc_id")))
@@ -905,197 +877,197 @@ public class AlarmReceiver extends BroadcastReceiver {
 //        dbHandler.deleteDb();
     }
     //sensor
-    private void upload_activityrecognition(Context context){
-        ActivityRecognitionReceiverDbHelper dbHelper = new ActivityRecognitionReceiverDbHelper(context);
-        Cursor cursor = dbHelper.getALL();
-        if(cursor.moveToFirst()){
-//            Log.e("upload", "move to first");
-            while(!cursor.isAfterLast()){
-//                Log.e("upload", "isafterlast");
-                Map<String, Object> activity = new HashMap<>();
-                activity.put(SENSOR_DOC_ID, cursor.getString(cursor.getColumnIndex("doc_id")));
-                activity.put(SENSOR_DEVICE_ID, cursor.getString(cursor.getColumnIndex("device_id")));
-                activity.put(SENSOR_TIMESTAMP, new Timestamp(cursor.getLong(cursor.getColumnIndex("timestamp")), 0));
-                activity.put(SENSOR_USER_ID, cursor.getString(cursor.getColumnIndex("user_id")));
-                activity.put(SENSOR_SESSION, cursor.getInt(cursor.getColumnIndex("session")));
-                activity.put(SENSOR_USING_APP, cursor.getString(cursor.getColumnIndex("using_app")));
-                activity.put(SENSOR_ACTIVITYRECOGNITION, cursor.getString(cursor.getColumnIndex("activityrecognition")));
-                db.collection("Sensor collection")
-                        .document("Sensor SQL")
-                        .collection("Confirmed Activity Recognition sql")
-                        .document(cursor.getString(cursor.getColumnIndex("doc_id")))
-                        .set(activity);
-                cursor.moveToNext();
-            }
-//            Log.e("upload", "close");
-            cursor.close();
-        }
-//        Log.e("upload", "updateall");
-        dbHelper.UpdateAll();
-    }
-    private void upload_appusage(Context context){
-        AppUsageReceiverDbHelper dbHelper = new AppUsageReceiverDbHelper(context);
-        Cursor cursor = dbHelper.getALL();
-        if(cursor.moveToFirst()){
-//            Log.e("upload", "move to first");
-            while(!cursor.isAfterLast()){
-//                Log.e("upload", "isafterlast");
-                Map<String, Object> appusage = new HashMap<>();
-                appusage.put(SENSOR_DOC_ID, cursor.getString(cursor.getColumnIndex("doc_id")));
-                appusage.put(SENSOR_DEVICE_ID, cursor.getString(cursor.getColumnIndex("device_id")));
-                appusage.put(SENSOR_TIMESTAMP, new Timestamp(cursor.getLong(cursor.getColumnIndex("timestamp")), 0));
-                appusage.put(SENSOR_USER_ID, cursor.getString(cursor.getColumnIndex("user_id")));
-                appusage.put(SENSOR_SESSION, cursor.getInt(cursor.getColumnIndex("session")));
-                appusage.put(SENSOR_USING_APP, cursor.getString(cursor.getColumnIndex("using_app")));
-                appusage.put(SENSOR_APPUSAGE, cursor.getString(cursor.getColumnIndex("appusage")));
-                db.collection("Sensor collection")
-                        .document("Sensor SQL")
-                        .collection("AppUsage sql")
-                        .document(cursor.getString(cursor.getColumnIndex("doc_id")))
-                        .set(appusage);
-                cursor.moveToNext();
-            }
-//            Log.e("upload", "close");
-            cursor.close();
-        }
-//        Log.e("upload", "updateall");
-        dbHelper.UpdateAll();
-    }
-    private void upload_light(Context context){
-        LightSensorReceiverDbHelper dbHelper = new LightSensorReceiverDbHelper(context);
-        Cursor cursor = dbHelper.getALL();
-        if(cursor.moveToFirst()){
-//            Log.e("upload", "move to first");
-            while(!cursor.isAfterLast()){
-//                Log.e("upload", "isafterlast");
-                Map<String, Object> light = new HashMap<>();
-                light.put(SENSOR_DOC_ID, cursor.getString(cursor.getColumnIndex("doc_id")));
-                light.put(SENSOR_DEVICE_ID, cursor.getString(cursor.getColumnIndex("device_id")));
-                light.put(SENSOR_TIMESTAMP, new Timestamp(cursor.getLong(cursor.getColumnIndex("timestamp")), 0));
-                light.put(SENSOR_USER_ID, cursor.getString(cursor.getColumnIndex("user_id")));
-                light.put(SENSOR_SESSION, cursor.getInt(cursor.getColumnIndex("session")));
-                light.put(SENSOR_USING_APP, cursor.getString(cursor.getColumnIndex("using_app")));
-                light.put(SENSOR_LIGHT, cursor.getString(cursor.getColumnIndex("light")));
-                db.collection("Sensor collection")
-                        .document("Sensor SQL")
-                        .collection("Light Sensor sql")
-                        .document(cursor.getString(cursor.getColumnIndex("doc_id")))
-                        .set(light);
-                cursor.moveToNext();
-            }
-//            Log.e("upload", "close");
-            cursor.close();
-        }
-//        Log.e("upload", "updateall");
-        dbHelper.UpdateAll();
-    }
-    private void upload_network(Context context){
-        NetworkChangeReceiverDbHelper dbHelper = new NetworkChangeReceiverDbHelper(context);
-        Cursor cursor = dbHelper.getALL();
-        if(cursor.moveToFirst()){
-//            Log.e("upload", "move to first");
-            while(!cursor.isAfterLast()){
-//                Log.e("upload", "isafterlast");
-                Map<String, Object> network = new HashMap<>();
-                network.put(SENSOR_DOC_ID, cursor.getString(cursor.getColumnIndex("doc_id")));
-                network.put(SENSOR_DEVICE_ID, cursor.getString(cursor.getColumnIndex("device_id")));
-                network.put(SENSOR_TIMESTAMP, new Timestamp(cursor.getLong(cursor.getColumnIndex("timestamp")), 0));
-                network.put(SENSOR_USER_ID, cursor.getString(cursor.getColumnIndex("user_id")));
-                network.put(SENSOR_SESSION, cursor.getInt(cursor.getColumnIndex("session")));
-                network.put(SENSOR_USING_APP, cursor.getString(cursor.getColumnIndex("using_app")));
-                network.put(SENSOR_NETWORK, cursor.getString(cursor.getColumnIndex("network")));
-                db.collection("Sensor collection")
-                        .document("Sensor SQL")
-                        .collection("Network sql")
-                        .document(cursor.getString(cursor.getColumnIndex("doc_id")))
-                        .set(network);
-                cursor.moveToNext();
-            }
-//            Log.e("upload", "close");
-            cursor.close();
-        }
-//        Log.e("upload", "updateall");
-        dbHelper.UpdateAll();
-    }
-    private void upload_RingMode(Context context){
-        RingModeReceiverDbHelper dbHelper = new RingModeReceiverDbHelper(context);
-        Cursor cursor = dbHelper.getALL();
-        if(cursor.moveToFirst()){
-//            Log.e("upload", "move to first");
-            while(!cursor.isAfterLast()){
-//                Log.e("upload", "isafterlast");
-                Map<String, Object> ring = new HashMap<>();
-                ring.put(SENSOR_DOC_ID, cursor.getString(cursor.getColumnIndex("doc_id")));
-                ring.put(SENSOR_DEVICE_ID, cursor.getString(cursor.getColumnIndex("device_id")));
-                ring.put(SENSOR_TIMESTAMP, new Timestamp(cursor.getLong(cursor.getColumnIndex("timestamp")), 0));
-                ring.put(SENSOR_USER_ID, cursor.getString(cursor.getColumnIndex("user_id")));
-                ring.put(SENSOR_SESSION, cursor.getInt(cursor.getColumnIndex("session")));
-                ring.put(SENSOR_USING_APP, cursor.getString(cursor.getColumnIndex("using_app")));
-                ring.put(SENSOR_RINGMODE, cursor.getString(cursor.getColumnIndex("ringmode")));
-                db.collection("Sensor collection")
-                        .document("Sensor SQL")
-                        .collection("Ring Mode sql")
-                        .document(cursor.getString(cursor.getColumnIndex("doc_id")))
-                        .set(ring);
-                cursor.moveToNext();
-            }
-//            Log.e("upload", "close");
-            cursor.close();
-        }
-//        Log.e("upload", "updateall");
-        dbHelper.UpdateAll();
-    }
-    private void upload_Screen(Context context){
-        ScreenStateReceiverDbHelper dbHelper = new ScreenStateReceiverDbHelper(context);
-        Cursor cursor = dbHelper.getALL();
-        if(cursor.moveToFirst()){
-//            Log.e("upload", "move to first");
-            while(!cursor.isAfterLast()){
-//                Log.e("upload", "isafterlast");
-                Map<String, Object> screen = new HashMap<>();
-                screen.put(SENSOR_DOC_ID, cursor.getString(cursor.getColumnIndex("doc_id")));
-                screen.put(SENSOR_DEVICE_ID, cursor.getString(cursor.getColumnIndex("device_id")));
-                screen.put(SENSOR_TIMESTAMP, new Timestamp(cursor.getLong(cursor.getColumnIndex("timestamp")), 0));
-                screen.put(SENSOR_USER_ID, cursor.getString(cursor.getColumnIndex("user_id")));
-                screen.put(SENSOR_SESSION, cursor.getInt(cursor.getColumnIndex("session")));
-                screen.put(SENSOR_USING_APP, cursor.getString(cursor.getColumnIndex("using_app")));
-                screen.put(SENSOR_SCREEN, cursor.getString(cursor.getColumnIndex("screen")));
-                db.collection("Sensor collection")
-                        .document("Sensor SQL")
-                        .collection("Screen sql")
-                        .document(cursor.getString(cursor.getColumnIndex("doc_id")))
-                        .set(screen);
-                cursor.moveToNext();
-            }
-//            Log.e("upload", "close");
-            cursor.close();
-        }
-//        Log.e("upload", "updateall");
-        dbHelper.UpdateAll();
-    }
-    private void upload_session(Context context){
-        SessionDbHelper dbHelper = new SessionDbHelper(context);
-        Cursor cursor = dbHelper.getALL();
-        if(cursor.moveToFirst()){
-//            Log.e("upload", "move to first");
-            while(!cursor.isAfterLast()){
-//                Log.e("upload", "isafterlast");
-                Map<String, Object> session = new HashMap<>();
-                session.put(SENSOR_DOC_ID, cursor.getString(cursor.getColumnIndex("doc_id")));
-                session.put(SENSOR_DEVICE_ID, cursor.getString(cursor.getColumnIndex("device_id")));
-                session.put(SENSOR_TIMESTAMP, new Timestamp(cursor.getLong(cursor.getColumnIndex("timestamp")), 0));
-                session.put(SENSOR_USER_ID, cursor.getString(cursor.getColumnIndex("user_id")));
-                session.put(SENSOR_SESSION, cursor.getInt(cursor.getColumnIndex("session")));
-                session.put(SENSOR_STATE, cursor.getString(cursor.getColumnIndex("state")));
-                db.collection("Session_List_sql")
-                        .document(cursor.getString(cursor.getColumnIndex("doc_id")))
-                        .set(session);
-                cursor.moveToNext();
-            }
-//            Log.e("upload", "close");
-            cursor.close();
-        }
-//        Log.e("upload", "updateall");
-        dbHelper.UpdateAll();
-    }
+//    private void upload_activityrecognition(Context context){
+//        ActivityRecognitionReceiverDbHelper dbHelper = new ActivityRecognitionReceiverDbHelper(context);
+//        Cursor cursor = dbHelper.getALL();
+//        if(cursor.moveToFirst()){
+////            Log.e("upload", "move to first");
+//            while(!cursor.isAfterLast()){
+////                Log.e("upload", "isafterlast");
+//                Map<String, Object> activity = new HashMap<>();
+//                activity.put(SENSOR_DOC_ID, cursor.getString(cursor.getColumnIndex("doc_id")));
+//                activity.put(SENSOR_DEVICE_ID, cursor.getString(cursor.getColumnIndex("device_id")));
+//                activity.put(SENSOR_TIMESTAMP, new Timestamp(cursor.getLong(cursor.getColumnIndex("timestamp")), 0));
+//                activity.put(SENSOR_USER_ID, cursor.getString(cursor.getColumnIndex("user_id")));
+//                activity.put(SENSOR_SESSION, cursor.getInt(cursor.getColumnIndex("session")));
+//                activity.put(SENSOR_USING_APP, cursor.getString(cursor.getColumnIndex("using_app")));
+//                activity.put(SENSOR_ACTIVITYRECOGNITION, cursor.getString(cursor.getColumnIndex("activityrecognition")));
+//                db.collection("Sensor collection")
+//                        .document("Sensor SQL")
+//                        .collection("Confirmed Activity Recognition sql")
+//                        .document(cursor.getString(cursor.getColumnIndex("doc_id")))
+//                        .set(activity);
+//                cursor.moveToNext();
+//            }
+////            Log.e("upload", "close");
+//            cursor.close();
+//        }
+////        Log.e("upload", "updateall");
+//        dbHelper.UpdateAll();
+//    }
+//    private void upload_appusage(Context context){
+//        AppUsageReceiverDbHelper dbHelper = new AppUsageReceiverDbHelper(context);
+//        Cursor cursor = dbHelper.getALL();
+//        if(cursor.moveToFirst()){
+////            Log.e("upload", "move to first");
+//            while(!cursor.isAfterLast()){
+////                Log.e("upload", "isafterlast");
+//                Map<String, Object> appusage = new HashMap<>();
+//                appusage.put(SENSOR_DOC_ID, cursor.getString(cursor.getColumnIndex("doc_id")));
+//                appusage.put(SENSOR_DEVICE_ID, cursor.getString(cursor.getColumnIndex("device_id")));
+//                appusage.put(SENSOR_TIMESTAMP, new Timestamp(cursor.getLong(cursor.getColumnIndex("timestamp")), 0));
+//                appusage.put(SENSOR_USER_ID, cursor.getString(cursor.getColumnIndex("user_id")));
+//                appusage.put(SENSOR_SESSION, cursor.getInt(cursor.getColumnIndex("session")));
+//                appusage.put(SENSOR_USING_APP, cursor.getString(cursor.getColumnIndex("using_app")));
+//                appusage.put(SENSOR_APPUSAGE, cursor.getString(cursor.getColumnIndex("appusage")));
+//                db.collection("Sensor collection")
+//                        .document("Sensor SQL")
+//                        .collection("AppUsage sql")
+//                        .document(cursor.getString(cursor.getColumnIndex("doc_id")))
+//                        .set(appusage);
+//                cursor.moveToNext();
+//            }
+////            Log.e("upload", "close");
+//            cursor.close();
+//        }
+////        Log.e("upload", "updateall");
+//        dbHelper.UpdateAll();
+//    }
+//    private void upload_light(Context context){
+//        LightSensorReceiverDbHelper dbHelper = new LightSensorReceiverDbHelper(context);
+//        Cursor cursor = dbHelper.getALL();
+//        if(cursor.moveToFirst()){
+////            Log.e("upload", "move to first");
+//            while(!cursor.isAfterLast()){
+////                Log.e("upload", "isafterlast");
+//                Map<String, Object> light = new HashMap<>();
+//                light.put(SENSOR_DOC_ID, cursor.getString(cursor.getColumnIndex("doc_id")));
+//                light.put(SENSOR_DEVICE_ID, cursor.getString(cursor.getColumnIndex("device_id")));
+//                light.put(SENSOR_TIMESTAMP, new Timestamp(cursor.getLong(cursor.getColumnIndex("timestamp")), 0));
+//                light.put(SENSOR_USER_ID, cursor.getString(cursor.getColumnIndex("user_id")));
+//                light.put(SENSOR_SESSION, cursor.getInt(cursor.getColumnIndex("session")));
+//                light.put(SENSOR_USING_APP, cursor.getString(cursor.getColumnIndex("using_app")));
+//                light.put(SENSOR_LIGHT, cursor.getString(cursor.getColumnIndex("light")));
+//                db.collection("Sensor collection")
+//                        .document("Sensor SQL")
+//                        .collection("Light Sensor sql")
+//                        .document(cursor.getString(cursor.getColumnIndex("doc_id")))
+//                        .set(light);
+//                cursor.moveToNext();
+//            }
+////            Log.e("upload", "close");
+//            cursor.close();
+//        }
+////        Log.e("upload", "updateall");
+//        dbHelper.UpdateAll();
+//    }
+//    private void upload_network(Context context){
+//        NetworkChangeReceiverDbHelper dbHelper = new NetworkChangeReceiverDbHelper(context);
+//        Cursor cursor = dbHelper.getALL();
+//        if(cursor.moveToFirst()){
+////            Log.e("upload", "move to first");
+//            while(!cursor.isAfterLast()){
+////                Log.e("upload", "isafterlast");
+//                Map<String, Object> network = new HashMap<>();
+//                network.put(SENSOR_DOC_ID, cursor.getString(cursor.getColumnIndex("doc_id")));
+//                network.put(SENSOR_DEVICE_ID, cursor.getString(cursor.getColumnIndex("device_id")));
+//                network.put(SENSOR_TIMESTAMP, new Timestamp(cursor.getLong(cursor.getColumnIndex("timestamp")), 0));
+//                network.put(SENSOR_USER_ID, cursor.getString(cursor.getColumnIndex("user_id")));
+//                network.put(SENSOR_SESSION, cursor.getInt(cursor.getColumnIndex("session")));
+//                network.put(SENSOR_USING_APP, cursor.getString(cursor.getColumnIndex("using_app")));
+//                network.put(SENSOR_NETWORK, cursor.getString(cursor.getColumnIndex("network")));
+//                db.collection("Sensor collection")
+//                        .document("Sensor SQL")
+//                        .collection("Network sql")
+//                        .document(cursor.getString(cursor.getColumnIndex("doc_id")))
+//                        .set(network);
+//                cursor.moveToNext();
+//            }
+////            Log.e("upload", "close");
+//            cursor.close();
+//        }
+////        Log.e("upload", "updateall");
+//        dbHelper.UpdateAll();
+//    }
+//    private void upload_RingMode(Context context){
+//        RingModeReceiverDbHelper dbHelper = new RingModeReceiverDbHelper(context);
+//        Cursor cursor = dbHelper.getALL();
+//        if(cursor.moveToFirst()){
+////            Log.e("upload", "move to first");
+//            while(!cursor.isAfterLast()){
+////                Log.e("upload", "isafterlast");
+//                Map<String, Object> ring = new HashMap<>();
+//                ring.put(SENSOR_DOC_ID, cursor.getString(cursor.getColumnIndex("doc_id")));
+//                ring.put(SENSOR_DEVICE_ID, cursor.getString(cursor.getColumnIndex("device_id")));
+//                ring.put(SENSOR_TIMESTAMP, new Timestamp(cursor.getLong(cursor.getColumnIndex("timestamp")), 0));
+//                ring.put(SENSOR_USER_ID, cursor.getString(cursor.getColumnIndex("user_id")));
+//                ring.put(SENSOR_SESSION, cursor.getInt(cursor.getColumnIndex("session")));
+//                ring.put(SENSOR_USING_APP, cursor.getString(cursor.getColumnIndex("using_app")));
+//                ring.put(SENSOR_RINGMODE, cursor.getString(cursor.getColumnIndex("ringmode")));
+//                db.collection("Sensor collection")
+//                        .document("Sensor SQL")
+//                        .collection("Ring Mode sql")
+//                        .document(cursor.getString(cursor.getColumnIndex("doc_id")))
+//                        .set(ring);
+//                cursor.moveToNext();
+//            }
+////            Log.e("upload", "close");
+//            cursor.close();
+//        }
+////        Log.e("upload", "updateall");
+//        dbHelper.UpdateAll();
+//    }
+//    private void upload_Screen(Context context){
+//        ScreenStateReceiverDbHelper dbHelper = new ScreenStateReceiverDbHelper(context);
+//        Cursor cursor = dbHelper.getALL();
+//        if(cursor.moveToFirst()){
+////            Log.e("upload", "move to first");
+//            while(!cursor.isAfterLast()){
+////                Log.e("upload", "isafterlast");
+//                Map<String, Object> screen = new HashMap<>();
+//                screen.put(SENSOR_DOC_ID, cursor.getString(cursor.getColumnIndex("doc_id")));
+//                screen.put(SENSOR_DEVICE_ID, cursor.getString(cursor.getColumnIndex("device_id")));
+//                screen.put(SENSOR_TIMESTAMP, new Timestamp(cursor.getLong(cursor.getColumnIndex("timestamp")), 0));
+//                screen.put(SENSOR_USER_ID, cursor.getString(cursor.getColumnIndex("user_id")));
+//                screen.put(SENSOR_SESSION, cursor.getInt(cursor.getColumnIndex("session")));
+//                screen.put(SENSOR_USING_APP, cursor.getString(cursor.getColumnIndex("using_app")));
+//                screen.put(SENSOR_SCREEN, cursor.getString(cursor.getColumnIndex("screen")));
+//                db.collection("Sensor collection")
+//                        .document("Sensor SQL")
+//                        .collection("Screen sql")
+//                        .document(cursor.getString(cursor.getColumnIndex("doc_id")))
+//                        .set(screen);
+//                cursor.moveToNext();
+//            }
+////            Log.e("upload", "close");
+//            cursor.close();
+//        }
+////        Log.e("upload", "updateall");
+//        dbHelper.UpdateAll();
+//    }
+//    private void upload_session(Context context){
+//        SessionDbHelper dbHelper = new SessionDbHelper(context);
+//        Cursor cursor = dbHelper.getALL();
+//        if(cursor.moveToFirst()){
+////            Log.e("upload", "move to first");
+//            while(!cursor.isAfterLast()){
+////                Log.e("upload", "isafterlast");
+//                Map<String, Object> session = new HashMap<>();
+//                session.put(SENSOR_DOC_ID, cursor.getString(cursor.getColumnIndex("doc_id")));
+//                session.put(SENSOR_DEVICE_ID, cursor.getString(cursor.getColumnIndex("device_id")));
+//                session.put(SENSOR_TIMESTAMP, new Timestamp(cursor.getLong(cursor.getColumnIndex("timestamp")), 0));
+//                session.put(SENSOR_USER_ID, cursor.getString(cursor.getColumnIndex("user_id")));
+//                session.put(SENSOR_SESSION, cursor.getInt(cursor.getColumnIndex("session")));
+//                session.put(SENSOR_STATE, cursor.getString(cursor.getColumnIndex("state")));
+//                db.collection("Session_List_sql")
+//                        .document(cursor.getString(cursor.getColumnIndex("doc_id")))
+//                        .set(session);
+//                cursor.moveToNext();
+//            }
+////            Log.e("upload", "close");
+//            cursor.close();
+//        }
+////        Log.e("upload", "updateall");
+//        dbHelper.UpdateAll();
+//    }
 }

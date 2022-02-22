@@ -158,13 +158,6 @@ public class ActivityRecognitionReceiver extends IntentService implements Stream
         else
             sensordb.put("Session", -1);
         sensordb.put("device_id", device_id);
-//        db.collection("test_users")
-//                .document(device_id)
-//                .collection("Sensor collection")
-//                .document("Sensor")
-//                .collection("Activity Recognition")
-//                .document(time_now)
-//                .set(sensordb);
         db.collection("Sensor collection")
                 .document("Sensor")
                 .collection("Activity Recognition")
@@ -173,9 +166,10 @@ public class ActivityRecognitionReceiver extends IntentService implements Stream
         ActivityRecognitionResult result = ActivityRecognitionResult.extractResult(intent);
         handleDetectedActivities(result.getProbableActivities());
     }
+    @SuppressLint("HardwareIds")
     @Override
     public void updateStream(Context context) {
-//        device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+        device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
 //        Log.e("Activity Recognution", "update");
 //        final Timestamp current_end = Timestamp.now();
         Date date = new Date(System.currentTimeMillis());
@@ -192,13 +186,6 @@ public class ActivityRecognitionReceiver extends IntentService implements Stream
         sensordb.put("Activity Recognition 6", "Tilting: " + Tilting);
         sensordb.put("Activity Recognition 7", "Walking: " + Walking);
         sensordb.put("Activity Recognition 8", "Unknown: " + Unknown);
-//        db.collection("test_users")
-//                .document(device_id)
-//                .collection("Sensor collection")
-//                .document("Sensor")
-//                .collection("Activity Recognition")
-//                .document(time_now)
-//                .set(sensordb);
         sensordb.put("device_id", device_id);
         sensordb.put("Using APP", UsingApp);
         if(UsingApp.equals("Using APP"))
@@ -206,13 +193,6 @@ public class ActivityRecognitionReceiver extends IntentService implements Stream
         else
             sensordb.put("Session", -1);
         sensordb.put("period", DetectTime);
-//        db.collection("test_users")
-//                .document(device_id)
-//                .collection("Sensor collection")
-//                .document("Sensor")
-//                .collection("Activity Recognition")
-//                .document(time_now)
-//                .set(sensordb);
         db.collection("Sensor collection")
                 .document("Sensor")
                 .collection("Activity Recognition")
@@ -254,13 +234,7 @@ public class ActivityRecognitionReceiver extends IntentService implements Stream
             sensordb.put("Session", SessionID);
         else
             sensordb.put("Session", -1);
-//        sensordb.put("period", "GPS Connected");
-//        final DocumentReference ref = db.collection("test_users")
-//                .document(device_id)
-//                .collection("Sensor collection")
-//                .document("Sensor")
-//                .collection("Activity Recognition")
-//                .document(time_now);
+
         final DocumentReference ref = db.collection("Sensor collection")
                 .document("Sensor")
                 .collection("Activity Recognition")

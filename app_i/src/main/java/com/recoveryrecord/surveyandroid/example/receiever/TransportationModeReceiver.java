@@ -10,28 +10,21 @@ import android.util.Log;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.gms.location.DetectedActivity;
-import com.google.common.eventbus.EventBus;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.opencsv.CSVWriter;
 import com.recoveryrecord.surveyandroid.example.CSVDataRecord.ActivityRecognitionDataRecord;
-import com.recoveryrecord.surveyandroid.example.CSVDataRecord.ActivityRecognitionStream;
 import com.recoveryrecord.surveyandroid.example.CSVDataRecord.CSVHelper;
 import com.recoveryrecord.surveyandroid.example.CSVDataRecord.Stream;
-import com.recoveryrecord.surveyandroid.example.CSVDataRecord.StreamAlreadyExistsException;
-import com.recoveryrecord.surveyandroid.example.CSVDataRecord.StreamNotFoundException;
 import com.recoveryrecord.surveyandroid.example.CSVDataRecord.TransportationModeDataRecord;
 import com.recoveryrecord.surveyandroid.example.CSVDataRecord.TransportationModeStream;
 import com.recoveryrecord.surveyandroid.example.DbHelper.ActivityRecognitionReceiverDbHelper;
-import com.recoveryrecord.surveyandroid.example.DbHelper.ReadingBehaviorDbHelper;
 import com.recoveryrecord.surveyandroid.example.config.Constants;
 import com.recoveryrecord.surveyandroid.example.sqlite.ActivityRecognition;
-import com.recoveryrecord.surveyandroid.example.sqlite.PushNews;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.security.AccessControlContext;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,12 +37,10 @@ import java.util.concurrent.ScheduledExecutorService;
 import static android.util.Log.e;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.MILLISECONDS_PER_MINUTE;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.sharedPrefString;
 import static com.recoveryrecord.surveyandroid.example.receiever.ActivityRecognitionReceiver.getLocalRecordPool;
-import static java.security.AccessController.getContext;
 
 public class TransportationModeReceiver implements StreamGenerator {
     public final String TAG = "TransportationModeStreamGenerator";
@@ -177,13 +168,14 @@ public class TransportationModeReceiver implements StreamGenerator {
 
     final Timestamp current_end = Timestamp.now();
     Date date = new Date(System.currentTimeMillis());
+    @SuppressLint("SimpleDateFormat")
     SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
     final String time_now = formatter.format(date);
     Map<String, Object> sensordb = new HashMap<>();
 
 
 
-    @SuppressLint("LongLogTag")
+    @SuppressLint({"LongLogTag", "HardwareIds"})
     public void TransportationModeStreamGenerator(Context applicationContext) {
 //        Log.e("TransportationMode Stream Generator", "START");
 //        super(applicationContext);
@@ -193,7 +185,7 @@ public class TransportationModeReceiver implements StreamGenerator {
 
         mScheduledExecutorService = Executors.newScheduledThreadPool(TransportationMode_ThreadSize);
 
-        sharedPrefs = mContext.getSharedPreferences(sharedPrefString, mContext.MODE_PRIVATE);
+        sharedPrefs = mContext.getSharedPreferences(sharedPrefString, Context.MODE_PRIVATE);
 
 
         mCurrentState = sharedPrefs.getInt("CurrentState", STATE_STATIC);
@@ -224,7 +216,7 @@ public class TransportationModeReceiver implements StreamGenerator {
     }
 
 
-    @SuppressLint("LongLogTag")
+    @SuppressLint({"LongLogTag", "HardwareIds"})
     @Override
     public void updateStream(Context context) {
 //        Log.e("Tramsportation Mode", "update");
@@ -246,8 +238,9 @@ public class TransportationModeReceiver implements StreamGenerator {
 
         final Timestamp current_end = Timestamp.now();
         Date date = new Date(System.currentTimeMillis());
-        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         final String time_now = formatter.format(date);
+        device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
 
 
 
@@ -296,7 +289,7 @@ public class TransportationModeReceiver implements StreamGenerator {
 
     }
 
-    public int examineTransportation(ActivityRecognitionDataRecord activityRecognitionDataRecord){
+    public void examineTransportation(ActivityRecognitionDataRecord activityRecognitionDataRecord){
         e("examine transprotation", "start");
         //if there's no existing activity type, we need to get activity from the shared preference
         if (mConfirmedActivityType == NO_ACTIVITY_TYPE){
@@ -308,7 +301,7 @@ public class TransportationModeReceiver implements StreamGenerator {
         }
 
         if(activityRecognitionDataRecord.getProbableActivities()==null || activityRecognitionDataRecord.getProbableActivities().isEmpty()){
-            return -1;
+            return;
         }
 
         List<DetectedActivity> probableActivities = activityRecognitionDataRecord.getProbableActivities();
@@ -331,7 +324,7 @@ public class TransportationModeReceiver implements StreamGenerator {
 
             CSVHelper.TransportationState_StoreToCSV(new Date().getTime(), "STATE_CONFIRMED", getConfirmedActivityString());
 
-            return getConfirmedActivityType();
+            return;
         }
 
         //if in the static state or initial state, we try to suspect new activity
@@ -383,7 +376,6 @@ public class TransportationModeReceiver implements StreamGenerator {
 
                     CSVHelper.TransportationState_StoreToCSV(new Date().getTime(), "STATE_CONFIRMED", getConfirmedActivityString());
 
-                    return getConfirmedActivityType();
                 }
                 //if the suspection is wrong, back to the static state
                 else {
@@ -396,8 +388,6 @@ public class TransportationModeReceiver implements StreamGenerator {
                     setSuspectTime(0);
 
                     CSVHelper.TransportationState_StoreToCSV(new Date().getTime(), "STATE_STATIC", getConfirmedActivityString());
-
-                    return getConfirmedActivityType();
 
                 }
             }
@@ -498,7 +488,6 @@ public class TransportationModeReceiver implements StreamGenerator {
 
                     CSVHelper.TransportationState_StoreToCSV(new Date().getTime(), "STATE_CONFIRMED", getConfirmedActivityString());
 
-                    return getConfirmedActivityType();
                 }
 
                 //no label with high confidence, we need to check labels in a window time
@@ -538,8 +527,6 @@ public class TransportationModeReceiver implements StreamGenerator {
 
             }
         }
-
-        return getConfirmedActivityType();
 
     }
     public static int getConfirmedActivityType() {

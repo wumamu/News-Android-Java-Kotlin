@@ -99,33 +99,33 @@ public class GestureListener extends GestureDetector.SimpleOnGestureListener{
         return this.mode;
     }
 
-    public void setEnabled(boolean status){
-        this.running = status;
-    }
-
-    public void setSwipeMaxDistance(int distance){
-        this.swipe_Max_Distance = distance;
-    }
-
-    public void setSwipeMinDistance(int distance){
-        this.swipe_Min_Distance = distance;
-    }
-
-    public void setSwipeMinVelocity(int distance){
-        this.swipe_Min_Velocity = distance;
-    }
-
-    public int getSwipeMaxDistance(){
-        return this.swipe_Max_Distance;
-    }
-
-    public int getSwipeMinDistance(){
-        return this.swipe_Min_Distance;
-    }
-
-    public int getSwipeMinVelocity(){
-        return this.swipe_Min_Velocity;
-    }
+//    public void setEnabled(boolean status){
+//        this.running = status;
+//    }
+//
+//    public void setSwipeMaxDistance(int distance){
+//        this.swipe_Max_Distance = distance;
+//    }
+//
+//    public void setSwipeMinDistance(int distance){
+//        this.swipe_Min_Distance = distance;
+//    }
+//
+//    public void setSwipeMinVelocity(int distance){
+//        this.swipe_Min_Velocity = distance;
+//    }
+//
+//    public int getSwipeMaxDistance(){
+//        return this.swipe_Max_Distance;
+//    }
+//
+//    public int getSwipeMinDistance(){
+//        return this.swipe_Min_Distance;
+//    }
+//
+//    public int getSwipeMinVelocity(){
+//        return this.swipe_Min_Velocity;
+//    }
 
 
     @Override

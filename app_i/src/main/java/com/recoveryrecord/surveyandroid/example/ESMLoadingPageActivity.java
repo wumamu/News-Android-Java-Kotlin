@@ -2,7 +2,6 @@ package com.recoveryrecord.surveyandroid.example;
 
 
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -11,21 +10,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.recoveryrecord.surveyandroid.example.DbHelper.ESMDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.PushNewsDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.ReadingBehaviorDbHelper;
@@ -36,47 +29,37 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
-
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_SAMPLE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_TYPE;
+import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_ESM_TYPE_KEY;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_KEY;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_ESM;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_NOTI_ARRAY;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_READ_ARRAY;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_SAMPLE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TYPE;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_DEVICE_ID;
-//import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_SAMPLE_CHECK_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_IN;
 import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_MEDIA;
 import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_RECEIEVE;
 import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_TITLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.SURVEY_PAGE_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_KEY;
-import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_KEY;
-import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_ESM;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_CLICK;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_NOTI_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_NOTI_ARRAY;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_READ_ARRAY;
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_OUT_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_SAMPLE_CHECK;
+
+//import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_SAMPLE_CHECK_ID;
 
 public class ESMLoadingPageActivity extends AppCompatActivity {
     private Button button;
-    Task task, task2, task3;
-    Boolean exist_read = false, exist_notification = false;
+//    Task task, task2, task3;
+//    Boolean exist_read = false, exist_notification = false;
     String esm_id = "", type ="";
     List<String> rb_query = new ArrayList<>();
     List<String> noti_query = new ArrayList<>();
@@ -91,7 +74,7 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
     private ProgressBar pgsBar;
     private int i = 0;
     private TextView txtView;
-    private Handler hdlr = new Handler();
+    private final Handler hdlr = new Handler();
     @SuppressLint("HardwareIds")
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -110,7 +93,7 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
             back.setClass(getApplicationContext(), NewsHybridActivity.class);
             startActivity(back);
         }
-        pgsBar = (ProgressBar) findViewById(R.id.pBar);
+        pgsBar = findViewById(R.id.pBar);
         //initial
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPrefs.edit();
@@ -126,39 +109,30 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
 //        firestore_query(esm_id);
         sql_query_noti();
 //        sql_query_rb();
-        button = (Button) findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openESM();
-            }
-        });
+        button = findViewById(R.id.button);
+        button.setOnClickListener(v -> openESM());
 
         button.setEnabled(false);
-        txtView = (TextView) findViewById(R.id.textView);
+        txtView = findViewById(R.id.textView);
         i = pgsBar.getProgress();
-        new Thread(new Runnable() {
-            public void run() {
-                while (i < 100) {
-                    i += 1;
-                    // Update the progress bar and display the current value in text view
-                    hdlr.post(new Runnable() {
-                        public void run() {
-                            pgsBar.setProgress(i);
+        new Thread(() -> {
+            while (i < 100) {
+                i += 1;
+                // Update the progress bar and display the current value in text view
+                hdlr.post(() -> {
+                    pgsBar.setProgress(i);
 //                            txtView.setText(i+"/"+pgsBar.getMax());
-                            if(i==100){
-                                txtView.setText("資料匯入完成");
-                                button.setEnabled(true);
-                            }
-
-                        }
-                    });
-                    try {
-                        // Sleep for 100 milliseconds to show the progress slowly.
-                        Thread.sleep(10);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                    if(i==100){
+                        txtView.setText("資料匯入完成");
+                        button.setEnabled(true);
                     }
+
+                });
+                try {
+                    // Sleep for 100 milliseconds to show the progress slowly.
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         }).start();
@@ -172,7 +146,7 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
         //read
         //noti
         PushNewsDbHelper dbHandler = new PushNewsDbHelper(getApplicationContext());
-        Boolean noti_read = false, self_read = false, noti_not_read = false;
+        boolean noti_read = false, self_read = false, noti_not_read = false;
         int click = 1;//not click
         Cursor cursor_click = dbHandler.getNotiClickDataForESM(mysampletime);
         if (cursor_click.moveToFirst()) {
@@ -217,13 +191,12 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
                 @SuppressLint("SimpleDateFormat")
                 SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
                 String[] mysplit = formatter.format(date).split(" ");
-                if(!title.equals("NA") || !title.equals("") ){
-                    noti_query.clear();
-                    noti_query.add(news_id);
-                    noti_query.add(title);
-                    noti_query.add(media);
-                    noti_query.add(mysplit[2]);
-                    break;
+                noti_query.clear();
+                noti_query.add(news_id);
+                noti_query.add(title);
+                noti_query.add(media);
+                noti_query.add(mysplit[2]);
+                break;
 //                    exist_notification = true;
 //                    if(click==0){
 //                        //only noti
@@ -237,8 +210,6 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
 //                        }
 //                    }
 
-                }
-                cursor_click.moveToNext();
             }
         }
         if (!cursor_click.isClosed())  {
@@ -310,7 +281,6 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
                 noti_read = false;
                 self_read = true;
             } else {
-                noti_read = true;
                 self_read = false;
             }
         } else if(!noti_read && !self_read){
@@ -357,15 +327,12 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
                     @SuppressLint("SimpleDateFormat")
                     SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
                     String[] mysplit = formatter.format(date).split(" ");
-                    if(!title.equals("NA") || !title.equals("") ){
-                        noti_query.clear();
-                        noti_query.add(news_id);
-                        noti_query.add(title);
-                        noti_query.add(media);
-                        noti_query.add(mysplit[2]);
-                        break;
-                    }
-                    cursor_unclick.moveToNext();
+                    noti_query.clear();
+                    noti_query.add(news_id);
+                    noti_query.add(title);
+                    noti_query.add(media);
+                    noti_query.add(mysplit[2]);
+                    break;
                 }
             }
             if (!cursor_unclick.isClosed())  {
@@ -430,44 +397,31 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
 
         if (!esm_id.equals("")){
             final DocumentReference rbRef = db.collection(PUSH_ESM_COLLECTION).document(device_id + " " + esm_id);
-            rbRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        assert document != null;
-                        if (document.exists()) {
-                            rbRef.update(PUSH_ESM_TYPE, type_esm,
-                                    PUSH_ESM_NOTI_ARRAY, noti_query,
-                                    PUSH_ESM_READ_ARRAY, rb_query,
-                                    PUSH_ESM_SAMPLE_TIME, new Timestamp(sharedPrefs.getLong(ESM_SAMPLE_TIME, 0), 0)
-                            )//another field
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            Log.d("lognewsselect", "DocumentSnapshot successfully updated!");
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Log.w("lognewsselect", "Error updating document", e);
-                                        }
-                                    });
-                        } else {
-                            Log.d("lognewsselect", "ESMLoadingPageActivity No such document");
-                            Toast.makeText(getApplicationContext(), "系統出錯，幫您導回主頁面", Toast.LENGTH_SHORT).show();
-                            Intent back = new Intent();
-                            back.setClass(getApplicationContext(), NewsHybridActivity.class);
-                            startActivity(back);
-                        }
+            rbRef.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    assert document != null;
+                    if (document.exists()) {
+                        rbRef.update(PUSH_ESM_TYPE, type_esm,
+                                PUSH_ESM_NOTI_ARRAY, noti_query,
+                                PUSH_ESM_READ_ARRAY, rb_query,
+                                PUSH_ESM_SAMPLE_TIME, new Timestamp(sharedPrefs.getLong(ESM_SAMPLE_TIME, 0), 0)
+                        )//another field
+                                .addOnSuccessListener(aVoid -> Log.d("lognewsselect", "DocumentSnapshot successfully updated!"))
+                                .addOnFailureListener(e -> Log.w("lognewsselect", "Error updating document", e));
                     } else {
-                        Log.d("lognewsselect", "get failed with ", task.getException());
+                        Log.d("lognewsselect", "ESMLoadingPageActivity No such document");
                         Toast.makeText(getApplicationContext(), "系統出錯，幫您導回主頁面", Toast.LENGTH_SHORT).show();
                         Intent back = new Intent();
                         back.setClass(getApplicationContext(), NewsHybridActivity.class);
                         startActivity(back);
                     }
+                } else {
+                    Log.d("lognewsselect", "get failed with ", task.getException());
+                    Toast.makeText(getApplicationContext(), "系統出錯，幫您導回主頁面", Toast.LENGTH_SHORT).show();
+                    Intent back = new Intent();
+                    back.setClass(getApplicationContext(), NewsHybridActivity.class);
+                    startActivity(back);
                 }
             });
         }
@@ -475,113 +429,112 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
         startActivity(intent_esm);
     }
 
-    private void firestore_query(final String esm_id_in) {
-        final String tmp_esm_id = esm_id_in;
-        final FirebaseFirestore db = FirebaseFirestore.getInstance();
-        @SuppressLint("HardwareIds")
-        final String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-        final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-//        final Long now = System.currentTimeMillis();
-        final Timestamp now_time_stamp = Timestamp.now();
-
-        task =   db.collection(READING_BEHAVIOR_COLLECTION)
-                .whereEqualTo(READING_BEHAVIOR_DEVICE_ID, device_id)
-                .whereEqualTo(READING_BEHAVIOR_SAMPLE_CHECK, false)
-                .orderBy(READING_BEHAVIOR_OUT_TIME, Query.Direction.DESCENDING)
-                .get();
-        task2 =  db.collection(PUSH_NEWS_COLLECTION)
-                .whereEqualTo(PUSH_NEWS_DEVICE_ID, device_id)
-                .whereEqualTo(PUSH_NEWS_CLICK, 1)
-                .orderBy(PUSH_NEWS_NOTI_TIME, Query.Direction.DESCENDING)
-                .get();
+//    private void firestore_query(final String esm_id_in) {
+//        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        @SuppressLint("HardwareIds")
+//        final String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+//        final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+////        final Long now = System.currentTimeMillis();
+//        final Timestamp now_time_stamp = Timestamp.now();
 //
-//        task.addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-//            @Override
-//            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-////                        List<String> news_title_array_add = new ArrayList<>();
-//                if (!queryDocumentSnapshots.isEmpty()) {
-////                    news_title_target_array.clear();
-//                    List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
-//                    for (DocumentSnapshot d : list) {
-//                        if(!(d.getString(READING_BEHAVIOR_TITLE) ==null) && !d.getString(READING_BEHAVIOR_TITLE).equals("NA")){
-//                            if (d.getDouble(READING_BEHAVIOR_TIME_ON_PAGE)>= ESM_TIME_ON_PAGE_THRESHOLD) {
-//                                if (Math.abs(now_time_stamp.getSeconds() - d.getTimestamp(READING_BEHAVIOR_IN_TIME).getSeconds()) <= ESM_TARGET_RANGE) {
-////                                    news_title_target_array.add(d.getString(READING_BEHAVIOR_TITLE) + "¢" + share_var + "¢" + trigger_var + "¢" + cat_var + "¢" + formatter.format(date) + "¢" + d.getString(READING_BEHAVIOR_NEWS_ID));
-//                                } else {
-//                                    not_sample_far.add(d.getString(READING_BEHAVIOR_TITLE));
-//                                }
-//                            } else {
-//                                not_sample_short.add(d.getString(READING_BEHAVIOR_TITLE));
-//                            }
-//                        }
-//                        //mark as check
-//                        db.collection(READING_BEHAVIOR_COLLECTION)
-//                                .document(d.getId())
-//                                .update(READING_BEHAVIOR_SAMPLE_CHECK, true,
-//                                        READING_BEHAVIOR_SAMPLE_CHECK_ID, tmp_esm_id)
-//                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                    @Override
-//                                    public void onSuccess(Void aVoid) {
-//                                        Log.d("lognewsselect", "DocumentSnapshot successfully updated!");
-//                                    }
-//                                })
-//                                .addOnFailureListener(new OnFailureListener() {
-//                                    @Override
-//                                    public void onFailure(@NonNull Exception e) {
-//                                        Log.w("lognewsselect", "Error updating document", e);
-//                                    }
-//                                });
-//                    }
-//                }
-//                Log.d("lognewsselect", "**********COMPLETE TASK1");
-//            }
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//                Log.d("lognewsselect", String.valueOf(e));
-//            }
-//        });
-//
-//        task2.addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-//            @Override
-//            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-////                notification_unclick_array.clear();
-//                if (!queryDocumentSnapshots.isEmpty()) {
-//                    List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
-//                    for (DocumentSnapshot d : list) {
-//                        if (Math.abs(now_time_stamp.getSeconds() - d.getTimestamp(PUSH_NEWS_NOTI_TIME).getSeconds()) <= NOTIFICATION_TARGET_RANGE) {
-//                        } else {
-//                            not_sample_far_noti.add(d.getString(PUSH_NEWS_TITLE));
-//                        }
-//                        //mark as check
-////                        db.collection(TEST_USER_COLLECTION)
-//                        db.collection(PUSH_NEWS_COLLECTION)
-//                                .document(d.getId())
-//                                .update(PUSH_NEWS_CLICK, 4,
-//                                        PUSH_NEWS_SAMPLE_CHECK_ID, tmp_esm_id)
-//                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                    @Override
-//                                    public void onSuccess(Void aVoid) {
-//                                        Log.d("lognewsselect", "DocumentSnapshot successfully updated!");
-//                                    }
-//                                })
-//                                .addOnFailureListener(new OnFailureListener() {
-//                                    @Override
-//                                    public void onFailure(@NonNull Exception e) {
-//                                        Log.w("lognewsselect", "Error updating document", e);
-//                                    }
-//                                });
-//                    }
-//                }
-//            }
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//                Log.d("lognewsselect", String.valueOf(e));
-//            }
-//        });
-//        Log.d("lognewsselect", "select news finish################################# ");
-    }
+//        task =   db.collection(READING_BEHAVIOR_COLLECTION)
+//                .whereEqualTo(READING_BEHAVIOR_DEVICE_ID, device_id)
+//                .whereEqualTo(READING_BEHAVIOR_SAMPLE_CHECK, false)
+//                .orderBy(READING_BEHAVIOR_OUT_TIME, Query.Direction.DESCENDING)
+//                .get();
+//        task2 =  db.collection(PUSH_NEWS_COLLECTION)
+//                .whereEqualTo(PUSH_NEWS_DEVICE_ID, device_id)
+//                .whereEqualTo(PUSH_NEWS_CLICK, 1)
+//                .orderBy(PUSH_NEWS_NOTI_TIME, Query.Direction.DESCENDING)
+//                .get();
+////
+////        task.addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+////            @Override
+////            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//////                        List<String> news_title_array_add = new ArrayList<>();
+////                if (!queryDocumentSnapshots.isEmpty()) {
+//////                    news_title_target_array.clear();
+////                    List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
+////                    for (DocumentSnapshot d : list) {
+////                        if(!(d.getString(READING_BEHAVIOR_TITLE) ==null) && !d.getString(READING_BEHAVIOR_TITLE).equals("NA")){
+////                            if (d.getDouble(READING_BEHAVIOR_TIME_ON_PAGE)>= ESM_TIME_ON_PAGE_THRESHOLD) {
+////                                if (Math.abs(now_time_stamp.getSeconds() - d.getTimestamp(READING_BEHAVIOR_IN_TIME).getSeconds()) <= ESM_TARGET_RANGE) {
+//////                                    news_title_target_array.add(d.getString(READING_BEHAVIOR_TITLE) + "¢" + share_var + "¢" + trigger_var + "¢" + cat_var + "¢" + formatter.format(date) + "¢" + d.getString(READING_BEHAVIOR_NEWS_ID));
+////                                } else {
+////                                    not_sample_far.add(d.getString(READING_BEHAVIOR_TITLE));
+////                                }
+////                            } else {
+////                                not_sample_short.add(d.getString(READING_BEHAVIOR_TITLE));
+////                            }
+////                        }
+////                        //mark as check
+////                        db.collection(READING_BEHAVIOR_COLLECTION)
+////                                .document(d.getId())
+////                                .update(READING_BEHAVIOR_SAMPLE_CHECK, true,
+////                                        READING_BEHAVIOR_SAMPLE_CHECK_ID, tmp_esm_id)
+////                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+////                                    @Override
+////                                    public void onSuccess(Void aVoid) {
+////                                        Log.d("lognewsselect", "DocumentSnapshot successfully updated!");
+////                                    }
+////                                })
+////                                .addOnFailureListener(new OnFailureListener() {
+////                                    @Override
+////                                    public void onFailure(@NonNull Exception e) {
+////                                        Log.w("lognewsselect", "Error updating document", e);
+////                                    }
+////                                });
+////                    }
+////                }
+////                Log.d("lognewsselect", "**********COMPLETE TASK1");
+////            }
+////        }).addOnFailureListener(new OnFailureListener() {
+////            @Override
+////            public void onFailure(@NonNull Exception e) {
+////                Log.d("lognewsselect", String.valueOf(e));
+////            }
+////        });
+////
+////        task2.addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+////            @Override
+////            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//////                notification_unclick_array.clear();
+////                if (!queryDocumentSnapshots.isEmpty()) {
+////                    List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
+////                    for (DocumentSnapshot d : list) {
+////                        if (Math.abs(now_time_stamp.getSeconds() - d.getTimestamp(PUSH_NEWS_NOTI_TIME).getSeconds()) <= NOTIFICATION_TARGET_RANGE) {
+////                        } else {
+////                            not_sample_far_noti.add(d.getString(PUSH_NEWS_TITLE));
+////                        }
+////                        //mark as check
+//////                        db.collection(TEST_USER_COLLECTION)
+////                        db.collection(PUSH_NEWS_COLLECTION)
+////                                .document(d.getId())
+////                                .update(PUSH_NEWS_CLICK, 4,
+////                                        PUSH_NEWS_SAMPLE_CHECK_ID, tmp_esm_id)
+////                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+////                                    @Override
+////                                    public void onSuccess(Void aVoid) {
+////                                        Log.d("lognewsselect", "DocumentSnapshot successfully updated!");
+////                                    }
+////                                })
+////                                .addOnFailureListener(new OnFailureListener() {
+////                                    @Override
+////                                    public void onFailure(@NonNull Exception e) {
+////                                        Log.w("lognewsselect", "Error updating document", e);
+////                                    }
+////                                });
+////                    }
+////                }
+////            }
+////        }).addOnFailureListener(new OnFailureListener() {
+////            @Override
+////            public void onFailure(@NonNull Exception e) {
+////                Log.d("lognewsselect", String.valueOf(e));
+////            }
+////        });
+////        Log.d("lognewsselect", "select news finish################################# ");
+//    }
 
     @Override
     protected void onResume() {
@@ -598,16 +551,6 @@ public class ESMLoadingPageActivity extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setTitle(com.recoveryrecord.surveyandroid.R.string.close_survey)
                 .setMessage(com.recoveryrecord.surveyandroid.R.string.are_you_sure_you_want_to_close)
-                .setNeutralButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                ESMLoadingPageActivity.super.onBackPressed();
-            }
-        }).show();
+                .setNeutralButton(android.R.string.cancel, (dialog, which) -> dialog.dismiss()).setPositiveButton(android.R.string.ok, (dialog, which) -> ESMLoadingPageActivity.super.onBackPressed()).show();
     }
 }
