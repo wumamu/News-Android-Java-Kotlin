@@ -1,6 +1,7 @@
 package com.recoveryrecord.surveyandroid.example;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
@@ -11,9 +12,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
@@ -21,6 +24,7 @@ import android.widget.Toast;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -45,7 +49,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 //        String model = "MODEL : " + Build.MODEL;
         SwitchPreferenceCompat switchPref = findPreference("news_notification");
         Preference clearPref = findPreference(SHARE_PREFERENCE_CLEAR_CACHE);
-
         clearPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -72,8 +75,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 return true;
             }
         });
-        Preference clearPref2 = findPreference("notification_policy_access");
 
+        Preference clearPref2 = findPreference("notification_policy_access");
         clearPref2.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -95,7 +98,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         Preference clearPref0 = findPreference("PhysicalActivity");
-
         clearPref0.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -127,6 +129,39 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         Toast.makeText(getContext(), "權限已經開啟", Toast.LENGTH_SHORT).show();
                     }
                 }
+                return true;
+            }
+        });
+
+        Preference clearPref3 = findPreference("battery_optimization");
+
+        clearPref3.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @SuppressLint("BatteryLife")
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                // handle click here
+                Intent intent = new Intent();
+                String packageName = getContext().getPackageName();
+                PowerManager pm = (PowerManager) getContext().getSystemService(Context.POWER_SERVICE);
+                if (!pm.isIgnoringBatteryOptimizations(packageName)) {
+                    intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+                    intent.setData(Uri.parse("package:" + packageName));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getContext().startActivity(intent);
+                } else {
+//                    intent.setAction(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+                    Toast.makeText(getContext(), "權限已經開啟", Toast.LENGTH_SHORT).show();
+                }
+
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                    if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                        // Permission is not granted
+//                        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+//                    } else {
+//                        Toast.makeText(getContext(), "權限已經開啟", Toast.LENGTH_SHORT).show();
+//                    }
+//                }
                 return true;
             }
         });

@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
@@ -154,7 +155,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     //private long TimeLeftInMillis = SeesionCountDown;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    @SuppressLint({"HardwareIds", "LongLogTag", "ApplySharedPref", "RestrictedApi"})
+    @SuppressLint({"HardwareIds", "LongLogTag", "ApplySharedPref", "RestrictedApi", "BatteryLife"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -176,6 +177,8 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         } else {
             signature = sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號");
         }
+
+
         if (clear) {
             SharedPreferences.Editor editor = sharedPrefs.edit();
             editor.putString(SHARE_PREFERENCE_DEVICE_ID, device_id);
@@ -471,6 +474,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         }
     }
 
+    @SuppressLint("RestrictedApi")
     private void sendEsm() {
         Toast.makeText(this, "正在為您生成問卷，請稍等", Toast.LENGTH_SHORT).show();
         myFab.setVisibility(View.GONE);

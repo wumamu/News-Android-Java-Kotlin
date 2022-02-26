@@ -165,15 +165,11 @@ public class NotificationListenerService extends android.service.notification.No
         }
         //cancel notification
         if (is_target){
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    cancelNotification(sbn.getKey());
-                    Log.i(TAG, sbn.getPackageName() + "being canceled");
-                } else {
-                    Log.i(TAG, sbn.getPackageName() + "Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP");
-                }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                cancelNotification(sbn.getKey());
+                Log.i(TAG, sbn.getPackageName() + "being canceled");
             } else {
-                Log.i(TAG, sbn.getPackageName() + "Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH");
+                Log.i(TAG, sbn.getPackageName() + "Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP");
             }
         } else {
             Log.i(TAG, sbn.getPackageName() + " not target");
@@ -191,7 +187,7 @@ public class NotificationListenerService extends android.service.notification.No
                 String doc_id = Objects.requireNonNull(extras.getString(DOC_ID_KEY));
                 String collection_id = "";
                 String receieve_field = "";
-                Boolean mark = false;
+                boolean mark = false;
                 switch (type) {
                     case NOTIFICATION_TYPE_VALUE_ESM: {//esm
                         collection_id = PUSH_ESM_COLLECTION;
@@ -311,9 +307,10 @@ public class NotificationListenerService extends android.service.notification.No
             boolean check_title = false, check_text = false;
             Log.d("checking", "NLService");
             Bundle extras = sbn.getNotification().extras;
+            @SuppressLint("SimpleDateFormat")
             SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
             Date date = new Date(sbn.getPostTime());
-            List<String> in_time_split = new ArrayList<String>(Arrays.asList(formatter.format(date).split(" ")));
+//            List<String> in_time_split = new ArrayList<String>(Arrays.asList(formatter.format(date).split(" ")));
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             Timestamp mytimestamp = Timestamp.now();//new Timestamp(System.currentTimeMillis());
             @SuppressLint("HardwareIds")
@@ -348,7 +345,7 @@ public class NotificationListenerService extends android.service.notification.No
             if (check_title && check_text){
 
                 boolean is_me = false;
-                if (device_id.equals("318f4fea56e7070c") || device_id.equals("046827517ac92b09")){
+                if (device_id.equals("318f4fea56e7070c") || device_id.equals("c067c6c688c792b2")){
                     is_me = true;
                     receieve_notification.put("source", device_id);
                 }

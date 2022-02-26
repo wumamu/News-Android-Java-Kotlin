@@ -23,6 +23,15 @@
             <intent android:action="android.settings.USAGE_ACCESS_SETTINGS"/>
         </Preference>
         <Preference
+            android:title="背景執行"
+            app:key="battery_optimization"
+            app:summary="點選允許存取權限"/>
+        <Preference
+            app:title="電池最佳化頁面"
+            app:summary="進入系統通知頁面確認關閉狀態">
+            <intent android:action="android.settings.IGNORE_BATTERY_OPTIMIZATION_SETTINGS"/>
+        </Preference>
+        <Preference
             app:key="notification_policy_access"
             android:title="notification policy access"
             app:summary="點選允許存取權限"/>
