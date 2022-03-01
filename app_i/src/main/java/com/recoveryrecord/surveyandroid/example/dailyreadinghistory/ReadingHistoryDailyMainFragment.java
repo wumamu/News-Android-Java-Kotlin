@@ -24,6 +24,8 @@ public class ReadingHistoryDailyMainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.nested_layer1_readinghistory, container, false);
         ViewPager mViewPager = (ViewPager) view.findViewById(R.id.container_main);
+//        mViewPager.setRotationY(180);
+//        mViewPager.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
         mViewPager.setAdapter(mSectionsPagerAdapter);
         return view;

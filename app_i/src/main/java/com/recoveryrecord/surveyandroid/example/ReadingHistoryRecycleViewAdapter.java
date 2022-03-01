@@ -58,6 +58,7 @@ public class ReadingHistoryRecycleViewAdapter extends RecyclerView.Adapter<Readi
         holder.newsPubTime.setText(String.format("%s %s", my_tt.get(0), my_tt.get(2)));
         if(model.getImage()!=null && model.getImage()!="NA"){
             new NewsRecycleViewAdapter.DownloadImageTask(holder.newsImg).execute(model.getImage());
+
             holder.newsImg.setAdjustViewBounds(true);
             holder.newsImg.setMaxHeight(200);
         } else {
@@ -138,39 +139,7 @@ public class ReadingHistoryRecycleViewAdapter extends RecyclerView.Adapter<Readi
                     intent.putExtra("media", model.getMedia());
                     Log.d("lognewsselect", "MY ID  " +  model.getId());
                     Log.d("lognewsselect", "MY IDddd  " +  model.getMedia());
-//                    Log.d("lognewsselect", "MY ID  " +  model.getId());
-//                    if(model.getMedia()==null){
-////                        String my_media = "";
-//                        FirebaseFirestore db = FirebaseFirestore.getInstance();
-//                        DocumentReference docRef = db.collection("server_push_notifications").document(model.getId());
-//                        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                            @Override
-//                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                                if (task.isSuccessful()) {
-//                                    DocumentSnapshot document = task.getResult();
-//                                    assert document != null;
-//                                    if (document.exists()) {
-//                                        my_media = document.getString("media");
-//                                        Log.d("lognewsselect", "my_media " +  my_media);
-////                                        intent.putExtra("media", document.getString("media"));
-//                                    } else {
-//                                        Log.d("lognewsselect", "No such document");
-//                                    }
-//                                } else {
-//                                    Log.d("lognewsselect", "get failed with ", task.getException());
-//                                }
-//                            }
-//                        });
-//                        Log.d("lognewsselect", "MY MEDIA " +  my_media);
-//                        intent.putExtra("media", my_media);
-//                    } else {
-//                        Log.d("lognewsselect", "MY MEDIA ** " +  model.getMedia());
-//                        intent.putExtra("media", model.getMedia());
-//                    }
 
-
-//                    Log.d("log: onClick", model.getTitle());
-//                    Toast.makeText(view.getContext(), "click " +model.getTitle(),Toast.LENGTH_SHORT).show();
                     context.startActivity(intent);
                     //TestActivityRecognitionActivity.this.finish();
                 }

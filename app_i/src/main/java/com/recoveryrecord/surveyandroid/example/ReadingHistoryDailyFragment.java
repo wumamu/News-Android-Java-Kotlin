@@ -99,6 +99,7 @@ public class ReadingHistoryDailyFragment extends Fragment {
         View view = inflater.inflate(R.layout.nested_layer2_readinghistory, container, false);
         // initializing our variables.
         RecyclerView courseRV = view.findViewById(R.id.idRVItems);
+//        courseRV.setRotationY(180);
 
         // initializing our variable for firebase
         // firestore and getting its instance.

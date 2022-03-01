@@ -16,6 +16,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <com.google.android.material.tabs.TabLayout
+            android:layoutDirection="rtl"
             android:id="@+id/tabs2"
             android:background="#9dd7ba"
             app:tabMaxWidth="55dp"
