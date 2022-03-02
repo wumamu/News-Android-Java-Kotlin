@@ -85,6 +85,8 @@
     <string name="chart_label_JP">Japan</string>
     <string name="chart_label_US">United States</string>
 
+    <string name="chart_label_newsmoment">NewsMoment screen time</string>
+
     <string name="chart_label_chinatimes">中時</string>
     <string name="chart_label_ltn">自由</string>
     <string name="chart_label_setn">三立</string>

@@ -3,7 +3,10 @@ package com.recoveryrecord.surveyandroid.example;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
+import android.app.AppOpsManager;
 import android.app.PendingIntent;
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -310,7 +313,10 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 //            myFab.setVisibility(View.GONE);
         }
 
-
+        UsageStatsManager mUsageStatsManager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
+        Map<String, UsageStats> usageStats = mUsageStatsManager.queryAndAggregateUsageStats(System.currentTimeMillis()-1000*300, System.currentTimeMillis());
+        long totalTimeUsageInMillis = usageStats.get(getPackageName()).getTotalTimeInForeground();
+        Log.d("123456789", String.valueOf(totalTimeUsageInMillis));
 
         swipeRefreshLayout = findViewById(R.id.mainSwipeContainer);
 //        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.mainSwipeContainer);
