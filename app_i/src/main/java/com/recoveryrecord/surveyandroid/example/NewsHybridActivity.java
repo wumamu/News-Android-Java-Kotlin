@@ -313,10 +313,6 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 //            myFab.setVisibility(View.GONE);
         }
 
-        UsageStatsManager mUsageStatsManager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
-        Map<String, UsageStats> usageStats = mUsageStatsManager.queryAndAggregateUsageStats(System.currentTimeMillis()-1000*300, System.currentTimeMillis());
-        long totalTimeUsageInMillis = usageStats.get(getPackageName()).getTotalTimeInForeground();
-        Log.d("123456789", String.valueOf(totalTimeUsageInMillis));
 
         swipeRefreshLayout = findViewById(R.id.mainSwipeContainer);
 //        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.mainSwipeContainer);

@@ -103,10 +103,10 @@
         <item>請選擇</item>
         <item>318f4fea56e7070c (pixel 4a)</item>
         <item>046827517ac92b09 (sm a52s)</item>
-        <item>152821f11c28ba38 (sony)</item>
-        <item>e058f98bffc294fe (asus zenfone3)</item>
-        <item>25b143070cd8e420 (sm_a51)</item>
-        <item>a7a44570861f9f64 (xiaomi)</item>
+        <item>021c8258f6279b04 (p10)</item>
+<!--        <item>e058f98bffc294fe (asus zenfone3)</item>-->
+<!--        <item>25b143070cd8e420 (sm_a51)</item>-->
+<!--        <item>a7a44570861f9f64 (xiaomi)</item>-->
         <item>286c25bc68ef882d (pixel 6)</item>
     </string-array>
 </resources>
