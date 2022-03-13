@@ -33,8 +33,8 @@ public class ListenActivity extends AppCompatActivity {
     static {
         device_map = new HashMap<>();
         device_map.put("318f4fea56e7070c (pixel 4a)","318f4fea56e7070c");
-        device_map.put("046827517ac92b09 (sm a52s)","046827517ac92b09");
-        device_map.put("021c8258f6279b04 (p10)","021c8258f6279b04");
+//        device_map.put("046827517ac92b09 (sm a52s)","046827517ac92b09");
+//        device_map.put("021c8258f6279b04 (p10)","021c8258f6279b04");
 //        device_map.put("e058f98bffc294fe (asus zenfone3)","e058f98bffc294fe");
 //        device_map.put("25b143070cd8e420 (sm_a51)","25b143070cd8e420");
 //        device_map.put("a7a44570861f9f64 (xiaomi)","a7a44570861f9f64");
