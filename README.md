@@ -10,6 +10,7 @@ a smartphone news-aggregation app that logs its users’ reading behavior and se
 7. NewsMoment logged our participants’ actions during article reading, including detailed of scroll gesture; whether the article was accessed through notifications or not, and shared or not; total dwell time.
 8. NewsMoment collected sensor data to analyze.
 
+*新聞列表有圖片版本到 NewsRecycleViewAdapter, ReadingHistoryRecycleViewAdapter imgView 打開
 
 ### screenshot
 <p float="left">
