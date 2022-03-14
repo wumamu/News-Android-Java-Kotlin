@@ -75,18 +75,17 @@ public class NewsRecycleViewAdapter extends RecyclerView.Adapter<NewsRecycleView
         List<String> my_tt = new ArrayList<>(Arrays.asList(formatter.format(date).split(" ")));
         holder.newsPubTime.setText(String.format("%s %s", my_tt.get(0), my_tt.get(2)));
 
-//        new DownloadImageTask(holder.newsImg).execute(model.getImgUrl());
-//        Log.d("lognewsselect", model.getTitle());
-        if(model.getImage()!=null && model.getImage()!="NA"){
-//            Log.d("lognewsselect", model.getImage());
-            new DownloadImageTask(holder.newsImg).execute(model.getImage());
-            holder.newsImg.setAdjustViewBounds(true);
-            holder.newsImg.setMaxHeight(200);
-        } else {
-//            Log.d("lognewsselect", "null");
-            holder.newsImg.setVisibility(View.GONE);
-//            new DownloadImageTask(holder.newsImg).execute("https://im.marieclaire.com.tw/s1920c1080h100b0/assets/mc/202101/601272789955C1611821688.jpeg");
-        }
+
+        holder.newsImg.setVisibility(View.GONE);
+        //we don't need img
+//        if(model.getImage()!=null && model.getImage()!="NA"){
+//            new DownloadImageTask(holder.newsImg).execute(model.getImage());
+//            holder.newsImg.setAdjustViewBounds(true);
+//            holder.newsImg.setMaxHeight(200);
+//        } else {
+//            holder.newsImg.setVisibility(View.GONE);
+////            new DownloadImageTask(holder.newsImg).execute("https://im.marieclaire.com.tw/s1920c1080h100b0/assets/mc/202101/601272789955C1611821688.jpeg");
+//        }
 
 
 //        holder.newsImg.set;

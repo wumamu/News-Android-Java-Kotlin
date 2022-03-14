@@ -56,14 +56,16 @@ public class ReadingHistoryRecycleViewAdapter extends RecyclerView.Adapter<Readi
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         List<String> my_tt = new ArrayList<String>(Arrays.asList(formatter.format(date).split(" ")));
         holder.newsPubTime.setText(String.format("%s %s", my_tt.get(0), my_tt.get(2)));
-        if(model.getImage()!=null && model.getImage()!="NA"){
-            new NewsRecycleViewAdapter.DownloadImageTask(holder.newsImg).execute(model.getImage());
 
-            holder.newsImg.setAdjustViewBounds(true);
-            holder.newsImg.setMaxHeight(200);
-        } else {
-            holder.newsImg.setVisibility(View.GONE);
-        }
+        holder.newsImg.setVisibility(View.GONE);
+//        if(model.getImage()!=null && model.getImage()!="NA"){
+//            new NewsRecycleViewAdapter.DownloadImageTask(holder.newsImg).execute(model.getImage());
+//
+//            holder.newsImg.setAdjustViewBounds(true);
+//            holder.newsImg.setMaxHeight(200);
+//        } else {
+//            holder.newsImg.setVisibility(View.GONE);
+//        }
 
         String media_name = model.getMedia();//from data base
         switch (media_name) {
