@@ -33,7 +33,7 @@
         </Preference>
         <Preference
             app:key="notification_policy_access"
-            android:title="notification policy access"
+            android:title="鈴聲狀態存取權限"
             app:summary="點選允許存取權限"/>
         <Preference
             app:key="PhysicalActivity"
@@ -65,7 +65,7 @@
     <PreferenceCategory app:title="偏好">
         <MultiSelectListPreference
             app:key="media_select"
-            app:title="推播媒體選擇"
+            app:title="新聞推播通知來源"
             app:defaultValue="@array/empty_array"
             app:entries="@array/media_select_entries"
             app:entryValues="@array/media_select_values"
@@ -75,7 +75,7 @@
 <!--            app:fragment="com.recoveryrecord.surveyandroid.example.TestFragment"-->
 <!--            app:title="首頁媒體排序" />-->
         <PreferenceScreen
-            android:title="首頁媒體排序">
+            android:title="首頁媒體偏好排序">
             <intent android:action="com.recoveryrecord.surveyandroid.example.MediaRankActivity"/>
         </PreferenceScreen>
 

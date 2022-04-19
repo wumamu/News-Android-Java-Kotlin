@@ -49,7 +49,7 @@ public class MediaRankActivity extends AppCompatActivity{
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mEditor = mSharedPreferences.edit();
 
-        setTitle("新聞APP偏好設定");
+        setTitle("首頁媒體偏好排序");
         setContentView(R.layout.activity_media_rank);
 
         // initializing our variables.

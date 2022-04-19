@@ -7,7 +7,7 @@
         android:padding="16dp"
         android:gravity="center"
         android:textSize="18dp"
-        android:text="中午12點(12PM)\n晚上12點(12AM)"
+        android:text=""
         android:textStyle="bold"
         android:textColor="@color/LightcolorPrimaryDark"
         android:layout_width="match_parent"
