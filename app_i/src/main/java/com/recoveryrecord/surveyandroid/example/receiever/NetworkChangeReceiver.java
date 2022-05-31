@@ -42,17 +42,22 @@ import static java.security.AccessController.getContext;
 
 //import static com.recoveryrecord.surveyandroid.example.NetworkCheckerActivity.dialog;
 public class NetworkChangeReceiver implements StreamGenerator{
-    private static final String TAG = "Main";
+//    private static final String TAG = "Main";
     private NetworkChangeReceiver.NetworkChangeBroadcastReceiver mReceiver;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private static String device_id;
     private static String NetworkState = "NA";
-    static Context  context;
+    private static double down_speed = 0;
+    private static double up_speed = 0;
+    @SuppressLint("StaticFieldLeak")
+//    static Context  context;
     Map<String, Object> sensordb = new HashMap<>();
-    final Timestamp current_end = Timestamp.now();
-    Date date = new Date(System.currentTimeMillis());
-    SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-    final String time_now = formatter.format(date);
+//    final Timestamp current_end = Timestamp.now();
+//    Date date = new Date(System.currentTimeMillis());
+//    @SuppressLint("SimpleDateFormat")
+//    SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+//    final String time_now = formatter.format(date);
+    @SuppressLint("HardwareIds")
     public void registerNetworkReceiver(Context context) {
         if (mReceiver == null) {
             mReceiver = new NetworkChangeReceiver.NetworkChangeBroadcastReceiver();
@@ -65,15 +70,17 @@ public class NetworkChangeReceiver implements StreamGenerator{
 
     @Override
     public void updateStream(Context context) {
-        final Timestamp current_end = Timestamp.now();
+//        final Timestamp current_end = Timestamp.now();
         Date date = new Date(System.currentTimeMillis());
-        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         final String time_now = formatter.format(date);
         sensordb.put("Time", time_now);
         sensordb.put("TimeStamp", Timestamp.now());
         sensordb.put("Network", NetworkState);
         sensordb.put("Using APP", UsingApp);
-        if(UsingApp == "Using APP")
+        sensordb.put("down_speed", down_speed);
+        sensordb.put("up_speed", up_speed);
+        if(UsingApp.equals("Using APP"))
             sensordb.put("Session", SessionID);
         else
             sensordb.put("Session", -1);
@@ -98,13 +105,14 @@ public class NetworkChangeReceiver implements StreamGenerator{
     }
 
     public class NetworkChangeBroadcastReceiver extends BroadcastReceiver {
+        @SuppressLint("HardwareIds")
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void onReceive(Context context, Intent intent) {
             device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-            final Timestamp current_end = Timestamp.now();
+//            final Timestamp current_end = Timestamp.now();
             Date date = new Date(System.currentTimeMillis());
-            SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
             final String time_now = formatter.format(date);
 
 //            DocumentReference ref = db.collection("test_users").document(device_id).collection("Sensor collection").document("BlurTooth");
@@ -113,8 +121,10 @@ public class NetworkChangeReceiver implements StreamGenerator{
                     //                dialog(true);
                     //network speed ####################################################################
                     ConnectivityManager connManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-                    NetworkInfo netInfo = connManager.getActiveNetworkInfo();
+                    assert connManager != null;
+//                    NetworkInfo netInfo = connManager.getActiveNetworkInfo();
                     NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+                    assert mWifi != null;
                     if (mWifi.isConnected()) {
                         // Do whatever
                         Log.e("log: network status", "connected by wifi");
@@ -137,10 +147,17 @@ public class NetworkChangeReceiver implements StreamGenerator{
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                         nc = connManager.getNetworkCapabilities(connManager.getActiveNetwork());
                     }
-                    int downSpeed = nc.getLinkDownstreamBandwidthKbps() / 1000;
-                    int upSpeed = nc.getLinkUpstreamBandwidthKbps() / 1000;
-                    Log.e("log: network speed down", downSpeed + " Mbps");
-                    Log.e("log: network speed up", upSpeed + " Mbps");
+                    assert nc != null;
+                    down_speed = nc.getLinkDownstreamBandwidthKbps() / 1000;
+                    up_speed = nc.getLinkUpstreamBandwidthKbps() / 1000;
+                    sensordb.put("down_speed", down_speed);
+                    sensordb.put("up_speed", up_speed);
+//                    int downSpeed = nc.getLinkDownstreamBandwidthKbps() / 1000;
+//                    int upSpeed = nc.getLinkUpstreamBandwidthKbps() / 1000;
+//                    down_speed = downSpeed;
+//                    up_speed = upSpeed;
+//                    Log.e("log: network speed down", downSpeed + " Mbps");
+//                    Log.e("log: network speed up", upSpeed + " Mbps");
                 } else {
                     //                dialog(false);
                     Log.e("log: ", "disconnected");
@@ -151,7 +168,7 @@ public class NetworkChangeReceiver implements StreamGenerator{
                     sensordb.put("Network", "Disconnected");
                 }
                 sensordb.put("Using APP", UsingApp);
-                if(UsingApp == "Using APP")
+                if(UsingApp.equals("Using APP"))
                     sensordb.put("Session", SessionID);
                 else
                     sensordb.put("Session", -1);
@@ -186,6 +203,7 @@ public class NetworkChangeReceiver implements StreamGenerator{
         private boolean isOnline(Context context) {
             try {
                 ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                assert cm != null;
                 NetworkInfo netInfo = cm.getActiveNetworkInfo();
                 //should check null because in airplane mode it will be null
                 return (netInfo != null && netInfo.isConnected());

@@ -129,6 +129,16 @@ public class AlarmReceiver extends BroadcastReceiver {
                 editor.apply();
             } else {
                 Toast.makeText(context, "暫無通知閱讀紀錄，10分鐘後重送", Toast.LENGTH_SHORT).show();
+                Map<String, Object> my_alarm = new HashMap<>();
+                Date date = new Date(System.currentTimeMillis());
+                @SuppressLint("SimpleDateFormat")
+                SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+                my_alarm.put(SCHEDULE_ALARM_ACTION_TYPE, "cancel esm");
+                my_alarm.put(SCHEDULE_ALARM_DEVICE_ID, device_id);
+                my_alarm.put(SCHEDULE_ALARM_TRIGGER_TIME, Timestamp.now());
+                db.collection(SCHEDULE_ALARM_COLLECTION)
+                        .document(device_id + " cancel esm " + formatter.format(date))
+                        .set(my_alarm);
                 int my_delay_count = sharedPrefs.getInt(ESM_DELAY_COUNT, 0);
                 if(my_delay_count<3){
                     SharedPreferences.Editor editor = sharedPrefs.edit();
@@ -251,6 +261,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
             my_alarm.put(SCHEDULE_ALARM_ACTION_TYPE, "restart");
             my_alarm.put(SCHEDULE_ALARM_DEVICE_ID, device_id);
+            my_alarm.put(SCHEDULE_ALARM_TRIGGER_TIME, Timestamp.now());
             db.collection(SCHEDULE_ALARM_COLLECTION)
                     .document(device_id + " restart " + formatter.format(date))
                     .set(my_alarm);

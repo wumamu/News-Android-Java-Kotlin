@@ -101,7 +101,8 @@ public class Storm5Fragment extends Fragment {
                             for (DocumentSnapshot d : list) {
                                 // after getting this list we are passing that
                                 // list to our object class.
-                                NewsModel dataModal = d.toObject(NewsModel.class);
+//                                NewsModel dataModal = d.toObject(NewsModel.class);
+                                NewsModel dataModal = new NewsModel(d.getString("title"), d.getString("media"), d.getString("id"), d.getTimestamp("pubdate"), d.getString("image"));
 
                                 // and we will pass this object class
                                 // inside our arraylist which we have
