@@ -1,6 +1,6 @@
 # NewsMoment
 a smartphone news-aggregation app that logs its users’ reading behavior and sends pushed news notifications. 
-### feature
+### Feature
 1. Our UI included a nested tab bar. The top tab bar is the news sources bar, which contains a list of the nine selected news sources that the app aggregatesnews from. NewsMoment users can determine which of these nine sources they want to receive news and news-related push notifications.
 2. The tab bar second from the top is the news classification bar. The list of news-classification tabs that appears under each news source is identical to that organization’s own such lists.
 3. News content was crawled from the website of each news organization every 10 minutes, and included images, text, and ad text; all of this was then displayed in NewsMoment.
@@ -10,6 +10,7 @@ a smartphone news-aggregation app that logs its users’ reading behavior and se
 7. NewsMoment logged our participants’ actions during article reading, including detailed of scroll gesture; whether the article was accessed through notifications or not, and shared or not; total dwell time.
 8. NewsMoment collected sensor data to analyze.
 
+Note:
 *新聞列表有圖片版本到 NewsRecycleViewAdapter, ReadingHistoryRecycleViewAdapter imgView 打開
 
 ### screenshot
@@ -32,7 +33,7 @@ a smartphone news-aggregation app that logs its users’ reading behavior and se
 ![image]
 ![image](https://github.com/wumamu/NewsMoment-Android-/blob/main/NewsMoment%20Screenshot/ss%20(1).png) -->
 
-### DownloadLink
+### DownloadLink 22.05.31-2
 https://drive.google.com/file/d/1Rpl8RK218Sm3ucsXb_4V0UmmN4jgsAo6/view?usp=sharing
 ### Figma 
 https://www.figma.com/file/jzv84uzQUCqguhb6DXrKoC/news-moment-anntation
