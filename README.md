@@ -13,7 +13,7 @@ a smartphone news-aggregation app that logs its users’ reading behavior and se
 Note:
 *新聞列表有圖片版本到 NewsRecycleViewAdapter, ReadingHistoryRecycleViewAdapter imgView 打開
 
-### screenshot
+### Screenshot
 <p float="left">
   <img src="https://github.com/wumamu/NewsMoment-Android-/blob/main/NewsMoment%20Screenshot/Screenshot_20220221-005919.png" width="150" />
   <img src="https://github.com/wumamu/NewsMoment-Android-/blob/main/NewsMoment%20Screenshot/Screenshot_20220221-001133.png" width="150" />
