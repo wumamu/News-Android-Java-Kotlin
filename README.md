@@ -32,7 +32,9 @@ a smartphone news-aggregation app that logs its users’ reading behavior and se
 ![image]
 ![image](https://github.com/wumamu/NewsMoment-Android-/blob/main/NewsMoment%20Screenshot/ss%20(1).png) -->
 
-### figma
+### DownloadLink
+https://drive.google.com/file/d/1Rpl8RK218Sm3ucsXb_4V0UmmN4jgsAo6/view?usp=sharing
+### Figma 
 https://www.figma.com/file/jzv84uzQUCqguhb6DXrKoC/news-moment-anntation
-### demo video
+### Demo Video
 https://youtu.be/AwhqyfGazxg
