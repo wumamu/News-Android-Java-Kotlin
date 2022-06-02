@@ -1,5 +1,5 @@
 # NewsMoment
-a smartphone news-aggregation app that logs its users’ reading behavior and sends pushed news notifications. 
+a smartphone news-aggregation android app that logs its users’ reading behavior and sends pushed news notifications. 
 ### Feature
 1. Our UI included a nested tab bar. The top tab bar is the news sources bar, which contains a list of the nine selected news sources that the app aggregatesnews from. NewsMoment users can determine which of these nine sources they want to receive news and news-related push notifications.
 2. The tab bar second from the top is the news classification bar. The list of news-classification tabs that appears under each news source is identical to that organization’s own such lists.
