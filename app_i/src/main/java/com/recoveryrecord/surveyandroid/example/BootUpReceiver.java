@@ -1,11 +1,13 @@
 package com.recoveryrecord.surveyandroid.example;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
 
@@ -17,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_COLLECTION;
@@ -53,6 +56,8 @@ public class BootUpReceiver extends BroadcastReceiver {
 //            int ShutDown_Day = pref.getInt("ShutDown_Day", 0); //關機日期
             Log.d("BootOrShutDown", "restart service");
             context.startService(new Intent(context, NewsNotificationService.class));
+//            handler.postDelayed(() -> URLPlayerService.startService(NewsNotificationService.this),200);
+//            context.startService(new Intent(context, NewsNotificationService.class));
 
             Intent intent_restart = new Intent(context, AlarmReceiver.class);
             intent_restart.setAction(RESTART_ALARM_ACTION);

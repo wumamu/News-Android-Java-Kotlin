@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -195,11 +196,7 @@ public class NewsNotificationService extends Service {
 //        am.setExact(AlarmManager.RTC_WAKEUP, time_fired, pi);       //註冊鬧鐘
         //用于设置一次性闹铃，执行时间更为精准，为精确闹铃。
         assert am != null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            am.setExact(AlarmManager.RTC_WAKEUP, time_fired, pi);       //註冊鬧鐘
-        } else {
-            am.set(AlarmManager.RTC_WAKEUP, time_fired, pi);       //註冊鬧鐘
-        }
+        am.setExact(AlarmManager.RTC_WAKEUP, time_fired, pi);       //註冊鬧鐘
     }
 
 
@@ -239,6 +236,7 @@ public class NewsNotificationService extends Service {
 
                     Log.d("lognewsselect_", "ss " + Arrays.toString(new Set[]{selections}));
                     int count = 0;
+                    assert queryDocumentSnapshots != null;
                     for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
 //                        DocumentSnapshot documentSnapshot = dc.getDocument();
                         switch (dc.getType()) {
@@ -254,7 +252,7 @@ public class NewsNotificationService extends Service {
                                         media = dc.getDocument().getString(COMPARE_RESULT_MEDIA);
                                         title = dc.getDocument().getString(COMPARE_RESULT_NEW_TITLE);
                                         doc_id = dc.getDocument().getId();
-                                        switch (media) {
+                                        switch (Objects.requireNonNull(media)) {
                                             case "cna":
                                                 media = "中央社";
                                                 break;
@@ -332,7 +330,7 @@ public class NewsNotificationService extends Service {
                                 myPushNews.setKEY_NEWS_ID(dc.getDocument().getString(COMPARE_RESULT_ID));
                                 myPushNews.setKEY_TITLE(dc.getDocument().getString(COMPARE_RESULT_NEW_TITLE));
                                 myPushNews.setKEY_MEDIA(dc.getDocument().getString(COMPARE_RESULT_MEDIA));
-                                myPushNews.setKEY_PUBDATE(dc.getDocument().getTimestamp(COMPARE_RESULT_PUBDATE).getSeconds());
+                                myPushNews.setKEY_PUBDATE(Objects.requireNonNull(dc.getDocument().getTimestamp(COMPARE_RESULT_PUBDATE)).getSeconds());
                                 myPushNews.setKEY_NOTI_TIMESTAMP(Timestamp.now().getSeconds());
                                 myPushNews.setKEY_RECEIEVE_TIMESTAMP(Timestamp.now().getSeconds());
 

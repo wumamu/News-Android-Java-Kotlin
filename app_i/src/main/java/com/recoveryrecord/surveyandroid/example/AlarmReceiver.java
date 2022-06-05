@@ -498,6 +498,10 @@ public class AlarmReceiver extends BroadcastReceiver {
         //下午12點 12 凌晨12 - 0
         int StartHour = sharedPrefs.getInt(ESM_START_TIME_HOUR, 9);
         int EndHour = sharedPrefs.getInt(ESM_END_TIME_HOUR, 21);
+        boolean switch_state = sharedPrefs.getBoolean(SWITCH_STATE, false);
+        if (switch_state) {
+            return false;
+        }
         if(EndHour==0){
             //StartHour 9 EndHour 0
             return cal_esm.get(Calendar.HOUR_OF_DAY) >= StartHour;
@@ -505,10 +509,12 @@ public class AlarmReceiver extends BroadcastReceiver {
             //StartHour 9 EndHour 21
             //8 23
             return cal_esm.get(Calendar.HOUR_OF_DAY) >= StartHour && cal_esm.get(Calendar.HOUR_OF_DAY) < EndHour;
-        } else {
+        } else if(EndHour<StartHour){
             //StartHour 11 EndHour 2
             //in midnight
             return cal_esm.get(Calendar.HOUR_OF_DAY) >= StartHour || cal_esm.get(Calendar.HOUR_OF_DAY) < EndHour;
+        } else {
+            return false;
         }
     }
 

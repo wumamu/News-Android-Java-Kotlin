@@ -85,10 +85,14 @@
             android:defaultValue="1"
             android:entries="@array/text_entries"
             android:entryValues="@array/text_values"/>
-        <SwitchPreference
-            android:defaultValue="false"
-            app:key="silent"
-            app:title="勿擾問卷作答模式" />
+<!--        <SwitchPreference-->
+<!--            android:defaultValue="false"-->
+<!--            app:key="silent"-->
+<!--            app:title="勿擾問卷作答模式" />-->
+<!--        <SwitchPreference-->
+<!--            android:defaultValue="false"-->
+<!--            app:key="block_esm_diary"-->
+<!--            app:title="問卷屏蔽" />-->
 
 <!--        <Preference-->
 <!--            android:summary="to be continue"-->

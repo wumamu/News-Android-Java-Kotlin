@@ -41,13 +41,13 @@ import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENC
 public class SettingsFragment extends PreferenceFragmentCompat {
     Intent mServiceIntent;
     private NewsNotificationService mYourService;
-    private Handler mHandler = new Handler();
+    private final Handler mHandler = new Handler();
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
 //        String model = "MODEL : " + Build.MODEL;
-        SwitchPreferenceCompat switchPref = findPreference("news_notification");
+        SwitchPreferenceCompat switchPref = findPreference("block_esm_diary");
         Preference clearPref = findPreference(SHARE_PREFERENCE_CLEAR_CACHE);
         clearPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -170,10 +170,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 //            public boolean onPreferenceChange(Preference preference, Object newValue) {
 ////                    getActivity().finish();
 //                if (newValue.equals(true)){
-//                    Log.d("mysetting", "service on");
-//                    Intent intent = new Intent(getActivity().getApplicationContext(), NewsNotificationService.class);
-//                    getActivity().getApplicationContext().startService(intent);
-//                    Toast.makeText(getActivity().getApplicationContext(), "可能會突然迸出很多通知xd", Toast.LENGTH_SHORT).show();
+////                    Log.d("mysetting", "service on");
+////                    Intent intent = new Intent(getActivity().getApplicationContext(), NewsNotificationService.class);
+////                    getActivity().getApplicationContext().startService(intent);
+//                    Toast.makeText(getActivity().getApplicationContext(), "您之後將不會再收到任何問卷通知", Toast.LENGTH_SHORT).show();
 ////                    if (!isMyServiceRunning(mYourService.getClass())) {
 ////                        //is running
 ////                    } else {
@@ -184,9 +184,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 ////                        Toast.makeText(getActivity().getApplicationContext(), "可能會突然迸出很多通知xd", Toast.LENGTH_SHORT).show();
 ////                    }
 //                } else {
-//                    Log.d("mysetting", "service stop");
-//                    Intent intent = new Intent(getActivity().getApplicationContext(), NewsNotificationService.class);
-//                    getActivity().getApplicationContext().stopService(intent);
+//                    Toast.makeText(getActivity().getApplicationContext(), "欲觸發問卷請到問卷推播頁面將開關重新開啟", Toast.LENGTH_SHORT).show();
+////                    Log.d("mysetting", "service stop");
+////                    Intent intent = new Intent(getActivity().getApplicationContext(), NewsNotificationService.class);
+////                    getActivity().getApplicationContext().stopService(intent);
 //                }
 //                return true;
 //            }

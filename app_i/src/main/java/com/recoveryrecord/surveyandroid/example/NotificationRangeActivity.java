@@ -75,7 +75,6 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
@@ -90,7 +89,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
@@ -112,6 +110,8 @@ import static com.recoveryrecord.surveyandroid.example.Constants.RESTART_ALARM_A
 import static com.recoveryrecord.surveyandroid.example.Constants.SCHEDULE_ALARM_ACTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.SWITCH_STATE;
 
+//import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOTI_BLOCK;
+
 //import android.support.v7.app.AppCompatActivity;
 //import android.support.v7.widget.SwitchCompat;
 
@@ -119,7 +119,7 @@ public class NotificationRangeActivity extends AppCompatActivity {
 
     String TAG = "RemindMe";
     LocalData localData;
-    Boolean set_once = false;
+    Boolean set_once = false;//, noti_block = false;
     Boolean switch_state = false;
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     Switch switchButton;
@@ -146,6 +146,7 @@ public class NotificationRangeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_notification_range);
         final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         set_once = sharedPrefs.getBoolean(ESM_SET_ONCE, false);
+//        noti_block = sharedPrefs.getBoolean(ESM_NOTI_BLOCK, false);
         switch_state = sharedPrefs.getBoolean(SWITCH_STATE, false);
         localData = new LocalData(getApplicationContext());
         ll_set_time = findViewById(R.id.ll_set_time);
@@ -158,6 +159,9 @@ public class NotificationRangeActivity extends AppCompatActivity {
         switchButton.setChecked(switch_state);
         switchButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
+                switch_state = true;
+                switchButton.setChecked(true);
+//                noti_block = false;
                 ll_set_time.setAlpha(1);
                 ee_set_time.setAlpha(1);
                 ((TextView) findViewById(R.id.tv_reminder_time_label)).setTypeface(null, Typeface.BOLD);
@@ -165,8 +169,9 @@ public class NotificationRangeActivity extends AppCompatActivity {
                 ((TextView) findViewById(R.id.tv_reminder_time_desc)).setTypeface(null, Typeface.BOLD);
                 ((TextView) findViewById(R.id.ee_tv_reminder_time_desc)).setTypeface(null, Typeface.BOLD);
                 // The toggle is enabled
+                SharedPreferences.Editor editor = sharedPrefs.edit();
+                editor.putBoolean(SWITCH_STATE, true);
                 if(!set_once){
-                    SharedPreferences.Editor editor = sharedPrefs.edit();
                     editor.putBoolean(ESM_SET_ONCE, true);
                     editor.apply();
                     Intent intent_schedule = new Intent(getApplicationContext(), AlarmReceiver.class);
@@ -179,6 +184,7 @@ public class NotificationRangeActivity extends AppCompatActivity {
                     alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() , pendingIntent);
                     set_once = true;
                 } else {
+                    editor.apply();
                     Intent intent_restart = new Intent(NotificationRangeActivity.this, AlarmReceiver.class);
                     intent_restart.setAction(RESTART_ALARM_ACTION);
                     AlarmManager alarmManager = (AlarmManager)NotificationRangeActivity.this.getSystemService(Context.ALARM_SERVICE);
@@ -190,13 +196,15 @@ public class NotificationRangeActivity extends AppCompatActivity {
                 }
                 Toast.makeText(getApplicationContext(), "問卷將於 " + sharedPrefs.getInt(ESM_START_TIME_HOUR, 9) + "-" + sharedPrefs.getInt(ESM_END_TIME_HOUR, 21) + " 區間內發送", Toast.LENGTH_SHORT).show();
             } else {
+                switch_state = false;
+                switchButton.setChecked(false);
+//                noti_block = true;
+                SharedPreferences.Editor editor = sharedPrefs.edit();
+                editor.putBoolean(SWITCH_STATE, false);
+                editor.apply();
                 ll_set_time.setAlpha(0.4f);
                 ee_set_time.setAlpha(0.4f);
             }
-//            SharedPreferences settings = getSharedPreferences(SWITCH_STATE, 0);
-            SharedPreferences.Editor editor = sharedPrefs.edit();
-            editor.putBoolean(SWITCH_STATE, true);
-            editor.apply();
         });
 
         s_hour = sharedPrefs.getInt(ESM_START_TIME_HOUR, 9);

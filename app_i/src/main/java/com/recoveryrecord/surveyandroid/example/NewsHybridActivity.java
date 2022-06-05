@@ -35,6 +35,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -167,7 +168,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         context = getApplicationContext();
 
         setContentView(R.layout.activity_news_hybrid);
-
+        FirebaseCrashlytics.getInstance().setUserId(device_id);
         // Creates a button that mimics a crash when pressed
 //        Button crashButton = new Button(this);
 //        crashButton.setText("Test Crash");
@@ -340,7 +341,9 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         Toolbar toolbar = findViewById(R.id.main_toolbar_hy);
         setSupportActionBar(toolbar);
         drawerLayout = findViewById(R.id.drawer_layout_hy);
+//        NavigationView navigationView = findViewById(R.id.nav_view_hy);
         NavigationView navigationView = findViewById(R.id.nav_view_hy);
+        navigationView.setNavigationItemSelectedListener(this);
         View header = navigationView.getHeaderView(0);
         TextView user_phone = header.findViewById(R.id.textView_user_phone);
         user_phone.setText(Build.MODEL);
@@ -359,7 +362,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         );
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
+//        navigationView.setNavigationItemSelectedListener(this);
 
         setTitle("新聞列表");
 
@@ -693,15 +696,15 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 }
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
-            case R.id.nav_listen:
-                if(signature.equals("test")){
-                    Intent intent_listen = new Intent(NewsHybridActivity.this, ListenActivity.class);
-                    startActivity(intent_listen);
-                } else {
-                    Toast.makeText(this, "抱歉您沒有權限",Toast.LENGTH_LONG).show();
-                }
-                drawerLayout.closeDrawer(GravityCompat.START);
-                return true;
+//            case R.id.nav_listen:
+//                if(signature.equals("test")){
+//                    Intent intent_listen = new Intent(NewsHybridActivity.this, ListenActivity.class);
+//                    startActivity(intent_listen);
+//                } else {
+//                    Toast.makeText(this, "抱歉您沒有權限",Toast.LENGTH_LONG).show();
+//                }
+//                drawerLayout.closeDrawer(GravityCompat.START);
+//                return true;
 //            case R.id.nav_esm :
 //                Intent intent_esm = new Intent(context, AlarmReceiver.class);
 //                intent_esm.setAction(ESM_ALARM_ACTION);

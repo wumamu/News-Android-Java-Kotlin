@@ -110,7 +110,7 @@ public class Constants {
 
     public static final String USER_COLLECTION = "user";
     public static final String APP_VERSION_KEY = "app_version";
-    public static final String APP_VERSION_VALUE = "2022-06-03-1";
+    public static final String APP_VERSION_VALUE = "2022-06-05-2";
     public static final String UPDATE_TIME = "update_timestamp";
 //    public static final String INITIAL_TIME = "initial_timestamp";
 //    public static final String LAST_LAUNCH_TIME = "last_launch_timestamp";
@@ -396,7 +396,7 @@ public class Constants {
     public static final String ESM_SET_ONCE = "ESMSetOnce";
     public static final String ESM_PASSWORD = "ESMPassWord";
     public static final String SWITCH_STATE = "SwitchState";
-//    public static final String LAST_ESM_TIME = "LastEsmTime";
+//    public static final String ESM_NOTI_BLOCK = "EsmNotiBlock";
 //    public static final String LAST_DIARY_TIME = "LastDiaryTime";
 
     public static final String SAMPLE_ID = "sample_id";
