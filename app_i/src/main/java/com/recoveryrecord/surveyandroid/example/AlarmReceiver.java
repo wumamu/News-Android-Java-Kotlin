@@ -128,7 +128,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 editor.putInt(ESM_DELAY_COUNT, 0);
                 editor.apply();
             } else {
-                Toast.makeText(context, "暫無通知閱讀紀錄，10分鐘後重送", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, "暫無通知閱讀紀錄，10分鐘後重送", Toast.LENGTH_SHORT).show();
                 Map<String, Object> my_alarm = new HashMap<>();
                 Date date = new Date(System.currentTimeMillis());
                 @SuppressLint("SimpleDateFormat")
