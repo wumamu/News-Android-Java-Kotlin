@@ -22,10 +22,10 @@ import java.util.Map;
 
 import androidx.preference.PreferenceManager;
 
-import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_USER_ID;
+import static com.recoveryrecord.surveyandroid.example.config.ConstantsOld.DetectTime;
+import static com.recoveryrecord.surveyandroid.example.config.ConstantsOld.SessionID;
+import static com.recoveryrecord.surveyandroid.example.config.ConstantsOld.UsingApp;
 
 public class
 AppUsageReceiver extends Service {

@@ -13,7 +13,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.recoveryrecord.surveyandroid.example.NewsRecycleViewAdapter;
+import com.recoveryrecord.surveyandroid.example.adapter.NewsRecycleViewAdapter;
 import com.recoveryrecord.surveyandroid.example.R;
 
 import java.util.ArrayList;

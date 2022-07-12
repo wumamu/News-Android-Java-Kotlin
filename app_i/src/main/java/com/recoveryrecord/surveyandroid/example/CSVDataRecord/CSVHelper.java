@@ -11,13 +11,12 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.recoveryrecord.surveyandroid.example.config.Constants.PACKAGE_DIRECTORY_PATH;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.getCurrentTimeInMillis;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.getTimeString;
+import static com.recoveryrecord.surveyandroid.example.config.ConstantsOld.PACKAGE_DIRECTORY_PATH;
+import static com.recoveryrecord.surveyandroid.example.config.ConstantsOld.getCurrentTimeInMillis;
+import static com.recoveryrecord.surveyandroid.example.config.ConstantsOld.getTimeString;
 
 public class CSVHelper {
     public static final String TAG = "CSVHelper";
@@ -65,7 +64,7 @@ public class CSVHelper {
             os.write(0xbb);
             os.write(0xbf);
             OutputStreamWriter out = new OutputStreamWriter(os,"UTF-8");
-            //csv_writer = new CSVWriter(new FileWriter(Environment.getExternalStorageDirectory()+Constants.PACKAGE_DIRECTORY_PATH+fileName,true));
+            //csv_writer = new CSVWriter(new FileWriter(Environment.getExternalStorageDirectory()+ConstantsOld.PACKAGE_DIRECTORY_PATH+fileName,true));
             csv_writer = new CSVWriter(out);
 
             List<String[]> data = new ArrayList<String[]>();

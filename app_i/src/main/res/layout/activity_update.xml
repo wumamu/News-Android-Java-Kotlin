@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
     <LinearLayout
         android:id="@+id/layout_inside"
-        tools:context=".CheckUpdateActivity"
+        tools:context=".ui.CheckUpdateActivity"
         android:orientation="vertical"
         android:gravity="center_horizontal|center_vertical"
         android:layout_gravity="center_horizontal"

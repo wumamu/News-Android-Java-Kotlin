@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MediaRankActivity">
+    tools:context=".ui.setting.MediaRankActivity">
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/mediaItems"
         android:layout_width="match_parent"

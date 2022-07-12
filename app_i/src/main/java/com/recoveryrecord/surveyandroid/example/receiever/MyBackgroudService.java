@@ -4,12 +4,10 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
-import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
+import static com.recoveryrecord.surveyandroid.example.config.ConstantsOld.DetectTime;
 
 public class MyBackgroudService extends Service{
     MyStreamManager mystreamManager = new MyStreamManager();

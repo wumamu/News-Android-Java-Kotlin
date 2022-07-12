@@ -19,7 +19,7 @@ import com.recoveryrecord.surveyandroid.example.CSVDataRecord.Stream;
 import com.recoveryrecord.surveyandroid.example.CSVDataRecord.TransportationModeDataRecord;
 import com.recoveryrecord.surveyandroid.example.CSVDataRecord.TransportationModeStream;
 import com.recoveryrecord.surveyandroid.example.DbHelper.ActivityRecognitionReceiverDbHelper;
-import com.recoveryrecord.surveyandroid.example.config.Constants;
+import com.recoveryrecord.surveyandroid.example.config.ConstantsOld;
 import com.recoveryrecord.surveyandroid.example.sqlite.ActivityRecognition;
 
 import java.io.File;
@@ -35,11 +35,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 import static android.util.Log.e;
-import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.sharedPrefString;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_USER_ID;
+import static com.recoveryrecord.surveyandroid.example.config.ConstantsOld.DetectTime;
+import static com.recoveryrecord.surveyandroid.example.config.ConstantsOld.SessionID;
+import static com.recoveryrecord.surveyandroid.example.config.ConstantsOld.UsingApp;
+import static com.recoveryrecord.surveyandroid.example.config.ConstantsOld.sharedPrefString;
 import static com.recoveryrecord.surveyandroid.example.receiever.ActivityRecognitionReceiver.getLocalRecordPool;
 
 public class TransportationModeReceiver implements StreamGenerator {
@@ -100,32 +100,32 @@ public class TransportationModeReceiver implements StreamGenerator {
 
     public static final String TRANSPORTATION_MODE_HASNT_DETECTED_FLAG = "未知";
 
-    private static final long WINDOW_LENGTH_START_ACTIVITY_DEFAULT = 20 * Constants.MILLISECONDS_PER_SECOND;
-    private static final long WINDOW_LENGTH_STOP_ACTIVITY_DEFAULT = 20 * Constants.MILLISECONDS_PER_SECOND;
-    private static final long WINDOW_LENGTH_START_ACTIVITY_IN_VEHICLE = 60 * Constants.MILLISECONDS_PER_SECOND; //TODO origin為20s
-    private static final long WINDOW_LENGTH_START_ACTIVITY_ON_FOOT = 10 * Constants.MILLISECONDS_PER_SECOND;
-    private static final long WINDOW_LENGTH_START_ACTIVITY_ON_BICYCLE = 20 * Constants.MILLISECONDS_PER_SECOND;
-    private static final long WINDOW_LENGTH_STOP_ACTIVITY_IN_VEHICLE = 150 * Constants.MILLISECONDS_PER_SECOND;
-    private static final long WINDOW_LENGTH_STOP_ACTIVITY_ON_FOOT = 30 * Constants.MILLISECONDS_PER_SECOND;
-    private static final long WINDOW_LENGTH_STOP_ACTIVITY_ON_BICYCLE = 90 * Constants.MILLISECONDS_PER_SECOND;
+    private static final long WINDOW_LENGTH_START_ACTIVITY_DEFAULT = 20 * ConstantsOld.MILLISECONDS_PER_SECOND;
+    private static final long WINDOW_LENGTH_STOP_ACTIVITY_DEFAULT = 20 * ConstantsOld.MILLISECONDS_PER_SECOND;
+    private static final long WINDOW_LENGTH_START_ACTIVITY_IN_VEHICLE = 60 * ConstantsOld.MILLISECONDS_PER_SECOND; //TODO origin為20s
+    private static final long WINDOW_LENGTH_START_ACTIVITY_ON_FOOT = 10 * ConstantsOld.MILLISECONDS_PER_SECOND;
+    private static final long WINDOW_LENGTH_START_ACTIVITY_ON_BICYCLE = 20 * ConstantsOld.MILLISECONDS_PER_SECOND;
+    private static final long WINDOW_LENGTH_STOP_ACTIVITY_IN_VEHICLE = 150 * ConstantsOld.MILLISECONDS_PER_SECOND;
+    private static final long WINDOW_LENGTH_STOP_ACTIVITY_ON_FOOT = 30 * ConstantsOld.MILLISECONDS_PER_SECOND;
+    private static final long WINDOW_LENGTH_STOP_ACTIVITY_ON_BICYCLE = 90 * ConstantsOld.MILLISECONDS_PER_SECOND;
 
-    private static final long WINDOW_LENGTH_TRANSITION_START_ACTIVITY_IN_VEHICLE = 5 * Constants.MILLISECONDS_PER_SECOND;
-    private static final long WINDOW_LENGTH_TRANSITION_START_ACTIVITY_ON_FOOT = 10 * Constants.MILLISECONDS_PER_SECOND;
-    private static final long WINDOW_LENGTH_TRANSITION_START_ACTIVITY_ON_BICYCLE = 10 * Constants.MILLISECONDS_PER_SECOND;
-    private static final long WINDOW_LENGTH_TRANSITION_STOP_ACTIVITY_IN_VEHICLE = 75 * Constants.MILLISECONDS_PER_SECOND;
-    private static final long WINDOW_LENGTH_TRANSITION_STOP_ACTIVITY_ON_FOOT = 10 * Constants.MILLISECONDS_PER_SECOND;
-    private static final long WINDOW_LENGTH_TRANSITION_STOP_ACTIVITY_ON_BICYCLE = 45 * Constants.MILLISECONDS_PER_SECOND;
+    private static final long WINDOW_LENGTH_TRANSITION_START_ACTIVITY_IN_VEHICLE = 5 * ConstantsOld.MILLISECONDS_PER_SECOND;
+    private static final long WINDOW_LENGTH_TRANSITION_START_ACTIVITY_ON_FOOT = 10 * ConstantsOld.MILLISECONDS_PER_SECOND;
+    private static final long WINDOW_LENGTH_TRANSITION_START_ACTIVITY_ON_BICYCLE = 10 * ConstantsOld.MILLISECONDS_PER_SECOND;
+    private static final long WINDOW_LENGTH_TRANSITION_STOP_ACTIVITY_IN_VEHICLE = 75 * ConstantsOld.MILLISECONDS_PER_SECOND;
+    private static final long WINDOW_LENGTH_TRANSITION_STOP_ACTIVITY_ON_FOOT = 10 * ConstantsOld.MILLISECONDS_PER_SECOND;
+    private static final long WINDOW_LENGTH_TRANSITION_STOP_ACTIVITY_ON_BICYCLE = 45 * ConstantsOld.MILLISECONDS_PER_SECOND;
 
     //the frequency of requesting google activity from the google play service
     public static int ACTIVITY_RECOGNITION_DEFAULT_UPDATE_INTERVAL_IN_SECONDS = 5;
 
     public static long ACTIVITY_RECOGNITION_DEFAULT_UPDATE_INTERVAL =
-            ACTIVITY_RECOGNITION_DEFAULT_UPDATE_INTERVAL_IN_SECONDS * Constants.MILLISECONDS_PER_SECOND;
+            ACTIVITY_RECOGNITION_DEFAULT_UPDATE_INTERVAL_IN_SECONDS * ConstantsOld.MILLISECONDS_PER_SECOND;
 
     private static long sActivityRecognitionUpdateIntervalInSeconds = ACTIVITY_RECOGNITION_DEFAULT_UPDATE_INTERVAL_IN_SECONDS;
 
     private static long sActivityRecognitionUpdateIntervalInMilliseconds =
-            sActivityRecognitionUpdateIntervalInSeconds * Constants.MILLISECONDS_PER_SECOND;
+            sActivityRecognitionUpdateIntervalInSeconds * ConstantsOld.MILLISECONDS_PER_SECOND;
 
     /**Properties for Record**/
     public static final String RECORD_DATA_PROPERTY_TRANSPORTATION = "Transportation";
@@ -601,7 +601,7 @@ public class TransportationModeReceiver implements StreamGenerator {
 
             List<String[]> data = new ArrayList<String[]>();
 
-            String timeString = Constants.getTimeString(timestamp);
+            String timeString = ConstantsOld.getTimeString(timestamp);
 
             data.add(new String[]{String.valueOf(timestamp), timeString, String.valueOf(lastestActivityTime), String.valueOf(suspectTime), String.valueOf(lastestActivityTime_suspectTime), String.valueOf(windowLenth), String.valueOf(flag)});
 
@@ -789,7 +789,7 @@ public class TransportationModeReceiver implements StreamGenerator {
 
             List<String[]> data = new ArrayList<String[]>();
 
-            String timeString = Constants.getTimeString(timestamp);
+            String timeString = ConstantsOld.getTimeString(timestamp);
 
             data.add(new String[]{String.valueOf(timestamp), timeString, percentage, startstop,String.valueOf(windowData), String.valueOf(threshold), String.valueOf(windowLength)});
 
@@ -818,7 +818,7 @@ public class TransportationModeReceiver implements StreamGenerator {
 
             List<String[]> data = new ArrayList<String[]>();
 
-            String timeString = Constants.getTimeString(new Date().getTime());
+            String timeString = ConstantsOld.getTimeString(new Date().getTime());
 
             data.add(new String[]{String.valueOf(new Date().getTime()), timeString, String.valueOf(isTimeToConfirm), String.valueOf(detectionTime)});
 

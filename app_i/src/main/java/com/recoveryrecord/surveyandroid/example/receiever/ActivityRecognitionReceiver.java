@@ -39,16 +39,16 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
 
-import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
-import static com.recoveryrecord.surveyandroid.example.NotificationScheduler.TAG;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.ACTIVITY_DELIMITER;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.DATE_FORMAT_NOW_SLASH;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.MILLISECONDS_PER_MINUTE;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.getCurrentTimeString;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.sharedPrefString;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_USER_ID;
+import static com.recoveryrecord.surveyandroid.example.model.NotificationScheduler.TAG;
+import static com.recoveryrecord.surveyandroid.example.config.ConstantsOld.ACTIVITY_DELIMITER;
+import static com.recoveryrecord.surveyandroid.example.config.ConstantsOld.DATE_FORMAT_NOW_SLASH;
+import static com.recoveryrecord.surveyandroid.example.config.ConstantsOld.DetectTime;
+import static com.recoveryrecord.surveyandroid.example.config.ConstantsOld.MILLISECONDS_PER_MINUTE;
+import static com.recoveryrecord.surveyandroid.example.config.ConstantsOld.SessionID;
+import static com.recoveryrecord.surveyandroid.example.config.ConstantsOld.UsingApp;
+import static com.recoveryrecord.surveyandroid.example.config.ConstantsOld.getCurrentTimeString;
+import static com.recoveryrecord.surveyandroid.example.config.ConstantsOld.sharedPrefString;
 import static com.recoveryrecord.surveyandroid.example.receiever.TransportationModeReceiver.getConfirmedActivityString;
 
 public class ActivityRecognitionReceiver extends IntentService implements StreamGenerator{

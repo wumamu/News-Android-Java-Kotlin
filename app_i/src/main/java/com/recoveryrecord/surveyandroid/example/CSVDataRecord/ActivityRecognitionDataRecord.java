@@ -14,8 +14,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import static com.recoveryrecord.surveyandroid.example.config.Constants.DATE_FORMAT_NOW;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.DATE_FORMAT_for_storing;
+import static com.recoveryrecord.surveyandroid.example.config.ConstantsOld.DATE_FORMAT_NOW;
+import static com.recoveryrecord.surveyandroid.example.config.ConstantsOld.DATE_FORMAT_for_storing;
 
 @Entity(tableName = "ActivityRecognitionDataRecord")
 public class ActivityRecognitionDataRecord implements DataRecord{

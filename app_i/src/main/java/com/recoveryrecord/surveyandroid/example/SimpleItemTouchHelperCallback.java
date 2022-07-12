@@ -1,8 +1,9 @@
 package com.recoveryrecord.surveyandroid.example;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.recoveryrecord.surveyandroid.example.adapter.ItemTouchHelperAdapter;
 
 public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
 

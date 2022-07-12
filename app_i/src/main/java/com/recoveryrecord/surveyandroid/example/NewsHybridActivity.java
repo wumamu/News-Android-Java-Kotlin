@@ -1,12 +1,48 @@
 package com.recoveryrecord.surveyandroid.example;
 
+import static com.recoveryrecord.surveyandroid.example.config.Constants.APP_VERSION_KEY;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.APP_VERSION_VALUE;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.DIARY_DONE_TOTAL;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.DIARY_PUSH_TOTAL;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.ESM_ALARM_ACTION;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.ESM_DONE_TOTAL;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.ESM_PUSH_TOTAL;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.MEDIA_BAR_ORDER;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_SERVICE_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_SERVICE_CYCLE_KEY;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_SERVICE_CYCLE_VALUE_FAILED_RESTART;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_SERVICE_CYCLE_VALUE_MAIN_PAGE;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_SERVICE_DEVICE_ID;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_SERVICE_STATUS_KEY;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_SERVICE_STATUS_VALUE_RESTART;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_SERVICE_STATUS_VALUE_RUNNING;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_SERVICE_TIME;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.OUR_EMAIL;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_MEDIA_SELECTION;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_CLEAR_CACHE;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_DEVICE_ID;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_USER_ID;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.TEST_USER_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.UPDATE_TIME;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.USER_ANDROID_RELEASE;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.USER_ANDROID_SDK;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.USER_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.USER_DEVICE_ID;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.USER_FIRESTORE_ID;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.USER_NUM;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.USER_PHONE_ID;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.USER_SURVEY_NUMBER;
+import static com.recoveryrecord.surveyandroid.example.config.ConstantsOld.LastPauseTime;
+import static com.recoveryrecord.surveyandroid.example.config.ConstantsOld.SeesionCountDown;
+import static com.recoveryrecord.surveyandroid.example.config.ConstantsOld.SessionID;
+import static com.recoveryrecord.surveyandroid.example.config.ConstantsOld.TimeLeftInMillis;
+
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
-import android.app.AppOpsManager;
 import android.app.PendingIntent;
-import android.app.usage.UsageStats;
-import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,15 +52,26 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.os.PowerManager;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.preference.PreferenceManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -41,22 +88,30 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.recoveryrecord.surveyandroid.example.DbHelper.ESMDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.SessionDbHelper;
-import com.recoveryrecord.surveyandroid.example.chinatimes.ChinatimesMainFragment;
-import com.recoveryrecord.surveyandroid.example.cna.CnaMainFragment;
-import com.recoveryrecord.surveyandroid.example.cts.CtsMainFragment;
-import com.recoveryrecord.surveyandroid.example.ebc.EbcMainFragment;
-import com.recoveryrecord.surveyandroid.example.ettoday.EttodayMainFragment;
-import com.recoveryrecord.surveyandroid.example.ltn.LtnMainFragment;
+import com.recoveryrecord.surveyandroid.example.broadcastReceiver.AlarmReceiver;
+import com.recoveryrecord.surveyandroid.example.service.NewsNotificationService;
+import com.recoveryrecord.surveyandroid.example.ui.news.chinatimes.ChinatimesMainFragment;
+import com.recoveryrecord.surveyandroid.example.ui.news.cna.CnaMainFragment;
+import com.recoveryrecord.surveyandroid.example.ui.news.cts.CtsMainFragment;
+import com.recoveryrecord.surveyandroid.example.ui.news.ebc.EbcMainFragment;
+import com.recoveryrecord.surveyandroid.example.ui.news.ettoday.EttodayMainFragment;
+import com.recoveryrecord.surveyandroid.example.ui.news.ltn.LtnMainFragment;
 import com.recoveryrecord.surveyandroid.example.receiever.AppUsageReceiver;
 import com.recoveryrecord.surveyandroid.example.receiever.LightSensorReceiver;
 import com.recoveryrecord.surveyandroid.example.receiever.MyBackgroudService;
 import com.recoveryrecord.surveyandroid.example.receiever.NetworkChangeReceiver;
 import com.recoveryrecord.surveyandroid.example.receiever.RingModeReceiver;
 import com.recoveryrecord.surveyandroid.example.receiever.ScreenStateReceiver;
-import com.recoveryrecord.surveyandroid.example.setn.SetnMainFragment;
+import com.recoveryrecord.surveyandroid.example.ui.news.setn.SetnMainFragment;
 import com.recoveryrecord.surveyandroid.example.sqlite.Session;
-import com.recoveryrecord.surveyandroid.example.storm.StormMainFragment;
-import com.recoveryrecord.surveyandroid.example.udn.UdnMainFragment;
+import com.recoveryrecord.surveyandroid.example.ui.news.storm.StormMainFragment;
+import com.recoveryrecord.surveyandroid.example.ui.news.udn.UdnMainFragment;
+import com.recoveryrecord.surveyandroid.example.ui.CheckUpdateActivity;
+import com.recoveryrecord.surveyandroid.example.ui.SurveyProgressActivity;
+import com.recoveryrecord.surveyandroid.example.ui.UploadPagesActivity;
+import com.recoveryrecord.surveyandroid.example.ui.history.PushHistoryActivity;
+import com.recoveryrecord.surveyandroid.example.ui.history.ReadHistoryActivity;
+import com.recoveryrecord.surveyandroid.example.ui.setting.SettingsActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -71,59 +126,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.preference.PreferenceManager;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.viewpager.widget.ViewPager;
-
-import static com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_KEY;
-import static com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_VALUE;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_DONE_TOTAL;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_PUSH_TOTAL;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_ALARM_ACTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_DONE_TOTAL;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_PUSH_TOTAL;
-import static com.recoveryrecord.surveyandroid.example.Constants.MEDIA_BAR_ORDER;
-import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_KEY;
-import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_VALUE_FAILED_RESTART;
-import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_VALUE_MAIN_PAGE;
-import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_DEVICE_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_KEY;
-import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_VALUE_RESTART;
-import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_VALUE_RUNNING;
-import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.OUR_EMAIL;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_MEDIA_SELECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_CLEAR_CACHE;
-import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_DEVICE_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER;
-import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.UPDATE_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.USER_ANDROID_RELEASE;
-import static com.recoveryrecord.surveyandroid.example.Constants.USER_ANDROID_SDK;
-import static com.recoveryrecord.surveyandroid.example.Constants.USER_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.USER_DEVICE_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.USER_FIRESTORE_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.USER_NUM;
-import static com.recoveryrecord.surveyandroid.example.Constants.USER_PHONE_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.USER_SURVEY_NUMBER;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.LastPauseTime;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.SeesionCountDown;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.TimeLeftInMillis;
 
 
 //public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
@@ -905,7 +907,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                     case "三立":
                         return new SetnMainFragment();
                     default:
-                        return TestTab3Fragment.newInstance();
+                        return new ChinatimesMainFragment();
                 }
             } else {
                 switch (position) {
@@ -928,7 +930,7 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                     case 8:
                         return new SetnMainFragment();
                     default:
-                        return TestTab3Fragment.newInstance();
+                        return new ChinatimesMainFragment();
                 }
             }
 
