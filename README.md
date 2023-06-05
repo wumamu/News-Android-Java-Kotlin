@@ -13,6 +13,11 @@ a smartphone news-aggregation android app that logs its users’ reading behavio
 Note:
 *新聞列表有圖片版本到 NewsRecycleViewAdapter, ReadingHistoryRecycleViewAdapter imgView 打開
 
+### Requirement
+* A server to crawl news from news organizations
+* A smartphone to crawl news notifications
+* Set up firestore to s
+
 ### Screenshot
 <p float="left">
   <img src="https://github.com/wumamu/NewsMoment-Android-/blob/main/NewsMoment%20Screenshot/Screenshot_20220221-005919.png" width="150" />
