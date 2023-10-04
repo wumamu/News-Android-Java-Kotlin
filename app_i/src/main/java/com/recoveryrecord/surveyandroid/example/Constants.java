@@ -2,7 +2,7 @@ package com.recoveryrecord.surveyandroid.example;
 
 public class Constants {
     //email
-    public static final String OUR_EMAIL = "newsmoment.mui@gmail.com";
+    public static final String OUR_EMAIL = "crctaiwan@gmail.com";
     //action
     public static final String CHECK_SERVICE_ACTION = "CheckService";//request code 50 60
     public static final String ESM_ALARM_ACTION = "EsmAlarm";//request code 0-15
@@ -110,7 +110,7 @@ public class Constants {
 
     public static final String USER_COLLECTION = "user";
     public static final String APP_VERSION_KEY = "app_version";
-    public static final String APP_VERSION_VALUE = "2022-06-30-1";
+    public static final String APP_VERSION_VALUE = "2022-09-07-1";
     public static final String UPDATE_TIME = "update_timestamp";
 //    public static final String INITIAL_TIME = "initial_timestamp";
 //    public static final String LAST_LAUNCH_TIME = "last_launch_timestamp";
@@ -378,6 +378,7 @@ public class Constants {
 
 
     public static final String UPLOAD_TIME = "last_upload_time";
+    public static final String UPLOAD_TIME_FB = "last_upload_time_fb";
 
 //    public static final String SHARE_PREFERENCE_IS_LOGIN = "is_login";
 

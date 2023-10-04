@@ -14,12 +14,12 @@
     <PreferenceCategory app:title="權限設定">
         <Preference
             app:title="通知存取權"
-            app:summary="進入系統通知頁面打開">
+            app:summary="進入系統設定頁面打開">
             <intent android:action="android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"/>
         </Preference>
         <Preference
             app:title="使用紀錄存取權"
-            app:summary="進入系統通知頁面打開">
+            app:summary="進入系統設定頁面打開">
             <intent android:action="android.settings.USAGE_ACCESS_SETTINGS"/>
         </Preference>
         <Preference
@@ -28,7 +28,7 @@
             app:summary="點選允許存取權限"/>
         <Preference
             app:title="電池最佳化頁面"
-            app:summary="進入系統通知頁面確認關閉狀態">
+            app:summary="進入系統設定頁面確認關閉狀態">
             <intent android:action="android.settings.IGNORE_BATTERY_OPTIMIZATION_SETTINGS"/>
         </Preference>
         <Preference
@@ -43,6 +43,11 @@
             app:key="CSV"
             android:title="讀寫存取權"
             app:summary="點選允許存取權限"/>
+        <Preference
+            app:title="無障礙協助工具讀取權"
+            app:summary="進入系統設定頁面打開">
+            <intent android:action="android.settings.ACCESSIBILITY_SETTINGS"/>
+        </Preference>
     </PreferenceCategory>
     <PreferenceCategory app:title="基礎設置">
 

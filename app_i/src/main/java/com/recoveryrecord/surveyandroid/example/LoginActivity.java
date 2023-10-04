@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -121,6 +122,24 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(i);
 //                startActivity(new Intent(LoginActivity.this, NewsHybridActivity.class));
             } else {
+                /* create account if not exist
+                mAuth.createUserWithEmailAndPassword(string_useremail, string_password)
+                        .addOnCompleteListener(task1 -> {
+                            if(task1.isSuccessful()){
+                                    // Sign in success, update UI with the signed-in user's information
+                                    //Log.d(TAG, "createUserWithEmail:success");
+                                    FirebaseUser user = mAuth.getCurrentUser();
+                                    //updateUI(user);
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                //Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                                Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                        Toast.LENGTH_SHORT).show();
+                                //updateUI(null);
+                            }
+
+                    });*/
+
                 Toast.makeText(LoginActivity.this, "登入失敗QQ，需要幫忙請來信詢問", Toast.LENGTH_LONG).show();
             }
         });

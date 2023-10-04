@@ -109,4 +109,6 @@
 <!--        <item>a7a44570861f9f64 (xiaomi)</item>-->
         <item>286c25bc68ef882d (pixel 6)</item>
     </string-array>
+
+    <string name="accessibility_service_description">My Description</string>
 </resources>

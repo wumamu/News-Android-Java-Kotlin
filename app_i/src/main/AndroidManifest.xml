@@ -123,7 +123,8 @@
         <receiver android:name=".receiever.ApplicationSelectorReceiver" />
         <receiver android:name=".receiever.BlueToothReceiver"
             tools:ignore="Instantiatable" />
-        <receiver android:name=".receiever.NetworkChangeReceiver"
+        <receiver android:name=".receiever.NetworkChangeReceiver$NetworkChangeBroadcastReceiver"
+            android:enabled="true"
             tools:ignore="Instantiatable">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"
@@ -193,6 +194,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </service>
+        <service android:name=".MyAccessibilityService"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE" >
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_service_config" />
+        </service>
+
         <receiver android:name=".receiever.LightSensorReceiver"
             tools:ignore="Instantiatable" />
         <service android:name=".receiever.ActivityRecognitionReceiver"/>

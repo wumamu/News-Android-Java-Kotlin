@@ -126,7 +126,7 @@ public class NotificationListenerService extends android.service.notification.No
     private String TAG = this.getClass().getSimpleName();
     String esm_status = "NA", diary_status = "NA";
     Boolean set_once = false;
-//    private NotificationListenerServiceReceiver nlservicereciver;
+    //    private NotificationListenerServiceReceiver nlservicereciver;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -180,6 +180,7 @@ public class NotificationListenerService extends android.service.notification.No
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             @SuppressLint("HardwareIds")
             String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+            //Log.e(TAG,"********** DEVICEID ***********" + device_id);
             Bundle extras = sbn.getNotification().extras;
 //            String type = "", doc_id = "";
             if(extras.getString(NOTIFICATION_TYPE_KEY)!=null && extras.getString(DOC_ID_KEY)!=null){
@@ -321,6 +322,7 @@ public class NotificationListenerService extends android.service.notification.No
             receieve_notification.put(NOTIFICATION_BAR_NEWS_PACKAGE_ID, sbn.getKey());
             receieve_notification.put(NOTIFICATION_BAR_NEWS_DEVICE_ID, device_id);
 
+
             if (extras.containsKey("android.title")) {
                 if(extras.getString("android.title")!=null){
                     receieve_notification.put(NOTIFICATION_BAR_NEWS_TITLE, Objects.requireNonNull(extras.getString("android.title")));
@@ -345,14 +347,15 @@ public class NotificationListenerService extends android.service.notification.No
             if (check_title && check_text){
 
                 boolean is_me = false;
-                if (device_id.equals("318f4fea56e7070c") || device_id.equals("c067c6c688c792b2")){
+                if (device_id.equals("318f4fea56e7070c") || device_id.equals("c067c6c688c792b2") || device_id.equals("37824129045c645a")){
+                    // || device_id.equals("3f726664ceaad94f")
                     is_me = true;
                     receieve_notification.put("source", device_id);
                 }
                 if (is_me){
                     db.collection("compare")
-                            .document(formatter.format(date))
-                            .set(receieve_notification);
+                            //.document(formatter.format(date))
+                            .add(receieve_notification);
                 }
                 db.collection(NOTIFICATION_BAR_NEWS_MONITOR_COLLECTION)
                         .document(device_id + " " + sbn.getPostTime())
@@ -550,7 +553,7 @@ public class NotificationListenerService extends android.service.notification.No
                                 assert document != null;
                                 if (document.exists()) {
                                     rbRef.update(finalRemove_field, current_now,
-                                            finalRemove_type_field, finalRemove_reason)//another field
+                                                    finalRemove_type_field, finalRemove_reason)//another field
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
@@ -585,8 +588,8 @@ public class NotificationListenerService extends android.service.notification.No
                         assert document != null;
                         if (document.exists()) {
                             rbRef.update(NOTIFICATION_BAR_REMOVE_TIME, current_now,
-                                    NOTIFICATION_BAR_REMOVE_TYPE, finalRemove_reason1,
-                                    NOTIFICATION_BAR_PACKAGE_ID, sbn.getKey())//another field
+                                            NOTIFICATION_BAR_REMOVE_TYPE, finalRemove_reason1,
+                                            NOTIFICATION_BAR_PACKAGE_ID, sbn.getKey())//another field
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {

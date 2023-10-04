@@ -25,7 +25,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="上傳"
+            android:text="上傳新聞閱讀紀錄"
+            android:textAllCaps="false" />
+
+        <TextView
+            android:id="@+id/uptextview2"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:text="上次上傳時間" />
+        <Button
+            android:id="@+id/upbutton2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="上傳FB資料"
             android:textAllCaps="false" />
 <!--        <TextView-->
 <!--            android:id="@+id/intro"-->

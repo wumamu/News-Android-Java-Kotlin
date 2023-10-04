@@ -23,6 +23,7 @@ import com.recoveryrecord.surveyandroid.example.DbHelper.LightSensorReceiverDbHe
 import com.recoveryrecord.surveyandroid.example.DbHelper.NetworkChangeReceiverDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.PushNewsDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.ReadingBehaviorDbHelper;
+import com.recoveryrecord.surveyandroid.example.DbHelper.FBMovementDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.RingModeReceiverDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.ScreenStateReceiverDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.SessionDbHelper;
@@ -47,6 +48,8 @@ public class UploadPagesActivity extends AppCompatActivity {
 
     private Button mybutton;
     private TextView uptime, intro;
+    private Button mybutton2;
+    private TextView uptime2;
 
     @SuppressLint({"HardwareIds", "SetTextI18n"})
     protected void onCreate (Bundle savedInstanceState) {
@@ -60,22 +63,28 @@ public class UploadPagesActivity extends AppCompatActivity {
 //        intro = findViewById(R.id.intro);
         uptime = findViewById(R.id.uptextview);
         mybutton = findViewById(R.id.upbutton);
+        uptime2 = findViewById(R.id.uptextview2);
+        mybutton2 = findViewById(R.id.upbutton2);
 
 
-        final Date date = new Date();
-        date.setTime(sharedPrefs.getLong(UPLOAD_TIME, 0)*1000);
+        final Date lastdate = new Date();
+        lastdate.setTime(sharedPrefs.getLong(UPLOAD_TIME, 0)*1000);
+        final Date lastdate2 = new Date();
+        lastdate2.setTime(sharedPrefs.getLong(UPLOAD_TIME_FB, 0)*1000);
 
 //        String[] mysplit = formatter.format(date).split(" ");
 //        intro.setText("此上傳機制為確保App資料完整性，您將上傳 新聞閱讀記錄、以及問卷填答記錄（ESM, Diary)。");
-        uptime.setText("此上傳機制為確保App資料完整性，您將上傳 新聞閱讀記錄、以及問卷填答記錄（ESM, Diary)。\n\n上次上傳時間\n" + formatter.format(date) + "\n(請每日至少上傳一次)");
+        //uptime.setText("此上傳機制為確保App資料完整性，您將上傳 新聞閱讀記錄、FB使用紀錄、以及問卷填答記錄（ESM, Diary)。\n\n上次上傳時間\n" + formatter.format(lastdate) + "\n(請每日至少上傳一次)");
+        uptime.setText("此上傳機制為確保App資料完整性，您將上傳 新聞閱讀記錄。\n\n上次上傳時間\n" + formatter.format(lastdate) + "\n(請每日至少上傳一次)");
+        uptime2.setText("此上傳機制為確保App資料完整性，您將上傳 FB使用紀錄。\n\n上次上傳時間\n" + formatter.format(lastdate2) + "\n(請每日至少上傳一次)");
 
         mybutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 upload_push_news();
                 upload_reading_behavior();
-                upload_esm();
-                upload_diary();
+                //upload_esm();
+                //upload_diary();
 //                upload_activityrecognition();
 //                upload_appusage();
 //                upload_light();
@@ -88,7 +97,8 @@ public class UploadPagesActivity extends AppCompatActivity {
                 Long new_time = Timestamp.now().getSeconds();
                 Date new_date = new Date();
                 new_date.setTime(new_time*1000);
-                uptime.setText("此上傳機制為確保App資料完整性，您將上傳 新聞閱讀記錄、以及問卷填答記錄（ESM, Diary)。\n\n上次上傳時間\n" + formatter.format(new_date));
+                //uptime.setText("此上傳機制為確保App資料完整性，您將上傳 新聞閱讀記錄、FB使用紀錄、以及問卷填答記錄（ESM, Diary)。\n\n上次上傳時間\n" + formatter.format(new_date));
+                uptime.setText("此上傳機制為確保App資料完整性，您將上傳 新聞閱讀記錄。\n\n上次上傳時間\n" + formatter.format(new_date));
 
                 SharedPreferences.Editor editor = sharedPrefs.edit();
                 editor.putLong(UPLOAD_TIME, new_time);
@@ -96,11 +106,59 @@ public class UploadPagesActivity extends AppCompatActivity {
             }
         });
 
+        mybutton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                upload_fb_movement();
+
+                Toast.makeText(getApplicationContext(), "上傳資料完成", Toast.LENGTH_SHORT).show();
+
+                Long new_time = Timestamp.now().getSeconds();
+                Date new_date = new Date();
+                new_date.setTime(new_time*1000);
+                //uptime.setText("此上傳機制為確保App資料完整性，您將上傳 新聞閱讀記錄、FB使用紀錄、以及問卷填答記錄（ESM, Diary)。\n\n上次上傳時間\n" + formatter.format(new_date));
+                uptime2.setText("此上傳機制為確保App資料完整性，您將上傳 FB使用紀錄。\n\n上次上傳時間\n" + formatter.format(new_date));
+
+                SharedPreferences.Editor editor = sharedPrefs.edit();
+                editor.putLong(UPLOAD_TIME_FB, new_time);
+                editor.apply();
+            }
+        });
 
 
 
+    }
 
+    private void upload_fb_movement() {
+        FBMovementDbHelper dbHandler = new FBMovementDbHelper(getApplicationContext());
+        Cursor cursor = dbHandler.getALL();
+        // Move to first row
+        if (cursor.moveToFirst()) {
+            Map<String, Object> fbm = new HashMap<>();
+            String doc_id = "NAN";
+            String[] docIds = new String[cursor.getCount()];
+            while (!cursor.isAfterLast()) {
+                // cursor.getString(cursor.getColumnIndex("news_id"))
+                doc_id = cursor.getString(cursor.getColumnIndex("doc_id"));
+                fbm.put("device_id", cursor.getString(cursor.getColumnIndex("device_id")));
+                fbm.put("user_id", cursor.getString(cursor.getColumnIndex("user_id")));
+                fbm.put("event", cursor.getString(cursor.getColumnIndex("event")));
+                fbm.put("state", cursor.getString(cursor.getColumnIndex("state")));
+                fbm.put("state_text", cursor.getString(cursor.getColumnIndex("state_text")));
+                fbm.put("content", cursor.getString(cursor.getColumnIndex("content")));
+                fbm.put("timestamp", new Timestamp(cursor.getLong(cursor.getColumnIndex("timestamp")), 0));
 
+                db.collection("FB_movement_sql")
+                        .document(doc_id)
+                        .set(fbm);
+                cursor.moveToNext();
+
+                doc_id = "NAN";
+                fbm.clear();
+            }
+            dbHandler.deleteByDocIds(docIds);
+            cursor.close();
+        }
     }
 
     private void upload_diary() {

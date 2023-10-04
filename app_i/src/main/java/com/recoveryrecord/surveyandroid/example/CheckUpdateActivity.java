@@ -50,7 +50,7 @@ public class CheckUpdateActivity extends AppCompatActivity {
         uptime = findViewById(R.id.uptextview);
         mybutton = findViewById(R.id.upbutton);
 
-        DocumentReference docRef = db.collection("app_info").document("g8FD5IwuIX26rI8tmgHs");
+        DocumentReference docRef = db.collection("app_info").document("0Jk3iIQcaYPssXgZe7e5");
         docRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();

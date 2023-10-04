@@ -1,14 +1,18 @@
 package com.recoveryrecord.surveyandroid.example;
 
+import android.accessibilityservice.AccessibilityService;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.AppOpsManager;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
@@ -493,6 +497,31 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
             mysession.setKEY_STATE(0);
             SessionDbHelper dbHandler = new SessionDbHelper(context);
             dbHandler.insertSessionDetailsCreate(mysession);
+        }
+
+        //Accessibility Request
+        if(!checkAccessibilityPermission()){
+            Toast.makeText(NewsHybridActivity.this, "Permission denied", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    public boolean checkAccessibilityPermission () {
+        int accessEnabled = 0;
+        try {
+            accessEnabled = Settings.Secure.getInt(this.getContentResolver(), Settings.Secure.ACCESSIBILITY_ENABLED);
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (accessEnabled == 0) {
+            // if not construct intent to request permission
+            Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            // request permission via start activity for result
+            startActivity(intent);
+            return false;
+        } else {
+            return true;
         }
     }
 
