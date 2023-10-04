@@ -47,20 +47,6 @@
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/floatButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:backgroundTint="@color/float_color"
-            app:layout_anchor="@id/container_hy"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="30dp"
-            android:src="@drawable/ic_baseline_notification_important_24"
-            app:layout_anchorGravity="bottom|right|end"
-            app:elevation="6dp"
-            android:clickable="true"
-            app:tint="@color/float_icon"
-            android:focusable="true" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 <!--    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
     </com.recoveryrecord.surveyandroid.example.MySwipeRefreshLayout>

@@ -3,60 +3,13 @@
     <item android:id="@+id/nav_setting"
         android:title="帳號設定"
         android:icon="@drawable/ic_baseline_settings_24"/>
-    <item android:id="@+id/nav_progressing"
-        android:title="問卷進度"
-        android:icon="@drawable/ic_baseline_analytics_24"/>
     <item android:id="@+id/nav_history"
         android:title="歷史閱讀紀錄"
         android:icon="@drawable/ic_baseline_history_24"/>
     <item android:id="@+id/nav_reschedule"
         android:title="歷史推播紀錄"
         android:icon="@drawable/ic_baseline_edit_notifications_24"/>
-    <item android:id="@+id/upload"
-        android:title="上傳頁面"
-        android:icon="@drawable/ic_baseline_upload_24"/>
-    <item android:id="@+id/nav_update"
-        android:title="軟體更新"
-        android:icon="@drawable/ic_baseline_system_update_24"/>
     <item android:id="@+id/nav_contact"
         android:title="聯絡我們"
         android:icon="@drawable/ic_baseline_email_24"/>
-<!--    <item android:id="@+id/nav_listen"-->
-<!--        android:title="監測"-->
-<!--        android:icon="@drawable/ic_baseline_email_24"/>-->
-
-<!--    <item android:id="@+id/nav_esm"-->
-<!--        android:title="ESM頁面"-->
-<!--        android:icon="@drawable/ic_baseline_email_24"/>-->
-<!--    <item android:id="@+id/nav_tmp"-->
-<!--        android:title="DIARY頁面"-->
-<!--        android:icon="@drawable/ic_baseline_email_24"/>-->
-
-
-<!--    <item android:id="@+id/clear"-->
-<!--        android:title="清除暫存"-->
-<!--        android:icon="@drawable/ic_baseline_email_24"/>-->
-<!--    <item android:id="@+id/schedule"-->
-<!--        android:title="一日鬧鐘"-->
-<!--        android:icon="@drawable/ic_baseline_email_24"/>-->
 </menu>
-<!--<?xml version="1.0" encoding="utf-8"?>-->
-<!--<menu xmlns:android="http://schemas.android.com/apk/res/android">-->
-
-<!--    <item android:title="STORAGAE">-->
-<!--        <menu>-->
-<!--            <item android:title="@string/my_files"/>-->
-<!--            <item android:title="@string/shared"/>-->
-<!--            <item android:title="Starred"/>-->
-<!--            <item android:title="Recent"/>-->
-<!--            <item android:title="Backup"/>-->
-<!--        </menu>-->
-<!--    </item>-->
-<!--    <item android:title="TODO">-->
-<!--        <menu>-->
-<!--            <item android:title="Settings"/>-->
-<!--            <item android:title="Log Out"/>-->
-<!--        </menu>-->
-<!--    </item>-->
-
-<!--</menu>-->

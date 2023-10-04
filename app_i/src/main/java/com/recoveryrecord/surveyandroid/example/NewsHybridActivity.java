@@ -133,7 +133,6 @@ import static com.recoveryrecord.surveyandroid.example.config.Constants.TimeLeft
 //public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener , GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
-    private FloatingActionButton myFab;
     private String signature;
     private DrawerLayout drawerLayout;
 //    private SwipeRefreshLayout swipeRefreshLayout;
@@ -162,7 +161,6 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 
     public NewsHybridActivity() {
     }
-    //private long TimeLeftInMillis = SeesionCountDown;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @SuppressLint({"HardwareIds", "LongLogTag", "ApplySharedPref", "RestrictedApi", "BatteryLife"})
@@ -173,20 +171,6 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
 
         setContentView(R.layout.activity_news_hybrid);
         FirebaseCrashlytics.getInstance().setUserId(device_id);
-        // Creates a button that mimics a crash when pressed
-//        Button crashButton = new Button(this);
-//        crashButton.setText("Test Crash");
-//        crashButton.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View view) {
-//                throw new RuntimeException("Test Crash"); // Force a crash
-//            }
-//        });
-//
-//        addContentView(crashButton, new ViewGroup.LayoutParams(
-//                ViewGroup.LayoutParams.MATCH_PARENT,
-//                ViewGroup.LayoutParams.WRAP_CONTENT));
-
-
 
         //initial value for user (first time)
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -305,39 +289,9 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
             });
         }
 
-        myFab = findViewById(R.id.floatButton);
-        ESMDbHelper esmdbHandler = new ESMDbHelper(getApplicationContext());
-        Cursor cursor_esm = esmdbHandler.getRecentEsmRecord(Timestamp.now().getSeconds());
-        if(cursor_esm.getCount() != 0){
-            cursor_esm.moveToFirst();
-            String result = cursor_esm.getString(cursor_esm.getColumnIndex("result"));
-            //田過了
-            long remove_timestamp = cursor_esm.getLong(cursor_esm.getColumnIndex("remove_timestamp"));
-            long receieve_timestamp = cursor_esm.getLong(cursor_esm.getColumnIndex("receieve_timestamp"));
-            long diff = Timestamp.now().getSeconds()-receieve_timestamp;
-            //==0 還在通知藍
-            if(result.equals("NA") && remove_timestamp!=0){
-                if(diff<=900){//15 min
-                    myFab.setOnClickListener(v -> sendEsm());
-//                    myFab.setVisibility(View.GONE);
-                } else {
-                    myFab.setVisibility(View.GONE);
-                }
-            } else {
-                myFab.setVisibility(View.GONE);
-            }
-            if (!cursor_esm.isClosed()) {
-                cursor_esm.close();
-            }
-        } else {
-            //first time database
-            myFab.setOnClickListener(v -> sendEsm());
-//            myFab.setVisibility(View.GONE);
-        }
 
 
         swipeRefreshLayout = findViewById(R.id.mainSwipeContainer);
-//        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.mainSwipeContainer);
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.setDistanceToTriggerSync(200);
         swipeRefreshLayout.setColorSchemeResources(R.color.blue,R.color.red,R.color.black);
@@ -345,7 +299,6 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         Toolbar toolbar = findViewById(R.id.main_toolbar_hy);
         setSupportActionBar(toolbar);
         drawerLayout = findViewById(R.id.drawer_layout_hy);
-//        NavigationView navigationView = findViewById(R.id.nav_view_hy);
         NavigationView navigationView = findViewById(R.id.nav_view_hy);
         navigationView.setNavigationItemSelectedListener(this);
         View header = navigationView.getHeaderView(0);
@@ -354,7 +307,6 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         TextView user_id = header.findViewById(R.id.textView_user_id);
         user_id.setText(device_id);
         TextView user_name = header.findViewById(R.id.textView_user_name);
-//        signature = sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號");
         user_name.setText(signature);
 
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
@@ -366,7 +318,6 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         );
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
-//        navigationView.setNavigationItemSelectedListener(this);
 
         setTitle("新聞列表");
 
@@ -398,33 +349,6 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         mViewPager.setAdapter(mSectionsPagerAdapter);
         tabLayout.setupWithViewPager(mViewPager);
 
-        //sensor
-        //BLUETOOTH
-//        _BluetoothReceiver = new BlueToothReceiver();
-//        _BluetoothReceiver.registerBluetoothReceiver(this);
-//        //BLUETOOTH--要偵測附近裝置需要啟動位置權限
-//        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.M){
-//            //Android M Permission check
-//            if(this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
-//                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-////                builder.setTitle("This app needs location access");
-////                builder.setMessage("Please grant location access so this app can detect beacons.");
-////                builder.setPositiveButton(android.R.string.ok, null);
-//                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-//                    @Override
-//                    public void onDismiss(DialogInterface dialogInterface) {
-//                        requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-//                    }
-//                });
-//                builder.show();
-//            }
-//        }
-//        //若沒開啟藍芽則跳出要求
-//        BluetoothAdapter mBtAdapter = BluetoothAdapter.getDefaultAdapter( );
-//        if( !mBtAdapter.isEnabled( ) ) {
-//            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-//            startActivityForResult(enableBtIntent, 1);
-//        }
         //Detected Activity
         mApiClient = new GoogleApiClient.Builder(this)
                 .addApi(ActivityRecognition.API)
@@ -448,31 +372,6 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         //LightSensor
         _LightSensorReceiver = new LightSensorReceiver();
         _LightSensorReceiver.registerLightSensorReceiver(this);
-
-        //ActivityRecognition
-//        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.Q) {
-//            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
-//                // Permission is not granted
-//                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 1);
-//            }
-//        }
-//            //Android Q Permission check
-//            if(this.checkSelfPermission(Manifest.permission.ACTIVITY_RECOGNITION)!= PackageManager.PERMISSION_GRANTED){
-//                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-////                builder.setTitle("This app needs activity recognition access");
-////                builder.setMessage("Please g
-////                rant activity recognition access so this app can detect physical activity.");
-////                builder.setPositiveButton(android.R.string.ok, null);
-//                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-//                    @Override
-//                    public void onDismiss(DialogInterface dialogInterface) {
-//                        requestPermissions(new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 1);
-//                    }
-//                });
-//                builder.show();
-//            }
-//        }
-
 
         //AppUsage
         startService(new Intent(getApplicationContext(), AppUsageReceiver.class));
@@ -525,21 +424,6 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         }
     }
 
-    @SuppressLint("RestrictedApi")
-    private void sendEsm() {
-        Toast.makeText(this, "正在為您生成問卷，請稍等", Toast.LENGTH_SHORT).show();
-        myFab.setVisibility(View.GONE);
-        Intent intent_esm = new Intent(context, AlarmReceiver.class);
-        intent_esm.setAction(ESM_ALARM_ACTION);
-        PendingIntent pendingIntent_esm = PendingIntent.getBroadcast(context, 77, intent_esm, 0);
-        AlarmManager alarmManager_esm = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-        Calendar cal_esm = Calendar.getInstance();
-        cal_esm.add(Calendar.SECOND, 1);
-        assert alarmManager_esm != null;
-        alarmManager_esm.setExact(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_esm);
-    }
-
-
     @SuppressLint("HardwareIds")
     @Override
     protected void onResume() {
@@ -575,8 +459,6 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
             SessionDbHelper dbHandler = new SessionDbHelper(context);
             dbHandler.insertSessionDetailsCreate(mysession);
         }else{
-//            Log.e("TimerRunning", "FALSE");
-//            Log.e("TimeLeftInMillis", String.valueOf(TimeLeftInMillis));
             if(TimeLeftInMillis < 1000){
                 SessionID++;
                 sessiontime.put("session", SessionID);
@@ -599,14 +481,11 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 dbHandler.insertSessionDetailsCreate(mysession);
             }
         }
-
-//        Toast.makeText(this, "SESSION:"+SessionID, Toast.LENGTH_SHORT).show();
     }
 
     @SuppressLint("LongLogTag")
     @Override
     protected void onStart() {
-//        Log.d("log: activity cycle", "NewsHybridActivity On Start");
         super.onStart();
         //regular timestated period
         startService(new Intent(getApplicationContext(), MyBackgroudService.class));
@@ -649,7 +528,6 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     @SuppressLint("LongLogTag")
     @Override
     protected void onRestart() {
-//        Log.d("log: activity cycle", "NewsHybridActivity On Restart");
         super.onRestart();
     }
 
@@ -672,40 +550,20 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-//        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         switch (item.getItemId()) {
             case R.id.nav_setting :
-//                Log.d("log: navigation", "nav_setting " + item.getItemId());
                 Intent intent_setting = new Intent(NewsHybridActivity.this, SettingsActivity.class);
                 startActivity(intent_setting);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
-            case R.id.nav_progressing :
-//                Log.d("log: navigation", "nav_progressing " + item.getItemId());
-                Intent intent_db = new Intent(NewsHybridActivity.this, SurveyProgressActivity.class);
-                startActivity(intent_db);
-                drawerLayout.closeDrawer(GravityCompat.START);
-                return true;
             case R.id.nav_history :
-//                Log.d("log: navigation", "nav_history " + item.getItemId());
                 Intent intent_rbh = new Intent(NewsHybridActivity.this, ReadHistoryActivity.class);
                 startActivity(intent_rbh);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             case R.id.nav_reschedule :
-//                Log.d("log: navigation", "nav_reschedule " + item.getItemId());
                 Intent intent_notih = new Intent(NewsHybridActivity.this, PushHistoryActivity.class);
                 startActivity(intent_notih);
-                drawerLayout.closeDrawer(GravityCompat.START);
-                return true;
-            case R.id.upload:
-                Intent intent_up = new Intent(NewsHybridActivity.this, UploadPagesActivity.class);
-                startActivity(intent_up);
-                drawerLayout.closeDrawer(GravityCompat.START);
-                return true;
-            case R.id.nav_update:
-                Intent intent_update = new Intent(NewsHybridActivity.this, CheckUpdateActivity.class);
-                startActivity(intent_update);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             case R.id.nav_contact:
@@ -724,50 +582,9 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 }
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
-//            case R.id.nav_listen:
-//                if(signature.equals("test")){
-//                    Intent intent_listen = new Intent(NewsHybridActivity.this, ListenActivity.class);
-//                    startActivity(intent_listen);
-//                } else {
-//                    Toast.makeText(this, "抱歉您沒有權限",Toast.LENGTH_LONG).show();
-//                }
-//                drawerLayout.closeDrawer(GravityCompat.START);
-//                return true;
-//            case R.id.nav_esm :
-//                Intent intent_esm = new Intent(context, AlarmReceiver.class);
-//                intent_esm.setAction(ESM_ALARM_ACTION);
-//                PendingIntent pendingIntent_esm = PendingIntent.getBroadcast(context, 77, intent_esm, 0);
-//                AlarmManager alarmManager_esm = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-//                Calendar cal_esm = Calendar.getInstance();
-//                cal_esm.add(Calendar.SECOND, 1);
-//                assert alarmManager_esm != null;
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//                    alarmManager_esm.setExact(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_esm);
-//                }else {
-//                    alarmManager_esm.set(AlarmManager.RTC_WAKEUP, cal_esm.getTimeInMillis() , pendingIntent_esm);
-//                }
-//                drawerLayout.closeDrawer(GravityCompat.START);
-//                return true;
-//            case R.id.nav_tmp :
-//                Intent intent_diary = new Intent(context, AlarmReceiver.class);
-//                intent_diary.setAction(DIARY_ALARM_ACTION);
-//                PendingIntent pendingIntent_diary = PendingIntent.getBroadcast(context, 78, intent_diary, 0);
-//                AlarmManager alarmManager_diary = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-//                Calendar cal_diary = Calendar.getInstance();
-//                cal_diary.add(Calendar.SECOND, 1);
-//                assert alarmManager_diary != null;
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//                    alarmManager_diary.setExact(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent_diary);
-//                }else {
-//                    alarmManager_diary.set(AlarmManager.RTC_WAKEUP, cal_diary.getTimeInMillis() , pendingIntent_diary);
-//                }
-//                drawerLayout.closeDrawer(GravityCompat.START);
-//                return true;
             default :
                 return false;
         }
-
-//        return false;
     }
 
 
@@ -776,11 +593,9 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
         assert manager != null;
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (serviceClass.getName().equals(service.service.getClassName())) {
-//                Log.d ("Servicestatus", "Running");
                 return true;
             }
         }
-//        Log.d ("Servicestatus", "Not running");
         return false;
     }
     @Override
@@ -789,7 +604,6 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             if (doubleBackToExitPressedOnce) {
-//                super.onBackPressed();
                 Intent a = new Intent(Intent.ACTION_MAIN);
                 a.addCategory(Intent.CATEGORY_HOME);
                 a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
