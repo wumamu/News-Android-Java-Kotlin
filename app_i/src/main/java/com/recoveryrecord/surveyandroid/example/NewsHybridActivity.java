@@ -669,7 +669,6 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
