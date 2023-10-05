@@ -130,7 +130,6 @@ import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionI
 import static com.recoveryrecord.surveyandroid.example.config.Constants.TimeLeftInMillis;
 
 
-//public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener , GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
     private String signature;

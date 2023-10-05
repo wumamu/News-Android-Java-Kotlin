@@ -13,6 +13,8 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
 
     <!-- TODO: Add both activity recognition permissions to the manifest. -->
     <!-- Required for 28 and below. -->
@@ -46,7 +48,8 @@
         android:theme="@style/NoActionBarLight">
         <activity android:name=".SplashScreenActivity"
             android:theme="@style/SplashScreenTheme"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -79,7 +82,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".NotificationRangeActivity"
             android:theme="@style/ActionBarLight"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.recoveryrecord.surveyandroid.example.NotificationRangeActivity" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -87,7 +91,8 @@
         </activity>
         <activity android:name=".MediaRankActivity"
             android:theme="@style/ActionBarLight"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.recoveryrecord.surveyandroid.example.MediaRankActivity" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -125,7 +130,8 @@
             tools:ignore="Instantiatable" />
         <receiver android:name=".receiever.NetworkChangeReceiver$NetworkChangeBroadcastReceiver"
             android:enabled="true"
-            tools:ignore="Instantiatable">
+            tools:ignore="Instantiatable"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"
                     tools:ignore="BatteryLife" />
@@ -157,7 +163,8 @@
         <receiver
             android:name=".BootUpReceiver"
             android:enabled="true"
-            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
@@ -167,7 +174,8 @@
         </receiver>
         <receiver
             android:name=".ShutDownReceiver"
-            android:enabled="true">
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_SHUTDOWN" />
                 <action android:name="android.intent.action.QUICKBOOT_POWEROFF" />
@@ -181,21 +189,24 @@
         <!-- Mention the service name here -->
         <service android:name=".NewsNotificationService"
             android:stopWithTask="false"
-            android:enabled="true">
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </service>
         <service android:name=".NotificationListenerService"
             android:label="@string/app_name"
-            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </service>
         <service android:name=".MyAccessibilityService"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE" >
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>

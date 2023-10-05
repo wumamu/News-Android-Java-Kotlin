@@ -170,12 +170,12 @@ public class NewsNotificationService extends Service {
 
     }
     @SuppressLint("HardwareIds")
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     // execution of service will start
     // on calling this method
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("lognewsselect", "onStartCommand");
+        Log.d("selectness", "onStartCommand");
         listen_compare_result();//news
         add_ServiceChecker();//service checker
         return START_STICKY;
@@ -190,7 +190,7 @@ public class NewsNotificationService extends Service {
         }
         Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
         intent.setAction(CHECK_SERVICE_ACTION);
-        PendingIntent pi = PendingIntent.getBroadcast(getApplicationContext(), 50, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pi = PendingIntent.getBroadcast(getApplicationContext(), 50, intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         AlarmManager am = (AlarmManager) getApplicationContext().getSystemService(ALARM_SERVICE);
         long time_fired = System.currentTimeMillis() + SERVICE_CHECKER_INTERVAL;
 //        am.setExact(AlarmManager.RTC_WAKEUP, time_fired, pi);       //註冊鬧鐘
@@ -200,7 +200,7 @@ public class NewsNotificationService extends Service {
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void listen_compare_result() {
         final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         Map<String, Object> service_check = new HashMap<>();
@@ -391,7 +391,7 @@ public class NewsNotificationService extends Service {
         assert alarmManager != null;
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
     }
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private Notification getNotification(String news_id, String media, String title) {
 
 //        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -404,7 +404,7 @@ public class NewsNotificationService extends Service {
         intent_news.putExtra(TRIGGER_BY_KEY, TRIGGER_BY_VALUE_NOTIFICATION);
         intent_news.putExtra(NEWS_ID_KEY, news_id);
         intent_news.putExtra(NEWS_MEDIA_KEY, media);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_news, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, nid, intent_news, PendingIntent.FLAG_IMMUTABLE);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, DEFAULT_NEWS_CHANNEL_ID);
         builder.setContentTitle(title);
         builder.setContentText(media);
