@@ -23,7 +23,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.recoveryrecord.surveyandroid.example.model.NewsModel;
+import com.recoveryrecord.surveyandroid.example.model.News;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,7 @@ import java.util.List;
 
 public class TestNewsOneActivity extends AppCompatActivity {
     private RecyclerView courseRV;
-    private ArrayList<NewsModel> dataModalArrayList;
+    private ArrayList<News> dataModalArrayList;
     private NewsRecycleViewAdapter dataRVAdapter;
     private FirebaseFirestore db;
 
@@ -93,7 +93,7 @@ public class TestNewsOneActivity extends AppCompatActivity {
                             for (DocumentSnapshot d : list) {
                                 // after getting this list we are passing that
                                 // list to our object class.
-                                NewsModel dataModal = d.toObject(NewsModel.class);
+                                News dataModal = d.toObject(News.class);
 
                                 // and we will pass this object class
                                 // inside our arraylist which we have

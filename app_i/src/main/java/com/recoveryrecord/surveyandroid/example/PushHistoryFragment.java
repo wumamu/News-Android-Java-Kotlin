@@ -14,7 +14,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.recoveryrecord.surveyandroid.example.model.NewsModel;
+import com.recoveryrecord.surveyandroid.example.model.News;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ public class PushHistoryFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private RecyclerView courseRV;
-    private ArrayList<NewsModel> dataModalArrayList;
+    private ArrayList<News> dataModalArrayList;
     private NewsRecycleViewAdapter dataRVAdapter;
     private FirebaseFirestore db;
     // TODO: Rename and change types of parameters
@@ -111,7 +111,7 @@ public class PushHistoryFragment extends Fragment {
                             List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
                             for (DocumentSnapshot d : list) {
                                 if(d.getString(PUSH_NEWS_TYPE).equals("target add")){
-                                    NewsModel dataModal = d.toObject(NewsModel.class);
+                                    News dataModal = d.toObject(News.class);
                                     dataModalArrayList.add(dataModal);
                                 }
                             }

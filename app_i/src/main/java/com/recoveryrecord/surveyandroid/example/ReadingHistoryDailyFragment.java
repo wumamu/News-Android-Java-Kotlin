@@ -13,7 +13,7 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.recoveryrecord.surveyandroid.example.model.NewsModel;
+import com.recoveryrecord.surveyandroid.example.model.News;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -37,7 +37,7 @@ public class ReadingHistoryDailyFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private static int position;
-    private ArrayList<NewsModel> dataModalArrayList;
+    private ArrayList<News> dataModalArrayList;
     private ReadingHistoryRecycleViewAdapter dataRVAdapter;
     private FirebaseFirestore db;
     private String device_id = "";
@@ -139,7 +139,7 @@ public class ReadingHistoryDailyFragment extends Fragment {
                         List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
                         for (DocumentSnapshot d : list) {
                             if(d.get(READING_BEHAVIOR_TITLE)!=null && !Objects.equals(d.get(READING_BEHAVIOR_TITLE), "NA")){
-                                NewsModel dataModal = d.toObject(NewsModel.class);
+                                News dataModal = d.toObject(News.class);
 //                                Log.d("lognewsselect", (String) Objects.requireNonNull(d.get("image")));
                                 dataModalArrayList.add(dataModal);
                             }

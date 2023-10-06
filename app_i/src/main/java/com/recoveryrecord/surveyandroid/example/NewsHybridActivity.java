@@ -1,100 +1,9 @@
 package com.recoveryrecord.surveyandroid.example;
 
-import android.accessibilityservice.AccessibilityService;
-import android.annotation.SuppressLint;
-import android.app.ActivityManager;
-import android.app.AlarmManager;
-import android.app.AppOpsManager;
-import android.app.PendingIntent;
-import android.app.Service;
-import android.app.usage.UsageStats;
-import android.app.usage.UsageStatsManager;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.os.Handler;
-import android.os.PowerManager;
-import android.provider.Settings;
-import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.ActivityRecognition;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.Timestamp;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.recoveryrecord.surveyandroid.example.DbHelper.ESMDbHelper;
-import com.recoveryrecord.surveyandroid.example.DbHelper.SessionDbHelper;
-import com.recoveryrecord.surveyandroid.example.chinatimes.ChinatimesMainFragment;
-import com.recoveryrecord.surveyandroid.example.cna.CnaMainFragment;
-import com.recoveryrecord.surveyandroid.example.cts.CtsMainFragment;
-import com.recoveryrecord.surveyandroid.example.ebc.EbcMainFragment;
-import com.recoveryrecord.surveyandroid.example.ettoday.EttodayMainFragment;
-import com.recoveryrecord.surveyandroid.example.ltn.LtnMainFragment;
-import com.recoveryrecord.surveyandroid.example.receiever.AppUsageReceiver;
-import com.recoveryrecord.surveyandroid.example.receiever.LightSensorReceiver;
-import com.recoveryrecord.surveyandroid.example.receiever.MyBackgroudService;
-import com.recoveryrecord.surveyandroid.example.receiever.NetworkChangeReceiver;
-import com.recoveryrecord.surveyandroid.example.receiever.RingModeReceiver;
-import com.recoveryrecord.surveyandroid.example.receiever.ScreenStateReceiver;
-import com.recoveryrecord.surveyandroid.example.setn.SetnMainFragment;
-import com.recoveryrecord.surveyandroid.example.sqlite.Session;
-import com.recoveryrecord.surveyandroid.example.storm.StormMainFragment;
-import com.recoveryrecord.surveyandroid.example.udn.UdnMainFragment;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Nullable;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.preference.PreferenceManager;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.viewpager.widget.ViewPager;
-
 import static com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_VALUE;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_DONE_TOTAL;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_PUSH_TOTAL;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_ALARM_ACTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_DONE_TOTAL;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_PUSH_TOTAL;
 import static com.recoveryrecord.surveyandroid.example.Constants.MEDIA_BAR_ORDER;
@@ -128,6 +37,72 @@ import static com.recoveryrecord.surveyandroid.example.config.Constants.LastPaus
 import static com.recoveryrecord.surveyandroid.example.config.Constants.SeesionCountDown;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.TimeLeftInMillis;
+
+import android.annotation.SuppressLint;
+import android.app.ActivityManager;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
+import android.provider.Settings;
+import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.preference.PreferenceManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.ActivityRecognition;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.recoveryrecord.surveyandroid.example.DbHelper.SessionDbHelper;
+import com.recoveryrecord.surveyandroid.example.receiever.AppUsageReceiver;
+import com.recoveryrecord.surveyandroid.example.receiever.LightSensorReceiver;
+import com.recoveryrecord.surveyandroid.example.receiever.MyBackgroudService;
+import com.recoveryrecord.surveyandroid.example.receiever.NetworkChangeReceiver;
+import com.recoveryrecord.surveyandroid.example.receiever.RingModeReceiver;
+import com.recoveryrecord.surveyandroid.example.receiever.ScreenStateReceiver;
+import com.recoveryrecord.surveyandroid.example.sqlite.Session;
+import com.recoveryrecord.surveyandroid.example.ui.MainFragment;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.Nullable;
 
 
 public class NewsHybridActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener , GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
@@ -728,46 +703,46 @@ public class NewsHybridActivity extends AppCompatActivity implements NavigationV
                 Log.d ("mediaselect", media_name+ "   565");
                 switch (media_name) {
                     case "中時":
-                        return new ChinatimesMainFragment();
+                        return MainFragment.newInstance("chinatimes");
                     case "中央社":
-                        return new CnaMainFragment();
+                        return MainFragment.newInstance("cna");
                     case "華視":
-                        return new CtsMainFragment();
+                        return MainFragment.newInstance("cts");
                     case "東森":
-                        return new EbcMainFragment();
+                        return MainFragment.newInstance("ebc");
                     case "ettoday":
-                        return new EttodayMainFragment();
+                        return MainFragment.newInstance("ettoday");
                     case "聯合":
-                        return new UdnMainFragment();
+                        return MainFragment.newInstance("udn");
                     case "自由時報":
-                        return new LtnMainFragment();
+                        return MainFragment.newInstance("ltn");
                     case "風傳媒":
-                        return new StormMainFragment();
+                        return MainFragment.newInstance("storm");
                     case "三立":
-                        return new SetnMainFragment();
+                        return MainFragment.newInstance("setn");
                     default:
                         return TestTab3Fragment.newInstance();
                 }
             } else {
                 switch (position) {
                     case 0:
-                        return new ChinatimesMainFragment();
+                        return MainFragment.newInstance("chinatimes");
                     case 1:
-                        return new CnaMainFragment();
+                        return MainFragment.newInstance("cna");
                     case 2:
-                        return new CtsMainFragment();
+                        return MainFragment.newInstance("cts");
                     case 3:
-                        return new EbcMainFragment();
+                        return MainFragment.newInstance("ebc");
                     case 4:
-                        return new EttodayMainFragment();
+                        return MainFragment.newInstance("ettoday");
                     case 5:
-                        return new UdnMainFragment();
+                        return MainFragment.newInstance("udn");
                     case 6:
-                        return new LtnMainFragment();
+                        return MainFragment.newInstance("ltn");
                     case 7:
-                        return new StormMainFragment();
+                        return MainFragment.newInstance("storm");
                     case 8:
-                        return new SetnMainFragment();
+                        return MainFragment.newInstance("setn");
                     default:
                         return TestTab3Fragment.newInstance();
                 }
