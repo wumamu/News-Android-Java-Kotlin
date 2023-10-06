@@ -102,13 +102,16 @@
     <string-array name="device_array">
         <item>請選擇</item>
         <item>318f4fea56e7070c (pixel 4a)</item>
-<!--        <item>046827517ac92b09 (sm a52s)</item>-->
-<!--        <item>021c8258f6279b04 (p10)</item>-->
-<!--        <item>e058f98bffc294fe (asus zenfone3)</item>-->
-<!--        <item>25b143070cd8e420 (sm_a51)</item>-->
-<!--        <item>a7a44570861f9f64 (xiaomi)</item>-->
+        <!--        <item>046827517ac92b09 (sm a52s)</item>-->
+        <!--        <item>021c8258f6279b04 (p10)</item>-->
+        <!--        <item>e058f98bffc294fe (asus zenfone3)</item>-->
+        <!--        <item>25b143070cd8e420 (sm_a51)</item>-->
+        <!--        <item>a7a44570861f9f64 (xiaomi)</item>-->
         <item>286c25bc68ef882d (pixel 6)</item>
     </string-array>
 
     <string name="accessibility_service_description">My Description</string>
+    <string name="category_text">Category Text</string>
+    <string name="_2022_03_2418_06_02">2022/03/2418:06:02</string>
+    <string name="media_name">Media Name</string>
 </resources>

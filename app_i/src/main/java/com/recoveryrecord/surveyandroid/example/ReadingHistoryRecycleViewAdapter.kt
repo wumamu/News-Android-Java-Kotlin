@@ -15,11 +15,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.recoveryrecord.surveyandroid.example.model.News
 import java.text.SimpleDateFormat
 
-//import com.squareup.picasso.Picasso;
 class ReadingHistoryRecycleViewAdapter    // constructor class for our Adapter
     (private val dataModelArrayList: ArrayList<News>, private val context: Context) :
     RecyclerView.Adapter<ReadingHistoryRecycleViewAdapter.ViewHolder>() {
-    var my_media = ""
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         // passing our layout file for displaying our card item
@@ -36,13 +34,11 @@ class ReadingHistoryRecycleViewAdapter    // constructor class for our Adapter
         val model = dataModelArrayList[position]
         holder.newsTitle.text = model.title
         model.pubDate?.toDate()?.let {
-            @SuppressLint("SimpleDateFormat") val formatter =
-                SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z")
-            val my_tt: List<String> = ArrayList(
-                listOf(
-                    *formatter.format(it).split(" ".toRegex()).dropLastWhile { it.isEmpty() }
-                        .toTypedArray()))
-            holder.newsPubTime.text = String.format("%s %s", my_tt[0], my_tt[2])
+            model.pubDate?.toDate()?.let { date ->
+                @SuppressLint("SimpleDateFormat") val formatter = SimpleDateFormat("MMM dd HH:mm")
+                val formattedDate = formatter.format(date)
+                holder.newsPubTime.text = formattedDate
+            }
         }
 
         holder.newsImg.visibility = View.GONE

@@ -93,6 +93,7 @@ class NewsSubFragment : Fragment() {
         courseRV.adapter = dataRVAdapter
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun fetchInitialData() {
         // Fetch the initial data
         val query = createQuery()
