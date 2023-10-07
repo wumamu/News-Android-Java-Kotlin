@@ -93,6 +93,10 @@ class NewsRecycleViewAdapter(
         return dataModelArrayList.size
     }
 
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
     inner class ViewHolder @RequiresApi(api = Build.VERSION_CODES.O) constructor(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
 
@@ -101,6 +105,7 @@ class NewsRecycleViewAdapter(
         val newsMedia: TextView
         val newsImg: ImageView
         val progressBar: ProgressBar
+
         init {
             // initializing the views of recycler views.
             newsTitle = itemView.findViewById(R.id.text_view_title)

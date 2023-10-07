@@ -28,9 +28,10 @@ class NewsSubFragment : Fragment() {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private var source: String = ""
     private var category: String = ""
-    private val pageSize: Long = 5L //Constants.NEWS_LIMIT_PER_PAGE.toLong()
+    private val pageSize: Long = 30L //Constants.NEWS_LIMIT_PER_PAGE.toLong()
     private var lastVisibleDocument: DocumentSnapshot? = null
     private var isFetchingData: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -48,9 +49,16 @@ class NewsSubFragment : Fragment() {
         courseRV = view.findViewById(R.id.idRVItems)
         fabScrollToTop = view.findViewById(R.id.fab)
         fabScrollToTop.hide()
-
         initRecyclerView()
-        fetchInitialData()
+        // Check if data is already cached
+        if (dataModalArrayList.isEmpty()) {
+            // Data not cached, make a network request
+            fetchInitialData()
+        } else {
+            // Data is in the cache, use it to populate UI
+            Log.d("recycle", "do nothing $source $category ${this.hashCode()}")
+        }
+
 
 
         fabScrollToTop.setOnClickListener {
@@ -85,16 +93,29 @@ class NewsSubFragment : Fragment() {
         return view
     }
 
+    override fun onDestroyView() {
+        // called multiple times
+        Log.d("recycle", "onDestroyView ${this.hashCode()}")
+        super.onDestroyView()
+//        dataModalArrayList.clear()
+    }
+
+    override fun onDestroy() {
+//        Log.d("recycle", "onDestroyView ${this.hashCode()}")
+        super.onDestroy()
+    }
+
+
     private fun initRecyclerView() {
         courseRV.setHasFixedSize(true)
         courseRV.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         dataRVAdapter = NewsRecycleViewAdapter(dataModalArrayList, requireActivity())
+        dataRVAdapter.setHasStableIds(true)
         courseRV.adapter = dataRVAdapter
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun fetchInitialData() {
-        // Fetch the initial data
         val query = createQuery()
         query.limit(pageSize)
             .get()
@@ -137,17 +158,18 @@ class NewsSubFragment : Fragment() {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun fetchMoreData() {
-        // Fetch more data using the last visible document as a starting point
         val query = createQuery()
         isFetchingData = true
         query
-            .startAfter(lastVisibleDocument)
+            .startAfter(lastVisibleDocument?.getTimestamp("pubdate"))
             .limit(pageSize)
             .get()
             .addOnSuccessListener { queryDocumentSnapshots ->
                 if (!queryDocumentSnapshots.isEmpty) {
                     val list = queryDocumentSnapshots.documents
                     lastVisibleDocument = queryDocumentSnapshots.documents.lastOrNull()
+                    val insertStartPosition =
+                        dataModalArrayList.size // Get the position where new items will be inserted
 
                     for (d in list) {
                         val dataModal = News(
@@ -159,7 +181,7 @@ class NewsSubFragment : Fragment() {
                         )
                         dataModalArrayList.add(dataModal)
                     }
-                    dataRVAdapter.notifyDataSetChanged()
+                    dataRVAdapter.notifyItemRangeInserted(insertStartPosition, list.size)
                 }
                 isFetchingData = false
             }
