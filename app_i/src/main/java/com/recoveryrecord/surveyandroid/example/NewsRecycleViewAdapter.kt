@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
@@ -47,11 +48,12 @@ class NewsRecycleViewAdapter(
         }
 
         model.image?.let {
+            holder.progressBar.visibility = View.VISIBLE
             holder.newsImg.adjustViewBounds = true
             holder.newsImg.maxHeight = 200
             Glide.with(context) // Pass the context
                 .load(it) // Pass the image URL
-                .placeholder(R.drawable.ic_baseline_downloading_24) // Placeholder image while loading (optional)
+//                .placeholder(R.drawable.ic_baseline_downloading_24) // Placeholder image while loading (optional)
 //                .error(R.drawable.error) // Error image if the download fails (optional)
                 .diskCacheStrategy(DiskCacheStrategy.ALL) // Cache strategy (optional)
                 .listener(object : RequestListener<Drawable> {
@@ -62,6 +64,7 @@ class NewsRecycleViewAdapter(
                         isFirstResource: Boolean
                     ): Boolean {
                         holder.newsImg.visibility = View.GONE
+                        holder.progressBar.visibility = View.GONE
                         return false
                     }
 
@@ -73,6 +76,7 @@ class NewsRecycleViewAdapter(
                         isFirstResource: Boolean
                     ): Boolean {
                         holder.newsImg.visibility = View.VISIBLE
+                        holder.progressBar.visibility = View.GONE
                         return false
                     }
 
@@ -96,12 +100,14 @@ class NewsRecycleViewAdapter(
         val newsPubTime: TextView
         val newsMedia: TextView
         val newsImg: ImageView
+        val progressBar: ProgressBar
         init {
             // initializing the views of recycler views.
             newsTitle = itemView.findViewById(R.id.text_view_title)
             newsPubTime = itemView.findViewById(R.id.text_view_pubtime)
             newsMedia = itemView.findViewById(R.id.text_view_media)
             newsImg = itemView.findViewById(R.id.imgView)
+            progressBar = itemView.findViewById(R.id.loadingProgressBar)
             // 點擊項目時
             itemView.setOnClickListener {
                 val (_, media, id) = dataModelArrayList[adapterPosition]

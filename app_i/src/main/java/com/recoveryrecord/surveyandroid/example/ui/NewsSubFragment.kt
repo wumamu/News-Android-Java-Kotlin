@@ -13,7 +13,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.recoveryrecord.surveyandroid.example.Constants
 import com.recoveryrecord.surveyandroid.example.NewsRecycleViewAdapter
 import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.example.model.News
@@ -29,7 +28,7 @@ class NewsSubFragment : Fragment() {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private var source: String = ""
     private var category: String = ""
-    private val pageSize: Long = Constants.NEWS_LIMIT_PER_PAGE.toLong()
+    private val pageSize: Long = 5L //Constants.NEWS_LIMIT_PER_PAGE.toLong()
     private var lastVisibleDocument: DocumentSnapshot? = null
     private var isFetchingData: Boolean = false
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,7 +55,7 @@ class NewsSubFragment : Fragment() {
 
         fabScrollToTop.setOnClickListener {
             // Scroll to the top of the RecyclerView
-            courseRV.scrollToPosition(0)
+            courseRV.smoothScrollToPosition(0)
         }
 
         // Add a scroll listener to implement pagination
@@ -140,6 +139,7 @@ class NewsSubFragment : Fragment() {
     private fun fetchMoreData() {
         // Fetch more data using the last visible document as a starting point
         val query = createQuery()
+        isFetchingData = true
         query
             .startAfter(lastVisibleDocument)
             .limit(pageSize)

@@ -59,9 +59,17 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/imgCard"
             android:layout_width="wrap_content"
+            android:minWidth="70dp"
             android:layout_height="70dp"
             android:layout_alignParentEnd="true"
             app:cardCornerRadius="8dp">
+
+            <ProgressBar
+                android:id="@+id/loadingProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/imgView"
