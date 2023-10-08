@@ -34,39 +34,32 @@
         <Preference
             app:key="notification_policy_access"
             android:title="鈴聲狀態存取權限"
-            app:summary="點選允許存取權限"/>
+            app:summary="點選允許存取權限" />
         <Preference
             app:key="PhysicalActivity"
             android:title="體能紀錄存取權"
-            app:summary="點選允許存取權限"/>
+            app:summary="點選允許存取權限" />
         <Preference
             app:key="CSV"
             android:title="讀寫存取權"
-            app:summary="點選允許存取權限"/>
-        <Preference
-            app:title="無障礙協助工具讀取權"
-            app:summary="進入系統設定頁面打開">
-            <intent android:action="android.settings.ACCESSIBILITY_SETTINGS"/>
-        </Preference>
+            app:summary="點選允許存取權限" />
+        <!--        <Preference-->
+        <!--            app:title="無障礙協助工具讀取權"-->
+        <!--            app:summary="進入系統設定頁面打開">-->
+        <!--            <intent android:action="android.settings.ACCESSIBILITY_SETTINGS"/>-->
+        <!--        </Preference>-->
     </PreferenceCategory>
-    <PreferenceCategory app:title="基礎設置">
-
-<!--        <SwitchPreferenceCompat-->
-<!--            app:key="news_notification"-->
-<!--            app:defaultValue="false"-->
-<!--            app:summaryOff="請先不要碰"-->
-<!--            app:summaryOn="不要關掉喔"-->
-<!--            app:title="新聞通知推播" />-->
-        <PreferenceScreen
-            android:title="問卷推播時間設定"
-            app:summary="記得按下儲存">
-            <intent android:action="com.recoveryrecord.surveyandroid.example.NotificationRangeActivity"/>
-        </PreferenceScreen>
-        <Preference
-            app:key="SharePreferenceClear"
-            android:title="重置初始設定"
-            app:summary="清除本地端設定資料"/>
-    </PreferenceCategory>
+    <!--    <PreferenceCategory app:title="基礎設置">-->
+    <!--        <PreferenceScreen-->
+    <!--            android:title="問卷推播時間設定"-->
+    <!--            app:summary="記得按下儲存">-->
+    <!--            <intent android:action="com.recoveryrecord.surveyandroid.example.NotificationRangeActivity"/>-->
+    <!--        </PreferenceScreen>-->
+    <!--        <Preference-->
+    <!--            app:key="SharePreferenceClear"-->
+    <!--            android:title="重置初始設定"-->
+    <!--            app:summary="清除本地端設定資料"/>-->
+    <!--    </PreferenceCategory>-->
     <PreferenceCategory app:title="偏好">
         <MultiSelectListPreference
             app:key="media_select"
@@ -74,13 +67,8 @@
             app:defaultValue="@array/empty_array"
             app:entries="@array/media_select_entries"
             app:entryValues="@array/media_select_values"
-            app:persistent="true"/>
-<!--        <Preference-->
-<!--            app:key="media_order"-->
-<!--            app:fragment="com.recoveryrecord.surveyandroid.example.TestFragment"-->
-<!--            app:title="首頁媒體排序" />-->
-        <PreferenceScreen
-            android:title="首頁媒體偏好排序">
+            app:persistent="true" />
+        <PreferenceScreen android:title="首頁媒體偏好排序">
             <intent android:action="com.recoveryrecord.surveyandroid.example.MediaRankActivity"/>
         </PreferenceScreen>
 
@@ -90,44 +78,5 @@
             android:defaultValue="1"
             android:entries="@array/text_entries"
             android:entryValues="@array/text_values"/>
-<!--        <SwitchPreference-->
-<!--            android:defaultValue="false"-->
-<!--            app:key="silent"-->
-<!--            app:title="勿擾問卷作答模式" />-->
-<!--        <SwitchPreference-->
-<!--            android:defaultValue="false"-->
-<!--            app:key="block_esm_diary"-->
-<!--            app:title="問卷屏蔽" />-->
-
-<!--        <Preference-->
-<!--            android:summary="to be continue"-->
-<!--            android:title="聯絡我們"/>-->
-
-        <!--        <Preference-->
-        <!--            app:title="open url">-->
-        <!--            <intent-->
-        <!--                android:action="android.intent.action.VIEW"-->
-        <!--                android:data="http://codepath.com/" />-->
-        <!--        </Preference>-->
     </PreferenceCategory>
-<!--        <Preference-->
-<!--            app:fragment="com.example.SyncFragment"-->
-<!--            app:title="首頁媒體排序"/>-->
-
-<!--        <ListPreference-->
-<!--            app:defaultValue="reply"-->
-<!--            app:entries="@array/reply_entries"-->
-<!--            app:entryValues="@array/reply_values"-->
-<!--            app:key="reply"-->
-<!--            app:title="@string/reply_title"-->
-<!--            app:useSimpleSummaryProvider="true" />-->
-
-
-
-<!--        <SwitchPreferenceCompat-->
-<!--            app:dependency="sync"-->
-<!--            app:key="attachment"-->
-<!--            app:summaryOff="@string/attachment_summary_off"-->
-<!--            app:summaryOn="@string/attachment_summary_on"-->
-<!--            app:title="@string/attachment_title" />-->
 </PreferenceScreen>

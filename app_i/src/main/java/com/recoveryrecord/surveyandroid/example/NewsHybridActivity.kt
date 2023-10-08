@@ -223,10 +223,10 @@ class NewsHybridActivity
             }
         }
         swipeRefreshLayout = findViewById(R.id.mainSwipeContainer)
-        swipeRefreshLayout?.setOnRefreshListener(this)
-        swipeRefreshLayout.apply {
-            swipeRefreshLayout?.setDistanceToTriggerSync(200)
-            swipeRefreshLayout?.setColorSchemeResources(R.color.blue, R.color.red, R.color.black)
+        swipeRefreshLayout?.apply {
+            setOnRefreshListener(this@NewsHybridActivity)
+            setDistanceToTriggerSync(200)
+            setColorSchemeResources(R.color.blue, R.color.red, R.color.black)
         }
 
         //navi
@@ -282,7 +282,7 @@ class NewsHybridActivity
         )
         mViewPager = findViewById(R.id.container_hy)
         tabLayout = findViewById(R.id.tabs_hy)
-        mViewPager?.setAdapter(mSectionsPagerAdapter)
+        mViewPager?.adapter = mSectionsPagerAdapter
         tabLayout?.setupWithViewPager(mViewPager)
 
         //Network
@@ -336,62 +336,40 @@ class NewsHybridActivity
         super.onDestroy()
     }
 
-    @SuppressLint("NonConstantResourceId")
+    @SuppressLint("NonConstantResourceId", "QueryPermissionsNeeded")
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.nav_setting -> {
-                val intent_setting =
-                    Intent(this@NewsHybridActivity, SettingsActivity::class.java)
-                startActivity(intent_setting)
-                drawerLayout!!.closeDrawer(GravityCompat.START)
-                true
-            }
-
-            R.id.nav_history -> {
-                val intent_rbh =
-                    Intent(this@NewsHybridActivity, ReadHistoryActivity::class.java)
-                startActivity(intent_rbh)
-                drawerLayout!!.closeDrawer(GravityCompat.START)
-                true
-            }
-
-            R.id.nav_reschedule -> {
-                val intent_notih =
-                    Intent(this@NewsHybridActivity, PushHistoryActivity::class.java)
-                startActivity(intent_notih)
-                drawerLayout!!.closeDrawer(GravityCompat.START)
-                true
-            }
-
+        val intent: Intent? = when (item.itemId) {
+            R.id.nav_setting -> Intent(this@NewsHybridActivity, SettingsActivity::class.java)
+            R.id.nav_history -> Intent(this@NewsHybridActivity, ReadHistoryActivity::class.java)
+            R.id.nav_reschedule -> Intent(this@NewsHybridActivity, PushHistoryActivity::class.java)
             R.id.nav_contact -> {
-                val selectorIntent = Intent(Intent.ACTION_SENDTO)
-                selectorIntent.data = Uri.parse("mailto:")
-                val emailIntent = Intent(Intent.ACTION_SEND)
-                emailIntent.putExtra(
-                    Intent.EXTRA_EMAIL,
-                    arrayOf(Constants.OUR_EMAIL)
-                )
-                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "NewsMoment App 問題回報")
-                emailIntent.putExtra(
-                    Intent.EXTRA_TEXT,
-                    "Hi, 我的 user id 是$signature，\ndevice id 是$deviceId，\n我有問題要回報(以文字描述發生的問題)：\n以下是相關問題截圖(如有截圖或是錄影，可以幫助我們更快了解問題)："
-                )
-                emailIntent.selector = selectorIntent
-                if (emailIntent.resolveActivity(packageManager) != null) {
-                    startActivity(Intent.createChooser(emailIntent, "Send email..."))
-                } else {
-                    Toast.makeText(
-                        this,
-                        "Gmail App is not installed",
-                        Toast.LENGTH_LONG
-                    ).show()
+                val selectorIntent = Intent(Intent.ACTION_SENDTO).apply {
+                    data = Uri.parse("mailto:")
                 }
-                drawerLayout!!.closeDrawer(GravityCompat.START)
-                true
+                Intent(Intent.ACTION_SEND).apply {
+                    putExtra(Intent.EXTRA_EMAIL, arrayOf(Constants.OUR_EMAIL))
+                    putExtra(Intent.EXTRA_SUBJECT, "NewsMoment App 問題回報")
+                    putExtra(
+                        Intent.EXTRA_TEXT,
+                        "Hi, 我的 user id 是$signature，\ndevice id 是$deviceId，\n我有問題要回報(以文字描述發生的問題)：\n以下是相關問題截圖(如有截圖或是錄影，可以幫助我們更快了解問題)："
+                    )
+                    selector = selectorIntent
+                }
             }
 
-            else -> false
+            else -> null
         }
+
+        intent?.let {
+            if (it.resolveActivity(packageManager) != null) {
+                startActivity(Intent.createChooser(it, "Send email..."))
+            } else {
+                Toast.makeText(this, "Gmail App is not installed", Toast.LENGTH_LONG).show()
+            }
+        }
+
+        drawerLayout?.closeDrawer(GravityCompat.START)
+        return intent != null
     }
 
     private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
