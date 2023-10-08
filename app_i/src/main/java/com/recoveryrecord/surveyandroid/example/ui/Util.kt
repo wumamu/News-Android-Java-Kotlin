@@ -181,18 +181,6 @@ object Util {
             13 to "閱讀"
         )
     }
-    val englishToChinese = mapOf(
-        "cna" to "中央社",
-        "chinatimes" to "中時",
-        "cts" to "華視",
-        "ebc" to "東森",
-        "ltn" to "自由時報",
-        "storm" to "風傳媒",
-        "udn" to "聯合",
-        "ettoday" to "ettoday",
-        "setn" to "三立"
-    )
-
 
     val mediaMap = mapOf(
         "storm" to stormMap.value,
@@ -205,6 +193,26 @@ object Util {
         "chinatimes" to chinatimesMap.value,
         "udn" to udnMap.value
     )
+}
 
+object NewsMedia {
+    private val mediaMap: Map<String, String> = mapOf(
+        "cna" to "中央社",
+        "chinatimes" to "中時",
+        "cts" to "華視",
+        "ebc" to "東森",
+        "ltn" to "自由時報",
+        "storm" to "風傳媒",
+        "udn" to "聯合",
+        "ettoday" to "ettoday",
+        "setn" to "三立"
+    )
 
+    fun getEnglish(input: String?): String {
+        return mediaMap[input] ?: ""
+    }
+
+    fun getChinese(input: String?): String {
+        return mediaMap.entries.find { it.value == input }?.key ?: ""
+    }
 }

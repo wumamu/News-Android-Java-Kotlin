@@ -1,5 +1,7 @@
 package com.recoveryrecord.surveyandroid.example.receiever;//package com.example.test;
 
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_COLLECTION;
+
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -7,29 +9,23 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
-import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.recoveryrecord.surveyandroid.example.DbHelper.ReadingBehaviorDbHelper;
 import com.recoveryrecord.surveyandroid.example.sqlite.ReadingBehavior;
 
 import java.util.List;
 import java.util.Objects;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_COLLECTION;
 
 public class ApplicationSelectorReceiver extends BroadcastReceiver {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -56,7 +52,7 @@ public class ApplicationSelectorReceiver extends BroadcastReceiver {
 //                Log.d("log: Selected App Name", appName);
 
                 ReadingBehavior myReadingBehavior = new ReadingBehavior();
-                myReadingBehavior.setKEY_DOC_ID(device_id + " " + doc_time);
+                myReadingBehavior.kEY_DOC_ID = device_id + " " + doc_time;
                 ReadingBehaviorDbHelper dbHandler = new ReadingBehaviorDbHelper(context.getApplicationContext());
                 Cursor cursor = dbHandler.getShare(myReadingBehavior);
                 String tmp_share = "";

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.recoveryrecord.surveyandroid.example.sqlite.ReadingBehavior;
 
@@ -97,7 +96,7 @@ public class ReadingBehaviorDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         //Create a new map of values, where column names are the keys
         ContentValues cValues = new ContentValues();
-        cValues.put(KEY_DOC_ID, readingBehavior.getKEY_DOC_ID());
+        cValues.put(KEY_DOC_ID, readingBehavior.kEY_DOC_ID);
         cValues.put(KEY_DEVICE_ID, readingBehavior.getKEY_DEVICE_ID());
         cValues.put(KEY_USER_ID, readingBehavior.getKEY_USER_ID());
         cValues.put(KEY_SELECT_ESM_ID, readingBehavior.getKEY_SELECT_ESM_ID());
@@ -162,26 +161,26 @@ public class ReadingBehaviorDbHelper extends SQLiteOpenHelper {
 //        cValues.put(KEY_SHARE, readingBehavior.getKEY_SHARE());
         cValues.put(KEY_TIME_SERIES, readingBehavior.getKEY_TIME_SERIES());
 
-        return db.update(TABLE_NAME_READING_BEHAVIOR, cValues, KEY_DOC_ID+" = ?",  new String[]{String.valueOf(readingBehavior.getKEY_DOC_ID())}) >0;
+        return db.update(TABLE_NAME_READING_BEHAVIOR, cValues, KEY_DOC_ID + " = ?", new String[]{String.valueOf(readingBehavior.kEY_DOC_ID)}) > 0;
     }
 
     public Boolean UpdateReadingBehaviorDetailsShare(ReadingBehavior readingBehavior, String type){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cValues = new ContentValues();
-        String doc_id = "\"" +  readingBehavior.getKEY_DOC_ID() + "\"";
-        String apptype = "\"" +  type + "\"";
+        String doc_id = "\"" + readingBehavior.kEY_DOC_ID + "\"";
+        String apptype = "\"" + type + "\"";
         cValues.put(KEY_SHARE, apptype);
-        return db.update(TABLE_NAME_READING_BEHAVIOR, cValues, KEY_DOC_ID+" = ?",  new String[]{String.valueOf(readingBehavior.getKEY_DOC_ID())}) >0;
+        return db.update(TABLE_NAME_READING_BEHAVIOR, cValues, KEY_DOC_ID + " = ?", new String[]{String.valueOf(readingBehavior.kEY_DOC_ID)}) > 0;
     }
 
     public Cursor getShare(ReadingBehavior readingBehavior) {
         SQLiteDatabase db_r = this.getReadableDatabase();
-        String doc_id = "\"" +  readingBehavior.getKEY_DOC_ID() + "\"";
-        Cursor res =  db_r.rawQuery("SELECT DISTINCT rb.title, rb.share\n" +
+        String doc_id = "\"" + readingBehavior.kEY_DOC_ID + "\"";
+        Cursor res = db_r.rawQuery("SELECT DISTINCT rb.title, rb.share\n" +
                         "FROM reading_behavior rb\n" +
                         "WHERE rb.doc_id = " + doc_id + "\n" +
                         "ORDER BY rb.in_timestamp DESC;"
-                , null );
+                , null);
         return res;
     }
 

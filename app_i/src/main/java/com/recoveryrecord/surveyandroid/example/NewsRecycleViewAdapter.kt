@@ -3,7 +3,6 @@ package com.recoveryrecord.surveyandroid.example
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
@@ -13,14 +12,9 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.recoveryrecord.surveyandroid.example.model.News
-import com.recoveryrecord.surveyandroid.example.ui.Util.englishToChinese
+import com.recoveryrecord.surveyandroid.example.ui.NewsMedia
+import com.recoveryrecord.surveyandroid.loadImageWithGlide
 import java.text.SimpleDateFormat
 
 class NewsRecycleViewAdapter(
@@ -48,45 +42,11 @@ class NewsRecycleViewAdapter(
         }
 
         model.image?.let {
-            holder.progressBar.visibility = View.VISIBLE
-            holder.newsImg.adjustViewBounds = true
-            holder.newsImg.maxHeight = 200
-            Glide.with(context) // Pass the context
-                .load(it) // Pass the image URL
-//                .placeholder(R.drawable.ic_baseline_downloading_24) // Placeholder image while loading (optional)
-                .error(R.drawable.error) // Error image if the download fails (optional)
-                .diskCacheStrategy(DiskCacheStrategy.ALL) // Cache strategy (optional)
-                .listener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(
-                        e: GlideException?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-//                        holder.newsImg.visibility = View.GONE
-                        holder.progressBar.visibility = View.GONE
-                        return false
-                    }
-
-                    override fun onResourceReady(
-                        resource: Drawable?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        dataSource: DataSource?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-//                        holder.newsImg.visibility = View.VISIBLE
-                        holder.progressBar.visibility = View.GONE
-                        return false
-                    }
-
-                })
-                .override(500, 0)
-                .into(holder.newsImg) // ImageView to load the image into
+            loadImageWithGlide(context, model.image, holder.newsImg, holder.progressBar)
         } ?: run {
             holder.newsImg.visibility = View.GONE
         }
-        holder.newsMedia.text = englishToChinese[model.media] ?: ""
+        holder.newsMedia.text = NewsMedia.getChinese(model.media)
     }
 
     override fun getItemCount(): Int {
