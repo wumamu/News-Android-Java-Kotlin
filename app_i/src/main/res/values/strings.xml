@@ -114,4 +114,11 @@
     <string name="category_text">Category Text</string>
     <string name="_2022_03_2418_06_02">2022/03/2418:06:02</string>
     <string name="media_name">Media Name</string>
+
+    <!--     setting -->
+    <string name="battery_optimization">battery_optimization</string>
+    <string name="storage_access">storage_access</string>
+    <string name="physical_activity">physical_activity</string>
+    <string name="notification_policy_access">notification_policy_access</string>
+    <string name="access_granted">權限已經開啟</string>
 </resources>

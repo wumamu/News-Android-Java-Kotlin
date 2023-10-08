@@ -29,33 +29,31 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setupBatteryOptimizationPreference()
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun setupNotificationPolicyAccessPreference() {
-        val clearPref2 = findPreference<Preference>("notification_policy_access")
+        val clearPref2 = findPreference<Preference>(getString(R.string.notification_policy_access))
         clearPref2?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
             val mNotificationManager =
                 requireActivity().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (!mNotificationManager.isNotificationPolicyAccessGranted) {
-                    val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
-                    startActivity(intent)
-                } else {
-                    showToast("權限已經開啟")
-                }
+            if (!mNotificationManager.isNotificationPolicyAccessGranted) {
+                val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
+                startActivity(intent)
             } else {
-                showToast("Android 8 以下版本不需要開此權限")
+                showToast(getString(R.string.access_granted))
             }
+
             true
         }
     }
 
     private fun setupPhysicalActivityPermissionPreference() {
-        val clearPref0 = findPreference<Preference>("PhysicalActivity")
+        val clearPref0 = findPreference<Preference>(getString(R.string.physical_activity))
         clearPref0?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 if (isActivityRecognitionPermissionNotGranted()) {
                     requestActivityRecognitionPermission()
                 } else {
-                    showToast("權限已經開啟")
+                    showToast(getString(R.string.access_granted))
                 }
             } else {
                 showToast("Android 10 以下版本不需要開此權限")
@@ -82,13 +80,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun setupStoragePermissionPreference() {
-        val clearPref1 = findPreference<Preference>("CSV")
+        val clearPref1 = findPreference<Preference>(getString(R.string.storage_access))
         clearPref1?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (isStoragePermissionNotGranted()) {
                     requestStoragePermission()
                 } else {
-                    showToast("權限已經開啟")
+                    showToast(getString(R.string.access_granted))
                 }
             }
             true
@@ -113,7 +111,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     @SuppressLint("BatteryLife")
     @RequiresApi(Build.VERSION_CODES.M)
     private fun setupBatteryOptimizationPreference() {
-        val clearPref3 = findPreference<Preference>("battery_optimization")
+        val clearPref3 = findPreference<Preference>(getString(R.string.battery_optimization))
         clearPref3?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
             val intent = Intent()
             val packageName = requireContext().packageName
@@ -124,7 +122,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
                 requireContext().startActivity(intent)
             } else {
-                showToast("權限已經開啟")
+                showToast(getString(R.string.access_granted))
             }
             true
         }

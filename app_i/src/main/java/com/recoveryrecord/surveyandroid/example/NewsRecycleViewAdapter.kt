@@ -54,7 +54,7 @@ class NewsRecycleViewAdapter(
             Glide.with(context) // Pass the context
                 .load(it) // Pass the image URL
 //                .placeholder(R.drawable.ic_baseline_downloading_24) // Placeholder image while loading (optional)
-//                .error(R.drawable.error) // Error image if the download fails (optional)
+                .error(R.drawable.error) // Error image if the download fails (optional)
                 .diskCacheStrategy(DiskCacheStrategy.ALL) // Cache strategy (optional)
                 .listener(object : RequestListener<Drawable> {
                     override fun onLoadFailed(
@@ -63,7 +63,7 @@ class NewsRecycleViewAdapter(
                         target: Target<Drawable>?,
                         isFirstResource: Boolean
                     ): Boolean {
-                        holder.newsImg.visibility = View.GONE
+//                        holder.newsImg.visibility = View.GONE
                         holder.progressBar.visibility = View.GONE
                         return false
                     }
@@ -75,12 +75,13 @@ class NewsRecycleViewAdapter(
                         dataSource: DataSource?,
                         isFirstResource: Boolean
                     ): Boolean {
-                        holder.newsImg.visibility = View.VISIBLE
+//                        holder.newsImg.visibility = View.VISIBLE
                         holder.progressBar.visibility = View.GONE
                         return false
                     }
 
                 })
+                .override(500, 0)
                 .into(holder.newsImg) // ImageView to load the image into
         } ?: run {
             holder.newsImg.visibility = View.GONE

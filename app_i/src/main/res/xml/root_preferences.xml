@@ -23,8 +23,8 @@
             <intent android:action="android.settings.USAGE_ACCESS_SETTINGS"/>
         </Preference>
         <Preference
+            app:key="@string/battery_optimization"
             android:title="背景執行"
-            app:key="battery_optimization"
             app:summary="點選允許存取權限"/>
         <Preference
             app:title="電池最佳化頁面"
@@ -32,15 +32,15 @@
             <intent android:action="android.settings.IGNORE_BATTERY_OPTIMIZATION_SETTINGS"/>
         </Preference>
         <Preference
-            app:key="notification_policy_access"
+            app:key="@string/notification_policy_access"
             android:title="鈴聲狀態存取權限"
             app:summary="點選允許存取權限" />
         <Preference
-            app:key="PhysicalActivity"
+            app:key="@string/physical_activity"
             android:title="體能紀錄存取權"
             app:summary="點選允許存取權限" />
         <Preference
-            app:key="CSV"
+            app:key="@string/storage_access"
             android:title="讀寫存取權"
             app:summary="點選允許存取權限" />
         <!--        <Preference-->
