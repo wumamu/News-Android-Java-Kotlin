@@ -1,12 +1,9 @@
 package com.recoveryrecord.surveyandroid.example.config;
 
-import android.provider.Settings;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-import static java.security.AccessController.getContext;
 
 public class Constants {
     public static final String SHAREPREFERENCE_TEST = "com.recoveryrecord.surveyandroid.example.SHAREPREFERENCE_TEST";

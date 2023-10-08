@@ -1,22 +1,19 @@
-package com.recoveryrecord.surveyandroid.example;
+package com.recoveryrecord.surveyandroid.example
 
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.Bundle;
-import android.util.Log;
-import android.widget.ImageView;
+import android.annotation.SuppressLint
+import android.content.Intent
+import android.os.Bundle
+import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
+import dagger.hilt.android.AndroidEntryPoint
 
-import androidx.appcompat.app.AppCompatActivity;
-
-public class SplashScreenActivity extends AppCompatActivity {
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.d ("Servicestatus", getPackageName());
-        startActivity(new Intent(SplashScreenActivity.this, LoginActivity.class));
-        finish();
+@SuppressLint("CustomSplashScreen")
+@AndroidEntryPoint
+class SplashScreenActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.d("Servicestatus", packageName)
+        startActivity(Intent(this@SplashScreenActivity, LoginActivity::class.java))
+        finish()
     }
 }

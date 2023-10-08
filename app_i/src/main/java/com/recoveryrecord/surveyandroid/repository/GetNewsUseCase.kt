@@ -25,3 +25,9 @@ class GetNewsUseCase @Inject constructor(
         return newsList
     }
 }
+
+sealed class NewsViewState {
+    object Loading : NewsViewState()
+    data class Success(val newsList: List<News>) : NewsViewState()
+    data class Error(val error: Throwable) : NewsViewState()
+}
