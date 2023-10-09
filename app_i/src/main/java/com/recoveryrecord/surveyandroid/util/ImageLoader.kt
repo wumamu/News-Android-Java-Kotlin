@@ -1,4 +1,4 @@
-package com.recoveryrecord.surveyandroid
+package com.recoveryrecord.surveyandroid.util
 
 import android.content.Context
 import android.graphics.drawable.Drawable

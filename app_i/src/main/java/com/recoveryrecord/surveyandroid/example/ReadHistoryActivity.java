@@ -2,15 +2,20 @@ package com.recoveryrecord.surveyandroid.example;
 
 import android.os.Bundle;
 
-import com.google.android.material.tabs.TabLayout;
-import com.recoveryrecord.surveyandroid.example.dailyreadinghistory.ReadingHistoryDailyMainFragment;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
+import com.recoveryrecord.surveyandroid.example.dailyreadinghistory.ReadingHistoryDailyMainFragment;
+import com.recoveryrecord.surveyandroid.example.ui.EmptyFragment;
+import com.recoveryrecord.surveyandroid.example.ui.ReadHistorySummaryFragment;
+import com.recoveryrecord.surveyandroid.example.ui.ReadHistoryTimeFragment;
+import com.recoveryrecord.surveyandroid.example.ui.ReadHistoryWeeklyFragment;
+import com.recoveryrecord.surveyandroid.example.ui.ReadingHistoryFragment;
 
 public class ReadHistoryActivity extends AppCompatActivity {
 
@@ -53,7 +58,7 @@ public class ReadHistoryActivity extends AppCompatActivity {
                 case 4:
                     return ReadHistoryTimeFragment.newInstance();
                 default:
-                    return TestTab3Fragment.newInstance();
+                    return EmptyFragment.newInstance();
             }
         }
 

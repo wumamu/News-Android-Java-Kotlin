@@ -1,5 +1,30 @@
 package com.recoveryrecord.surveyandroid.example;
 
+import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_EXIST_ESM_SAMPLE;
+import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_NOTI_HISTORY_CANDIDATE;
+import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_READ_HISTORY_CANDIDATE;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_EXIST_NOTIFICATION_SAMPLE;
+import static com.recoveryrecord.surveyandroid.example.Constants.ESM_EXIST_READ_SAMPLE;
+import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_DIARY;
+import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_ESM;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_ESM_TYPE_KEY;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_KEY;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_DIARY;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_ESM;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_CLOSE_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_OPEN_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_CLOSE_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_OPEN_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_IN;
+import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_MEDIA;
+import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_RECEIEVE;
+import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_TITLE;
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_SILENT_ESM;
+import static com.recoveryrecord.surveyandroid.example.Constants.SURVEY_PAGE_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.ZERO_RESULT_STRING;
+
 import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -8,6 +33,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.preference.PreferenceManager;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
@@ -37,45 +66,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
-import androidx.preference.PreferenceManager;
-
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_EXIST_ESM_SAMPLE;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_NOTI_HISTORY_CANDIDATE;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_READ_HISTORY_CANDIDATE;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_EXIST_NOTIFICATION_SAMPLE;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_EXIST_READ_SAMPLE;
-import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_DIARY;
-import static com.recoveryrecord.surveyandroid.example.Constants.LOADING_PAGE_TYPE_ESM;
-import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_ESM_TYPE_KEY;
-import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_KEY;
-import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_DIARY;
-import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_ESM;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_CLOSE_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_OPEN_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_CLOSE_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_OPEN_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_IN;
-import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_MEDIA;
-import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_RECEIEVE;
-import static com.recoveryrecord.surveyandroid.example.Constants.SAMPLE_TITLE;
-import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_SILENT_ESM;
-import static com.recoveryrecord.surveyandroid.example.Constants.SURVEY_PAGE_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.ZERO_RESULT_STRING;
-
 //import static com.recoveryrecord.surveyandroid.example.Constants.ESM_ID;
 //import static com.recoveryrecord.surveyandroid.example.Constants.JSON_TEMPLATE;
 
-public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActivity implements CustomConditionHandler, UserListCallback {
+public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActivity implements CustomConditionHandler {
     String esm_id = "", diary_id = "", type = "";
     boolean silentEsm = false;
     Boolean is_esm = false, is_diary = false;
     Boolean exist_read = false, exist_notification = false;
     Boolean exist_esm_sample = false;
-//    List<String> news_title_target_array = new ArrayList<>();
+
+    //    List<String> news_title_target_array = new ArrayList<>();
 //    List<String> notification_unclick_array = new ArrayList<>();
 //    List<String> final_news_title_array = new ArrayList<>();
 //    List<NewsCompareObj> HistoryNewsTitleObjListArray = new ArrayList<>();
@@ -1004,11 +1005,5 @@ public class SurveyActivity extends com.recoveryrecord.surveyandroid.SurveyActiv
             return null;
         }
         return json;
-    }
-
-
-    @Override
-    public void onCallback(String value) {
-
     }
 }

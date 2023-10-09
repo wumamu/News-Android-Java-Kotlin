@@ -1,4 +1,4 @@
-package com.recoveryrecord.surveyandroid.example
+package com.recoveryrecord.surveyandroid.example.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -17,6 +17,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import com.recoveryrecord.surveyandroid.example.R
 
 class SettingsFragment : PreferenceFragmentCompat() {
 

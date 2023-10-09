@@ -14,7 +14,7 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.recoveryrecord.surveyandroid.example.model.News
 import com.recoveryrecord.surveyandroid.example.ui.NewsMedia
-import com.recoveryrecord.surveyandroid.loadImageWithGlide
+import com.recoveryrecord.surveyandroid.util.loadImageWithGlide
 import java.text.SimpleDateFormat
 
 class NewsRecycleViewAdapter(

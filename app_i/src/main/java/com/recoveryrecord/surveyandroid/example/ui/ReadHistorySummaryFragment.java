@@ -1,12 +1,16 @@
-package com.recoveryrecord.surveyandroid.example;
+package com.recoveryrecord.surveyandroid.example.ui;
+
+import static com.recoveryrecord.surveyandroid.example.Constants.READ_TOTAL;
 
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
@@ -16,13 +20,9 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.recoveryrecord.surveyandroid.example.R;
 
 import java.util.ArrayList;
-
-import androidx.fragment.app.Fragment;
-import androidx.preference.PreferenceManager;
-
-import static com.recoveryrecord.surveyandroid.example.Constants.READ_TOTAL;
 
 public class ReadHistorySummaryFragment extends Fragment {
 

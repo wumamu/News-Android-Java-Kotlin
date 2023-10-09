@@ -1,4 +1,9 @@
-package com.recoveryrecord.surveyandroid.example;
+package com.recoveryrecord.surveyandroid.example.ui;
+
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_DEVICE_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_IN_TIME_LONG;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_TITLE;
 
 import android.annotation.SuppressLint;
 import android.os.Build;
@@ -9,26 +14,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.recoveryrecord.surveyandroid.example.R;
+import com.recoveryrecord.surveyandroid.example.activity.ReadingHistoryRecycleViewAdapter;
 import com.recoveryrecord.surveyandroid.example.model.News;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
-
-import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_DEVICE_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_IN_TIME_LONG;
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_TITLE;
 
 //import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TARGET_TITLE;
 

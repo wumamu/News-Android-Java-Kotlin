@@ -37,6 +37,7 @@ import com.recoveryrecord.surveyandroid.example.receiever.LightSensorReceiver
 import com.recoveryrecord.surveyandroid.example.receiever.NetworkChangeReceiver
 import com.recoveryrecord.surveyandroid.example.receiever.RingModeReceiver
 import com.recoveryrecord.surveyandroid.example.receiever.ScreenStateReceiver
+import com.recoveryrecord.surveyandroid.example.ui.EmptyFragment
 import com.recoveryrecord.surveyandroid.example.ui.MainFragment.Companion.newInstance
 import java.text.SimpleDateFormat
 import java.util.Arrays
@@ -532,7 +533,7 @@ class NewsHybridActivity
                     "自由時報" -> newInstance("ltn")
                     "風傳媒" -> newInstance("storm")
                     "三立" -> newInstance("setn")
-                    else -> TestTab3Fragment.newInstance()
+                    else -> EmptyFragment.newInstance()
                 }
             } else {
                 when (position) {
@@ -545,7 +546,7 @@ class NewsHybridActivity
                     6 -> newInstance("ltn")
                     7 -> newInstance("storm")
                     8 -> newInstance("setn")
-                    else -> TestTab3Fragment.newInstance()
+                    else -> EmptyFragment.newInstance()
                 }
             }
         }

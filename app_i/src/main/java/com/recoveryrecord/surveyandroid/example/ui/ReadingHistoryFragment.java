@@ -1,4 +1,10 @@
-package com.recoveryrecord.surveyandroid.example;
+package com.recoveryrecord.surveyandroid.example.ui;
+
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_DEVICE_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_OUT_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_TITLE;
+import static com.recoveryrecord.surveyandroid.example.Constants.READ_HISTORY_LIMIT_PER_PAGE;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -8,29 +14,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.recoveryrecord.surveyandroid.example.NewsRecycleViewAdapter;
+import com.recoveryrecord.surveyandroid.example.R;
 import com.recoveryrecord.surveyandroid.example.model.News;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_HISTORY_LIMIT_PER_PAGE;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_DEVICE_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_RECEIEVE_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_TYPE;
-
-public class PushHistoryFragment extends Fragment {
+public class ReadingHistoryFragment extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -43,14 +45,14 @@ public class PushHistoryFragment extends Fragment {
     private String mParam2;
     private String device_id = "";
 
-    public PushHistoryFragment() {
+    public ReadingHistoryFragment() {
         // Required empty public constructor
     }
 
 
     // TODO: Rename and change types and number of parameters
-    public static PushHistoryFragment newInstance() {
-        PushHistoryFragment fragment = new PushHistoryFragment();
+    public static ReadingHistoryFragment newInstance() {
+        ReadingHistoryFragment fragment = new ReadingHistoryFragment();
 
         return fragment;
     }
@@ -98,19 +100,24 @@ public class PushHistoryFragment extends Fragment {
     }
 
     private void loadrecyclerViewData() {
-        db.collection(PUSH_NEWS_COLLECTION)
-                .whereEqualTo(PUSH_NEWS_DEVICE_ID, device_id)
-                .orderBy(PUSH_NEWS_RECEIEVE_TIME, Query.Direction.DESCENDING)
-                .limit(PUSH_HISTORY_LIMIT_PER_PAGE)
+//        db.collection(TEST_USER_COLLECTION)
+//                .document(device_id)
+//                .collection(READING_BEHAVIOR_COLLECTION)
+//                .orderBy(READING_BEHAVIOR_OUT_TIME, Query.Direction.DESCENDING)
+//                .limit(READ_HISTORY_LIMIT_PER_PAGE)
+//                .get()
+        db.collection(READING_BEHAVIOR_COLLECTION)
+                .whereEqualTo(READING_BEHAVIOR_DEVICE_ID, device_id)
+                .orderBy(READING_BEHAVIOR_OUT_TIME, Query.Direction.DESCENDING)
+                .limit(READ_HISTORY_LIMIT_PER_PAGE)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-
                         if (!queryDocumentSnapshots.isEmpty()) {
                             List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
                             for (DocumentSnapshot d : list) {
-                                if(d.getString(PUSH_NEWS_TYPE).equals("target add")){
+                                if(d.get(READING_BEHAVIOR_TITLE)!=null && !d.get(READING_BEHAVIOR_TITLE).equals("NA")){
                                     News dataModal = d.toObject(News.class);
                                     dataModalArrayList.add(dataModal);
                                 }

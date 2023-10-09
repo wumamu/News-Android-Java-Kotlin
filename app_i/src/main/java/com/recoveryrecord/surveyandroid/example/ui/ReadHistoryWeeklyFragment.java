@@ -1,4 +1,6 @@
-package com.recoveryrecord.surveyandroid.example;
+package com.recoveryrecord.surveyandroid.example.ui;
+
+import static com.recoveryrecord.surveyandroid.example.Constants.READ_TOTAL;
 
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -7,6 +9,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Description;
@@ -18,14 +23,10 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.google.firebase.Timestamp;
+import com.recoveryrecord.surveyandroid.example.R;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-
-import androidx.fragment.app.Fragment;
-import androidx.preference.PreferenceManager;
-
-import static com.recoveryrecord.surveyandroid.example.Constants.READ_TOTAL;
 
 public class ReadHistoryWeeklyFragment extends Fragment {
 

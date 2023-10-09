@@ -1,4 +1,4 @@
-package com.recoveryrecord.surveyandroid.example;
+package com.recoveryrecord.surveyandroid.example.ui;
 
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
@@ -10,6 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
+
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.Legend;
@@ -20,13 +23,11 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.google.firebase.Timestamp;
+import com.recoveryrecord.surveyandroid.example.R;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Map;
-
-import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
 
 public class ReadHistoryTimeFragment extends Fragment {
 
