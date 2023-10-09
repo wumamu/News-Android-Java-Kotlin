@@ -251,17 +251,23 @@ object Constants {
     const val DEFAULT_MEDIA_ORDER =
         "自由時報 5, 華視 3, ettoday 8, 風傳媒 6, 中央社 2, 聯合 7, 三立 9, 東森 4, 中時 1"
 
-    //OTHER
-    //ESM DIARY COUNT
-    const val ESM_LAST_TIME = "ESMLastTime"
-    const val DIARY_LAST_TIME = "DiaryLastTime"
-    const val ESM_PUSH_TOTAL = "ESMPushTotal"
-    const val ESM_DONE_TOTAL = "ESMDoneTotal"
-    const val ESM_DAY_PUSH_PREFIX = "ESMDayPush_"
-    const val ESM_DAY_DONE_PREFIX = "ESMDayDone_"
-    const val DIARY_PUSH_TOTAL = "DiaryPushTotal"
-    const val DIARY_DONE_TOTAL = "DiaryDoneTotal"
-    const val DIARY_DAY_PUSH_PREFIX = "DiaryDayPush_"
-    const val DIARY_DAY_DONE_PREFIX = "DiaryDayDone_"
     const val READ_TOTAL = "ReadTotal_"
+
+    // share preference for fetch
+    const val LAST_UPDATE_TIME = "last_update_time"
+    const val CATEGORY_POST_FIX = "_category"
+
+    // collection path
+    const val NEWS_CATEGORY = "news_category"
+    const val CONFIG = "config"
+
+    const val STORM_ENG = "strom"
+    const val SETN_ENG = "setn"
+    const val LTN_ENG = "ltn"
+    const val ETTODAY_ENG = "ettoday"
+    const val EBC_ENG = "ebc"
+    const val CTS_ENG = "cts"
+    const val CNA_ENG = "cna"
+    const val CHINATIMES_ENG = "chinatimes"
+    const val UDN_ENG = "udn"
 }

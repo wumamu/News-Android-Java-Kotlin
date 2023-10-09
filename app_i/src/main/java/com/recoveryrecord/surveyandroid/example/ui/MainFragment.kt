@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.example.adapter.NewsCategoryPagerAdapter
-import com.recoveryrecord.surveyandroid.example.ui.Util.mediaMap
 
 const val MEDIA_SOURCE = "media_source"
 
@@ -29,7 +28,11 @@ class MainFragment : Fragment() {
         val view = inflater.inflate(R.layout.nested_layer1_media, container, false)
         val mViewPager = view.findViewById<View>(R.id.container_main) as ViewPager
         val mNewsCategoryPagerAdapter =
-            NewsCategoryPagerAdapter(childFragmentManager, source, mediaMap[source] ?: emptyMap())
+            NewsCategoryPagerAdapter(
+                childFragmentManager,
+                source,
+                MediaType.getCategoryMapByEnglishId(source)
+            )
         mViewPager.adapter = mNewsCategoryPagerAdapter
         return view
     }

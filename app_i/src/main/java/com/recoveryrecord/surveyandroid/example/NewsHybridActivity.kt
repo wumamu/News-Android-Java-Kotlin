@@ -1,7 +1,6 @@
 package com.recoveryrecord.surveyandroid.example
 
 import android.annotation.SuppressLint
-import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -20,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import androidx.viewpager.widget.ViewPager
@@ -31,7 +31,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.recoveryrecord.surveyandroid.example.Constants.CATEGORY_POST_FIX
+import com.recoveryrecord.surveyandroid.example.Constants.CONFIG
 import com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_MEDIA_ORDER
+import com.recoveryrecord.surveyandroid.example.Constants.LAST_UPDATE_TIME
 import com.recoveryrecord.surveyandroid.example.Constants.MEDIA_ORDER
 import com.recoveryrecord.surveyandroid.example.activity.PushHistoryActivity
 import com.recoveryrecord.surveyandroid.example.activity.ReadHistoryActivity
@@ -41,7 +44,14 @@ import com.recoveryrecord.surveyandroid.example.receiever.LightSensorReceiver
 import com.recoveryrecord.surveyandroid.example.receiever.NetworkChangeReceiver
 import com.recoveryrecord.surveyandroid.example.receiever.RingModeReceiver
 import com.recoveryrecord.surveyandroid.example.receiever.ScreenStateReceiver
+import com.recoveryrecord.surveyandroid.example.ui.MediaType
+import com.recoveryrecord.surveyandroid.example.ui.NEWS_CATEGORY
 import com.recoveryrecord.surveyandroid.util.parseTabArray
+import com.recoveryrecord.surveyandroid.util.showToast
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 class NewsHybridActivity
     : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnRefreshListener {
@@ -63,7 +73,7 @@ class NewsHybridActivity
     lateinit var sharedPrefs: SharedPreferences
     private var rankingString = DEFAULT_MEDIA_ORDER
     val db = FirebaseFirestore.getInstance()
-    val auth = FirebaseAuth.getInstance()
+    private val auth = FirebaseAuth.getInstance()
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -72,11 +82,10 @@ class NewsHybridActivity
         super.onCreate(savedInstanceState)
         context = applicationContext
         setContentView(R.layout.activity_news_hybrid)
-
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         rankingString =
             sharedPrefs.getString(MEDIA_ORDER, DEFAULT_MEDIA_ORDER) ?: DEFAULT_MEDIA_ORDER
-
+        loadCategoryFromLocal()
 
         //initial value for user (first time)
 
@@ -327,15 +336,15 @@ class NewsHybridActivity
         return intent != null
     }
 
-    private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
-        val manager = (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager)
-        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
-            if (serviceClass.name == service.service.className) {
-                return true
-            }
-        }
-        return false
-    }
+//    private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
+//        val manager = (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager)
+//        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+//            if (serviceClass.name == service.service.className) {
+//                return true
+//            }
+//        }
+//        return false
+//    }
 
     override fun onBackPressed() {
         if (drawerLayout?.isDrawerOpen(GravityCompat.START) == true) {
@@ -354,11 +363,63 @@ class NewsHybridActivity
     }
 
     override fun onRefresh() {
+        loadCategoryFromLocal()
+        updateViewPager()
+    }
+
+    private fun updateViewPager() {
+        // Update the ViewPager and Tabs after fetching data
         mSectionsPagerAdapter = SectionsPagerAdapter(
             supportFragmentManager, parseTabArray(rankingString)
         )
         mViewPager?.adapter = mSectionsPagerAdapter
         tabLayout?.setupWithViewPager(mViewPager)
+
+        // Hide the swipe refresh progress
         swipeRefreshLayout?.isRefreshing = false
+    }
+
+    private suspend fun fetchTabDataFromNetwork() {
+        try {
+            val documentSnapshot = withContext(Dispatchers.IO) {
+                db.collection(NEWS_CATEGORY).document(CONFIG).get().await()
+            }
+            if (documentSnapshot.exists()) {
+                val editor = sharedPrefs.edit()
+                MediaType.getAllMedia().forEach { media ->
+                    val newCategory = documentSnapshot[media] as List<String>?
+                    newCategory?.let {
+                        MediaType.updateCategoryMapBy(media, it)
+                        editor.putString(media + CATEGORY_POST_FIX, newCategory.joinToString(","))
+                    }
+                }
+                editor.putLong(LAST_UPDATE_TIME, System.currentTimeMillis())
+                editor.apply()
+                updateViewPager()
+            }
+        } catch (e: Exception) {
+            Log.d("Load tab failed", "Fail to get the data.$e")
+        }
+    }
+
+    // Function to load and display tabs based on stored data
+    private fun loadCategoryFromLocal() {
+        // Check if tabData is not null and not outdated
+        val lastUpdateTime = sharedPrefs.getLong(LAST_UPDATE_TIME, 0)
+        val currentTime = System.currentTimeMillis()
+        val updateIntervalMillis = 24 * 60 * 60 * 1000 // 24 hours
+
+        if ((currentTime - lastUpdateTime) < updateIntervalMillis) {
+            MediaType.getAllMedia().forEach { media ->
+                val cur = sharedPrefs.getString(media + "_category", "") ?: ""
+                MediaType.updateCategoryMapBy(media, cur.split(","))
+            }
+        } else {
+            // Fetch and update tab data from the network
+            showToast(this@NewsHybridActivity, "正在更新資料請稍候")
+            swipeRefreshLayout?.isRefreshing = true
+            lifecycleScope.launch { fetchTabDataFromNetwork() }
+            showToast(this@NewsHybridActivity, "更新完成")
+        }
     }
 }

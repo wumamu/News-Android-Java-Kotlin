@@ -4,14 +4,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.recoveryrecord.surveyandroid.example.ui.MainFragment
-import com.recoveryrecord.surveyandroid.example.ui.NewsMedia
+import com.recoveryrecord.surveyandroid.example.ui.MediaType
 
 class SectionsPagerAdapter(
     fm: FragmentManager?,
     private val tabs: Array<String>
 ) : FragmentPagerAdapter(fm!!) {
     override fun getItem(position: Int): Fragment {
-        return MainFragment.newInstance(NewsMedia.getEnglish(tabs[position]))
+        return MainFragment.newInstance(MediaType.getEnglish(tabs[position]))
     }
 
     override fun getCount(): Int {

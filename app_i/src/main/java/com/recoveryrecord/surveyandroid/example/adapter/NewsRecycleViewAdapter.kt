@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.example.activity.NewsModuleActivity
 import com.recoveryrecord.surveyandroid.example.model.News
-import com.recoveryrecord.surveyandroid.example.ui.NewsMedia
+import com.recoveryrecord.surveyandroid.example.ui.MediaType
 import com.recoveryrecord.surveyandroid.util.loadImageWithGlide
 import java.text.SimpleDateFormat
 
@@ -48,7 +48,7 @@ class NewsRecycleViewAdapter(
         } ?: run {
             holder.newsImg.visibility = View.GONE
         }
-        holder.newsMedia.text = NewsMedia.getChinese(model.media)
+        holder.newsMedia.text = MediaType.getChinese(model.media)
     }
 
     override fun getItemCount(): Int {
