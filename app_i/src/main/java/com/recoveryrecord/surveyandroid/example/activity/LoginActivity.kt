@@ -40,7 +40,6 @@ class LoginActivity : AppCompatActivity() {
             val editor = sharedPrefs.edit()
             editor.putString(SHARE_PREFERENCE_USER_ID, email?.split("@")?.get(0))
             editor.apply()
-            showToast(this@LoginActivity, getString(R.string.login_success))
             startNewsHybridActivity()
             return true
         }
@@ -70,7 +69,9 @@ class LoginActivity : AppCompatActivity() {
         mAuth?.signInWithEmailAndPassword(stringUseremail, stringPassword)
             ?.addOnCompleteListener { task: Task<AuthResult?> ->
                 if (task.isSuccessful) {
-                    checkLocalLoginAndCache(mAuth?.currentUser).takeIf { !it }.run {
+                    if (checkLocalLoginAndCache(mAuth?.currentUser)) {
+                        showToast(this@LoginActivity, getString(R.string.login_success))
+                    } else {
                         showToast(this@LoginActivity, getString(R.string.login_failed))
                     }
                 } else {

@@ -6,7 +6,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -16,16 +18,26 @@ import com.google.firebase.firestore.Query
 import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.example.adapter.NewsRecycleViewAdapter
 import com.recoveryrecord.surveyandroid.example.model.News
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 const val NEWS_SOURCE = "news_source"
 const val NEWS_CATEGORY = "news_category"
 
 class NewsSubFragment : Fragment() {
     private lateinit var courseRV: RecyclerView
+    private lateinit var progressBar: ProgressBar
+
     private lateinit var fabScrollToTop: FloatingActionButton
     private val dataModalArrayList: ArrayList<News> = ArrayList()
     private lateinit var dataRVAdapter: NewsRecycleViewAdapter
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
+
+    //    @Inject
+//    lateinit var db: FirebaseFirestore
+//    private val viewModel: NewsViewModel by viewModels()
     private var source: String = ""
     private var category: String = ""
     private val pageSize: Long = 30L //Constants.NEWS_LIMIT_PER_PAGE.toLong()
@@ -48,12 +60,13 @@ class NewsSubFragment : Fragment() {
         val view = inflater.inflate(R.layout.nested_layer2_category, container, false)
         courseRV = view.findViewById(R.id.idRVItems)
         fabScrollToTop = view.findViewById(R.id.fab)
+        progressBar = view.findViewById(R.id.progressBar)
+
         fabScrollToTop.hide()
         initRecyclerView()
         // Check if data is already cached
         if (dataModalArrayList.isEmpty()) {
-            // Data not cached, make a network request
-            fetchInitialData()
+            lifecycleScope.launch { fetchInitialData() }
         } else {
             // Data is in the cache, use it to populate UI
             Log.d("recycle", "do nothing $source $category ${this.hashCode()}")
@@ -79,7 +92,7 @@ class NewsSubFragment : Fragment() {
                     if (visibleItemCount + firstVisibleItemPosition >= totalItemCount
                         && firstVisibleItemPosition >= 0
                     ) {
-                        fetchMoreData()
+                        lifecycleScope.launch { fetchMoreData() }
                     }
                 }
                 if (firstVisibleItemPosition > 0) {
@@ -97,11 +110,9 @@ class NewsSubFragment : Fragment() {
         // called multiple times
         Log.d("recycle", "onDestroyView ${this.hashCode()}")
         super.onDestroyView()
-//        dataModalArrayList.clear()
     }
 
     override fun onDestroy() {
-//        Log.d("recycle", "onDestroyView ${this.hashCode()}")
         super.onDestroy()
     }
 
@@ -115,31 +126,42 @@ class NewsSubFragment : Fragment() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun fetchInitialData() {
+    private suspend fun fetchInitialData() {
         val query = createQuery()
-        query.limit(pageSize)
-            .get()
-            .addOnSuccessListener { queryDocumentSnapshots ->
-                if (!queryDocumentSnapshots.isEmpty) {
-                    val list = queryDocumentSnapshots.documents
-                    lastVisibleDocument = queryDocumentSnapshots.documents.lastOrNull()
+        isFetchingData = true
+        withContext(Dispatchers.Main) {
+            progressBar.visibility = View.VISIBLE
+        }
+        try {
+            val querySnapshot = withContext(Dispatchers.IO) {
+                query.limit(pageSize).get().await()
+            }
 
-                    for (d in list) {
-                        val dataModal = News(
-                            title = d.getString("title"),
-                            media = d.getString("media"),
-                            id = d.getString("id"),
-                            pubDate = d.getTimestamp("pubdate"),
-                            image = d.getString("image")
-                        )
-                        dataModalArrayList.add(dataModal)
-                    }
-                    dataRVAdapter.notifyDataSetChanged()
+            if (!querySnapshot.isEmpty) {
+                val list = querySnapshot.documents
+                lastVisibleDocument = querySnapshot.documents.lastOrNull()
+
+                for (d in list) {
+                    val dataModal = News(
+                        title = d.getString("title"),
+                        media = d.getString("media"),
+                        id = d.getString("id"),
+                        pubDate = d.getTimestamp("pubdate"),
+                        image = d.getString("image")
+                    )
+                    dataModalArrayList.add(dataModal)
                 }
             }
-            .addOnFailureListener { e ->
-                Log.d("logpager", "Fail to get the data.$e")
+        } catch (e: Exception) {
+            Log.d("logpager", "Fail to get the data.$e")
+        } finally {
+            // Update the UI on the main thread
+            withContext(Dispatchers.Main) {
+                dataRVAdapter.notifyDataSetChanged()
+                progressBar.visibility = View.GONE
             }
+            isFetchingData = false
+        }
     }
 
     private fun createQuery(): Query {
@@ -156,39 +178,42 @@ class NewsSubFragment : Fragment() {
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    private fun fetchMoreData() {
+    private suspend fun fetchMoreData() {
         val query = createQuery()
         isFetchingData = true
-        query
-            .startAfter(lastVisibleDocument?.getTimestamp("pubdate"))
-            .limit(pageSize)
-            .get()
-            .addOnSuccessListener { queryDocumentSnapshots ->
-                if (!queryDocumentSnapshots.isEmpty) {
-                    val list = queryDocumentSnapshots.documents
-                    lastVisibleDocument = queryDocumentSnapshots.documents.lastOrNull()
-                    val insertStartPosition =
-                        dataModalArrayList.size // Get the position where new items will be inserted
+        try {
+            val querySnapshot = withContext(Dispatchers.IO) {
+                query
+                    .startAfter(lastVisibleDocument?.getTimestamp("pubdate"))
+                    .limit(pageSize)
+                    .get()
+                    .await()
+            }
 
-                    for (d in list) {
-                        val dataModal = News(
-                            title = d.getString("title"),
-                            media = d.getString("media"),
-                            id = d.getString("id"),
-                            pubDate = d.getTimestamp("pubdate"),
-                            image = d.getString("image")
-                        )
-                        dataModalArrayList.add(dataModal)
-                    }
+            if (!querySnapshot.isEmpty) {
+                val list = querySnapshot.documents
+                lastVisibleDocument = querySnapshot.documents.lastOrNull()
+                val insertStartPosition = dataModalArrayList.size
+
+                for (d in list) {
+                    val dataModal = News(
+                        title = d.getString("title"),
+                        media = d.getString("media"),
+                        id = d.getString("id"),
+                        pubDate = d.getTimestamp("pubdate"),
+                        image = d.getString("image")
+                    )
+                    dataModalArrayList.add(dataModal)
+                }
+                withContext(Dispatchers.Main) {
                     dataRVAdapter.notifyItemRangeInserted(insertStartPosition, list.size)
                 }
-                isFetchingData = false
             }
-            .addOnFailureListener { e ->
-                Log.d("logpager", "Fail to get more data.$e")
-                isFetchingData = false
-            }
+        } catch (e: Exception) {
+            Log.d("logpager", "Fail to get more data.$e")
+        } finally {
+            isFetchingData = false
+        }
     }
 
     companion object {

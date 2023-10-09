@@ -1,10 +1,12 @@
 package com.recoveryrecord.surveyandroid.example.receiever;
 
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
+
 import android.annotation.SuppressLint;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
-import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -15,32 +17,20 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.preference.PreferenceManager;
 
 import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.recoveryrecord.surveyandroid.example.DbHelper.NetworkChangeReceiverDbHelper;
-import com.recoveryrecord.surveyandroid.example.DbHelper.RingModeReceiverDbHelper;
 import com.recoveryrecord.surveyandroid.example.sqlite.Network;
-import com.recoveryrecord.surveyandroid.example.sqlite.RingMode;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
-import static java.security.AccessController.getContext;
-
-//import static com.recoveryrecord.surveyandroid.example.NetworkCheckerActivity.dialog;
 public class NetworkChangeReceiver implements StreamGenerator{
 //    private static final String TAG = "Main";
     private NetworkChangeReceiver.NetworkChangeBroadcastReceiver mReceiver;
