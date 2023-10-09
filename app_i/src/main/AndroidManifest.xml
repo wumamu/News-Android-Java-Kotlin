@@ -63,15 +63,6 @@
             android:name=".activity.SettingsActivity"
             android:theme="@style/ActionBarLight"
             android:screenOrientation="portrait" />
-        <activity android:name=".SurveyProgressActivity"
-            android:theme="@style/ActionBarLight"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".CheckUpdateActivity"
-            android:theme="@style/ActionBarLight"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ListenActivity"
-            android:theme="@style/ActionBarLight"
-            android:screenOrientation="portrait"/>
         <activity
             android:name=".activity.ReadHistoryActivity"
             android:theme="@style/ActionBarLight"
@@ -101,8 +92,6 @@
         <!-- Mention the receiever name here -->
         <!-- Mention the receiever name here -->
         <receiver android:name = ".NotificationListenerNews" />
-        <receiver android:name = ".NotificationListenerESM" />
-        <receiver android:name = ".NotificationListenerDiary" />
         <receiver android:name=".receiever.ApplicationSelectorReceiver" />
         <receiver android:name=".receiever.ScreenStateReceiver"
             tools:ignore="Instantiatable" />

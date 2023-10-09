@@ -357,7 +357,7 @@
 //        }
 //        Intent intent = new Intent(context, AlarmReceiver.class);
 //        intent.setAction(CHECK_SERVICE_ACTION);
-//        PendingIntent pi = PendingIntent.getBroadcast(context, 60, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+//        PendingIntent pi = PendingIntent.getBroadcast(context, 60, intent, PendingIntent.FLAG_IMMUTABLE);
 //
 //        AlarmManager am = (AlarmManager) context.getSystemService(ALARM_SERVICE);
 //        long time_fired = System.currentTimeMillis() + SERVICE_CHECKER_INTERVAL;
