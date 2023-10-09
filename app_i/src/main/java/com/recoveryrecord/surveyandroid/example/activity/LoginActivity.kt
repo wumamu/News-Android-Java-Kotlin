@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.util.Patterns
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import com.google.android.gms.tasks.Task
@@ -16,6 +15,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID
 import com.recoveryrecord.surveyandroid.example.NewsHybridActivity
 import com.recoveryrecord.surveyandroid.example.R
+import com.recoveryrecord.surveyandroid.util.showToast
 
 class LoginActivity : AppCompatActivity() {
     private var useremail: EditText? = null
@@ -26,10 +26,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         supportActionBar?.hide()
-        mAuth = FirebaseAuth.getInstance()
-        mAuth?.currentUser?.let { user ->
-            if (!checkLocalLoginAndCache(user)) return@let
-        }
+        mAuth = FirebaseAuth.getInstance().apply { checkLocalLoginAndCache(currentUser) }
         val button = findViewById<Button>(R.id.bt_login)
         useremail = findViewById(R.id.et_username)
         password = findViewById(R.id.et_password)
@@ -37,13 +34,13 @@ class LoginActivity : AppCompatActivity() {
     }
 
     @SuppressLint("HardwareIds")
-    private fun checkLocalLoginAndCache(user: FirebaseUser): Boolean {
-        user.apply {
+    private fun checkLocalLoginAndCache(user: FirebaseUser?): Boolean {
+        user?.apply {
             val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
             val editor = sharedPrefs.edit()
             editor.putString(SHARE_PREFERENCE_USER_ID, email?.split("@")?.get(0))
             editor.apply()
-            Toast.makeText(this@LoginActivity, "登入成功", Toast.LENGTH_LONG).show()
+            showToast(this@LoginActivity, getString(R.string.login_success))
             startNewsHybridActivity()
             return true
         }
@@ -55,17 +52,17 @@ class LoginActivity : AppCompatActivity() {
         val stringUseremail = useremail?.text.toString().trim()
         val stringPassword = password?.text.toString().trim()
         if (stringUseremail.isEmpty()) {
-            useremail?.error = "帳號還沒打阿"
+            useremail?.error = getString(R.string.account_is_empty)
             useremail?.requestFocus()
             return
         }
         if (!Patterns.EMAIL_ADDRESS.matcher(stringUseremail).matches()) {
-            useremail?.error = "帳號格式好像錯了阿"
+            useremail?.error = getString(R.string.account_wrong_format)
             useremail?.requestFocus()
             return
         }
         if (stringPassword.isEmpty()) {
-            password?.error = "密碼還沒打阿"
+            password?.error = getString(R.string.password_is_empty)
             password?.requestFocus()
             return
         }
@@ -73,21 +70,11 @@ class LoginActivity : AppCompatActivity() {
         mAuth?.signInWithEmailAndPassword(stringUseremail, stringPassword)
             ?.addOnCompleteListener { task: Task<AuthResult?> ->
                 if (task.isSuccessful) {
-                    mAuth?.currentUser?.let { user ->
-                        if (!checkLocalLoginAndCache(user)) {
-                            Toast.makeText(
-                                this@LoginActivity,
-                                "登入失敗，需要幫忙請來信詢問",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
+                    checkLocalLoginAndCache(mAuth?.currentUser).takeIf { !it }.run {
+                        showToast(this@LoginActivity, getString(R.string.login_failed))
                     }
                 } else {
-                    Toast.makeText(
-                        this@LoginActivity,
-                        "登入失敗，需要幫忙請來信詢問",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    showToast(this@LoginActivity, getString(R.string.login_failed))
                 }
             }
     }
