@@ -118,11 +118,13 @@ class NewsSubFragment : Fragment() {
 
 
     private fun initRecyclerView() {
-        courseRV.setHasFixedSize(true)
-        courseRV.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         dataRVAdapter = NewsRecycleViewAdapter(dataModalArrayList, requireActivity())
         dataRVAdapter.setHasStableIds(true)
-        courseRV.adapter = dataRVAdapter
+        courseRV.apply {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+            adapter = dataRVAdapter
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")

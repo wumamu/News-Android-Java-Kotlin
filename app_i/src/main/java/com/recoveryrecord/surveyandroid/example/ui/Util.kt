@@ -208,11 +208,11 @@ object NewsMedia {
         "setn" to "三立"
     )
 
-    fun getEnglish(input: String?): String {
+    fun getChinese(input: String?): String {
         return mediaMap[input] ?: ""
     }
 
-    fun getChinese(input: String?): String {
+    fun getEnglish(input: String?): String {
         return mediaMap.entries.find { it.value == input }?.key ?: ""
     }
 }

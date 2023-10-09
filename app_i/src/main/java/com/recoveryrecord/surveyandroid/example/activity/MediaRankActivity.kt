@@ -7,113 +7,121 @@ import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.recoveryrecord.surveyandroid.example.Constants
+import com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_MEDIA_ORDER
+import com.recoveryrecord.surveyandroid.example.Constants.MEDIA_ORDER
 import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.example.SimpleItemTouchHelperCallback
 import com.recoveryrecord.surveyandroid.example.adapter.MediaRankRecycleViewAdapter
 import com.recoveryrecord.surveyandroid.example.model.Media
+import com.recoveryrecord.surveyandroid.util.parseTabArray
+import com.recoveryrecord.surveyandroid.util.parseToString
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 class MediaRankActivity : AppCompatActivity() {
+
     private lateinit var courseRV: RecyclerView
     private val dataModalArrayList: ArrayList<Media> = ArrayList()
     private lateinit var dataRVAdapter: MediaRankRecycleViewAdapter
-    private lateinit var db: FirebaseFirestore
-    private lateinit var mSharedPreferences: SharedPreferences
+    private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private lateinit var sharedPrefs: SharedPreferences
     private lateinit var mEditor: SharedPreferences.Editor
+    private lateinit var deviceId: String
+    private lateinit var ref: DocumentReference
+    private var remoteMediaOrder: MutableList<String>? = null
+
+
+    @SuppressLint("HardwareIds")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        mEditor = mSharedPreferences.edit()
+        deviceId = Settings.Secure.getString(
+            applicationContext.contentResolver,
+            Settings.Secure.ANDROID_ID
+        )
+        ref = db.collection(Constants.USER_COLLECTION).document(deviceId)
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this)
+        mEditor = sharedPrefs.edit()
         title = "首頁媒體偏好排序"
         setContentView(R.layout.activity_media_rank)
+        initView()
+        loadRecyclerViewData()
+        lifecycleScope.launch { getRemoteMediaOrder() }
+    }
 
+    private fun initView() {
+        dataRVAdapter = MediaRankRecycleViewAdapter(dataModalArrayList, this@MediaRankActivity)
         courseRV = findViewById(R.id.mediaItems)
-        db = FirebaseFirestore.getInstance()
-
         courseRV.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        }
-
-        dataRVAdapter = MediaRankRecycleViewAdapter(dataModalArrayList, this)
-        // setting adapter to our recycler view.
-        courseRV.apply {
             adapter = dataRVAdapter
         }
-        //drag and drop
+
+        // Drag and drop
         val callback: ItemTouchHelper.Callback = SimpleItemTouchHelperCallback(dataRVAdapter)
         val touchHelper = ItemTouchHelper(callback)
         touchHelper.attachToRecyclerView(courseRV)
+
         Toast.makeText(this, "長按並拖移物件重新排序", Toast.LENGTH_SHORT).show()
-        loadRecyclerViewData()
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun loadRecyclerViewData() {
-        val ranking =
-            mSharedPreferences.getStringSet(Constants.SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, null)
-        for (i in 1..9) {
-            ranking?.forEach { r ->
-                val out: List<String> = r.split(" ").filter { it.isNotEmpty() }
-                if (out.size == 2 && out[1].toIntOrNull() == i) {
-                    dataModalArrayList.add(Media(out[0]))
-                }
-            }
+        val rankingString =
+            sharedPrefs.getString(MEDIA_ORDER, DEFAULT_MEDIA_ORDER) ?: DEFAULT_MEDIA_ORDER
+        val tabs = parseTabArray(rankingString)
+        tabs.forEach { t ->
+            dataModalArrayList.add(Media(t))
         }
         dataRVAdapter.notifyDataSetChanged()
     }
 
-    override fun onStop() {
-        val new_set: MutableSet<String> = HashSet()
-        for (i in dataModalArrayList.indices) {
-            val tmp = dataModalArrayList[i].media + " " + (i + 1)
-            println(tmp)
-            new_set.add(tmp)
-        }
-
-        mEditor.putStringSet(Constants.SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER, new_set).commit()
-        mEditor.commit()
-        @SuppressLint("HardwareIds") val device_id = Settings.Secure.getString(
-            applicationContext.contentResolver, Settings.Secure.ANDROID_ID
-        )
-        val rbRef = db.collection(Constants.USER_COLLECTION).document(device_id)
-        val tmpset: Set<String> = new_set
-        rbRef.get().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val document = task.result
-                document?.let { snapshot ->
-                    if (snapshot.exists()) {
-                        Log.d("log: firebase", "Success")
-                        val mediaOrder = snapshot[Constants.MEDIA_BAR_ORDER] as MutableList<String>?
-                        mediaOrder?.add(tmpset.toString())
-                        rbRef.update(Constants.MEDIA_BAR_ORDER, mediaOrder)
-                            .addOnSuccessListener {
-                                Log.d(
-                                    "log: firebase share",
-                                    "DocumentSnapshot successfully updated!"
-                                )
-                            }
-                            .addOnFailureListener { e ->
-                                Log.w("log: firebase share", "Error updating document", e)
-                            }
-                    } else {
-                        Log.d("log: firebase share", "No such document")
-                    }
-                }
-            } else {
-                Log.d("log: firebase share", "get failed with ", task.exception)
-            }
-        }
-        super.onStop()
+    @SuppressLint("HardwareIds")
+    override fun onPause() {
+        val newMediaOrder = parseToString(dataModalArrayList)
+        mEditor.putString(MEDIA_ORDER, newMediaOrder).apply()
+        lifecycleScope.launch { updateMediaOrder(newMediaOrder) }
+        super.onPause()
     }
 
-    public override fun onDestroy() {
+    override fun onDestroy() {
         Toast.makeText(this, "可能要重啟app設定才會生效", Toast.LENGTH_SHORT).show()
         super.onDestroy()
+    }
+
+    private suspend fun updateMediaOrder(newMediaOrder: String) {
+        try {
+            remoteMediaOrder?.apply {
+                add(newMediaOrder)
+                withContext(Dispatchers.IO) {
+                    ref.update(Constants.MEDIA_BAR_ORDER, this@apply).await()
+                }
+            }
+        } catch (e: Exception) {
+            Log.d("MediaRankActivity", "get failed with $e")
+
+        }
+    }
+
+    private suspend fun getRemoteMediaOrder() {
+        try {
+            val documentSnapshot = withContext(Dispatchers.IO) { ref.get().await() }
+            if (documentSnapshot.exists()) {
+                remoteMediaOrder =
+                    documentSnapshot[Constants.MEDIA_BAR_ORDER] as MutableList<String>?
+            }
+        } catch (e: Exception) {
+            Log.d("MediaRankActivity:", "get failed with $e")
+        }
     }
 }

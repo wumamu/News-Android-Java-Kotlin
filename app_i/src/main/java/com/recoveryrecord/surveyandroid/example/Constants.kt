@@ -240,12 +240,16 @@ object Constants {
     const val SHARE_PREFERENCE_TEST_SIZE = "text_size"
     const val SHARE_PREFERENCE_SILENT_ESM = "silent"
     const val SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION = "media_select"
-    const val SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER = "media_rank"
+
+    //    const val SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER = "media_rank"
     const val SHARE_PREFERENCE_USER_ID = "signature"
     const val SHARE_NOTIFICATION_FIRST_CREATE = "new_group"
     const val SHARE_PREFERENCE_DEVICE_ID = "device_id"
     const val UPLOAD_TIME = "last_upload_time"
     const val UPLOAD_TIME_FB = "last_upload_time_fb"
+    const val MEDIA_ORDER = "media_order"
+    const val DEFAULT_MEDIA_ORDER =
+        "自由時報 5, 華視 3, ettoday 8, 風傳媒 6, 中央社 2, 聯合 7, 三立 9, 東森 4, 中時 1"
 
     //OTHER
     //ESM DIARY COUNT
