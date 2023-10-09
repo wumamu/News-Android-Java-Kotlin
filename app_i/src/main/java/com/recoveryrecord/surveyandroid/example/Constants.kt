@@ -1,467 +1,263 @@
-package com.recoveryrecord.surveyandroid.example;
+package com.recoveryrecord.surveyandroid.example
 
-public class Constants {
+object Constants {
     //email
-    public static final String OUR_EMAIL = "crctaiwan@gmail.com";
+    const val OUR_EMAIL = "crctaiwan@gmail.com"
+
     //action
-    public static final String CHECK_SERVICE_ACTION = "CheckService";//request code 50 60
-    public static final String ESM_ALARM_ACTION = "EsmAlarm";//request code 0-15
-    public static final String ESM_SCHEDULE_ID = "esm_schedule_id";
-    public static final String SCHEDULE_SOURCE = "schedule_source";
-    public static final String DIARY_ALARM_ACTION = "DiaryAlarm";//request code 100
-    public static final String RESTART_ALARM_ACTION = "RestartAlarm";//request code 1050
-    public static final String CANCEL_ALARM_ACTION = "CancelAlarm";//request code 1050
-    public static final String SCHEDULE_ALARM_ACTION = "ScheduleAlarm";//request code 1000 1001
-//    public static final String UPLOAD_ACTION = "UploadSQLite";//request code 1000 1001
+    const val CHECK_SERVICE_ACTION = "CheckService" //request code 50 60
+    const val ESM_ALARM_ACTION = "EsmAlarm" //request code 0-15
+    const val ESM_SCHEDULE_ID = "esm_schedule_id"
+    const val SCHEDULE_SOURCE = "schedule_source"
+    const val DIARY_ALARM_ACTION = "DiaryAlarm" //request code 100
+    const val RESTART_ALARM_ACTION = "RestartAlarm" //request code 1050
+    const val CANCEL_ALARM_ACTION = "CancelAlarm" //request code 1050
+    const val SCHEDULE_ALARM_ACTION = "ScheduleAlarm" //request code 1000 1001
 
-    public static final int SERVICE_CHECKER_INTERVAL = 20 * 60 * 1000;//every 20 min
+    //    public static final String UPLOAD_ACTION = "UploadSQLite";//request code 1000 1001
+    const val SERVICE_CHECKER_INTERVAL = 20 * 60 * 1000 //every 20 min
+
     //other
-    public static final String MY_APP_PACKAGE_NAME = "com.recoveryrecord.surveyandroid";
-    public static final String CHINA_TIMES_PACKAGE_NAME = "cc.nexdoor.ct.activity";
-    public static final String CNA_PACKAGE_NAME = "m.cna.com.tw.App";
-    public static final String UDN_PACKAGE_NAME = "com.udn.news";
-    public static final String LTN_PACKAGE_NAME = "com.ltnnews.news";
-    public static final String ETTODAY_PACKAGE_NAME = "net.ettoday.phone";
-    public static final String CTS_PACKAGE_NAME = "com.news.ctsapp";
-    public static final String EBC_PACKAGE_NAME = "com.ebc.news";
-    public static final String STORM_PACKAGE_NAME = "cc.nexdoor.stormmedia";
-    public static final String SETS_PACKAGE_NAME = "com.set.newsapp";
-    public static final String ZERO_RESULT_STRING = "zero_result";
-//    public static final String NA_STRING = "NA";
-//    public static final String NONE_STRING = "none";
-    public static final int NEWS_LIMIT_PER_PAGE = 30;
-    public static final int PUSH_HISTORY_LIMIT_PER_PAGE = 50;
-    public static final int READ_HISTORY_LIMIT_PER_PAGE = 50;
-    //GENERATE ESM
+    const val MY_APP_PACKAGE_NAME = "com.recoveryrecord.surveyandroid"
+    const val CHINA_TIMES_PACKAGE_NAME = "cc.nexdoor.ct.activity"
+    const val CNA_PACKAGE_NAME = "m.cna.com.tw.App"
+    const val UDN_PACKAGE_NAME = "com.udn.news"
+    const val LTN_PACKAGE_NAME = "com.ltnnews.news"
+    const val ETTODAY_PACKAGE_NAME = "net.ettoday.phone"
+    const val CTS_PACKAGE_NAME = "com.news.ctsapp"
+    const val EBC_PACKAGE_NAME = "com.ebc.news"
+    const val STORM_PACKAGE_NAME = "cc.nexdoor.stormmedia"
+    const val SETS_PACKAGE_NAME = "com.set.newsapp"
+    const val ZERO_RESULT_STRING = "zero_result"
 
-//    public static final int REPEAT_ALARM_CHECKER = 10 * 60 * 1000;//10 min
-//    public static final int ESM_TIME_ON_PAGE_THRESHOLD = 1;//5 seconds
-//    public static final int ESM_INTERVAL = 60 * 60 * 1000;//one hour
-//    public static final int DIARY_INTERVAL = 23 * 60 * 60 * 1000;//23 hour
-//    public static final int ESM_TARGET_RANGE = 60 * 60;//60 min (seconds)
-//    public static final int NOTIFICATION_TARGET_RANGE = 60 * 60;//60 min (seconds)
-    public static final String ESM_NOTIFICATION_CONTENT_TITLE = "ESM";
-    public static final String ESM_NOTIFICATION_CONTENT_TEXT = "是時候填寫問卷咯!";
-    public static final String DIARY_NOTIFICATION_CONTENT_TITLE = "DIARY";
-    public static final String DIARY_NOTIFICATION_CONTENT_TEXT = "是時候填寫問卷咯!";
-    //GENERATE DIARY
-    public static final int DIARY_TARGET_RANGE = 24 * 60 * 60;//24 hour
-    //PUSH ESM
-    public static final int ESM_TIME_OUT = 15 * 60 * 1000;//15 min
-    public static final int DIARY_TIME_OUT = 120 * 60 * 1000;//120 min
-    public static final long[] VIBRATE_EFFECT = {100, 200, 300, 300, 500, 300, 300};
-    public static final String ESM_CHANNEL_ID = "10001";
-    public static final String NEWS_CHANNEL_ID = "10002";
-    public static final String DIARY_CHANNEL_ID = "10003";
-    public static final String DEFAULT_ESM_CHANNEL_ID = "default_esm";
-    public static final String DEFAULT_NEWS_CHANNEL_ID = "default_news";
-    public static final String DEFAULT_DIARY_CHANNEL_ID = "default_diary";
-    public static final String DEFAULT_ESM_NOTIFICATION_ID = "notification-id";
-    public static final String DEFAULT_NEWS_NOTIFICATION_ID = "notification-id";
-    public static final String DEFAULT_DIARY_NOTIFICATION_ID = "notification-id";
-    public static final String DEFAULT_ESM_NOTIFICATION = "notification";
-    public static final String DEFAULT_NEWS_NOTIFICATION = "notification";
-    public static final String DEFAULT_DIARY_NOTIFICATION = "notification";
+    //    public static final String NA_STRING = "NA";
+    //    public static final String NONE_STRING = "none";
+    const val NEWS_LIMIT_PER_PAGE = 30
+    const val PUSH_HISTORY_LIMIT_PER_PAGE = 50
+    const val READ_HISTORY_LIMIT_PER_PAGE = 50
 
-    //SUBMIT ESM CHECK
-    public static final String TARGET_READ_NEWS_TITLE_ANSWER = "有點入閱讀，且沒看過相同的新聞";
-    public static final String NOT_TARGET_READ_NEWS_TITLE_ANSWER = "沒有點入閱讀過或有看過相同的新聞";
-    public static final String NOTI_UNCLICK_LAST_ONE = "沒有印象";
+    @JvmField
+    val VIBRATE_EFFECT = longArrayOf(100, 200, 300, 300, 500, 300, 300)
+    const val ESM_CHANNEL_ID = "10001"
+    const val NEWS_CHANNEL_ID = "10002"
+    const val DIARY_CHANNEL_ID = "10003"
+    const val DEFAULT_ESM_CHANNEL_ID = "default_esm"
+    const val DEFAULT_NEWS_CHANNEL_ID = "default_news"
+    const val DEFAULT_DIARY_CHANNEL_ID = "default_diary"
+    const val DEFAULT_ESM_NOTIFICATION_ID = "notification-id"
+    const val DEFAULT_NEWS_NOTIFICATION_ID = "notification-id"
+    const val DEFAULT_DIARY_NOTIFICATION_ID = "notification-id"
+    const val DEFAULT_ESM_NOTIFICATION = "notification"
+    const val DEFAULT_NEWS_NOTIFICATION = "notification"
+    const val DEFAULT_DIARY_NOTIFICATION = "notification"
+
     //INTENT PUT EXTRA
     //Login
-    public static final String USER_NUM = "user_num";
+    const val USER_NUM = "user_num"
+
     //NEWS NewsModuleActivity
-    public static final String TRIGGER_BY_KEY = "trigger_by";
-    public static final String TRIGGER_BY_VALUE_NOTIFICATION = "Notification";
-//    public static final String TRIGGER_BY_VALUE_SELF_TRIGGER = "self_trigger";
-    public static final String NEWS_ID_KEY = "news_id";
-    public static final String NEWS_MEDIA_KEY = "media";
+    const val TRIGGER_BY_KEY = "trigger_by"
+    const val TRIGGER_BY_VALUE_NOTIFICATION = "Notification"
+
+    //    public static final String TRIGGER_BY_VALUE_SELF_TRIGGER = "self_trigger";
+    const val NEWS_ID_KEY = "news_id"
+    const val NEWS_MEDIA_KEY = "media"
+
     //NotificationListenerService
-    public static final String GROUP_NEWS = "NewsMoment";
-    public static final String GROUP_NEWS_SERVICE = "NewsMoment Service";
-    public static final String DOC_ID_KEY = "id";
-    public static final String NOTIFICATION_TYPE_KEY = "type";
-    public static final String NOTIFICATION_ESM_TYPE_KEY = "esm_type";//0 noti 1 read
-    public static final String NOTIFICATION_TYPE_VALUE_NEWS = "news";
-    public static final String NOTIFICATION_TYPE_VALUE_ESM = "esm";
-    public static final String NOTIFICATION_TYPE_VALUE_DIARY = "diary";
-    public static final String NOTIFICATION_TYPE_VALUE_SERVICE = "service";
-    //ESMLoadingPageActivity SurveyActivity
-//    public static final String ESM_ID = "esm_id";
-    public static final String LOADING_PAGE_ID = "id";
-    public static final String SURVEY_PAGE_ID = "id";
-//    public static final String DIARY_PAGE_ID = "id";
-    public static final String LOADING_PAGE_TYPE_KEY = "type";
-    public static final String LOADING_PAGE_TYPE_ESM = "esm";
-    public static final String LOADING_PAGE_TYPE_DIARY = "diary";
-    //DiaryLoadingPageActivity SurveyActivity
-//    public static final String DIARY_ID = "diary_id";
-    //Survey
-    public static final String ESM_EXIST_READ_SAMPLE = "esm_exist_read";
-    public static final String ESM_EXIST_NOTIFICATION_SAMPLE = "esm_exist_notification";
-    public static final String DIARY_EXIST_ESM_SAMPLE = "diary_exist_esm_sample";
-    //FIRESTORE FIELD###############################################################################
-    //FIRESTORE FIELD###############################################################################
-    //FIRESTORE FIELD###############################################################################
-    //FIRESTORE FIELD###############################################################################
-    //FIRESTORE FIELD###############################################################################
-    public static final String TEST_USER_COLLECTION = "test_users";
+    const val GROUP_NEWS = "NewsMoment"
+    const val GROUP_NEWS_SERVICE = "NewsMoment Service"
+    const val DOC_ID_KEY = "id"
+    const val NOTIFICATION_TYPE_KEY = "type"
+    const val NOTIFICATION_ESM_TYPE_KEY = "esm_type" //0 noti 1 read
+    const val NOTIFICATION_TYPE_VALUE_NEWS = "news"
+    const val NOTIFICATION_TYPE_VALUE_ESM = "esm"
+    const val NOTIFICATION_TYPE_VALUE_DIARY = "diary"
+    const val NOTIFICATION_TYPE_VALUE_SERVICE = "service"
 
+    //FIRESTORE FIELD###############################################################################
+    //FIRESTORE FIELD###############################################################################
+    //FIRESTORE FIELD###############################################################################
+    //FIRESTORE FIELD###############################################################################
+    //FIRESTORE FIELD###############################################################################
+    const val TEST_USER_COLLECTION = "test_users"
+    const val USER_COLLECTION = "user"
+    const val APP_VERSION_KEY = "app_version"
+    const val APP_VERSION_VALUE = "2022-09-07-1"
+    const val UPDATE_TIME = "update_timestamp"
 
-    public static final String USER_COLLECTION = "user";
-    public static final String APP_VERSION_KEY = "app_version";
-    public static final String APP_VERSION_VALUE = "2022-09-07-1";
-    public static final String UPDATE_TIME = "update_timestamp";
-//    public static final String INITIAL_TIME = "initial_timestamp";
-//    public static final String LAST_LAUNCH_TIME = "last_launch_timestamp";
-    public static final String USER_DEVICE_ID = "device_id";
-    public static final String USER_FIRESTORE_ID = "firestore_id";
-    public static final String USER_PHONE_ID = "phone_id";
-    public static final String USER_ANDROID_SDK = "android_sdk";
-    public static final String USER_ANDROID_RELEASE = "android_release";
-    public static final String PUSH_MEDIA_SELECTION = "push_media_selection";
-    public static final String MEDIA_BAR_ORDER = "media_bar_order";
-    public static final String USER_SURVEY_NUMBER = "user_survey_number";
+    //    public static final String INITIAL_TIME = "initial_timestamp";
+    //    public static final String LAST_LAUNCH_TIME = "last_launch_timestamp";
+    const val USER_DEVICE_ID = "device_id"
+    const val USER_FIRESTORE_ID = "firestore_id"
+    const val USER_PHONE_ID = "phone_id"
+    const val USER_ANDROID_SDK = "android_sdk"
+    const val USER_ANDROID_RELEASE = "android_release"
+    const val PUSH_MEDIA_SELECTION = "push_media_selection"
+    const val MEDIA_BAR_ORDER = "media_bar_order"
+    const val USER_SURVEY_NUMBER = "user_survey_number"
+
     //MEDIA
-    public static final String MEDIA_COLLECTION = "medias";
-    public static final String NEWS_COLLECTION = "news";
-    public static final String NEWS_URL = "url";
-//    public static final String NEWS_CATEGORY = "category";
-    public static final String NEWS_TITLE = "title";
-    public static final String NEWS_PUBDATE = "pubdate";
-    public static final String NEWS_IMAGE = "image";
-    public static final String NEWS_CONTENT = "content";
-//    public static final String NEWS_MEDIA = "media";
-    public static final String NEWS_ID = "id";
-    //ALARM SERVICE
-//    public static final String ALARM_SERVICE_COLLECTION = "alarm_service";
-//    public static final String ALARM_SERVICE_POST_COLLECTION = "alarm_service_post";
-//    public static final String DIARY_STATUS = "diary_status";
-//    public static final String DIARY_PUSH = "success";
-//    public static final String DIARY_NOT_IN_PUSH_RANGE = "fail_not_in_range";
-//    public static final String DIARY_OUT_OF_INTERVAL_LIMIT = "fail_more_than_one_per_day";//ONE DAY
-//    public static final String ESM_STATUS = "esm_status";
-//    public static final String ESM_PUSH = "success";
-//    public static final String ESM_NOT_IN_PUSH_RANGE= "fail_not_in_range";
-//    public static final String ESM_OUT_OF_INTERVAL_LIMIT = "fail_more_than_one_per_hour";//ONE HOUR
+    const val MEDIA_COLLECTION = "medias"
+    const val NEWS_COLLECTION = "news"
+    const val NEWS_URL = "url"
+
+    //    public static final String NEWS_CATEGORY = "category";
+    const val NEWS_TITLE = "title"
+    const val NEWS_PUBDATE = "pubdate"
+    const val NEWS_IMAGE = "image"
+    const val NEWS_CONTENT = "content"
+
+    //    public static final String NEWS_MEDIA = "media";
+    const val NEWS_ID = "id"
+
     //NOTIFICATION BAR NEWS NOT APP
-    public static final String NOTIFICATION_BAR_NEWS_MONITOR_COLLECTION = "notification_bar_news(not app)";
-//    //NOTIFICATION BAR ESM
-//    public static final String NOTIFICATION_BAR_ESM_COLLECTION = "notification_bar_esm";
-//    //NOTIFICATION BAR DIARY
-//    public static final String NOTIFICATION_BAR_DIARY_COLLECTION = "notification_bar_diary";
-//    //NOTIFICATION BAR SERVICE
-//    public static final String NOTIFICATION_BAR_SERVICE_COLLECTION = "notification_bar_my_news";
-    public static final String NOTIFICATION_BAR_NEWS_TITLE = "title";
-    public static final String NOTIFICATION_BAR_NEWS_TEXT = "text";
-    public static final String NOTIFICATION_BAR_NEWS_NOTI_TIME = "noti_timestamp";
-    public static final String NOTIFICATION_BAR_NEWS_PACKAGE_ID = "package_id";
-    public static final String NOTIFICATION_BAR_NEWS_SOURCE = "media";
-    public static final String NOTIFICATION_BAR_NEWS_DEVICE_ID = "device_id";
+    const val NOTIFICATION_BAR_NEWS_MONITOR_COLLECTION = "notification_bar_news(not app)"
+
+    const val NOTIFICATION_BAR_NEWS_TITLE = "title"
+    const val NOTIFICATION_BAR_NEWS_TEXT = "text"
+    const val NOTIFICATION_BAR_NEWS_NOTI_TIME = "noti_timestamp"
+    const val NOTIFICATION_BAR_NEWS_PACKAGE_ID = "package_id"
+    const val NOTIFICATION_BAR_NEWS_SOURCE = "media"
+    const val NOTIFICATION_BAR_NEWS_DEVICE_ID = "device_id"
+
     //COMPARE RESULT
-    public static final String COMPARE_RESULT_COLLECTION = "compare_result";
-    public static final String COMPARE_RESULT_PUBDATE = "pubdate";
-    public static final String COMPARE_RESULT_MEDIA = "media";
-    public static final String COMPARE_RESULT_ID = "id";
-    public static final String COMPARE_RESULT_NEW_TITLE = "news_title";
-//    public static final String COMPARE_RESULT_TYPE = "type";
-//    public static final String COMPARE_RESULT_CLICK = "click";
+    const val COMPARE_RESULT_COLLECTION = "compare_result"
+    const val COMPARE_RESULT_PUBDATE = "pubdate"
+    const val COMPARE_RESULT_MEDIA = "media"
+    const val COMPARE_RESULT_ID = "id"
+    const val COMPARE_RESULT_NEW_TITLE = "news_title"
+
+    //    public static final String COMPARE_RESULT_TYPE = "type";
+    //    public static final String COMPARE_RESULT_CLICK = "click";
     //ALARM SCHEDULE
-    public static final String SCHEDULE_ALARM_COLLECTION = "schedule_alarm";
-    public static final String SCHEDULE_ALARM_TRIGGER_TIME = "trigger_time";
-    public static final String SCHEDULE_ALARM_SURVEY_START = "survey_start_hour";
-    public static final String SCHEDULE_ALARM_SURVEY_END = "survey_end_hour";
-    public static final String SCHEDULE_ALARM_MAX_ESM = "max_esm";
-    public static final String SCHEDULE_ALARM_DEVICE_ID = "device_id";
-    public static final String SCHEDULE_ALARM_ACTION_TYPE = "action";
+    const val SCHEDULE_ALARM_COLLECTION = "schedule_alarm"
+    const val SCHEDULE_ALARM_TRIGGER_TIME = "trigger_time"
+    const val SCHEDULE_ALARM_SURVEY_START = "survey_start_hour"
+    const val SCHEDULE_ALARM_SURVEY_END = "survey_end_hour"
+    const val SCHEDULE_ALARM_MAX_ESM = "max_esm"
+    const val SCHEDULE_ALARM_DEVICE_ID = "device_id"
+    const val SCHEDULE_ALARM_ACTION_TYPE = "action"
+
     //NEWS SERVICE CHECKER
-    public static final String NEWS_SERVICE_COLLECTION = "news_service";
-    public static final String NEWS_SERVICE_DEVICE_ID = "device_id";
-    public static final String NEWS_SERVICE_TIME = "service_timestamp";
-    public static final String NEWS_SERVICE_STATUS_KEY = "service_status";
-    public static final String NEWS_SERVICE_STATUS_VALUE_RESTART = "service_restart";
-//    public static final String NEWS_SERVICE_STATUS_VALUE_FAILED = "service_failed";
-    public static final String NEWS_SERVICE_STATUS_VALUE_RUNNING = "service_running";
-    public static final String NEWS_SERVICE_STATUS_VALUE_INITIAL = "service_initial";
-    public static final String NEWS_SERVICE_CYCLE_KEY = "service_cycle";
-    public static final String NEWS_SERVICE_CYCLE_VALUE_BOOT_UP = "service_boot_up";
-    public static final String NEWS_SERVICE_CYCLE_VALUE_ALARM = "alarm";
-    public static final String NEWS_SERVICE_CYCLE_VALUE_FAILED_RESTART = "service_failed_restart";
-    public static final String NEWS_SERVICE_CYCLE_VALUE_MAIN_PAGE = "main_page";
-    public static final String NEWS_SERVICE_CYCLE_VALUE_SERVICE_PAGE = "service_page";
+    const val NEWS_SERVICE_COLLECTION = "news_service"
+    const val NEWS_SERVICE_DEVICE_ID = "device_id"
+    const val NEWS_SERVICE_TIME = "service_timestamp"
+    const val NEWS_SERVICE_STATUS_KEY = "service_status"
+    const val NEWS_SERVICE_STATUS_VALUE_RESTART = "service_restart"
+
+    //    public static final String NEWS_SERVICE_STATUS_VALUE_FAILED = "service_failed";
+    const val NEWS_SERVICE_STATUS_VALUE_RUNNING = "service_running"
+    const val NEWS_SERVICE_STATUS_VALUE_INITIAL = "service_initial"
+    const val NEWS_SERVICE_CYCLE_KEY = "service_cycle"
+    const val NEWS_SERVICE_CYCLE_VALUE_BOOT_UP = "service_boot_up"
+    const val NEWS_SERVICE_CYCLE_VALUE_ALARM = "alarm"
+    const val NEWS_SERVICE_CYCLE_VALUE_FAILED_RESTART = "service_failed_restart"
+    const val NEWS_SERVICE_CYCLE_VALUE_MAIN_PAGE = "main_page"
+    const val NEWS_SERVICE_CYCLE_VALUE_SERVICE_PAGE = "service_page"
 
     //READING BEHAVIOR
-    public static final String READING_BEHAVIOR_COLLECTION = "reading_behaviors";
-//    public static final String READING_BEHAVIOR_MID = " RB ";
+    const val READING_BEHAVIOR_COLLECTION = "reading_behaviors"
 
-    public static final String READING_BEHAVIOR_DOC_ID = "doc_id";
-    public static final String READING_BEHAVIOR_DEVICE_ID = "device_id";
-    public static final String READING_BEHAVIOR_USER_ID = "user_id";
-    public static final String READING_BEHAVIOR_SAMPLE_CHECK_ID = "select_esm_id";
+    //    public static final String READING_BEHAVIOR_MID = " RB ";
+    const val READING_BEHAVIOR_DOC_ID = "doc_id"
+    const val READING_BEHAVIOR_DEVICE_ID = "device_id"
+    const val READING_BEHAVIOR_USER_ID = "user_id"
+    const val READING_BEHAVIOR_SAMPLE_CHECK_ID = "select_esm_id"
+    const val READING_BEHAVIOR_TRIGGER_BY = "trigger_by"
+    const val READING_BEHAVIOR_NEWS_ID = "id"
+    const val READING_BEHAVIOR_TITLE = "title"
+    const val READING_BEHAVIOR_MEDIA = "media"
+    const val READING_BEHAVIOR_HAS_IMAGE = "has_img"
+    const val READING_BEHAVIOR_IMAGE_URL = "image"
+    const val READING_BEHAVIOR_PUBDATE = "pubdate"
 
-    public static final String READING_BEHAVIOR_TRIGGER_BY = "trigger_by";
-    public static final String READING_BEHAVIOR_NEWS_ID = "id";
-    public static final String READING_BEHAVIOR_TITLE = "title";
-    public static final String READING_BEHAVIOR_MEDIA = "media";
-    public static final String READING_BEHAVIOR_HAS_IMAGE = "has_img";
-    public static final String READING_BEHAVIOR_IMAGE_URL = "image";
-    public static final String READING_BEHAVIOR_PUBDATE = "pubdate";
-//    public static final String READING_BEHAVIOR_CATEGORY = "category";
-    public static final String READING_BEHAVIOR_ROW_SPACING = "row_spacing(dp)";
-    public static final String READING_BEHAVIOR_BYTE_PER_LINE = "byte_per_line";
-    public static final String READING_BEHAVIOR_FONT_SIZE = "font_size";
+    //    public static final String READING_BEHAVIOR_CATEGORY = "category";
+    const val READING_BEHAVIOR_ROW_SPACING = "row_spacing(dp)"
+    const val READING_BEHAVIOR_BYTE_PER_LINE = "byte_per_line"
+    const val READING_BEHAVIOR_FONT_SIZE = "font_size"
+    const val READING_BEHAVIOR_CONTENT_LENGTH = "content_length(dp)"
+    const val READING_BEHAVIOR_DISPLAY_WIDTH = "display_width(dp)"
+    const val READING_BEHAVIOR_DISPLAY_HEIGHT = "display_height(dp)"
+    const val READING_BEHAVIOR_IN_TIME = "in_timestamp"
+    const val READING_BEHAVIOR_OUT_TIME = "out_timestamp"
+    const val READING_BEHAVIOR_IN_TIME_LONG = "in_timestamp_long"
 
-    public static final String READING_BEHAVIOR_CONTENT_LENGTH = "content_length(dp)";
-    public static final String READING_BEHAVIOR_DISPLAY_WIDTH = "display_width(dp)";
-    public static final String READING_BEHAVIOR_DISPLAY_HEIGHT = "display_height(dp)";
+    //    public static final String READING_BEHAVIOR_OUT_TIME_LONG = "out_timestamp_long";
+    const val READING_BEHAVIOR_TIME_ON_PAGE = "time_on_page(s)"
+    const val READING_BEHAVIOR_PAUSE_COUNT = "pause_count"
+    const val READING_BEHAVIOR_VIEWPORT_NUM = "viewport_num"
+    const val READING_BEHAVIOR_VIEWPORT_RECORD = "viewport_record"
+    const val READING_BEHAVIOR_FLING_NUM = "fling_num"
+    const val READING_BEHAVIOR_FLING_RECORD = "fling_record"
+    const val READING_BEHAVIOR_DRAG_NUM = "drag_num"
+    const val READING_BEHAVIOR_DRAG_RECORD = "drag_record"
+    const val READING_BEHAVIOR_SHARE = "share"
+    const val READING_BEHAVIOR_TIME_SERIES = "time_series(s)"
+    const val READING_BEHAVIOR_TRIGGER_BY_NOTIFICATION = "Notification"
 
-    public static final String READING_BEHAVIOR_IN_TIME = "in_timestamp";
-    public static final String READING_BEHAVIOR_OUT_TIME = "out_timestamp";
-    public static final String READING_BEHAVIOR_IN_TIME_LONG = "in_timestamp_long";
-//    public static final String READING_BEHAVIOR_OUT_TIME_LONG = "out_timestamp_long";
-
-    public static final String READING_BEHAVIOR_TIME_ON_PAGE = "time_on_page(s)";
-    public static final String READING_BEHAVIOR_PAUSE_COUNT = "pause_count";
-    public static final String READING_BEHAVIOR_VIEWPORT_NUM = "viewport_num";
-    public static final String READING_BEHAVIOR_VIEWPORT_RECORD = "viewport_record";
-    public static final String READING_BEHAVIOR_FLING_NUM = "fling_num";
-    public static final String READING_BEHAVIOR_FLING_RECORD = "fling_record";
-    public static final String READING_BEHAVIOR_DRAG_NUM = "drag_num";
-    public static final String READING_BEHAVIOR_DRAG_RECORD = "drag_record";
-    public static final String READING_BEHAVIOR_SHARE = "share";
-    public static final String READING_BEHAVIOR_TIME_SERIES = "time_series(s)";
-
-
-    public static final String READING_BEHAVIOR_TRIGGER_BY_NOTIFICATION = "Notification";
-//    public static final String READING_BEHAVIOR_TRIGGER_BY_SELF_TRIGGER = "self_trigger";
-
-//    public static final String READING_BEHAVIOR_CHECK_MARK = "check_mark";
-    public static final String READING_BEHAVIOR_SAMPLE_CHECK = "select";
+    //    public static final String READING_BEHAVIOR_TRIGGER_BY_SELF_TRIGGER = "self_trigger";
+    //    public static final String READING_BEHAVIOR_CHECK_MARK = "check_mark";
+    const val READING_BEHAVIOR_SAMPLE_CHECK = "select"
 
     //PUSH NEWS
-    public static final String PUSH_NEWS_COLLECTION = "push_news";
-    public static final String PUSH_NEWS_DOC_ID = "doc_id";
-    public static final String PUSH_NEWS_DEVICE_ID = "device_id";
-    public static final String PUSH_NEWS_USER_ID = "user_id";
+    const val PUSH_NEWS_COLLECTION = "push_news"
+    const val PUSH_NEWS_DOC_ID = "doc_id"
+    const val PUSH_NEWS_DEVICE_ID = "device_id"
+    const val PUSH_NEWS_USER_ID = "user_id"
+    const val PUSH_NEWS_ID = "id"
+    const val PUSH_NEWS_TITLE = "title"
+    const val PUSH_NEWS_MEDIA = "media"
+    const val PUSH_NEWS_PUBDATE = "pubdate"
+    const val PUSH_NEWS_NOTI_TIME = "noti_timestamp"
+    const val PUSH_NEWS_RECEIEVE_TIME = "receieve_timestamp"
+    const val PUSH_NEWS_OPEN_TIME = "open_timestamp"
+    const val PUSH_NEWS_REMOVE_TIME = "remove_timestamp"
+    const val PUSH_NEWS_REMOVE_TYPE = "remove_type"
 
-    public static final String PUSH_NEWS_ID = "id";
-    public static final String PUSH_NEWS_TITLE = "title";
-    public static final String PUSH_NEWS_MEDIA = "media";
-    public static final String PUSH_NEWS_PUBDATE = "pubdate";
-
-    public static final String PUSH_NEWS_NOTI_TIME = "noti_timestamp";
-    public static final String PUSH_NEWS_RECEIEVE_TIME = "receieve_timestamp";
-    public static final String PUSH_NEWS_OPEN_TIME = "open_timestamp";
-    public static final String PUSH_NEWS_REMOVE_TIME = "remove_timestamp";
-    public static final String PUSH_NEWS_REMOVE_TYPE = "remove_type";
-//    public static final String PUSH_NEWS_READING_BEHAVIOR_ID = "reading_behavior_id";
-
-    public static final String PUSH_NEWS_CLICK = "click";
-    public static final String PUSH_NEWS_TYPE = "type";
-//    public static final String PUSH_NEWS_SELECTION = "selections";
-//    public static final String PUSH_NEWS_SAMPLE_CHECK_ID = "select_esm_id";
-
-
-    //PUSH ESM
-    public static final String PUSH_ESM_COLLECTION = "push_esm";
-    public static final String PUSH_ESM_DOC_ID = "doc_id";
-    public static final String PUSH_ESM_DEVICE_ID = "device_id";
-    public static final String PUSH_ESM_USER_ID = "user_id";
-
-    public static final String PUSH_ESM_TYPE = "esm_type";
-    public static final String PUSH_ESM_READ_ARRAY = "ReadNewsTitle";
-    public static final String PUSH_ESM_NOTI_ARRAY = "NotiNewTitle";
-    public static final String PUSH_ESM_SAMPLE_TIME = "esm_sample_time";
-
-    public static final String PUSH_ESM_SCHEDULE_ID = "esm_schedule_id";
-    public static final String PUSH_ESM_SCHEDULE_SOURCE = "esm_schedule_source";
-
-    public static final String PUSH_ESM_SAMPLE = "sample";
-    public static final String PUSH_ESM_SAMPLE_ID = "sample_diary_id";
-
-//    public static final String PUSH_ESM_TRIGGER_BY_NOTIFICATION = "notification_service";
-//    public static final String PUSH_ESM_TRIGGER_BY_ALARM = "alarm";
-//    public static final String PUSH_ESM_TRIGGER_BY_SELF = "self";
-//    public static final String PUSH_ESM_TRIGGER_BY = "trigger_by";
-
-
-    public static final String PUSH_ESM_NOTI_TIME = "noti_timestamp";
-    public static final String PUSH_ESM_RECEIEVE_TIME = "receieve_timestamp";
-    public static final String PUSH_ESM_OPEN_TIME = "open_timestamp";
-    public static final String PUSH_ESM_CLOSE_TIME = "close_timestamp";
-    public static final String PUSH_ESM_SUBMIT_TIME = "submit_timestamp";
-    public static final String PUSH_ESM_REMOVE_TIME = "remove_timestamp";
-    public static final String PUSH_ESM_REMOVE_TYPE = "remove_type";
-
-    public static final String PUSH_ESM_RESULT = "result";
-//    public static final String PUSH_ESM_TARGET = "target";
-    public static final String PUSH_ESM_TARGET_NEWS_ID = "target_news_id";
-    public static final String PUSH_ESM_TARGET_TITLE = "target_read_title";
-    public static final String PUSH_ESM_TARGET_IN_TIME = "target_in_time";
-    public static final String PUSH_ESM_TARGET_RECEIEVE_TIME = "target_receieve_time";
-    public static final String PUSH_ESM_TARGET_RECEIEVE_SITUATION = "target_receieve_situation";
-    public static final String PUSH_ESM_TARGET_RECEIEVE_PLACE = "target_receieve_place";
-    public static final String PUSH_ESM_TARGET_READ_SITUATION = "target_read_situation";
-    public static final String PUSH_ESM_TARGET_READ_PLACE = "target_read_place";
-
-
-    public static final String PUSH_ESM_READ_EXIST = "ExistReadSample";
-//    public static final String PUSH_ESM_NOTIFICATION_EXIST = "ExistNotificationSample";
-//    public static final String PUSH_ESM_NOT_SAMPLE_READ_SHORT = "NotSampleReadShort";
-//    public static final String PUSH_ESM_NOT_SAMPLE_READ_FAR = "NotSampleReadFar";
-//    public static final String PUSH_ESM_NOT_SAMPLE_NOTIFICATION_FAR = "NotSampleNotificationFar";
-
-//    public static final String SAMPLE_NEWS_ID = "sample_news_id";
-//    public static final String SAMPLE_NEWS_TITLE = "sample_news_title";
-//    public static final String SAMPLE_NEWS_MEDIA = "sample_news_media";
-//    public static final String SAMPLE_NEWS_RECEIEVE_TIME = "sample_news_receieve_time";
-//    public static final String SAMPLE_NEWS_IN_TIME = "sample_news_in_time";
-
-
-
-    //PUSH DIARY
-    public static final String PUSH_DIARY_COLLECTION = "push_diary";
-    public static final String PUSH_DIARY_DOC_ID = "doc_id";
-    public static final String PUSH_DIARY_DEVICE_ID = "device_id";
-    public static final String PUSH_DIARY_USER_ID = "user_id";
-
-
-    public static final String PUSH_DIARY_SCHEDULE_SOURCE = "diary_schedule_source";
-    public static final String PUSH_DIARY_SAMPLE_TIME = "diary_sample_time";
-    public static final String PUSH_DIARY_OPTION_READ = "target_history_candidate_read";
-    public static final String PUSH_DIARY_OPTION_NOTI = "target_history_candidate_noti";
-
-    public static final String PUSH_DIARY_NOTI_TIME = "noti_timestamp";
-    public static final String PUSH_DIARY_RECEIEVE_TIME = "receieve_timestamp";
-    public static final String PUSH_DIARY_OPEN_TIME = "open_timestamp";
-    public static final String PUSH_DIARY_CLOSE_TIME = "close_timestamp";
-    public static final String PUSH_DIARY_SUBMIT_TIME = "submit_timestamp";
-    public static final String PUSH_DIARY_REMOVE_TIME = "remove_timestamp";
-    public static final String PUSH_DIARY_REMOVE_TYPE = "remove_type";
-
-    public static final String PUSH_DIARY_RESULT = "result";
-    public static final String PUSH_DIARY_INOPPORTUNE_TARGET_READ = "inopportune_read_target";
-    public static final String PUSH_DIARY_OPPORTUNE_TARGET_RAED = "opportune_read_target";
-    public static final String PUSH_DIARY_INOPPORTUNE_TARGET_NOTI = "inopportune_noti_target";
-    public static final String PUSH_DIARY_OPPORTUNE_TARGET_NOTI = "opportune_noti_target";
-
-//    public static final String PUSH_DIARY_DONE = "done";
-//    public static final String PUSH_DIARY_TRIGGER_BY_NOTIFICATION = "notification_service";
-//    public static final String PUSH_DIARY_TRIGGER_BY_ALARM = "alarm";
-//    public static final String PUSH_DIARY_TRIGGER_BY_SELF = "self";
-//    public static final String PUSH_DIARY_TRIGGER_BY = "trigger_by";
+    //    public static final String PUSH_NEWS_READING_BEHAVIOR_ID = "reading_behavior_id";
+    const val PUSH_NEWS_CLICK = "click"
+    const val PUSH_NEWS_TYPE = "type"
 
     //PUSH SERVICE
-    public static final String PUSH_SERVICE_COLLECTION = "push_service";
-    public static final String PUSH_SERVICE_RECEIEVE_TIME = "receieve_timestamp";
+    const val PUSH_SERVICE_COLLECTION = "push_service"
+    const val PUSH_SERVICE_RECEIEVE_TIME = "receieve_timestamp"
+
     //NOTIFICATION BAR
-    public static final String NOTIFICATION_BAR_OTHER_APP_COLLECTION = "notification_bar(others)";
-    public static final String NOTIFICATION_BAR_RECEIEVE_TIME = "receieve_timestamp";
-    public static final String NOTIFICATION_BAR_REMOVE_TIME = "remove_timestamp";
-    public static final String NOTIFICATION_BAR_REMOVE_TYPE = "remove_type";
-    public static final String NOTIFICATION_BAR_PACKAGE_NAME = "package_name";
-    public static final String NOTIFICATION_BAR_PACKAGE_ID = "package_id";
-    public static final String NOTIFICATION_BAR_DEVICE_ID = "device_id";
+    const val NOTIFICATION_BAR_OTHER_APP_COLLECTION = "notification_bar(others)"
+    const val NOTIFICATION_BAR_RECEIEVE_TIME = "receieve_timestamp"
+    const val NOTIFICATION_BAR_REMOVE_TIME = "remove_timestamp"
+    const val NOTIFICATION_BAR_REMOVE_TYPE = "remove_type"
+    const val NOTIFICATION_BAR_PACKAGE_NAME = "package_name"
+    const val NOTIFICATION_BAR_PACKAGE_ID = "package_id"
+    const val NOTIFICATION_BAR_DEVICE_ID = "device_id"
+
     //SHARE PREFERENCE #############################################################################
     //SHARE PREFERENCE #############################################################################
     //SHARE PREFERENCE #############################################################################
     //SHARE PREFERENCE #############################################################################
     //SHARE PREFERENCE #############################################################################
-    public static final String SHARE_PREFERENCE_CLEAR_CACHE = "SharePreferenceClear";
-    public static final String SHARE_PREFERENCE_TEST_SIZE = "text_size";
-    public static final String SHARE_PREFERENCE_SILENT_ESM = "silent";
-    public static final String SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION = "media_select";
-    public static final String SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER = "media_rank";
-    public static final String SHARE_PREFERENCE_USER_ID = "signature";
-    public static final String SHARE_NOTIFICATION_FIRST_CREATE = "new_group";
-    public static final String SHARE_PREFERENCE_DEVICE_ID = "device_id";
+    const val SHARE_PREFERENCE_CLEAR_CACHE = "SharePreferenceClear"
+    const val SHARE_PREFERENCE_TEST_SIZE = "text_size"
+    const val SHARE_PREFERENCE_SILENT_ESM = "silent"
+    const val SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION = "media_select"
+    const val SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER = "media_rank"
+    const val SHARE_PREFERENCE_USER_ID = "signature"
+    const val SHARE_NOTIFICATION_FIRST_CREATE = "new_group"
+    const val SHARE_PREFERENCE_DEVICE_ID = "device_id"
+    const val UPLOAD_TIME = "last_upload_time"
+    const val UPLOAD_TIME_FB = "last_upload_time_fb"
 
-
-    public static final String UPLOAD_TIME = "last_upload_time";
-    public static final String UPLOAD_TIME_FB = "last_upload_time_fb";
-
-//    public static final String SHARE_PREFERENCE_IS_LOGIN = "is_login";
-
-
-
-
-
-    //ESM
-//    public static final String ESM_NOTIFICATION_UNCLICKED_CANDIDATE = "PushNotificationNewsTitleArray";
-//    public static final String ESM_READ_HISTORY_CANDIDATE = "ReadingBehaviorNewsTitleArray";
-    public static final String ESM_TARGET_NEWS_TITLE = "TargetNewsTitleArray";
-    public static final String ESM_START_TIME_HOUR = "ESMStartTimeHour";
-    public static final String ESM_START_TIME_MIN = "ESMStartTimeMin";
-    public static final String ESM_END_TIME_HOUR = "ESMEndTimeHour";
-    public static final String ESM_END_TIME_MIN = "ESMEndTimeMin";
-    public static final String ESM_SET_ONCE = "ESMSetOnce";
-    public static final String ESM_PASSWORD = "ESMPassWord";
-    public static final String SWITCH_STATE = "SwitchState";
-//    public static final String ESM_NOTI_BLOCK = "EsmNotiBlock";
-//    public static final String LAST_DIARY_TIME = "LastDiaryTime";
-
-    public static final String SAMPLE_ID = "sample_id";
-    public static final String SAMPLE_TITLE = "sample_title";
-    public static final String SAMPLE_MEDIA = "sample_media";
-    public static final String SAMPLE_RECEIEVE = "sample_receieve";
-    public static final String SAMPLE_IN = "sample_in";
-//    public static final String EXIST_READ = "exist_read";
-    public static final String ESM_TYPE = "esm_type";
-
-
-    public static final String ESM_DELAY_COUNT = "esm_delay_count";
-    public static final String ESM_SAMPLE_TIME = "esm_sample_time";
-
-
-
-
-
-    //DIARY
-    public static final String DIARY_READ_HISTORY_CANDIDATE = "DiaryTargetOptionArrayRead";
-    public static final String DIARY_NOTI_HISTORY_CANDIDATE = "DiaryTargetOptionArrayNoti";
-    public static final String EXIST_ESM = "exist_esm";
-    //{news_title}\n{news_time}\n{news_situation}\n{news_place}\n{news_id}#
-//    public static final String TO_DIARY_LIST = "DiaryList";
     //OTHER
-
     //ESM DIARY COUNT
-    public static final String ESM_LAST_TIME = "ESMLastTime";
-    public static final String DIARY_LAST_TIME = "DiaryLastTime";
-
-
-    public static final String ESM_PUSH_TOTAL = "ESMPushTotal";
-    public static final String ESM_DONE_TOTAL = "ESMDoneTotal";
-    public static final String ESM_DAY_PUSH_PREFIX = "ESMDayPush_";
-    public static final String ESM_DAY_DONE_PREFIX = "ESMDayDone_";
-
-    public static final String DIARY_PUSH_TOTAL = "DiaryPushTotal";
-    public static final String DIARY_DONE_TOTAL = "DiaryDoneTotal";
-    public static final String DIARY_DAY_PUSH_PREFIX = "DiaryDayPush_";
-    public static final String DIARY_DAY_DONE_PREFIX = "DiaryDayDone_";
-
-    public static final String READ_TOTAL = "ReadTotal_";
-
-//    public static final String CATEGORY_HASH_SET_SIZE = "category_hash_set_size";
-//    public static final String CATEGORY_HASH_SET_PREFIX = "category_";
-
-//    public static final String DIARY_TITLE_CONTENT = "請填寫今天的日誌";
-//    public static final String DIARY_TEXT = "謝謝您的合作";
-
-
-//    public static String JSON_TEMPLATE = "";
-
-    //SENSOR
-    public static final String SENSOR_DEVICE_ID = "device_id";
-    public static final String SENSOR_DOC_ID = "doc_id";
-    public static final String SENSOR_TIMESTAMP = "timestamp";
-    public static final String SENSOR_USER_ID = "user_id";
-    public static final String SENSOR_SESSION = "session";
-    public static final String SENSOR_STATE = "state";
-    public static final String SENSOR_USING_APP = "using_app";
-    public static final String SENSOR_ACTIVITYRECOGNITION = "activityrecognition";
-    public static final String SENSOR_APPUSAGE = "appusage";
-    public static final String SENSOR_LIGHT = "light";
-    public static final String SENSOR_NETWORK = "network";
-    public static final String SENSOR_SCREEN = "screen";
-    public static final String SENSOR_RINGMODE = "ringmode";
+    const val ESM_LAST_TIME = "ESMLastTime"
+    const val DIARY_LAST_TIME = "DiaryLastTime"
+    const val ESM_PUSH_TOTAL = "ESMPushTotal"
+    const val ESM_DONE_TOTAL = "ESMDoneTotal"
+    const val ESM_DAY_PUSH_PREFIX = "ESMDayPush_"
+    const val ESM_DAY_DONE_PREFIX = "ESMDayDone_"
+    const val DIARY_PUSH_TOTAL = "DiaryPushTotal"
+    const val DIARY_DONE_TOTAL = "DiaryDoneTotal"
+    const val DIARY_DAY_PUSH_PREFIX = "DiaryDayPush_"
+    const val DIARY_DAY_DONE_PREFIX = "DiaryDayDone_"
+    const val READ_TOTAL = "ReadTotal_"
 }

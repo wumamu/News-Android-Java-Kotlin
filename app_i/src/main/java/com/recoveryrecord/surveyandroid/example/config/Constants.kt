@@ -1,51 +1,58 @@
-package com.recoveryrecord.surveyandroid.example.config;
+package com.recoveryrecord.surveyandroid.example.config
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.TimeZone;
+import android.annotation.SuppressLint
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.TimeZone
 
+object Constants {
+    //    const val SHAREPREFERENCE_TEST = "com.recoveryrecord.surveyandroid.example.SHAREPREFERENCE_TEST"
+//    const val MILLISECONDS_PER_SECOND: Long = 1000
+//    const val SECONDS_PER_MINUTE = 60
+    const val PACKAGE_NAME = "com.recoveryrecord.surveyandroid"
+    const val DetectTime = 1 * 60 * 1000
 
-public class Constants {
-    public static final String SHAREPREFERENCE_TEST = "com.recoveryrecord.surveyandroid.example.SHAREPREFERENCE_TEST";
-    public static final long MILLISECONDS_PER_SECOND = 1000;
-    public static final int SECONDS_PER_MINUTE = 60;
-    public static final int DetectTime = 1*60*1000;
-    public static String UsingApp = "NA";
-    public static int SessionID = 1;
-    public static final long SeesionCountDown = 3*60*1000;
-    public static long TimeLeftInMillis = SeesionCountDown;
-    public static SimpleDateFormat LastPauseTime;
-    public final static String DATE_FORMAT_for_storing = "yyyy-MM-dd HH:mm:ss";
-    public final static String DATE_FORMAT_NOW = "yyyy/MM/dd HH:mm:ss";//yyyy-MM-dd HH:mm:ss Z
-    public static final long MILLISECONDS_PER_MINUTE = SECONDS_PER_MINUTE*MILLISECONDS_PER_SECOND;
-    public final static String DATE_FORMAT_NOW_SLASH = "yyyy/MM/dd HH:mm:ss Z";
-    public static long getCurrentTimeInMillis(){
-        //get timzone
-        TimeZone tz = TimeZone.getDefault();
-        Calendar cal = Calendar.getInstance(tz);
-        long t = cal.getTimeInMillis();
-        return t;
+    @JvmField
+    var UsingApp = "NA"
+
+    @JvmField
+    var SessionID = 1
+
+    //    const val SeesionCountDown = (3 * 60 * 1000).toLong()
+//    var TimeLeftInMillis = SeesionCountDown
+//    var LastPauseTime: SimpleDateFormat? = null
+    const val DATE_FORMAT_for_storing = "yyyy-MM-dd HH:mm:ss"
+    const val DATE_FORMAT_NOW = "yyyy/MM/dd HH:mm:ss" //yyyy-MM-dd HH:mm:ss Z
+
+    //    const val MILLISECONDS_PER_MINUTE = SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND
+    const val DATE_FORMAT_NOW_SLASH = "yyyy/MM/dd HH:mm:ss Z"
+
+    @JvmStatic
+    val currentTimeInMillis: Long
+        get() {
+            //get timzone
+            val tz = TimeZone.getDefault()
+            val cal = Calendar.getInstance(tz)
+            return cal.timeInMillis
+        }
+    const val PACKAGE_DIRECTORY_PATH =
+        "/Android/data/com.recoveryrecord.surveyandroid/files/ActivityRecognition/"
+
+    @SuppressLint("SimpleDateFormat")
+    @JvmStatic
+    fun getTimeString(time: Long): String {
+        val sdf_now =
+            SimpleDateFormat(DATE_FORMAT_NOW_SLASH)
+        return sdf_now.format(time)
     }
-    public static final String PACKAGE_DIRECTORY_PATH= "/Android/data/com.recoveryrecord.surveyandroid/files/ActivityRecognition/";
-    public static String getTimeString(long time){
 
-        SimpleDateFormat sdf_now = new SimpleDateFormat(DATE_FORMAT_NOW_SLASH);
-        String currentTimeString = sdf_now.format(time);
-
-        return currentTimeString;
+    @JvmStatic
+    fun getTimeString(time: Long, sdf: SimpleDateFormat): String {
+        return sdf.format(time)
     }
 
-    public static String getTimeString(long time, SimpleDateFormat sdf){
-
-        String currentTimeString = sdf.format(time);
-
-        return currentTimeString;
-    }
-
-    public static String getCurrentTimeString() {
-
-        return getTimeString(getCurrentTimeInMillis());
-    }
-    public static final String ACTIVITY_DELIMITER = ";;";
-    public static final String sharedPrefString = "test";
+//    val currentTimeString: String
+//        get() = getTimeString(currentTimeInMillis)
+//    const val ACTIVITY_DELIMITER = ";;"
+//    const val sharedPrefString = "test"
 }
