@@ -1,3 +1,5 @@
+package com.recoveryrecord.surveyandroid.example.model
+
 import com.recoveryrecord.surveyandroid.example.Constants
 
 data class ReadingBehavior(

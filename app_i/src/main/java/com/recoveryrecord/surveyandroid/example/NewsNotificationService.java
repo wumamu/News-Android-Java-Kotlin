@@ -1,56 +1,11 @@
 package com.recoveryrecord.surveyandroid.example;
 
-import android.annotation.SuppressLint;
-import android.app.AlarmManager;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.Service;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.IBinder;
-import android.os.SystemClock;
-import android.provider.Settings;
-import android.util.Log;
-
-import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.recoveryrecord.surveyandroid.example.DbHelper.PushNewsDbHelper;
-import com.recoveryrecord.surveyandroid.example.sqlite.PushNews;
-
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
-
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.core.app.NotificationCompat;
-import androidx.preference.PreferenceManager;
-
-import static com.recoveryrecord.surveyandroid.example.Constants.CHECK_SERVICE_ACTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.COMPARE_RESULT_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.COMPARE_RESULT_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.COMPARE_RESULT_MEDIA;
 import static com.recoveryrecord.surveyandroid.example.Constants.COMPARE_RESULT_NEW_TITLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.COMPARE_RESULT_PUBDATE;
-//import static com.recoveryrecord.surveyandroid.example.Constants.COMPARE_RESULT_TYPE;
 import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_NEWS_CHANNEL_ID;
-//import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_NEWS_PARCELABLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_NEWS_NOTIFICATION;
 import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_NEWS_NOTIFICATION_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.DOC_ID_KEY;
@@ -74,25 +29,64 @@ import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_DEVIC
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_DOC_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_MEDIA;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_NOTI_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_OPEN_TIME;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_PUBDATE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_RECEIEVE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_REMOVE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_REMOVE_TYPE;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_TITLE;
+import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_TYPE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_NOTIFICATION_FIRST_CREATE;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_NOTI_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_PUBDATE;
-//import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_SELECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_TITLE;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_TYPE;
-import static com.recoveryrecord.surveyandroid.example.Constants.SERVICE_CHECKER_INTERVAL;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.TRIGGER_BY_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.TRIGGER_BY_VALUE_NOTIFICATION;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.VIBRATE_EFFECT;
+
+import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.Service;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.IBinder;
+import android.os.SystemClock;
+import android.provider.Settings;
+import android.util.Log;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
+import androidx.preference.PreferenceManager;
+
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.recoveryrecord.surveyandroid.example.DbHelper.PushNewsDbHelper;
+import com.recoveryrecord.surveyandroid.example.sqlite.PushNews;
+
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class NewsNotificationService extends Service {
 
@@ -188,15 +182,16 @@ public class NewsNotificationService extends Service {
         } catch (Exception ignored) {
 
         }
-        Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
-        intent.setAction(CHECK_SERVICE_ACTION);
-        PendingIntent pi = PendingIntent.getBroadcast(getApplicationContext(), 50, intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        AlarmManager am = (AlarmManager) getApplicationContext().getSystemService(ALARM_SERVICE);
-        long time_fired = System.currentTimeMillis() + SERVICE_CHECKER_INTERVAL;
+        //TODO add notification
+//        Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
+//        intent.setAction(CHECK_SERVICE_ACTION);
+//        PendingIntent pi = PendingIntent.getBroadcast(getApplicationContext(), 50, intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+//        AlarmManager am = (AlarmManager) getApplicationContext().getSystemService(ALARM_SERVICE);
+//        long time_fired = System.currentTimeMillis() + SERVICE_CHECKER_INTERVAL;
+////        am.setExact(AlarmManager.RTC_WAKEUP, time_fired, pi);       //註冊鬧鐘
+//        //用于设置一次性闹铃，执行时间更为精准，为精确闹铃。
+//        assert am != null;
 //        am.setExact(AlarmManager.RTC_WAKEUP, time_fired, pi);       //註冊鬧鐘
-        //用于设置一次性闹铃，执行时间更为精准，为精确闹铃。
-        assert am != null;
-        am.setExact(AlarmManager.RTC_WAKEUP, time_fired, pi);       //註冊鬧鐘
     }
 
 

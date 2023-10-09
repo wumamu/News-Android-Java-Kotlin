@@ -1,75 +1,20 @@
 package com.recoveryrecord.surveyandroid.example;
 
-import android.annotation.SuppressLint;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.os.Build;
-import android.os.Bundle;
-import android.provider.Settings;
-import android.service.notification.StatusBarNotification;
-import android.util.Log;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import com.google.firebase.Timestamp;
-import com.recoveryrecord.surveyandroid.example.DbHelper.DiaryDbHelper;
-import com.recoveryrecord.surveyandroid.example.DbHelper.ESMDbHelper;
-import com.recoveryrecord.surveyandroid.example.DbHelper.PushNewsDbHelper;
-import com.recoveryrecord.surveyandroid.example.sqlite.Diary;
-import com.recoveryrecord.surveyandroid.example.sqlite.ESM;
-import com.recoveryrecord.surveyandroid.example.sqlite.PushNews;
-import com.recoveryrecord.surveyandroid.example.sqlite.ReadingBehavior;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.preference.PreferenceManager;
-
-//import static com.recoveryrecord.surveyandroid.example.Constants.ALARM_SERVICE_POST_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_KEY;
-import static com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_VALUE;
 import static com.recoveryrecord.surveyandroid.example.Constants.CHINA_TIMES_PACKAGE_NAME;
 import static com.recoveryrecord.surveyandroid.example.Constants.CNA_PACKAGE_NAME;
 import static com.recoveryrecord.surveyandroid.example.Constants.CTS_PACKAGE_NAME;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_DAY_PUSH_PREFIX;
-//import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_NOT_IN_PUSH_RANGE;
-//import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_OUT_OF_INTERVAL_LIMIT;
-//import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_PUSH;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_DONE_TOTAL;
-import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_LAST_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_PUSH_TOTAL;
-//import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_STATUS;
 import static com.recoveryrecord.surveyandroid.example.Constants.DOC_ID_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.EBC_PACKAGE_NAME;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_DAY_PUSH_PREFIX;
-//import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOT_IN_PUSH_RANGE;
-//import static com.recoveryrecord.surveyandroid.example.Constants.ESM_OUT_OF_INTERVAL_LIMIT;
-//import static com.recoveryrecord.surveyandroid.example.Constants.ESM_PUSH;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_DONE_TOTAL;
-import static com.recoveryrecord.surveyandroid.example.Constants.ESM_LAST_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.ESM_PUSH_TOTAL;
-//import static com.recoveryrecord.surveyandroid.example.Constants.ESM_STATUS;
 import static com.recoveryrecord.surveyandroid.example.Constants.ETTODAY_PACKAGE_NAME;
 import static com.recoveryrecord.surveyandroid.example.Constants.LTN_PACKAGE_NAME;
 import static com.recoveryrecord.surveyandroid.example.Constants.MY_APP_PACKAGE_NAME;
-//import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_DIARY_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_NEWS_DEVICE_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_NEWS_MONITOR_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_NEWS_NOTI_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_NEWS_PACKAGE_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_NEWS_SOURCE;
@@ -85,13 +30,6 @@ import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TY
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_DIARY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_ESM;
 import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_TYPE_VALUE_NEWS;
-//import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_ESM_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_NEWS_MONITOR_COLLECTION;
-//import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_NOTI_TIME;
-//import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_SERVICE_COLLECTION;
-//import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_SOURCE;
-//import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_TEXT;
-//import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_TITLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_RECEIEVE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_DIARY_REMOVE_TIME;
@@ -100,7 +38,6 @@ import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_COLLEC
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_RECEIEVE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_REMOVE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_REMOVE_TYPE;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_MEDIA_SELECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_RECEIEVE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_REMOVE_TIME;
@@ -108,16 +45,44 @@ import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_REMOV
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_SERVICE_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_SERVICE_RECEIEVE_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.SETS_PACKAGE_NAME;
-import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.STORM_PACKAGE_NAME;
-import static com.recoveryrecord.surveyandroid.example.Constants.TEST_USER_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.UDN_PACKAGE_NAME;
-import static com.recoveryrecord.surveyandroid.example.Constants.UPDATE_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.USER_ANDROID_RELEASE;
-import static com.recoveryrecord.surveyandroid.example.Constants.USER_ANDROID_SDK;
 import static com.recoveryrecord.surveyandroid.example.Constants.USER_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.USER_DEVICE_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.USER_SURVEY_NUMBER;
+
+import android.annotation.SuppressLint;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.os.Build;
+import android.os.Bundle;
+import android.provider.Settings;
+import android.service.notification.StatusBarNotification;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.preference.PreferenceManager;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.recoveryrecord.surveyandroid.example.DbHelper.DiaryDbHelper;
+import com.recoveryrecord.surveyandroid.example.DbHelper.ESMDbHelper;
+import com.recoveryrecord.surveyandroid.example.DbHelper.PushNewsDbHelper;
+import com.recoveryrecord.surveyandroid.example.sqlite.Diary;
+import com.recoveryrecord.surveyandroid.example.sqlite.ESM;
+import com.recoveryrecord.surveyandroid.example.sqlite.PushNews;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 @SuppressLint("OverrideAbstract")
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)

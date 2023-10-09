@@ -1,81 +1,5 @@
 package com.recoveryrecord.surveyandroid.example;
 
-import android.annotation.SuppressLint;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.Point;
-import android.graphics.Rect;
-//import android.icu.lang.UCharacter;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.os.Bundle;
-import android.provider.Settings;
-import android.text.TextUtils;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.util.TypedValue;
-import android.view.Display;
-import android.view.DragEvent;
-import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewTreeObserver;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.recoveryrecord.surveyandroid.example.DbHelper.PushNewsDbHelper;
-import com.recoveryrecord.surveyandroid.example.DbHelper.ReadingBehaviorDbHelper;
-import com.recoveryrecord.surveyandroid.example.sqlite.DragObj;
-import com.recoveryrecord.surveyandroid.example.sqlite.FlingObj;
-import com.recoveryrecord.surveyandroid.example.sqlite.PushNews;
-import com.recoveryrecord.surveyandroid.example.sqlite.ReadingBehavior;
-import com.recoveryrecord.surveyandroid.example.receiever.ApplicationSelectorReceiver;
-//import com.recoveryrecord.surveyandroid.example.receiever.ScreenStateReceiver;
-
-import java.io.InputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-//import java.util.Random;
-//import java.util.Set;
-import java.util.Objects;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-//import java.util.concurrent.ThreadLocalRandom;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.preference.PreferenceManager;
-
 import static com.recoveryrecord.surveyandroid.example.Constants.MEDIA_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_CONTENT;
@@ -122,18 +46,83 @@ import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIO
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_VIEWPORT_NUM;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_VIEWPORT_RECORD;
 import static com.recoveryrecord.surveyandroid.example.Constants.READ_TOTAL;
-//import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_DEVICE_ID;
-//import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_IS_LOGIN;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_TEST_SIZE;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.Constants.TRIGGER_BY_KEY;
 
+import android.annotation.SuppressLint;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Rect;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
+import android.provider.Settings;
+import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.util.TypedValue;
+import android.view.Display;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.ViewTreeObserver;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.recoveryrecord.surveyandroid.example.model.ReadingBehavior;
+import com.recoveryrecord.surveyandroid.example.receiever.ApplicationSelectorReceiver;
+import com.recoveryrecord.surveyandroid.example.sqlite.DragObj;
+import com.recoveryrecord.surveyandroid.example.sqlite.FlingObj;
+import com.recoveryrecord.surveyandroid.example.sqlite.PushNews;
+
+import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class NewsModuleActivity extends AppCompatActivity implements GestureListener.SimpleGestureListener {
-    //    String TagCycle = "my activity cycle";
     String device_id = "";
     String text_size_string = "1";
 
+    private ActivityResultLauncher<Void> shareLauncher;
     volatile boolean activityStopped = false;
     volatile boolean activityEnd = false;
     boolean share_clicked = false;
@@ -155,7 +144,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
     private GestureListener detector;
     List<DragObj> dragObjArrayListArray = new ArrayList<>();//drag gesture
 
-    ReadingBehavior myReadingBehavior = new ReadingBehavior();//sqlite
+    ReadingBehavior myReadingBehavior = new ReadingBehavior();
 
     boolean self_trigger = false;
     int has_img = 0;
@@ -386,7 +375,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
 //        @SuppressLint("SimpleDateFormat")
 //        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 //        String time_now = formatter.format(date);
-        myReadingBehavior.setKEY_IN_TIMESTAMP(Timestamp.now().getSeconds());
+        myReadingBehavior.setInTimestamp(Timestamp.now().getSeconds());
         //check trigger from #######################################################################
 //        Log.d("555 news LoginActivity", String.valueOf(sharedPrefs.getInt(SHARE_PREFERENCE_IS_LOGIN, 0)));
 //        Log.d("555 news LoginActivity", String.valueOf(sharedPrefs.getString(SHARE_PREFERENCE_DEVICE_ID, "123")));
@@ -401,15 +390,15 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                 media_ch = media_eng;
             }
             if(b.getString(TRIGGER_BY_KEY)!=null){
-                myReadingBehavior.setKEY_TRIGGER_BY(b.getString(TRIGGER_BY_KEY));
+                myReadingBehavior.setTriggerBy(b.getString(TRIGGER_BY_KEY, "UNKNOWN"));
             }
 
-            if(myReadingBehavior.getKEY_TRIGGER_BY().equals(READING_BEHAVIOR_TRIGGER_BY_NOTIFICATION)){
+            if (myReadingBehavior.getTriggerBy().equals(READING_BEHAVIOR_TRIGGER_BY_NOTIFICATION)) {
                 PushNews myPushNews = new PushNews();
                 myPushNews.setKEY_DOC_ID(device_id + " " + news_id);
                 myPushNews.setKEY_OPEN_TIMESTAMP(Timestamp.now().getSeconds());
-                PushNewsDbHelper dbHandler = new PushNewsDbHelper(getApplicationContext());
-                dbHandler.UpdatePushNewsDetailsClick(myPushNews);
+//                PushNewsDbHelper dbHandler = new PushNewsDbHelper(getApplicationContext());
+//                dbHandler.UpdatePushNewsDetailsClick(myPushNews);
 
                 db.collection(PUSH_NEWS_COLLECTION)
                         .document(device_id + " " + news_id)
@@ -502,7 +491,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
 
         editor.apply();
 
-        myReadingBehavior.setKEY_MEDIA(media_ch);
+        myReadingBehavior.setMedia(media_ch);
 //        Log.d("log: media_name", media_name);
 //        Log.d("log: time_in", myReadingBehavior.getKEY_TIME_IN());
         enter_timestamp = Timestamp.now();//new Timestamp(System.currentTimeMillis());
@@ -522,8 +511,8 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         float density = getResources().getDisplayMetrics().density;
         float dpHeight = outMetrics.heightPixels / density;
         final float dpWidth = outMetrics.widthPixels / density;
-        myReadingBehavior.setKEY_DISPLAY_HEIGHT(dpHeight);
-        myReadingBehavior.setKEY_DISPLAY_WIDTH(dpWidth);
+        myReadingBehavior.setDisplayHeight(dpHeight);
+        myReadingBehavior.setDisplayWidth(dpWidth);
 //        Log.d("log: display_width_dp", myReadingBehavior.getKEY_DISPLAY_WIDTH());
 //        Log.d("log: display_height_dp", myReadingBehavior.getKEY_DISPLAY_HEIGHT());
         //whether is chinese #######################################################################
@@ -561,7 +550,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
 //            docRef = db.collection(MEDIA_COLLECTION).document(media_name).collection(NEWS_COLLECTION).document(news_id);
             docRef = db.collection(NEWS_COLLECTION).document(news_id);
             Toast.makeText(getApplicationContext(), "努力loading中!!", Toast.LENGTH_SHORT).show();
-            myReadingBehavior.setKEY_NEWS_ID(news_id);
+            myReadingBehavior.setNewsId(news_id);
         }
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @SuppressLint("RtlHardcoded")
@@ -581,7 +570,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
 //                        mTitle = "";
                         if(document.getString(NEWS_TITLE)!=null){
                             mTitle = document.getString(NEWS_TITLE);
-                            myReadingBehavior.setKEY_TITLE(mTitle);
+                            myReadingBehavior.setTitle(mTitle);
                         }
 //                        mImg = "NA";
 //                        if(document.getString("media").equals("聯合")){
@@ -593,7 +582,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                         if(document.getTimestamp(NEWS_PUBDATE)!=null){
                             mPubdate = document.getTimestamp(NEWS_PUBDATE);
                             assert mPubdate != null;
-                            myReadingBehavior.setKEY_PUBDATE(mPubdate.getSeconds());
+                            myReadingBehavior.setPubdate(mPubdate.getSeconds());
                         }
 //                        if(document.get(NEWS_CATEGORY)!=null){
 //                            if(media_name.equals("storm")){
@@ -616,7 +605,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                         mDate = String.format("%s %s", my_tt.get(0), my_tt.get(2));
 //                        mSource = document.getString(NEWS_MEDIA);
                         mSource = media_ch;
-                        myReadingBehavior.setKEY_NEWS_ID(document.getString(NEWS_ID));
+                        myReadingBehavior.setNewsId(document.getString(NEWS_ID));
 //                        ArrayList<String> c_list = null;
                         ArrayList<String> c_list = new ArrayList<>();
                         if(document.get(NEWS_CONTENT)!=null){
@@ -647,7 +636,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                             divided_by = 25;
                         }
                         int cut_size = (int) (dpWidth / divided_by);
-                        myReadingBehavior.setKEY_BYTE_PER_LINE(cut_size*2);
+                        myReadingBehavior.setBytePerLine(cut_size * 2);
                         //loop for each paragraph
                         for (int i = 0; i < c_list.size(); i++) {
                             if (c_list.get(i).length()==0 || TextUtils.isEmpty(c_list.get(i))){
@@ -862,7 +851,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                         params.setMargins(10, 10, 10, 10);
                         //set viewport number ######################################################
                         int textview_num = divList.size();
-                        myReadingBehavior.setKEY_VIEW_PORT_NUM(textview_num);
+                        myReadingBehavior.setViewPortNum(textview_num);
 //                        Log.d("log: view_port_num", String.valueOf(myReadingBehavior.getKEY_VIEW_PORT_NUM()));
                         //##########################################################################
                         //##########################################################################
@@ -923,7 +912,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                         }
                         myTextViews[0].measure(0, 0);
                         int h_dp_unit = pxToDp(myTextViews[0].getMeasuredHeight(), myTextViews[0].getContext());
-                        myReadingBehavior.setKEY_ROW_SPACING(h_dp_unit);
+                        myReadingBehavior.setRowSpacing(h_dp_unit);
                         //##########################################################################
                         //##########################################################################
                         //##########################################################################
@@ -931,14 +920,13 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                         ViewTreeObserver viewTreeObserver = content_view.getViewTreeObserver();
                         if (viewTreeObserver.isAlive()) {
                             viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
                                 @Override
                                 public void onGlobalLayout() {
                                     content_view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                                     int viewWidth = content_view.getWidth();
                                     int viewHeight = content_view.getHeight();
                                     int dp_unit = pxToDp(viewHeight, content_view.getContext());
-                                    myReadingBehavior.setKEY_CONTENT_LENGTH(dp_unit);
+                                    myReadingBehavior.setContentLength(dp_unit);
 //                                    Log.d("log: content_length_dp", myReadingBehavior.getKEY_CONTENT_LENGTH());
                                 }
                             });
@@ -946,7 +934,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                         //visibility check #########################################################
                         final int N = textview_num;
                         class VisibleChecker {
-                            private ExecutorService executor = Executors.newFixedThreadPool(1);
+                            private final ExecutorService executor = Executors.newFixedThreadPool(1);
                             public Future<Integer> calculate(final Integer input) {
                                 return executor.submit(() -> {
                                     Thread.sleep(1000);
@@ -956,12 +944,13 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                             public Future<Integer> visibility_check(final int input, final int start_count) {
                                 return executor.submit(new Callable<Integer>() {
                                     float count_running = 0;
-                                    int[] count = new int[N];
-                                    int[] count_top = new int[4];
-                                    boolean[] old_flag = new boolean[N];
-                                    boolean[] new_flag = new boolean[N];
-                                    boolean[] old_flag_top = new boolean[4];
-                                    boolean[] new_flag_top = new boolean[4];
+                                    final int[] count = new int[N];
+                                    final int[] count_top = new int[4];
+                                    final boolean[] old_flag = new boolean[N];
+                                    final boolean[] new_flag = new boolean[N];
+                                    final boolean[] old_flag_top = new boolean[4];
+                                    final boolean[] new_flag_top = new boolean[4];
+
                                     @Override
                                     public Integer call() throws Exception {
                                         Arrays.fill(old_flag, Boolean.FALSE);
@@ -987,7 +976,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                                                 for (int i = 0; i < N; i++) {
                                                     tmp_record+=count[i] / 10 + "#";
                                                 }
-                                                myReadingBehavior.setKEY_VIEW_PORT_RECORD(tmp_record);
+                                                myReadingBehavior.setViewPortRecord(tmp_record);
 //                                                Log.d("log: view_port_record", myReadingBehavior.getKEY_VIEW_PORT_RECORD());
                                                 while (activityStopped) {
                                                     Thread.sleep(100);
@@ -1012,11 +1001,11 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                                             }
                                             if (old_flag_top[0] && new_flag_top[0]) {
                                                 count_top[0]++;
-                                            } else if (old_flag_top[0] && !new_flag_top[0]) {
-                                                old_flag_top[0] = new_flag_top[0];
-                                            } else if (!old_flag_top[0] && new_flag_top[0]) {
+                                            } else if (old_flag_top[0]) {
+                                                old_flag_top[0] = false;
+                                            } else if (new_flag_top[0]) {
                                                 count_top[0]++;
-                                                old_flag_top[0] = new_flag_top[0];
+                                                old_flag_top[0] = true;
                                             }
                                             //time #################################################
                                             if (!myTextViewsDate.getLocalVisibleRect(scrollBounds)) {
@@ -1025,20 +1014,19 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                                             } else {
 //                                                Log.d("log: layout", "2");
                                                 new_flag_top[1] = true;
-                                                if(first_view==-100){//-1
-                                                    first_view = initial_start+1;
+                                                if (first_view == -100) {//-1
+                                                    first_view = initial_start + 1;
                                                 } else {
-                                                    last_view = initial_start+1;
+                                                    last_view = initial_start + 1;
                                                 }
                                             }
                                             if (old_flag_top[1] && new_flag_top[1]) {
                                                 count_top[1]++;
-                                            } else if (old_flag_top[1] && !new_flag_top[1]) {
-                                                old_flag_top[1] = new_flag_top[1];
-                                            } else if (!old_flag_top[1] && new_flag_top[1]) {
+                                            } else if (old_flag_top[1]) {
+                                                old_flag_top[1] = false;
+                                            } else if (new_flag_top[1]) {
                                                 count_top[1]++;
-                                                old_flag_top[1] = new_flag_top[1];
-                                            } else {
+                                                old_flag_top[1] = true;
                                             }
                                             // media ###############################################
                                             if (!myTextViewsSrc.getLocalVisibleRect(scrollBounds)) {
@@ -1047,20 +1035,19 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                                             } else {
 //                                                Log.d("log: layout", "media 2");
                                                 new_flag_top[2] = true;
-                                                if(first_view==-100){//-1
-                                                    first_view = initial_start+2;
+                                                if (first_view == -100) {//-1
+                                                    first_view = initial_start + 2;
                                                 } else {
-                                                    last_view = initial_start+2;
+                                                    last_view = initial_start + 2;
                                                 }
                                             }
                                             if (old_flag_top[2] && new_flag_top[2]) {
                                                 count_top[2]++;
-                                            } else if (old_flag_top[2] && !new_flag_top[2]) {
-                                                old_flag_top[2] = new_flag_top[2];
-                                            } else if (!old_flag_top[2] && new_flag_top[2]) {
+                                            } else if (old_flag_top[2]) {
+                                                old_flag_top[2] = false;
+                                            } else if (new_flag_top[2]) {
                                                 count_top[2]++;
-                                                old_flag_top[2] = new_flag_top[2];
-                                            } else {
+                                                old_flag_top[2] = true;
                                             }
                                             //img ##################################################
                                             if(has_img==1){
@@ -1070,20 +1057,20 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                                                 } else {
 //                                                    Log.d("log: layout", "img 2");
                                                     new_flag_top[3] = true;
-                                                    if(first_view==-100){//-1
-                                                        first_view = initial_start+3;
+                                                    if (first_view == -100) {//-1
+                                                        first_view = initial_start + 3;
                                                     } else {
-                                                        last_view = initial_start+3;
+                                                        last_view = initial_start + 3;
                                                     }
                                                 }
                                             }
                                             if (old_flag_top[3] && new_flag_top[3]) {
                                                 count_top[3]++;
-                                            } else if (old_flag_top[3] && !new_flag_top[3]) {
-                                                old_flag_top[3] = new_flag_top[3];
-                                            } else if (!old_flag_top[3] && new_flag_top[3]) {
+                                            } else if (old_flag_top[3]) {
+                                                old_flag_top[3] = false;
+                                            } else if (new_flag_top[3]) {
                                                 count_top[3]++;
-                                                old_flag_top[3] = new_flag_top[3];
+                                                old_flag_top[3] = true;
                                             }
                                             //content ##############################################
                                             for (int i = 0; i < N; i++) {
@@ -1132,7 +1119,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                                             for (int i = 0; i < N; i++) {
                                                 tmp_record+=count[i] / 10 + "#";
                                             }
-                                            myReadingBehavior.setKEY_VIEW_PORT_RECORD(tmp_record);
+                                            myReadingBehavior.setViewPortRecord(tmp_record);
                                         }
 //                                        Log.d("log: MyScrollView", "Finish");
 //                                        Log.d("log: MyScrollView", "can not reach!!!!!!!!!!!!!!");
@@ -1140,7 +1127,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                                         for (int i = 0; i < N; i++) {
                                             finish_record+=count[i] / 10 + "#";
                                         }
-                                        myReadingBehavior.setKEY_VIEW_PORT_RECORD(finish_record);
+                                        myReadingBehavior.setViewPortRecord(finish_record);
 //                                        Log.d("log: view_port_record55", myReadingBehavior.getKEY_VIEW_PORT_RECORD());
                                         return 1;
                                     }
@@ -1183,17 +1170,17 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         super.onPause();
         Log.d("log: activity cycle", "NewsModuleActivity On pause");
         activityStopped = true;
-        myReadingBehavior.setKEY_PAUSE_ON_PAGE(myReadingBehavior.getKEY_PAUSE_ON_PAGE()+1);
-        long tmp = myReadingBehavior.getKEY_TIME_ON_PAGE() + (System.currentTimeMillis()-in_time)/1000;
-        myReadingBehavior.setKEY_TIME_ON_PAGE(tmp);
+        myReadingBehavior.setPauseOnPage(myReadingBehavior.getPauseOnPage() + 1);
+        long tmp = myReadingBehavior.getTimeOnPage() + (System.currentTimeMillis() - in_time) / 1000;
+        myReadingBehavior.setTimeOnPage(tmp);
 //        Log.d("log: pause count", String.valueOf(myReadingBehavior.getKEY_PAUSE_ON_PAGE()));
         Date date = new Date(System.currentTimeMillis());
-        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 //        myReadingBehavior.setKEY_TIME_OUT(formatter.format(date));
 //        Log.d("log: time_out", myReadingBehavior.getKEY_TIME_OUT());
 
-        myReadingBehavior.setKEY_TIME_SERIES(tmp_time_series);
-        Log.d("log: time_series", myReadingBehavior.getKEY_TIME_SERIES());
+        myReadingBehavior.setTimeSeries(tmp_time_series);
+        Log.d("log: time_series", myReadingBehavior.getTimeSeries());
 
         String drag_str = "";
         int drag_count = 0;
@@ -1227,7 +1214,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                 }
                 Date d1 = new Date(time_one);
                 Date d2 = new Date(time_two);
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 //                Date d1 = new Date(), d2 = new Date();
                 try {
                     d1 = format.parse(String.valueOf(time_one));
@@ -1296,18 +1283,18 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
             List<String> my_d1 = new ArrayList<String>(Arrays.asList(formatter.format(d1).split(" ")));
             List<String> my_d2 = new ArrayList<>(Arrays.asList(formatter.format(d2).split(" ")));
             drag_str+=duration + "/";
-            drag_str+= my_d1.get(2) + "/"+ my_d2.get(2) + "/";
-            drag_str+="(" + drag_x_1 + "," + drag_y_1 + ")/";
-            drag_str+="(" + drag_x_2 + "," + drag_y_2 + ")/";
+            drag_str += my_d1.get(2) + "/" + my_d2.get(2) + "/";
+            drag_str += "(" + drag_x_1 + "," + drag_y_1 + ")/";
+            drag_str += "(" + drag_x_2 + "," + drag_y_2 + ")/";
             String direction = "";
-            double velocity_x = (Math.abs(drag_x_1-drag_x_2) / duration), velocity_y = (Math.abs(drag_y_1-drag_y_2) / duration);
-            drag_str+= velocity_x + "/" + velocity_y + "/";
+            double velocity_x = (Math.abs(drag_x_1 - drag_x_2) / duration), velocity_y = (Math.abs(drag_y_1 - drag_y_2) / duration);
+            drag_str += velocity_x + "/" + velocity_y + "/";
             direction += drag_y_1 < drag_y_2 ? "N" : drag_y_1 > drag_y_2 ? "S" : "";
             direction += drag_x_1 < drag_x_2 ? "E" : drag_x_1 > drag_x_2 ? "W" : "";
-            drag_str+=direction + "#";
+            drag_str += direction + "#";
         }
-        myReadingBehavior.setKEY_DRAG_NUM(drag_count);
-        myReadingBehavior.setKEY_DRAG_RECORD(drag_str);
+        myReadingBehavior.setDragNum(drag_count);
+        myReadingBehavior.setDragRecord(drag_str);
         updateReadingBehavior();
     }
 
@@ -1416,7 +1403,7 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
 
         if (id == R.id.share){
             String share_field = "";
-            final DocumentReference rbRef = db.collection(READING_BEHAVIOR_COLLECTION).document(device_id + " " + myReadingBehavior.getKEY_IN_TIMESTAMP());
+            final DocumentReference rbRef = db.collection(READING_BEHAVIOR_COLLECTION).document(device_id + " " + myReadingBehavior.getInTimestamp());
             if(share_clicked){
                 rbRef.get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -1460,62 +1447,67 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
                     }
                 });
             }
-            try{
-                String url = mUrl;
+            try {
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.setType("text/plain");
-                shareIntent.putExtra(Intent.EXTRA_TEXT,url); // your above url
+                shareIntent.putExtra(Intent.EXTRA_TEXT, mUrl); // your above url
 
                 Intent receiver = new Intent(this, ApplicationSelectorReceiver.class);
                 receiver.putExtra("device_id", device_id);
-                receiver.putExtra("doc_time", String.valueOf(myReadingBehavior.getKEY_IN_TIMESTAMP()));
-                receiver.putExtra("doc_date", String.valueOf(l_date));
-                receiver.putExtra("share_field", share_field);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, receiver, PendingIntent.FLAG_UPDATE_CURRENT);
+                receiver.putExtra("doc_time", String.valueOf(myReadingBehavior.getInTimestamp()));
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, receiver, PendingIntent.FLAG_IMMUTABLE);
                 Intent chooser = Intent.createChooser(shareIntent, "Share via...", pendingIntent.getIntentSender());
-                startActivity(chooser);
-
+                startActivityForResult(chooser, 123);
             }catch (Exception e){
                 Toast.makeText(this, "Hmm.. Sorry, \nCannot be share", Toast.LENGTH_SHORT).show();
+                Log.d("share result", e.toString());
             }
-        } else if (id == android.R.id.home){
+        } else if (id == android.R.id.home) {
             Intent intent_back = new Intent(NewsModuleActivity.this, NewsHybridActivity.class);
             startActivity(intent_back);
         }
-//        else if (id == R.id.web){
-//            Intent i = new Intent(Intent.ACTION_VIEW);
-//            i.setData(Uri.parse(mUrl));
-//            startActivity(i);
-//        }
         return super.onOptionsItemSelected(item);
     }
 
+    // TODO share failed
     @Override
-    public boolean dispatchTouchEvent(MotionEvent me){
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 123) {
+            if (data != null && data.getComponent() != null && !TextUtils.isEmpty(data.getComponent().flattenToShortString())) {
+                String appName = data.getComponent().flattenToShortString();
+                Log.d("share result", appName);
+                startActivity(data);
+            }
+        }
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent me) {
         this.detector.onTouchEvent(me);
         return super.dispatchTouchEvent(me);
     }
 
     @Override
     public void onSwipe(int direction, FlingObj flingObj) {
-        myReadingBehavior.setKEY_FLING_NUM(myReadingBehavior.getKEY_FLING_NUM()+1);
-        flingObj.setFLING_ID(myReadingBehavior.getKEY_FLING_NUM());
-        String str_fling = myReadingBehavior.getKEY_FLING_RECORD();
-        if(str_fling.equals("NA")){
+        myReadingBehavior.setFlingNum(myReadingBehavior.getFlingNum() + 1);
+        flingObj.setFLING_ID(myReadingBehavior.getFlingNum());
+        String str_fling = myReadingBehavior.getFlingRecord();
+        if (str_fling.equals("NA")) {
             str_fling = "";
         }
 //        str_fling+="fling num:" + flingObj.getFLING_ID() + "/";
-        str_fling+="(" + flingObj.getPOINT_ONE_X() + "," + flingObj.getPOINT_ONE_Y() + ")/";
-        str_fling+="(" + flingObj.getPOINT_TWO_X() + "," + flingObj.getPOINT_TWO_Y() + ")/";
-        str_fling+=flingObj.getDISTANCE_X() + "/";
-        str_fling+=flingObj.getDISTANCE_Y() + "/";
-        str_fling+=flingObj.getVELOCITY_X() + "/";
-        str_fling+=flingObj.getVELOCITY_Y() + "/";
+        str_fling += "(" + flingObj.getPOINT_ONE_X() + "," + flingObj.getPOINT_ONE_Y() + ")/";
+        str_fling += "(" + flingObj.getPOINT_TWO_X() + "," + flingObj.getPOINT_TWO_Y() + ")/";
+        str_fling += flingObj.getDISTANCE_X() + "/";
+        str_fling += flingObj.getDISTANCE_Y() + "/";
+        str_fling += flingObj.getVELOCITY_X() + "/";
+        str_fling += flingObj.getVELOCITY_Y() + "/";
         String direction_f = "";
         direction_f += flingObj.getPOINT_ONE_Y() < flingObj.getPOINT_TWO_Y() ? "N" : flingObj.getPOINT_ONE_Y() > flingObj.getPOINT_TWO_Y() ? "S" : "";
         direction_f += flingObj.getPOINT_ONE_X() < flingObj.getPOINT_TWO_X() ? "E" : flingObj.getPOINT_ONE_X() > flingObj.getPOINT_TWO_X() ? "W" : "";
-        str_fling+=direction_f + "#";
-        myReadingBehavior.setKEY_FLING_RECORD(str_fling);
+        str_fling += direction_f + "#";
+        myReadingBehavior.setFlingRecord(str_fling);
     }
 
     @Override
@@ -1523,11 +1515,11 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         dragObjArrayListArray.add(dragObj);
     }
 
-    public static Point getTouchPositionFromDragEvent(View item, DragEvent event) {
-        Rect rItem = new Rect();
-        item.getGlobalVisibleRect(rItem);
-        return new Point(rItem.left + Math.round(event.getX()), rItem.top + Math.round(event.getY()));
-    }
+//    public static Point getTouchPositionFromDragEvent(View item, DragEvent event) {
+//        Rect rItem = new Rect();
+//        item.getGlobalVisibleRect(rItem);
+//        return new Point(rItem.left + Math.round(event.getX()), rItem.top + Math.round(event.getY()));
+//    }
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     LocalDate l_date = LocalDate.now();
@@ -1538,120 +1530,110 @@ public class NewsModuleActivity extends AppCompatActivity implements GestureList
         final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         Map<String, Object> readingBehavior = new HashMap<>();
 
-        readingBehavior.put(READING_BEHAVIOR_DOC_ID,  device_id + " " + myReadingBehavior.getKEY_IN_TIMESTAMP());
-        readingBehavior.put(READING_BEHAVIOR_DEVICE_ID,  device_id);
-        readingBehavior.put(READING_BEHAVIOR_USER_ID,  sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+        readingBehavior.put(READING_BEHAVIOR_DOC_ID, device_id + " " + myReadingBehavior.getInTimestamp());
+        readingBehavior.put(READING_BEHAVIOR_DEVICE_ID, device_id);
+        readingBehavior.put(READING_BEHAVIOR_USER_ID, sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
         readingBehavior.put(READING_BEHAVIOR_SAMPLE_CHECK_ID, "NA");
         //select esm id
-        readingBehavior.put(READING_BEHAVIOR_TRIGGER_BY, myReadingBehavior.getKEY_TRIGGER_BY());
-        readingBehavior.put(READING_BEHAVIOR_NEWS_ID,  news_id);
-        readingBehavior.put(READING_BEHAVIOR_TITLE,myReadingBehavior.getKEY_TITLE());
-        readingBehavior.put(READING_BEHAVIOR_MEDIA, myReadingBehavior.getKEY_MEDIA());
+        readingBehavior.put(READING_BEHAVIOR_TRIGGER_BY, myReadingBehavior.getTriggerBy());
+        readingBehavior.put(READING_BEHAVIOR_NEWS_ID, news_id);
+        readingBehavior.put(READING_BEHAVIOR_TITLE, myReadingBehavior.getTitle());
+        readingBehavior.put(READING_BEHAVIOR_MEDIA, myReadingBehavior.getMedia());
         readingBehavior.put(READING_BEHAVIOR_HAS_IMAGE, has_img);
         readingBehavior.put(READING_BEHAVIOR_IMAGE_URL, mImg);
         //pubdate
         readingBehavior.put(READING_BEHAVIOR_ROW_SPACING, "NA");
         readingBehavior.put(READING_BEHAVIOR_BYTE_PER_LINE, "NA");
-        readingBehavior.put(READING_BEHAVIOR_FONT_SIZE,  text_size_string);
+        readingBehavior.put(READING_BEHAVIOR_FONT_SIZE, text_size_string);
 
         readingBehavior.put(READING_BEHAVIOR_CONTENT_LENGTH, "NA");
-        readingBehavior.put(READING_BEHAVIOR_DISPLAY_WIDTH, myReadingBehavior.getKEY_DISPLAY_WIDTH());
-        readingBehavior.put(READING_BEHAVIOR_DISPLAY_HEIGHT, myReadingBehavior.getKEY_DISPLAY_HEIGHT());
+        readingBehavior.put(READING_BEHAVIOR_DISPLAY_WIDTH, myReadingBehavior.getDisplayWidth());
+        readingBehavior.put(READING_BEHAVIOR_DISPLAY_HEIGHT, myReadingBehavior.getDisplayHeight());
         readingBehavior.put(READING_BEHAVIOR_IN_TIME, enter_timestamp);
         readingBehavior.put(READING_BEHAVIOR_IN_TIME_LONG, enter_timestamp.getSeconds());
         readingBehavior.put(READING_BEHAVIOR_OUT_TIME, Timestamp.now());
 //        readingBehavior.put(READING_BEHAVIOR_OUT_TIME_LONG, Timestamp.now().getSeconds());
-        readingBehavior.put(READING_BEHAVIOR_TIME_ON_PAGE, myReadingBehavior.getKEY_TIME_ON_PAGE());
-        readingBehavior.put(READING_BEHAVIOR_PAUSE_COUNT, myReadingBehavior.getKEY_PAUSE_ON_PAGE());
+        readingBehavior.put(READING_BEHAVIOR_TIME_ON_PAGE, myReadingBehavior.getTimeOnPage());
+        readingBehavior.put(READING_BEHAVIOR_PAUSE_COUNT, myReadingBehavior.getPauseOnPage());
         readingBehavior.put(READING_BEHAVIOR_VIEWPORT_NUM, "NA");
-        readingBehavior.put(READING_BEHAVIOR_VIEWPORT_RECORD, Arrays.asList("NA"));
-        readingBehavior.put(READING_BEHAVIOR_FLING_NUM, myReadingBehavior.getKEY_FLING_NUM());
-        readingBehavior.put(READING_BEHAVIOR_FLING_RECORD, Arrays.asList("NA"));
-        readingBehavior.put(READING_BEHAVIOR_DRAG_NUM, myReadingBehavior.getKEY_DRAG_NUM());
-        readingBehavior.put(READING_BEHAVIOR_DRAG_RECORD, Arrays.asList("NA"));
-        readingBehavior.put(READING_BEHAVIOR_SHARE, Arrays.asList("NA"));
-        readingBehavior.put(READING_BEHAVIOR_TIME_SERIES, Arrays.asList("NA"));
+        readingBehavior.put(READING_BEHAVIOR_VIEWPORT_RECORD, Collections.singletonList("NA"));
+        readingBehavior.put(READING_BEHAVIOR_FLING_NUM, myReadingBehavior.getFlingNum());
+        readingBehavior.put(READING_BEHAVIOR_FLING_RECORD, Collections.singletonList("NA"));
+        readingBehavior.put(READING_BEHAVIOR_DRAG_NUM, myReadingBehavior.getDragNum());
+        readingBehavior.put(READING_BEHAVIOR_DRAG_RECORD, Collections.singletonList("NA"));
+        readingBehavior.put(READING_BEHAVIOR_SHARE, Collections.singletonList("NA"));
+        readingBehavior.put(READING_BEHAVIOR_TIME_SERIES, Collections.singletonList("NA"));
 
 //        readingBehavior.put(READING_BEHAVIOR_SAMPLE_CHECK, false);
 //        readingBehavior.put(READING_BEHAVIOR_CATEGORY,categoryArray);
 
-        myReadingBehavior.setKEY_DOC_ID(device_id + " " + myReadingBehavior.getKEY_IN_TIMESTAMP());
-        myReadingBehavior.setKEY_DEVICE_ID(device_id);
-        myReadingBehavior.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
-        myReadingBehavior.setKEY_SELECT_ESM_ID("NA");
-        myReadingBehavior.setKEY_HAS_IMG(has_img);
-        myReadingBehavior.setKEY_PUBDATE(0);
-        myReadingBehavior.setKEY_FONT_SIZE(text_size_string);
+        myReadingBehavior.setDocId(device_id + " " + myReadingBehavior.getInTimestamp());
+        myReadingBehavior.setDeviceId(device_id);
+        myReadingBehavior.setUserId(sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+        myReadingBehavior.setSelectEsmId("NA");
+        myReadingBehavior.setHasImg(has_img);
+        myReadingBehavior.setPubdate(0);
+        myReadingBehavior.setFontSize(text_size_string);
 
-        ReadingBehaviorDbHelper dbHandler = new ReadingBehaviorDbHelper(getApplicationContext());
-        dbHandler.insertReadingBehaviorDetailsCreate(myReadingBehavior);
+//        ReadingBehaviorDbHelper dbHandler = new ReadingBehaviorDbHelper(getApplicationContext());
+//        dbHandler.insertReadingBehaviorDetailsCreate(myReadingBehavior);
 
         db.collection(READING_BEHAVIOR_COLLECTION)
-                .document(device_id + " " + myReadingBehavior.getKEY_IN_TIMESTAMP())
+                .document(device_id + " " + myReadingBehavior.getInTimestamp())
                 .set(readingBehavior);
         document_create = true;
     }
-    public void updateReadingBehavior(){
+    public void updateReadingBehavior() {
         @SuppressLint("MissingPermission")
-        DocumentReference rbRef = db.collection(READING_BEHAVIOR_COLLECTION).document(device_id + " " +  myReadingBehavior.getKEY_IN_TIMESTAMP());
+        DocumentReference rbRef = db.collection(READING_BEHAVIOR_COLLECTION).document(device_id + " " + myReadingBehavior.getInTimestamp());
 
-        List<String> time_series_list = new ArrayList<>(Arrays.asList(myReadingBehavior.getKEY_TIME_SERIES().split("#")));
-        List<String> viewport_record_list = new ArrayList<>(Arrays.asList(myReadingBehavior.getKEY_VIEW_PORT_RECORD().split("#")));
-        List<String> drag_record_list = new ArrayList<>(Arrays.asList(myReadingBehavior.getKEY_DRAG_RECORD().split("#")));
-        List<String> fling_record_list = new ArrayList<>(Arrays.asList(myReadingBehavior.getKEY_FLING_RECORD().split("#")));
+        List<String> time_series_list = new ArrayList<>(Arrays.asList(myReadingBehavior.getTimeSeries().split("#")));
+        List<String> viewport_record_list = new ArrayList<>(Arrays.asList(myReadingBehavior.getViewPortRecord().split("#")));
+        List<String> drag_record_list = new ArrayList<>(Arrays.asList(myReadingBehavior.getDragRecord().split("#")));
+        List<String> fling_record_list = new ArrayList<>(Arrays.asList(myReadingBehavior.getFlingRecord().split("#")));
 
-        myReadingBehavior.setKEY_TITLE(mTitle);
-        myReadingBehavior.setKEY_HAS_IMG(has_img);
-        if((mPubdate !=null)){
-            myReadingBehavior.setKEY_PUBDATE(mPubdate.getSeconds());
+        myReadingBehavior.setTitle(mTitle);
+        myReadingBehavior.setHasImg(has_img);
+        if ((mPubdate != null)) {
+            myReadingBehavior.setPubdate(mPubdate.getSeconds());
         } else {
-            myReadingBehavior.setKEY_PUBDATE(0);
+            myReadingBehavior.setPubdate(0);
         }
 
-        myReadingBehavior.setKEY_OUT_TIMESTAMP(Timestamp.now().getSeconds());
+        myReadingBehavior.setOutTimestamp(Timestamp.now().getSeconds());
 
-        ReadingBehaviorDbHelper dbHandler = new ReadingBehaviorDbHelper(getApplicationContext());
-        dbHandler.UpdateReadingBehaviorDetails(myReadingBehavior);
+//        ReadingBehaviorDbHelper dbHandler = new ReadingBehaviorDbHelper(getApplicationContext());
+//        dbHandler.UpdateReadingBehaviorDetails(myReadingBehavior);
 
         rbRef.update(
-                READING_BEHAVIOR_NEWS_ID,  myReadingBehavior.getKEY_NEWS_ID(),
-                READING_BEHAVIOR_TITLE, myReadingBehavior.getKEY_TITLE(),
-                READING_BEHAVIOR_MEDIA, myReadingBehavior.getKEY_MEDIA(),
-                READING_BEHAVIOR_HAS_IMAGE, has_img,
-                READING_BEHAVIOR_IMAGE_URL, mImg,
-                READING_BEHAVIOR_PUBDATE,mPubdate,
+                        READING_BEHAVIOR_NEWS_ID, myReadingBehavior.getNewsId(),
+                        READING_BEHAVIOR_TITLE, myReadingBehavior.getTitle(),
+                        READING_BEHAVIOR_MEDIA, myReadingBehavior.getMedia(),
+                        READING_BEHAVIOR_HAS_IMAGE, has_img,
+                        READING_BEHAVIOR_IMAGE_URL, mImg,
+                        READING_BEHAVIOR_PUBDATE, mPubdate,
 
-                READING_BEHAVIOR_ROW_SPACING, myReadingBehavior.getKEY_ROW_SPACING(),
-                READING_BEHAVIOR_BYTE_PER_LINE, myReadingBehavior.getKEY_BYTE_PER_LINE(),
+                        READING_BEHAVIOR_ROW_SPACING, myReadingBehavior.getRowSpacing(),
+                        READING_BEHAVIOR_BYTE_PER_LINE, myReadingBehavior.getBytePerLine(),
 
-                READING_BEHAVIOR_CONTENT_LENGTH, myReadingBehavior.getKEY_CONTENT_LENGTH(),
+                        READING_BEHAVIOR_CONTENT_LENGTH, myReadingBehavior.getContentLength(),
 
 //                READING_BEHAVIOR_OUT_TIME, myReadingBehavior.getKEY_OUT_TIMESTAMP(),
-                READING_BEHAVIOR_OUT_TIME, new Timestamp(myReadingBehavior.getKEY_OUT_TIMESTAMP(), 0),
+                        READING_BEHAVIOR_OUT_TIME, new Timestamp(myReadingBehavior.getOutTimestamp(), 0),
 //                READING_BEHAVIOR_OUT_TIME_LONG, myReadingBehavior.getKEY_OUT_TIMESTAMP(),
 
-                READING_BEHAVIOR_TIME_ON_PAGE, myReadingBehavior.getKEY_TIME_ON_PAGE(),//auto
-                READING_BEHAVIOR_PAUSE_COUNT, myReadingBehavior.getKEY_PAUSE_ON_PAGE(),//auto
-                READING_BEHAVIOR_VIEWPORT_NUM, myReadingBehavior.getKEY_VIEW_PORT_NUM(),
-                READING_BEHAVIOR_VIEWPORT_RECORD, viewport_record_list,
-                READING_BEHAVIOR_FLING_NUM, myReadingBehavior.getKEY_FLING_NUM(),
-                READING_BEHAVIOR_FLING_RECORD, fling_record_list,
-                READING_BEHAVIOR_DRAG_NUM, myReadingBehavior.getKEY_DRAG_NUM(),
-                READING_BEHAVIOR_DRAG_RECORD, drag_record_list,
-                READING_BEHAVIOR_TIME_SERIES, time_series_list//auto
+                        READING_BEHAVIOR_TIME_ON_PAGE, myReadingBehavior.getTimeOnPage(),//auto
+                        READING_BEHAVIOR_PAUSE_COUNT, myReadingBehavior.getPauseOnPage(),//auto
+                        READING_BEHAVIOR_VIEWPORT_NUM, myReadingBehavior.getViewPortNum(),
+                        READING_BEHAVIOR_VIEWPORT_RECORD, viewport_record_list,
+                        READING_BEHAVIOR_FLING_NUM, myReadingBehavior.getFlingNum(),
+                        READING_BEHAVIOR_FLING_RECORD, fling_record_list,
+                        READING_BEHAVIOR_DRAG_NUM, myReadingBehavior.getDragNum(),
+                        READING_BEHAVIOR_DRAG_RECORD, drag_record_list,
+                        READING_BEHAVIOR_TIME_SERIES, time_series_list//auto
                 )//auto
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("log: firebase update", "DocumentSnapshot successfully updated!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("log: firebase update", "Error updating document", e);
-                    }
-                });
+                .addOnSuccessListener(aVoid -> Log.d("log: firebase update", "DocumentSnapshot successfully updated!"))
+                .addOnFailureListener(e -> Log.w("log: firebase update", "Error updating document", e));
 
 
 

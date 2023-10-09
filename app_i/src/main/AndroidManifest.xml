@@ -125,7 +125,6 @@
         <receiver android:name=".receiever.ApplicationSelectorReceiver" />
         <receiver android:name=".receiever.ScreenStateReceiver"
             tools:ignore="Instantiatable" />
-        <receiver android:name=".receiever.ApplicationSelectorReceiver" />
         <receiver android:name=".receiever.BlueToothReceiver"
             tools:ignore="Instantiatable" />
         <receiver android:name=".receiever.NetworkChangeReceiver$NetworkChangeBroadcastReceiver"

@@ -1,5 +1,7 @@
 package com.recoveryrecord.surveyandroid.example.receiever;
 
+import static androidx.constraintlayout.motion.utils.Oscillator.TAG;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -16,8 +18,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static androidx.constraintlayout.motion.utils.Oscillator.TAG;
-
 //import com.google.gson.internal.$Gson$Preconditions;
 
 public class MyStreamManager{
@@ -29,9 +29,9 @@ public class MyStreamManager{
 //    StreamGenerator streamGenerator2 = new BlueToothReceiver();
     StreamGenerator streamGenerator3 = new RingModeReceiver();
     StreamGenerator streamGenerator4 = new NetworkChangeReceiver();
-    StreamGenerator streamGenerator5 = new ActivityRecognitionReceiver();
+    //    StreamGenerator streamGenerator5 = new ActivityRecognitionReceiver();
     StreamGenerator streamGenerator6 = (StreamGenerator) new LightSensorReceiver();
-    StreamGenerator streamGenerator7 = new TransportationModeReceiver();
+//    StreamGenerator streamGenerator7 = new TransportationModeReceiver();
 
     private Context context;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -54,9 +54,9 @@ public class MyStreamManager{
 //        streamGenerator2.updateStream();
         streamGenerator3.updateStream(context);
         streamGenerator4.updateStream(context);
-        streamGenerator5.updateStream(context);
+//        streamGenerator5.updateStream(context);
         streamGenerator6.updateStream(context);
-        streamGenerator7.updateStream(context);
+//        streamGenerator7.updateStream(context);
     }
     //transportation
 
