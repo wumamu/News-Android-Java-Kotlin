@@ -1,4 +1,4 @@
-package com.recoveryrecord.surveyandroid.example
+package com.recoveryrecord.surveyandroid.example.activity
 
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
@@ -12,7 +12,10 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
-import com.recoveryrecord.surveyandroid.example.activity.MediaRankRecycleViewAdapter
+import com.recoveryrecord.surveyandroid.example.Constants
+import com.recoveryrecord.surveyandroid.example.R
+import com.recoveryrecord.surveyandroid.example.SimpleItemTouchHelperCallback
+import com.recoveryrecord.surveyandroid.example.adapter.MediaRankRecycleViewAdapter
 import com.recoveryrecord.surveyandroid.example.model.Media
 
 class MediaRankActivity : AppCompatActivity() {

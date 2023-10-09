@@ -7,49 +7,51 @@
     android:layout_height="match_parent"
     tools:context=".NewsHybridActivity"
     android:id="@+id/drawer_layout_hy">
-<!--    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout-->
-    <com.recoveryrecord.surveyandroid.example.MySwipeRefreshLayout
-
+    <com.recoveryrecord.surveyandroid.example.CustomSwipeRefreshLayout
         android:id="@+id/mainSwipeContainer"
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/main_content_hy"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appbar_hy"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/main_toolbar_hy"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@android:color/white" />
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tabs_hy"
-                app:tabIndicatorColor="#1e3348"
-                app:tabTextColor="#95a4b3"
-                app:tabIndicatorFullWidth="false"
-                app:tabPaddingStart="15dp"
-                app:tabPaddingEnd="15dp"
-                app:tabSelectedTextColor = "#111416"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:tabMode="scrollable"
-                app:tabTextAppearance="@style/TabLayoutTextStyle"/>
-        </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/container_hy"
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/main_content_hy"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            android:layout_height="match_parent">
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-<!--    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
-    </com.recoveryrecord.surveyandroid.example.MySwipeRefreshLayout>
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/appbar_hy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/main_toolbar_hy"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@android:color/white" />
+
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tabs_hy"
+                    app:tabIndicatorColor="#1e3348"
+                    app:tabTextColor="#95a4b3"
+                    app:tabIndicatorFullWidth="false"
+                    app:tabPaddingStart="15dp"
+                    app:tabPaddingEnd="15dp"
+                    app:tabSelectedTextColor="#111416"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:tabMode="scrollable"
+                    app:tabTextAppearance="@style/TabLayoutTextStyle" />
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/container_hy"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </com.recoveryrecord.surveyandroid.example.CustomSwipeRefreshLayout>
+
     <com.google.android.material.navigation.NavigationView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

@@ -1,4 +1,4 @@
-package com.recoveryrecord.surveyandroid.example.dailyreadinghistory
+package com.recoveryrecord.surveyandroid.example.ui
 
 import android.os.Bundle
 import android.util.Log
@@ -11,7 +11,6 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.firebase.Timestamp
 import com.recoveryrecord.surveyandroid.example.R
-import com.recoveryrecord.surveyandroid.example.ui.ReadingHistoryDailyFragment
 import java.util.Calendar
 
 class ReadingHistoryDailyMainFragment : Fragment() {

@@ -1,4 +1,4 @@
-package com.recoveryrecord.surveyandroid.example
+package com.recoveryrecord.surveyandroid.example.activity
 
 import android.annotation.SuppressLint
 import android.content.Intent

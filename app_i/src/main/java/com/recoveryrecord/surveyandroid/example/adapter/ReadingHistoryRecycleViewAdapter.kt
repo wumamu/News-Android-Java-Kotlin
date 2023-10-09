@@ -1,4 +1,4 @@
-package com.recoveryrecord.surveyandroid.example.activity
+package com.recoveryrecord.surveyandroid.example.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -12,8 +12,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
-import com.recoveryrecord.surveyandroid.example.NewsModuleActivity
 import com.recoveryrecord.surveyandroid.example.R
+import com.recoveryrecord.surveyandroid.example.activity.NewsModuleActivity
 import com.recoveryrecord.surveyandroid.example.model.News
 import java.text.SimpleDateFormat
 

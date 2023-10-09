@@ -76,6 +76,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.recoveryrecord.surveyandroid.example.DbHelper.PushNewsDbHelper;
+import com.recoveryrecord.surveyandroid.example.activity.NewsModuleActivity;
 import com.recoveryrecord.surveyandroid.example.sqlite.PushNews;
 
 import java.text.SimpleDateFormat;

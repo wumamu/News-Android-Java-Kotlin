@@ -1,4 +1,4 @@
-package com.recoveryrecord.surveyandroid.example.activity
+package com.recoveryrecord.surveyandroid.example.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.recoveryrecord.surveyandroid.example.ItemTouchHelperAdapter
 import com.recoveryrecord.surveyandroid.example.R
@@ -19,7 +18,6 @@ class MediaRankRecycleViewAdapter(
     private val dataModelArrayList: ArrayList<Media>,
     private val context: Context
 ) : RecyclerView.Adapter<MediaRankRecycleViewAdapter.ViewHolder>(), ItemTouchHelperAdapter {
-    private var mTouchHelper: ItemTouchHelper? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             LayoutInflater.from(
@@ -63,10 +61,6 @@ class MediaRankRecycleViewAdapter(
     }
 
     override fun onItemSwiped(position: Int) {}
-
-    fun setTouchHelper(touchHelper: ItemTouchHelper?) {
-        mTouchHelper = touchHelper
-    }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val newsMedia: TextView = itemView.findViewById(R.id.text_view_media_rank)

@@ -1,4 +1,4 @@
-package com.recoveryrecord.surveyandroid.example;
+package com.recoveryrecord.surveyandroid.example.activity;
 
 import static com.recoveryrecord.surveyandroid.example.Constants.MEDIA_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_COLLECTION;
@@ -91,6 +91,10 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.recoveryrecord.surveyandroid.SimpleGestureListener;
+import com.recoveryrecord.surveyandroid.example.GestureListener;
+import com.recoveryrecord.surveyandroid.example.NewsHybridActivity;
+import com.recoveryrecord.surveyandroid.example.R;
 import com.recoveryrecord.surveyandroid.example.model.ReadingBehavior;
 import com.recoveryrecord.surveyandroid.example.receiever.ApplicationSelectorReceiver;
 import com.recoveryrecord.surveyandroid.example.sqlite.DragObj;
@@ -118,7 +122,7 @@ import java.util.concurrent.Future;
 
 
 @RequiresApi(api = Build.VERSION_CODES.O)
-public class NewsModuleActivity extends AppCompatActivity implements GestureListener.SimpleGestureListener {
+public class NewsModuleActivity extends AppCompatActivity implements SimpleGestureListener {
     String device_id = "";
     String text_size_string = "1";
 

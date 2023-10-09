@@ -33,6 +33,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.recoveryrecord.surveyandroid.example.activity.PushHistoryActivity
+import com.recoveryrecord.surveyandroid.example.activity.ReadHistoryActivity
+import com.recoveryrecord.surveyandroid.example.activity.SettingsActivity
 import com.recoveryrecord.surveyandroid.example.receiever.LightSensorReceiver
 import com.recoveryrecord.surveyandroid.example.receiever.NetworkChangeReceiver
 import com.recoveryrecord.surveyandroid.example.receiever.RingModeReceiver
@@ -48,7 +51,7 @@ class NewsHybridActivity
     private var signature: String? = null
     private var drawerLayout: DrawerLayout? = null
 
-    private var swipeRefreshLayout: MySwipeRefreshLayout? = null
+    private var swipeRefreshLayout: CustomSwipeRefreshLayout? = null
     private var context: Context? = null
     private var mSectionsPagerAdapter: SectionsPagerAdapter? = null
     private var mViewPager: ViewPager? = null
@@ -403,9 +406,9 @@ class NewsHybridActivity
         mSectionsPagerAdapter = SectionsPagerAdapter(
             supportFragmentManager, context
         )
-        mViewPager!!.adapter = mSectionsPagerAdapter
-        tabLayout!!.setupWithViewPager(mViewPager)
-        swipeRefreshLayout!!.isRefreshing = false
+        mViewPager?.adapter = mSectionsPagerAdapter
+        tabLayout?.setupWithViewPager(mViewPager)
+        swipeRefreshLayout?.isRefreshing = false
     }
 
     class SectionsPagerAdapter(fm: FragmentManager?, private val context: Context?) :

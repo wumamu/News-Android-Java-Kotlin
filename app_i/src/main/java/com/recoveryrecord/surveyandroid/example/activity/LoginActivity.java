@@ -1,5 +1,8 @@
-package com.recoveryrecord.surveyandroid.example;
+package com.recoveryrecord.surveyandroid.example.activity;
 
+
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.USER_NUM;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -10,17 +13,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-
-import java.util.Objects;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
-import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.USER_NUM;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.recoveryrecord.surveyandroid.example.NewsHybridActivity;
+import com.recoveryrecord.surveyandroid.example.R;
+
+import java.util.Objects;
 
 //import android.view.View;
 //import com.google.android.gms.tasks.OnCompleteListener;

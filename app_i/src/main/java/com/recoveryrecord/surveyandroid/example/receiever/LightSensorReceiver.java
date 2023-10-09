@@ -1,9 +1,11 @@
 package com.recoveryrecord.surveyandroid.example.receiever;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
+
 import android.content.Context;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -17,22 +19,13 @@ import androidx.preference.PreferenceManager;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.recoveryrecord.surveyandroid.example.DbHelper.AppUsageReceiverDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.LightSensorReceiverDbHelper;
-import com.recoveryrecord.surveyandroid.example.NewsHybridActivity;
-import com.recoveryrecord.surveyandroid.example.sqlite.AppUsage;
 import com.recoveryrecord.surveyandroid.example.sqlite.LightSensor;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
-import static java.security.AccessController.getContext;
 
 public class LightSensorReceiver implements StreamGenerator{
     private static final boolean DEBUG = true;

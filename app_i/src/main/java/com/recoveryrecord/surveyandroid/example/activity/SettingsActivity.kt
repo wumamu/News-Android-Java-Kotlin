@@ -1,10 +1,12 @@
-package com.recoveryrecord.surveyandroid.example
+package com.recoveryrecord.surveyandroid.example.activity
 
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import com.recoveryrecord.surveyandroid.example.NewsHybridActivity
+import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.example.ui.SettingsFragment
 
 class SettingsActivity : AppCompatActivity() {
