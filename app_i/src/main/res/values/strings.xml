@@ -124,6 +124,7 @@
     <!--    login -->
     <string name="login_success">登入成功</string>
     <string name="login_failed">登入失敗，需要幫忙請來信詢問</string>
+    <string name="google_sign_in_failed">Google sign in failed</string>
     <string name="account_is_empty">帳號還沒打阿</string>
     <string name="password_is_empty">密碼還沒打阿</string>
     <string name="account_wrong_format">帳號格式好像錯了阿</string>
