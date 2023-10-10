@@ -651,7 +651,6 @@ public class NewsModuleActivity extends AppCompatActivity implements SimpleGestu
 //                                Log.d("log: firebase", "detect new line");
                                 continue;//should not happen
                             }  //全形空白 it works
-                            //                                Log.d("log: firebase", "detect \u3000");
 
                             //full blank to half
                             String str = c_list.get(i).replaceAll("　", " ");
@@ -837,22 +836,34 @@ public class NewsModuleActivity extends AppCompatActivity implements SimpleGestu
                                 }
                                 //end of line do some thing;
                                 if(last_line_in_p){
-                                    String childStr = str.substring(front, iter_char_para+1);
-//                                    Log.d("log: firebase", childStr);
-                                    divList.add(childStr);
+                                    String childStr = str.substring(front, iter_char_para + 1);
+                                    int spacesToAdd = cut_size * 2 - iter_char_line;
+                                    if (spacesToAdd > 0) {
+                                        StringBuilder stringBuilder = new StringBuilder(childStr);
+                                        for (int j = 0; j < spacesToAdd; j += 2) {
+                                            stringBuilder.append("　");
+                                        }
+                                        String finalString = stringBuilder.toString();
+                                        divList.add(finalString);
+                                        Log.d("tmptmp", finalString);
+                                    } else {
+                                        divList.add(childStr);
+                                    }
                                     divList.add("\n");
                                     break;
                                 } else {
                                     String childStr = str.substring(front, iter_char_para);
-//                                    Log.d("log: firebase", childStr);
                                     divList.add(childStr);
                                     front = iter_char_para;
+                                    Log.d("tmptmp", childStr);
                                 }
                             }
                         }
 //                        myReadingBehavior.setKEY_CHAR_NUM_TOTAL(char_num_total);
                         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                        params.setMargins(10, 10, 10, 10);
+                        params.setMargins(30, 10, 30, 10);
+                        LinearLayout.LayoutParams textParas = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        textParas.setMargins(10, 10, 10, 10);
                         //set viewport number ######################################################
                         int textview_num = divList.size();
                         myReadingBehavior.setViewPortNum(textview_num);
@@ -906,11 +917,11 @@ public class NewsModuleActivity extends AppCompatActivity implements SimpleGestu
                             rowTextView.setText(tmp);
                             rowTextView.setTextColor(Color.parseColor("black"));
                             rowTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, text_size);
-//                            rowTextView.setGravity(Gravity.LEFT);
+                            rowTextView.setGravity(Gravity.CENTER);
                             rowTextView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
                             rowTextView.setSingleLine(true);
-                            rowTextView.setLayoutParams(params);
-                            //rowTextView.setBackgroundColor(0xFFFFFF99);
+                            rowTextView.setLayoutParams(textParas);
+//                            rowTextView.setBackgroundColor(0xFFFFFF99);
                             ((LinearLayout) findViewById(R.id.layout_inside)).addView(rowTextView);
                             myTextViews[i] = rowTextView;
                         }
