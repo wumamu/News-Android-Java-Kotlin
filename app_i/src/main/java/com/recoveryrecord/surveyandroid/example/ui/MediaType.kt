@@ -1,13 +1,22 @@
 package com.recoveryrecord.surveyandroid.example.ui
 
+import com.recoveryrecord.surveyandroid.example.Constants.CHINATIMES_CHI
 import com.recoveryrecord.surveyandroid.example.Constants.CHINATIMES_ENG
+import com.recoveryrecord.surveyandroid.example.Constants.CNA_CHI
 import com.recoveryrecord.surveyandroid.example.Constants.CNA_ENG
+import com.recoveryrecord.surveyandroid.example.Constants.CTS_CHI
 import com.recoveryrecord.surveyandroid.example.Constants.CTS_ENG
+import com.recoveryrecord.surveyandroid.example.Constants.EBC_CHI
 import com.recoveryrecord.surveyandroid.example.Constants.EBC_ENG
+import com.recoveryrecord.surveyandroid.example.Constants.ETTODAY_CHI
 import com.recoveryrecord.surveyandroid.example.Constants.ETTODAY_ENG
+import com.recoveryrecord.surveyandroid.example.Constants.LTN_CHI
 import com.recoveryrecord.surveyandroid.example.Constants.LTN_ENG
+import com.recoveryrecord.surveyandroid.example.Constants.SETN_CHI
 import com.recoveryrecord.surveyandroid.example.Constants.SETN_ENG
+import com.recoveryrecord.surveyandroid.example.Constants.STORM_CHI
 import com.recoveryrecord.surveyandroid.example.Constants.STORM_ENG
+import com.recoveryrecord.surveyandroid.example.Constants.UDN_CHI
 import com.recoveryrecord.surveyandroid.example.Constants.UDN_ENG
 
 sealed class MediaType(
@@ -24,16 +33,20 @@ sealed class MediaType(
     }
 
     companion object {
+        const val DEFAULT_MEDIA_ORDER =
+            "$CHINATIMES_CHI 1, $CNA_CHI 2, $EBC_CHI 3, $CTS_CHI 4, $LTN_CHI 5, $STORM_CHI 6, $UDN_CHI 7, $ETTODAY_CHI 8, $SETN_CHI 9"
+
+        //        "自由時報 5, 華視 3, ettoday 8, 風傳媒 6, 中央社 2, 聯合 7, 三立 9, 東森 4, 中時 1"
         private val mediaMap: Map<String, String> = mapOf(
-            CNA_ENG to "中央社",
-            CHINATIMES_ENG to "中時",
-            CTS_ENG to "華視",
-            EBC_ENG to "東森",
-            LTN_ENG to "自由時報",
-            STORM_ENG to "風傳媒",
-            UDN_ENG to "聯合",
-            ETTODAY_ENG to "ettoday",
-            SETN_ENG to "三立"
+            CNA_ENG to CNA_CHI,
+            CHINATIMES_ENG to CHINATIMES_CHI,
+            CTS_ENG to CTS_CHI,
+            EBC_ENG to EBC_CHI,
+            LTN_ENG to LTN_CHI,
+            STORM_ENG to STORM_CHI,
+            UDN_ENG to UDN_CHI,
+            ETTODAY_ENG to ETTODAY_CHI,
+            SETN_ENG to SETN_CHI
         )
 
         private val mediaListEnglish = lazy { mediaMap.keys.toList() }
@@ -43,6 +56,7 @@ sealed class MediaType(
             else mediaListChinese.value
         }
 
+        @JvmStatic
         fun getChinese(input: String?): String {
             return mediaMap[input] ?: ""
         }
@@ -80,13 +94,13 @@ sealed class MediaType(
     }
 
 
-    object Storm : MediaType(STORM_ENG, "風傳媒")
-    object Setn : MediaType(SETN_ENG, "三立")
-    object Ltn : MediaType(LTN_ENG, "自由時報")
-    object Ettoday : MediaType(ETTODAY_ENG, "ettoday")
-    object Ebc : MediaType(EBC_ENG, "東森")
-    object Cts : MediaType(CTS_ENG, "華視")
-    object Cna : MediaType(CNA_ENG, "中央社")
-    object Chinatimes : MediaType(CHINATIMES_ENG, "中時")
-    object Udn : MediaType(UDN_ENG, "聯合")
+    object Storm : MediaType(STORM_ENG, STORM_CHI)
+    object Setn : MediaType(SETN_ENG, SETN_CHI)
+    object Ltn : MediaType(LTN_ENG, LTN_CHI)
+    object Ettoday : MediaType(ETTODAY_ENG, ETTODAY_CHI)
+    object Ebc : MediaType(EBC_ENG, EBC_CHI)
+    object Cts : MediaType(CTS_ENG, CTS_CHI)
+    object Cna : MediaType(CNA_ENG, CNA_CHI)
+    object Chinatimes : MediaType(CHINATIMES_ENG, CHINATIMES_CHI)
+    object Udn : MediaType(UDN_ENG, UDN_CHI)
 }

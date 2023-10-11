@@ -9,7 +9,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.provider.Settings
-import android.util.Log
 import android.view.MenuItem
 import android.widget.TextView
 import android.widget.Toast
@@ -33,9 +32,9 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.recoveryrecord.surveyandroid.example.Constants.CATEGORY_POST_FIX
 import com.recoveryrecord.surveyandroid.example.Constants.CONFIG
-import com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_MEDIA_ORDER
 import com.recoveryrecord.surveyandroid.example.Constants.LAST_UPDATE_TIME
 import com.recoveryrecord.surveyandroid.example.Constants.MEDIA_ORDER
+import com.recoveryrecord.surveyandroid.example.Constants.NEWS_CATEGORY
 import com.recoveryrecord.surveyandroid.example.activity.PushHistoryActivity
 import com.recoveryrecord.surveyandroid.example.activity.ReadHistoryActivity
 import com.recoveryrecord.surveyandroid.example.activity.SettingsActivity
@@ -44,14 +43,17 @@ import com.recoveryrecord.surveyandroid.example.receiever.LightSensorReceiver
 import com.recoveryrecord.surveyandroid.example.receiever.NetworkChangeReceiver
 import com.recoveryrecord.surveyandroid.example.receiever.RingModeReceiver
 import com.recoveryrecord.surveyandroid.example.receiever.ScreenStateReceiver
+import com.recoveryrecord.surveyandroid.example.service.FirebaseService
 import com.recoveryrecord.surveyandroid.example.ui.MediaType
-import com.recoveryrecord.surveyandroid.example.ui.NEWS_CATEGORY
 import com.recoveryrecord.surveyandroid.util.parseTabArray
 import com.recoveryrecord.surveyandroid.util.showToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import timber.log.Timber
+
+//private const val TOPIC = "/topics/news"
 
 class NewsHybridActivity
     : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnRefreshListener {
@@ -71,10 +73,13 @@ class NewsHybridActivity
     private var _RingModeReceiver: RingModeReceiver? = null
     private var _LightSensorReceiver: LightSensorReceiver? = null
     lateinit var sharedPrefs: SharedPreferences
-    private var rankingString = DEFAULT_MEDIA_ORDER
+    private var rankingString = MediaType.DEFAULT_MEDIA_ORDER
     val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
 
+    companion object {
+        val TAG = "NewsHybridActivity"
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @SuppressLint("HardwareIds", "LongLogTag", "ApplySharedPref", "RestrictedApi", "BatteryLife")
@@ -83,11 +88,15 @@ class NewsHybridActivity
         context = applicationContext
         setContentView(R.layout.activity_news_hybrid)
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+
         rankingString =
-            sharedPrefs.getString(MEDIA_ORDER, DEFAULT_MEDIA_ORDER) ?: DEFAULT_MEDIA_ORDER
+            sharedPrefs.getString(MEDIA_ORDER, MediaType.DEFAULT_MEDIA_ORDER)
+                ?: MediaType.DEFAULT_MEDIA_ORDER
         loadCategoryFromLocal()
 
-        //initial value for user (first time)
+        FirebaseService.sharedPref =
+            PreferenceManager.getDefaultSharedPreferences(applicationContext)
+//        FirebaseMessaging.getInstance().apply { subscribeToTopic(TOPIC) }
 
         deviceId = Settings.Secure.getString(
             applicationContext.contentResolver,
@@ -149,21 +158,19 @@ class NewsHybridActivity
                 if (task.isSuccessful) {
                     val document = task.result!!
                     if (document.exists()) {
-                        val media_push_result =
-                            (document[Constants.PUSH_MEDIA_SELECTION] as MutableList<String>?)!!
-                        val tmp = java.lang.String.join(
-                            ",",
-                            sharedPrefs.getStringSet(
-                                Constants.SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION,
-                                emptySet()
-                            ).toString()
-                        )
-                        if (media_push_result[media_push_result.size - 1] != tmp) {
-                            media_push_result.add(tmp)
+                        val mediaPushResult =
+                            (document[Constants.PUSH_MEDIA_SELECTION] as MutableList<String>?)
+                        val tmp = (sharedPrefs.getStringSet(
+                            Constants.SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION,
+                            emptySet()
+                        ) ?: emptySet()).joinToString(",")
+
+                        if (mediaPushResult?.get(mediaPushResult.size - 1) != tmp) {
+                            mediaPushResult?.add(tmp)
                         }
                         rbRef.update(
                             Constants.PUSH_MEDIA_SELECTION,
-                            media_push_result,
+                            mediaPushResult,
                             Constants.USER_SURVEY_NUMBER,
                             sharedPrefs.getString(
                                 Constants.SHARE_PREFERENCE_USER_ID,
@@ -191,23 +198,16 @@ class NewsHybridActivity
                             Build.VERSION.RELEASE
                         )
                             .addOnSuccessListener {
-                                Log.d(
-                                    "log: firebase share",
-                                    "DocumentSnapshot successfully updated!"
-                                )
+                                Timber.d("DocumentSnapshot successfully updated!")
                             }
                             .addOnFailureListener { e: Exception? ->
-                                Log.w(
-                                    "log: firebase share",
-                                    "Error updating document",
-                                    e
-                                )
+                                Timber.w(e, "Error updating document")
                             }
                     } else {
-                        Log.d("log: firebase share", "No such document")
+                        Timber.d("No such document")
                     }
                 } else {
-                    Log.d("log: firebase share", "get failed with ", task.exception)
+                    Timber.d(task.exception, "get failed with ")
                 }
             }
         }
@@ -225,12 +225,12 @@ class NewsHybridActivity
         val navigationView = findViewById<NavigationView>(R.id.nav_view_hy)
         navigationView.setNavigationItemSelectedListener(this)
         val header = navigationView.getHeaderView(0)
-        val user_phone = header.findViewById<TextView>(R.id.textView_user_phone)
-        user_phone.text = Build.MODEL
-        val user_id = header.findViewById<TextView>(R.id.textView_user_id)
-        user_id.text = deviceId
-        val user_name = header.findViewById<TextView>(R.id.textView_user_name)
-        user_name.text = signature
+        val userPhone = header.findViewById<TextView>(R.id.textView_user_phone)
+        userPhone.text = Build.MODEL
+        val userId = header.findViewById<TextView>(R.id.textView_user_id)
+        userId.text = deviceId
+        val userName = header.findViewById<TextView>(R.id.textView_user_name)
+        userName.text = signature
         val actionBarDrawerToggle = ActionBarDrawerToggle(
             this,
             drawerLayout,
@@ -300,6 +300,7 @@ class NewsHybridActivity
         super.onDestroy()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("NonConstantResourceId", "QueryPermissionsNeeded")
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val intent: Intent? = when (item.itemId) {
@@ -307,6 +308,18 @@ class NewsHybridActivity
             R.id.nav_history -> Intent(this@NewsHybridActivity, ReadHistoryActivity::class.java)
             R.id.nav_reschedule -> Intent(this@NewsHybridActivity, PushHistoryActivity::class.java)
             R.id.nav_contact -> {
+//                FirebaseService.token?.let { token ->
+//                    PushNotification(
+//                        NotificationData(
+//                            title = "去影帝告別式被發掘！謝祖武20歲帥兒正式出道　獲林心如、吳慷仁青睞", //messageBody["title"],
+//                            media = "setn",
+//                            newsId = "00005448a87e8688fd3323099455bc6b092a3fab"
+//                        ),
+//                        token
+//                    ).also {
+//                        sendNotification(it)
+//                    }
+//                }
                 val selectorIntent = Intent(Intent.ACTION_SENDTO).apply {
                     data = Uri.parse("mailto:")
                 }
@@ -398,7 +411,7 @@ class NewsHybridActivity
                 updateViewPager()
             }
         } catch (e: Exception) {
-            Log.d("Load tab failed", "Fail to get the data.$e")
+            Timber.d("Fail to get the data.$e")
         }
     }
 
@@ -422,4 +435,16 @@ class NewsHybridActivity
             showToast(this@NewsHybridActivity, "更新完成")
         }
     }
+//    private fun sendNotification(notification: PushNotification) = CoroutineScope(Dispatchers.IO).launch {
+//        try {
+//            val response = RetrofitInstance.api.postNotification(notification)
+//            if(response.isSuccessful) {
+//                Timber.d("Response: ${Gson().toJson(response)}")
+//            } else {
+//                Timber.e(response.message())
+//            }
+//        } catch(e: Exception) {
+//            Timber.e(e.toString())
+//        }
+//    }
 }

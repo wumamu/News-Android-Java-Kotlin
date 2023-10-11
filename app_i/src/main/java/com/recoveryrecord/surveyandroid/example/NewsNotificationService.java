@@ -78,6 +78,7 @@ import com.google.firebase.firestore.Query;
 import com.recoveryrecord.surveyandroid.example.DbHelper.PushNewsDbHelper;
 import com.recoveryrecord.surveyandroid.example.activity.NewsModuleActivity;
 import com.recoveryrecord.surveyandroid.example.sqlite.PushNews;
+import com.recoveryrecord.surveyandroid.example.ui.MediaType;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -239,45 +240,17 @@ public class NewsNotificationService extends Service {
                             case ADDED:
                                 //add record
                                 Map<String, Object> record_noti = new HashMap<>();
-                                String news_id, media, title, doc_id;
+                                String news_id, mediaEng, title, doc_id;
                                 PushNews myPushNews = new PushNews();//sqlite//add new to db
                                 if (selections.contains(dc.getDocument().getString(COMPARE_RESULT_MEDIA))) {
                                     if (count < 20) {
                                         Log.d("lognewsselect", "New doc: " + dc.getDocument().getData());
                                         news_id = dc.getDocument().getString(COMPARE_RESULT_ID);
-                                        media = dc.getDocument().getString(COMPARE_RESULT_MEDIA);
+                                        mediaEng = dc.getDocument().getString(COMPARE_RESULT_MEDIA);
                                         title = dc.getDocument().getString(COMPARE_RESULT_NEW_TITLE);
                                         doc_id = dc.getDocument().getId();
-                                        switch (Objects.requireNonNull(media)) {
-                                            case "cna":
-                                                media = "中央社";
-                                                break;
-                                            case "chinatimes":
-                                                media = "中時";
-                                                break;
-                                            case "cts":
-                                                media = "華視";
-                                                break;
-                                            case "ebc":
-                                                media = "東森";
-                                                break;
-                                            case "ltn":
-                                                media = "自由時報";
-                                                break;
-                                            case "storm":
-                                                media = "風傳媒";
-                                                break;
-                                            case "udn":
-                                                media = "聯合";
-                                                break;
-                                            case "ettoday":
-                                                media = "ettoday";
-                                                break;
-                                            case "setn":
-                                                media = "三立";
-                                                break;
-                                        }
-                                        scheduleNotification(getNotification(news_id, media, title));
+                                        String mediaChi = MediaType.getChinese(mediaEng);
+                                        scheduleNotification(getNotification(news_id, mediaChi, title));
                                         Log.d("lognewsselect", "doc id" + doc_id);
                                         record_noti.put(PUSH_NEWS_TYPE, "target add");
                                         record_noti.put(PUSH_NEWS_CLICK, 1);

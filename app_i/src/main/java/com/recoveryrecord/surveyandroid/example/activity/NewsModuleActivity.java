@@ -417,7 +417,7 @@ public class NewsModuleActivity extends AppCompatActivity implements SimpleGestu
 
         editor.apply();
 
-        myReadingBehavior.setMedia(media_ch);
+        myReadingBehavior.setMedia(media_eng);
 //        Log.d("log: media_name", media_name);
 //        Log.d("log: time_in", myReadingBehavior.getKEY_TIME_IN());
         enter_timestamp = Timestamp.now();//new Timestamp(System.currentTimeMillis());
@@ -728,7 +728,7 @@ public class NewsModuleActivity extends AppCompatActivity implements SimpleGestu
                                         }
                                         String finalString = stringBuilder.toString();
                                         divList.add(finalString);
-                                        Log.d("tmptmp", finalString);
+                                        Timber.d(finalString);
                                     } else {
                                         divList.add(childStr);
                                     }
@@ -738,13 +738,13 @@ public class NewsModuleActivity extends AppCompatActivity implements SimpleGestu
                                     String childStr = str.substring(front, iter_char_para);
                                     divList.add(childStr);
                                     front = iter_char_para;
-                                    Log.d("tmptmp", childStr);
+                                    Timber.d(childStr);
                                 }
                             }
                         }
 //                        myReadingBehavior.setKEY_CHAR_NUM_TOTAL(char_num_total);
                         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                        params.setMargins(30, 10, 30, 10);
+                        params.setMargins(50, 10, 50, 10);
                         LinearLayout.LayoutParams textParas = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                         textParas.setMargins(10, 10, 10, 10);
                         //set viewport number ######################################################

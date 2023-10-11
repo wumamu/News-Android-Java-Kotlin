@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
@@ -15,18 +13,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.recoveryrecord.surveyandroid.example.Constants
-import com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_MEDIA_ORDER
 import com.recoveryrecord.surveyandroid.example.Constants.MEDIA_ORDER
 import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.example.SimpleItemTouchHelperCallback
 import com.recoveryrecord.surveyandroid.example.adapter.MediaRankRecycleViewAdapter
 import com.recoveryrecord.surveyandroid.example.model.Media
+import com.recoveryrecord.surveyandroid.example.ui.MediaType
 import com.recoveryrecord.surveyandroid.util.parseTabArray
 import com.recoveryrecord.surveyandroid.util.parseToString
+import com.recoveryrecord.surveyandroid.util.showToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class MediaRankActivity : AppCompatActivity() {
 
@@ -72,13 +72,14 @@ class MediaRankActivity : AppCompatActivity() {
         val touchHelper = ItemTouchHelper(callback)
         touchHelper.attachToRecyclerView(courseRV)
 
-        Toast.makeText(this, "長按並拖移物件重新排序", Toast.LENGTH_SHORT).show()
+        showToast(this, "長按並拖移物件重新排序")
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun loadRecyclerViewData() {
         val rankingString =
-            sharedPrefs.getString(MEDIA_ORDER, DEFAULT_MEDIA_ORDER) ?: DEFAULT_MEDIA_ORDER
+            sharedPrefs.getString(MEDIA_ORDER, MediaType.DEFAULT_MEDIA_ORDER)
+                ?: MediaType.DEFAULT_MEDIA_ORDER
         val tabs = parseTabArray(rankingString)
         tabs.forEach { t ->
             dataModalArrayList.add(Media(t))
@@ -95,7 +96,7 @@ class MediaRankActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        Toast.makeText(this, "可能要重啟app設定才會生效", Toast.LENGTH_SHORT).show()
+        showToast(this, "可能要重啟app設定才會生效")
         super.onDestroy()
     }
 
@@ -108,7 +109,7 @@ class MediaRankActivity : AppCompatActivity() {
                 }
             }
         } catch (e: Exception) {
-            Log.d("MediaRankActivity", "get failed with $e")
+            Timber.d("get failed with " + e)
 
         }
     }
@@ -121,7 +122,7 @@ class MediaRankActivity : AppCompatActivity() {
                     documentSnapshot[Constants.MEDIA_BAR_ORDER] as MutableList<String>?
             }
         } catch (e: Exception) {
-            Log.d("MediaRankActivity:", "get failed with $e")
+            Timber.d("get failed with " + e)
         }
     }
 }

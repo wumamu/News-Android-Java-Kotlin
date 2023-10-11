@@ -62,6 +62,7 @@ object Constants {
 
     const val NEWS_ID_KEY = "news_id"
     const val NEWS_MEDIA_KEY = "media"
+    const val NEWS_TITLE_KEY = "title"
 
     //NotificationListenerService
     const val GROUP_NEWS = "NewsMoment"
@@ -241,8 +242,7 @@ object Constants {
     const val UPLOAD_TIME = "last_upload_time"
     const val UPLOAD_TIME_FB = "last_upload_time_fb"
     const val MEDIA_ORDER = "media_order"
-    const val DEFAULT_MEDIA_ORDER =
-        "自由時報 5, 華視 3, ettoday 8, 風傳媒 6, 中央社 2, 聯合 7, 三立 9, 東森 4, 中時 1"
+
 
     const val READ_TOTAL = "ReadTotal_"
 
@@ -263,4 +263,14 @@ object Constants {
     const val CNA_ENG = "cna"
     const val CHINATIMES_ENG = "chinatimes"
     const val UDN_ENG = "udn"
+
+    const val STORM_CHI = "風傳媒"
+    const val SETN_CHI = "三立新聞網"
+    const val LTN_CHI = "自由時報"
+    const val ETTODAY_CHI = "Ettoday"
+    const val EBC_CHI = "東森"
+    const val CTS_CHI = "華視新聞"
+    const val CNA_CHI = "中央社"
+    const val CHINATIMES_CHI = "旺旺中時"
+    const val UDN_CHI = "聯合"
 }

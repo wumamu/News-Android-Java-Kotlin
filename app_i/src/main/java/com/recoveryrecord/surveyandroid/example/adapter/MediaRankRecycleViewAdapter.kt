@@ -2,17 +2,17 @@ package com.recoveryrecord.surveyandroid.example.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.recoveryrecord.surveyandroid.example.ItemTouchHelperAdapter
 import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.example.model.Media
+import com.recoveryrecord.surveyandroid.example.ui.MediaType
 
 class MediaRankRecycleViewAdapter(
     private val dataModelArrayList: ArrayList<Media>,
@@ -31,22 +31,25 @@ class MediaRankRecycleViewAdapter(
         val (media) = dataModelArrayList[position]
         holder.newsMedia.text = media
         val mediaDrawableId = when (media) {
-            "中時" -> R.drawable.ct
-            "中央社" -> R.drawable.cna
-            "華視" -> R.drawable.cts
-            "東森" -> R.drawable.ebc
-            "自由時報" -> R.drawable.ltn
-            "風傳媒" -> R.drawable.storm
-            "聯合" -> R.drawable.udn
-            "ettoday" -> R.drawable.ettoday
-            "三立" -> R.drawable.setn
+            MediaType.Chinatimes.chineseId -> R.drawable.ct
+            MediaType.Cna.chineseId -> R.drawable.cna
+            MediaType.Cts.chineseId -> R.drawable.cts
+            MediaType.Ebc.chineseId -> R.drawable.ebc
+            MediaType.Ltn.chineseId -> R.drawable.ltn
+            MediaType.Storm.chineseId -> R.drawable.storm
+            MediaType.Udn.chineseId -> R.drawable.udn
+            MediaType.Ettoday.chineseId -> R.drawable.ettoday
+            MediaType.Setn.chineseId -> R.drawable.setn
             else -> R.drawable.storm // Default drawable
         }
-
-        val bitmap = (context.resources.getDrawable(mediaDrawableId) as BitmapDrawable).bitmap
-        val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 36, 36, true)
-        val drawable = BitmapDrawable(context.resources, scaledBitmap)
-        holder.mediaIcon.setImageDrawable(drawable)
+//loadImageWithGlide(context, mediaDrawableId)
+//        val bitmap = (context.resources.getDrawable(mediaDrawableId) as BitmapDrawable).bitmap
+//        val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 36, 36, true)
+//        val drawable = BitmapDrawable(context.resources, scaledBitmap)
+        holder.mediaIcon.apply {
+            setBackgroundResource(mediaDrawableId)
+            layoutParams = RelativeLayout.LayoutParams(100, 100)
+        }
     }
 
     override fun getItemCount(): Int {
