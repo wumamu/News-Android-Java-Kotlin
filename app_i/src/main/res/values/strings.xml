@@ -129,4 +129,7 @@
     <string name="password_is_empty">密碼還沒打阿</string>
     <string name="account_wrong_format">帳號格式好像錯了阿</string>
 
+
+    <string name="hint_refresh">可能要手動刷新或重啟app才會生效</string>
+
 </resources>

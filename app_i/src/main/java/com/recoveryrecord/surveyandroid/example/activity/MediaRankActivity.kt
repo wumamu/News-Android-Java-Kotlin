@@ -101,7 +101,7 @@ class MediaRankActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        showToast(this, "可能要重啟app設定才會生效")
+        showToast(this, getString(R.string.hint_refresh))
     }
 
     private suspend fun updateRemoteMediaOrder(newMediaOrder: String) {

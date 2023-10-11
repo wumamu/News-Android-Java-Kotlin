@@ -53,7 +53,7 @@ object Constants {
 
     //INTENT PUT EXTRA
     //Login
-    const val USER_NUM = "user_num"
+//    const val USER_NUM = "user_num"
 
     //NEWS NewsModuleActivity
     const val TRIGGER_BY_KEY = "trigger_by"
@@ -238,6 +238,7 @@ object Constants {
     const val SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION = "media_select"
 
     const val SHARE_PREFERENCE_USER_ID = "signature"
+    const val UNKNOWN_USER_ID = "尚未設定實驗編號"
     const val SHARE_NOTIFICATION_FIRST_CREATE = "new_group"
     const val UPLOAD_TIME = "last_upload_time"
     const val UPLOAD_TIME_FB = "last_upload_time_fb"

@@ -10,7 +10,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 /**
  * Block horizontal scroll
  */
-internal class CustomSwipeRefreshLayout @JvmOverloads constructor(
+class CustomSwipeRefreshLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
 ) : SwipeRefreshLayout(

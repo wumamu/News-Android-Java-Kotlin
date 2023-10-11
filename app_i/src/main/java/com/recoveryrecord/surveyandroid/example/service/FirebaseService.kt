@@ -33,7 +33,7 @@ import timber.log.Timber
 class FirebaseService : FirebaseMessagingService() {
 
     companion object {
-        private const val NEWS_CHANNEL = "News Channel"
+        const val NEWS_CHANNEL = "News Channel"
         private const val FCM_TOKEN = "fcm_token"
 
         var sharedPref: SharedPreferences? = null

@@ -3,7 +3,6 @@ package com.recoveryrecord.surveyandroid.example.activity
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.util.Patterns
 import android.widget.Button
 import android.widget.EditText
@@ -24,6 +23,7 @@ import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.util.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import timber.log.Timber
 
 @AndroidEntryPoint
 
@@ -123,7 +123,7 @@ class LoginActivity : AppCompatActivity() {
             try {
                 val account = task.getResult(ApiException::class.java)
                 account?.apply {
-                    Log.d(TAG, "firebaseAuthWithGoogle:$id")
+                    Timber.d("firebaseAuthWithGoogle:" + id)
                     firebaseAuthWithGoogle(idToken!!)
                 }
 
@@ -139,7 +139,7 @@ class LoginActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "signInWithCredential:success")
+                    Timber.d("signInWithCredential:success")
                     showToast(this@LoginActivity, getString(R.string.login_success))
                     updateUIIfUserExist(auth.currentUser)
                 } else {
