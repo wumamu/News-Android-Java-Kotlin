@@ -195,10 +195,6 @@ object Constants {
     const val READING_BEHAVIOR_TIME_SERIES = "time_series(s)"
     const val READING_BEHAVIOR_TRIGGER_BY_NOTIFICATION = "Notification"
 
-    //    public static final String READING_BEHAVIOR_TRIGGER_BY_SELF_TRIGGER = "self_trigger";
-    //    public static final String READING_BEHAVIOR_CHECK_MARK = "check_mark";
-    const val READING_BEHAVIOR_SAMPLE_CHECK = "select"
-
     //PUSH NEWS
     const val PUSH_NEWS_COLLECTION = "push_news"
     const val PUSH_NEWS_DOC_ID = "doc_id"
@@ -238,13 +234,10 @@ object Constants {
     //SHARE PREFERENCE #############################################################################
     const val SHARE_PREFERENCE_CLEAR_CACHE = "SharePreferenceClear"
     const val SHARE_PREFERENCE_TEST_SIZE = "text_size"
-    const val SHARE_PREFERENCE_SILENT_ESM = "silent"
     const val SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION = "media_select"
 
-    //    const val SHARE_PREFERENCE_MAIN_PAGE_MEDIA_ORDER = "media_rank"
     const val SHARE_PREFERENCE_USER_ID = "signature"
     const val SHARE_NOTIFICATION_FIRST_CREATE = "new_group"
-    const val SHARE_PREFERENCE_DEVICE_ID = "device_id"
     const val UPLOAD_TIME = "last_upload_time"
     const val UPLOAD_TIME_FB = "last_upload_time_fb"
     const val MEDIA_ORDER = "media_order"

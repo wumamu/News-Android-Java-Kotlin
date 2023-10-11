@@ -87,7 +87,7 @@ class NewsRecycleViewAdapter(
                 intent.setClass(context, NewsModuleActivity::class.java)
                 intent.putExtra(TRIGGER_BY_KEY, TRIGGER_BY_SELF)
                 intent.putExtra(NEWS_ID_KEY, id)
-                intent.putExtra(NEWS_MEDIA_KEY, media)
+                intent.putExtra(NEWS_MEDIA_KEY, media) // english
                 context.startActivity(intent)
             }
         }

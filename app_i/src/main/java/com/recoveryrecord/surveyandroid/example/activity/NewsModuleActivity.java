@@ -99,6 +99,7 @@ import com.recoveryrecord.surveyandroid.example.model.ReadingBehavior;
 import com.recoveryrecord.surveyandroid.example.receiever.ApplicationSelectorReceiver;
 import com.recoveryrecord.surveyandroid.example.sqlite.DragObj;
 import com.recoveryrecord.surveyandroid.example.sqlite.FlingObj;
+import com.recoveryrecord.surveyandroid.example.ui.MediaType;
 
 import java.io.InputStream;
 import java.text.ParseException;
@@ -118,6 +119,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+
+import timber.log.Timber;
 
 
 @RequiresApi(api = Build.VERSION_CODES.O)
@@ -376,18 +379,18 @@ public class NewsModuleActivity extends AppCompatActivity implements SimpleGestu
 
             if (b.getString(NEWS_ID_KEY)!= null) {
                 news_id = b.getString(NEWS_ID_KEY);
-                Log.d(TAG, "news id" + news_id);
+                Timber.d("news id%s", news_id);
 
             }
             if (b.getString(NEWS_MEDIA_KEY)!= null) {
                 media_eng = b.getString(NEWS_MEDIA_KEY);
-                media_ch = media_eng;
-                Log.d(TAG, "media" + media_eng + media_ch);
+                media_ch = MediaType.Companion.getChinese(media_eng);
+                Timber.d("media" + " " + media_eng + " " + media_ch);
 
             }
             if(b.getString(TRIGGER_BY_KEY)!=null){
                 myReadingBehavior.setTriggerBy(b.getString(TRIGGER_BY_KEY, "UNKNOWN"));
-                Log.d(TAG, "trigger by" + b.getString(TRIGGER_BY_KEY));
+                Timber.d("trigger by%s", b.getString(TRIGGER_BY_KEY));
             }
 
             if (myReadingBehavior.getTriggerBy().equals(READING_BEHAVIOR_TRIGGER_BY_NOTIFICATION)) {
@@ -395,77 +398,11 @@ public class NewsModuleActivity extends AppCompatActivity implements SimpleGestu
                         .document(device_id + " " + news_id)
                         .update(PUSH_NEWS_CLICK, 0,
                                 PUSH_NEWS_OPEN_TIME, Timestamp.now())
-                        .addOnSuccessListener(aVoid -> Log.d("lognewsselect", "mark as click successfully updated!"))
-                        .addOnFailureListener(e -> Log.w("lognewsselect", "mark as click Error updating document", e));
+                        .addOnSuccessListener(aVoid -> Timber.d("mark as click successfully updated!"))
+                        .addOnFailureListener(e -> Timber.w(e, "mark as click Error updating document"));
             } else {
                 self_trigger = true;
             }
-        }
-
-        switch (media_eng) {
-            case "中央社":
-                media_eng = "cna";
-                break;
-            case "中時":
-                media_eng = "chinatimes";
-                break;
-            case "華視":
-                media_eng = "cts";
-                break;
-            case "東森":
-                media_eng = "ebc";
-                break;
-            case "自由時報":
-                media_eng = "ltn";
-                break;
-            case "風傳媒":
-                media_eng = "storm";
-                break;
-            case "聯合":
-                media_eng = "udn";
-                break;
-            case "ettoday":
-                media_eng = "ettoday";
-                break;
-            case "三立":
-                media_eng = "setn";
-                break;
-            default:
-//                media_name = "";
-                break;
-
-        }
-        switch (media_ch) {
-            case "cna":
-                media_ch = "中央社";
-                break;
-            case "chinatimes":
-                media_ch = "中時";
-                break;
-            case "cts":
-                media_ch = "華視";
-                break;
-            case "ebc":
-                media_ch = "東森";
-                break;
-            case "ltn":
-                media_ch = "自由時報";
-                break;
-            case "storm":
-                media_ch = "風傳媒";
-                break;
-            case "udn":
-                media_ch = "聯合";
-                break;
-            case "ettoday":
-                media_ch = "ettoday";
-                break;
-            case "setn":
-                media_ch = "三立";
-                break;
-            default:
-                break;
-
         }
 
         //count different read sum
@@ -502,33 +439,7 @@ public class NewsModuleActivity extends AppCompatActivity implements SimpleGestu
         final float dpWidth = outMetrics.widthPixels / density;
         myReadingBehavior.setDisplayHeight(dpHeight);
         myReadingBehavior.setDisplayWidth(dpWidth);
-//        Log.d("log: display_width_dp", myReadingBehavior.getKEY_DISPLAY_WIDTH());
-//        Log.d("log: display_height_dp", myReadingBehavior.getKEY_DISPLAY_HEIGHT());
-        //whether is chinese #######################################################################
-//        final Set<UCharacter.UnicodeBlock> chineseUnicodeBlocks = new HashSet<UCharacter.UnicodeBlock>() {{
-//            add(UCharacter.UnicodeBlock.CJK_COMPATIBILITY);
-//            add(UCharacter.UnicodeBlock.CJK_COMPATIBILITY_FORMS);
-//            add(UCharacter.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS);
-//            add(UCharacter.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS_SUPPLEMENT);
-//            add(UCharacter.UnicodeBlock.CJK_RADICALS_SUPPLEMENT);
-//            add(UCharacter.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION);
-//            add(UCharacter.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS);
-//            add(UCharacter.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A);
-//            add(UCharacter.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_B);
-//            add(UCharacter.UnicodeBlock.KANGXI_RADICALS);
-//            add(UCharacter.UnicodeBlock.IDEOGRAPHIC_DESCRIPTION_CHARACTERS);
-//        }};
-        //Scrollview has lost the acceleration######################################################
-//        ScrollView mScrollView = findViewById(R.id.scroll_view);
-//        mScrollView.setNestedScrollingEnabled(false);
-        //news generate from server ################################################################
-//        Random rand = new Random();
-//        int random_news = ThreadLocalRandom.current().nextInt(1, 3 + 1);
-//        String doc_id = "";
-//        Log.d("log: firebase news", String.valueOf(random_news));
-//        List<String> list = Arrays.asList("0000e3633ce3f3b0241d69749fc749f0", "0011f17045e0d4f40cc314f27ac91228", "001b575e65a5dd618051065f43b79974", "0030b7b0dada6069a76fb087f631bbb1", "003436a77eccd9d8f0cc9ffbced6844b");
-//        doc_id = list.get(rand.nextInt(list.size()));
-//        Log.d("log: firebase news", doc_id);
+
         DocumentReference docRef;
         if (news_id.equals("") || media_eng.equals("")){
             media_eng = "ettoday";
@@ -573,19 +484,6 @@ public class NewsModuleActivity extends AppCompatActivity implements SimpleGestu
                             assert mPubdate != null;
                             myReadingBehavior.setPubdate(mPubdate.getSeconds());
                         }
-//                        if(document.get(NEWS_CATEGORY)!=null){
-//                            if(media_name.equals("storm")){
-//                                categoryArray =  (List<String>) document.get("category");
-////                                document.get("category")
-////                                Log.d("log: firebase", String.valueOf(categoryArray));
-//                            } else {
-//                                categoryArray.add(document.getString(NEWS_CATEGORY));
-////                                Log.d("log: firebase", categoryArray.get(0));
-//                            }
-//                        } else {
-////                            Log.d("log: firebase", "123");
-//                        }
-
 
                         Date my_date = mPubdate.toDate();
                         @SuppressLint("SimpleDateFormat")
