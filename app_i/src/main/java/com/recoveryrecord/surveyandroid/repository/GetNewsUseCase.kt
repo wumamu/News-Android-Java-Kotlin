@@ -1,5 +1,6 @@
 package com.recoveryrecord.surveyandroid.repository
 
+import com.recoveryrecord.surveyandroid.example.Constants
 import com.recoveryrecord.surveyandroid.example.model.News
 import javax.inject.Inject
 
@@ -8,7 +9,8 @@ class GetNewsUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(
         source: String,
-        category: String
+        category: String,
+        pageSize: Long = Constants.NEWS_LIMIT_PER_PAGE,
     ): List<News> {
         val querySnapshot = repository.getNews(source, category)
         val newsList = mutableListOf<News>()

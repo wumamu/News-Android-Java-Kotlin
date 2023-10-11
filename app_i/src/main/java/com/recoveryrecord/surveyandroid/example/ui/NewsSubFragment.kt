@@ -2,7 +2,6 @@ package com.recoveryrecord.surveyandroid.example.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,32 +14,33 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.recoveryrecord.surveyandroid.example.Constants
 import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.example.adapter.NewsRecycleViewAdapter
 import com.recoveryrecord.surveyandroid.example.model.News
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
-private const val NEWS_SOURCE = "news_source"
-private const val NEWS_CATEGORY = "news_category"
-
+@AndroidEntryPoint
 class NewsSubFragment : Fragment() {
     private lateinit var courseRV: RecyclerView
     private lateinit var progressBar: ProgressBar
 
     private lateinit var fabScrollToTop: FloatingActionButton
-    private val dataModalArrayList: ArrayList<News> = ArrayList()
     private lateinit var dataRVAdapter: NewsRecycleViewAdapter
-    private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
-    //    @Inject
-//    lateinit var db: FirebaseFirestore
-//    private val viewModel: NewsViewModel by viewModels()
+    @Inject
+    lateinit var db: FirebaseFirestore
+
+    private val dataModalArrayList: ArrayList<News> = ArrayList()
+
     private var source: String = ""
     private var category: String = ""
-    private val pageSize: Long = 30L //Constants.NEWS_LIMIT_PER_PAGE.toLong()
     private var lastVisibleDocument: DocumentSnapshot? = null
     private var isFetchingData: Boolean = false
 
@@ -69,7 +69,7 @@ class NewsSubFragment : Fragment() {
             lifecycleScope.launch { fetchInitialData() }
         } else {
             // Data is in the cache, use it to populate UI
-            Log.d("recycle", "do nothing $source $category ${this.hashCode()}")
+            Timber.d("do nothing $source $category ${this.hashCode()}")
         }
 
 
@@ -108,7 +108,7 @@ class NewsSubFragment : Fragment() {
 
     override fun onDestroyView() {
         // called multiple times
-        Log.d("recycle", "onDestroyView ${this.hashCode()}")
+        Timber.d("onDestroyView " + this.hashCode())
         super.onDestroyView()
     }
 
@@ -136,7 +136,7 @@ class NewsSubFragment : Fragment() {
         }
         try {
             val querySnapshot = withContext(Dispatchers.IO) {
-                query.limit(pageSize).get().await()
+                query.limit(Constants.NEWS_LIMIT_PER_PAGE).get().await()
             }
 
             if (!querySnapshot.isEmpty) {
@@ -155,7 +155,7 @@ class NewsSubFragment : Fragment() {
                 }
             }
         } catch (e: Exception) {
-            Log.d("logpager", "Fail to get the data.$e")
+            Timber.d("Fail to get the data.$e")
         } finally {
             // Update the UI on the main thread
             withContext(Dispatchers.Main) {
@@ -187,7 +187,7 @@ class NewsSubFragment : Fragment() {
             val querySnapshot = withContext(Dispatchers.IO) {
                 query
                     .startAfter(lastVisibleDocument?.getTimestamp("pubdate"))
-                    .limit(pageSize)
+                    .limit(Constants.NEWS_LIMIT_PER_PAGE)
                     .get()
                     .await()
             }
@@ -212,14 +212,15 @@ class NewsSubFragment : Fragment() {
                 }
             }
         } catch (e: Exception) {
-            Log.d("logpager", "Fail to get more data.$e")
+            Timber.d("Fail to get more data.$e")
         } finally {
             isFetchingData = false
         }
     }
 
     companion object {
-        @JvmStatic
+        private const val NEWS_SOURCE = "news_source"
+        private const val NEWS_CATEGORY = "news_category"
         fun newInstance(source: String, category: String) =
             NewsSubFragment().apply {
                 arguments = Bundle().apply {

@@ -32,7 +32,7 @@ object Constants {
 
     //    public static final String NA_STRING = "NA";
     //    public static final String NONE_STRING = "none";
-    const val NEWS_LIMIT_PER_PAGE = 30
+    const val NEWS_LIMIT_PER_PAGE = 30L
     const val PUSH_HISTORY_LIMIT_PER_PAGE = 50
     const val READ_HISTORY_LIMIT_PER_PAGE = 50
 

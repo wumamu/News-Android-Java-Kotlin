@@ -47,6 +47,9 @@ import com.recoveryrecord.surveyandroid.example.service.FirebaseService
 import com.recoveryrecord.surveyandroid.example.ui.MediaType
 import com.recoveryrecord.surveyandroid.util.parseTabArray
 import com.recoveryrecord.surveyandroid.util.showToast
+import com.recoveryrecord.surveyandroid.util.updateRemote
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -55,6 +58,7 @@ import timber.log.Timber
 
 //private const val TOPIC = "/topics/news"
 
+@AndroidEntryPoint
 class NewsHybridActivity
     : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnRefreshListener {
     private var signature: String? = null
@@ -74,8 +78,12 @@ class NewsHybridActivity
     private var _LightSensorReceiver: LightSensorReceiver? = null
     lateinit var sharedPrefs: SharedPreferences
     private var rankingString = MediaType.DEFAULT_MEDIA_ORDER
-    val db = FirebaseFirestore.getInstance()
-    private val auth = FirebaseAuth.getInstance()
+
+    @Inject
+    lateinit var db: FirebaseFirestore
+
+    @Inject
+    lateinit var auth: FirebaseAuth
 
     companion object {
         val TAG = "NewsHybridActivity"
@@ -87,6 +95,10 @@ class NewsHybridActivity
         super.onCreate(savedInstanceState)
         context = applicationContext
         setContentView(R.layout.activity_news_hybrid)
+        deviceId = Settings.Secure.getString(
+            applicationContext.contentResolver,
+            Settings.Secure.ANDROID_ID
+        )
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
 
         rankingString =
@@ -96,12 +108,10 @@ class NewsHybridActivity
 
         FirebaseService.sharedPref =
             PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        FirebaseService.ref = db.collection("FCMToken").document(deviceId)
 //        FirebaseMessaging.getInstance().apply { subscribeToTopic(TOPIC) }
 
-        deviceId = Settings.Secure.getString(
-            applicationContext.contentResolver,
-            Settings.Secure.ANDROID_ID
-        )
+
         FirebaseCrashlytics.getInstance().setUserId(deviceId)
 
         //first in app
@@ -160,49 +170,33 @@ class NewsHybridActivity
                     if (document.exists()) {
                         val mediaPushResult =
                             (document[Constants.PUSH_MEDIA_SELECTION] as MutableList<String>?)
+                                ?: mutableListOf()
                         val tmp = (sharedPrefs.getStringSet(
                             Constants.SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION,
                             emptySet()
                         ) ?: emptySet()).joinToString(",")
 
-                        if (mediaPushResult?.get(mediaPushResult.size - 1) != tmp) {
-                            mediaPushResult?.add(tmp)
+                        if (mediaPushResult.isEmpty() || mediaPushResult[mediaPushResult.size - 1] != tmp) {
+                            mediaPushResult.add(tmp)
                         }
-                        rbRef.update(
-                            Constants.PUSH_MEDIA_SELECTION,
-                            mediaPushResult,
-                            Constants.USER_SURVEY_NUMBER,
-                            sharedPrefs.getString(
-                                Constants.SHARE_PREFERENCE_USER_ID,
-                                "尚未設定實驗編號"
-                            ),
-                            Constants.UPDATE_TIME,
-                            Timestamp.now(),
-                            Constants.APP_VERSION_KEY,
-                            Constants.APP_VERSION_VALUE,
-                            "check_last_service",
-                            Timestamp.now(),
-//                            Constants.ESM_PUSH_TOTAL,
-//                            sharedPrefs.getInt(Constants.ESM_PUSH_TOTAL, 0),
-//                            Constants.ESM_DONE_TOTAL,
-//                            sharedPrefs.getInt(Constants.ESM_DONE_TOTAL, 0),
-//                            Constants.DIARY_PUSH_TOTAL,
-//                            sharedPrefs.getInt(Constants.DIARY_PUSH_TOTAL, 0),
-//                            Constants.DIARY_DONE_TOTAL,
-//                            sharedPrefs.getInt(Constants.DIARY_DONE_TOTAL, 0),
-                            Constants.USER_DEVICE_ID,
-                            deviceId,
-                            Constants.USER_ANDROID_SDK,
-                            Build.VERSION.SDK_INT,
-                            Constants.USER_ANDROID_RELEASE,
-                            Build.VERSION.RELEASE
+
+                        val dataMap = hashMapOf(
+                            Constants.PUSH_MEDIA_SELECTION to mediaPushResult,
+                            Constants.USER_SURVEY_NUMBER to
+                                    (sharedPrefs.getString(
+                                        Constants.SHARE_PREFERENCE_USER_ID,
+                                        "尚未設定實驗編號"
+                                    ) ?: "尚未設定實驗編號"),
+                            Constants.UPDATE_TIME to Timestamp.now(),
+                            Constants.APP_VERSION_KEY to Constants.APP_VERSION_VALUE,
+                            "check_last_service" to Timestamp.now(),
+                            Constants.USER_DEVICE_ID to deviceId,
+                            Constants.USER_ANDROID_SDK to Build.VERSION.SDK_INT,
+                            Constants.USER_ANDROID_RELEASE to Build.VERSION.RELEASE
                         )
-                            .addOnSuccessListener {
-                                Timber.d("DocumentSnapshot successfully updated!")
-                            }
-                            .addOnFailureListener { e: Exception? ->
-                                Timber.w(e, "Error updating document")
-                            }
+                        lifecycleScope.launch {
+                            withContext(Dispatchers.IO) { updateRemote(rbRef, dataMap) }
+                        }
                     } else {
                         Timber.d("No such document")
                     }

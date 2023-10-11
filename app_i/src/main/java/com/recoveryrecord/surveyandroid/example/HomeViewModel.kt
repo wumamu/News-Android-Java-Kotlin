@@ -1,26 +1,31 @@
 package com.recoveryrecord.surveyandroid.example
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.recoveryrecord.surveyandroid.example.model.News
 import com.recoveryrecord.surveyandroid.repository.GetNewsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 
 @HiltViewModel
 class NewsViewModel @Inject constructor(
     private val getNewsUseCase: GetNewsUseCase
 ) : ViewModel() {
+    val dataModalArrayList: MutableLiveData<List<News>> = MutableLiveData()
 
-    private val _newsFlow = MutableStateFlow<List<News>>(emptyList())
-    val newsFlow = _newsFlow.asStateFlow()
+//    private val _newsFlow = MutableStateFlow<List<News>>(emptyList())
+//    val newsFlow = _newsFlow.asStateFlow()
 
-    fun getNews(source: String, category: String, limit: Long) {
-        viewModelScope.launch {
-            _newsFlow.value = getNewsUseCase(source, category)
-        }
-    }
+//    fun getNews(source: String, category: String, pageSize: Long = Constants.NEWS_LIMIT_PER_PAGE) {
+////        viewModelScope.launch {
+////            _newsFlow.value = getNewsUseCase(source, category)
+////        }
+//        viewModelScope.launch {
+//            // Perform time-consuming task using Dispatchers.IO
+//            val news = withContext(Dispatchers.IO) {
+//                getNewsUseCase(source, category, pageSize)
+//            }
+//            dataModalArrayList.postValue(news)
+//        }
+//    }
 }

@@ -22,6 +22,10 @@ import com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_
 import com.recoveryrecord.surveyandroid.example.NewsHybridActivity
 import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.util.showToast
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+
+@AndroidEntryPoint
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var useremail: EditText
@@ -29,7 +33,8 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var localLoginButton: Button
     private lateinit var googleLoginButton: com.google.android.gms.common.SignInButton
 
-    private lateinit var auth: FirebaseAuth
+    @Inject
+    lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
 
     override fun onCreate(savedInstanceState: Bundle?) {

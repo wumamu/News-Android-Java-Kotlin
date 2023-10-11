@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.recoveryrecord.surveyandroid.example.Constants
+import com.recoveryrecord.surveyandroid.example.Constants.MEDIA_BAR_ORDER
 import com.recoveryrecord.surveyandroid.example.Constants.MEDIA_ORDER
 import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.example.SimpleItemTouchHelperCallback
@@ -22,6 +23,7 @@ import com.recoveryrecord.surveyandroid.example.ui.MediaType
 import com.recoveryrecord.surveyandroid.util.parseTabArray
 import com.recoveryrecord.surveyandroid.util.parseToString
 import com.recoveryrecord.surveyandroid.util.showToast
+import com.recoveryrecord.surveyandroid.util.updateRemote
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -38,7 +40,7 @@ class MediaRankActivity : AppCompatActivity() {
     private lateinit var mEditor: SharedPreferences.Editor
     private lateinit var deviceId: String
     private lateinit var ref: DocumentReference
-    private var remoteMediaOrder: MutableList<String>? = null
+    private var remoteMediaOrder: MutableList<String> = mutableListOf()
 
 
     @SuppressLint("HardwareIds")
@@ -89,37 +91,34 @@ class MediaRankActivity : AppCompatActivity() {
 
     @SuppressLint("HardwareIds")
     override fun onPause() {
+        super.onPause()
         val newMediaOrder = parseToString(dataModalArrayList)
         mEditor.putString(MEDIA_ORDER, newMediaOrder).apply()
-        lifecycleScope.launch { updateMediaOrder(newMediaOrder) }
-        super.onPause()
+        lifecycleScope.launch {
+            withContext(Dispatchers.IO) { updateRemoteMediaOrder(newMediaOrder) }
+        }
     }
 
     override fun onDestroy() {
-        showToast(this, "可能要重啟app設定才會生效")
         super.onDestroy()
+        showToast(this, "可能要重啟app設定才會生效")
     }
 
-    private suspend fun updateMediaOrder(newMediaOrder: String) {
-        try {
-            remoteMediaOrder?.apply {
-                add(newMediaOrder)
-                withContext(Dispatchers.IO) {
-                    ref.update(Constants.MEDIA_BAR_ORDER, this@apply).await()
-                }
-            }
-        } catch (e: Exception) {
-            Timber.d("get failed with " + e)
-
+    private suspend fun updateRemoteMediaOrder(newMediaOrder: String) {
+        if (remoteMediaOrder.isEmpty() || remoteMediaOrder.last() != newMediaOrder) {
+            val updateData =
+                hashMapOf<String, Any>(MEDIA_BAR_ORDER to remoteMediaOrder + newMediaOrder)
+            updateRemote(ref, updateData)
         }
     }
+
 
     private suspend fun getRemoteMediaOrder() {
         try {
             val documentSnapshot = withContext(Dispatchers.IO) { ref.get().await() }
             if (documentSnapshot.exists()) {
                 remoteMediaOrder =
-                    documentSnapshot[Constants.MEDIA_BAR_ORDER] as MutableList<String>?
+                    documentSnapshot[MEDIA_BAR_ORDER] as MutableList<String>
             }
         } catch (e: Exception) {
             Timber.d("get failed with " + e)

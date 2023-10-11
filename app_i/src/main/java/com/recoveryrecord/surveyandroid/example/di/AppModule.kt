@@ -1,5 +1,6 @@
 package com.recoveryrecord.surveyandroid.example.di
 
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.recoveryrecord.surveyandroid.repository.NewsRepository
 import com.recoveryrecord.surveyandroid.repository.NewsRepositoryImpl
@@ -17,6 +18,12 @@ object AppModule {
     @Singleton
     fun provideFirestore(): FirebaseFirestore {
         return FirebaseFirestore.getInstance()
+    }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseAuth(): FirebaseAuth {
+        return FirebaseAuth.getInstance()
     }
 
     @Provides

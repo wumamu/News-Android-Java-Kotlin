@@ -10,17 +10,24 @@ import android.media.RingtoneManager
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.recoveryrecord.surveyandroid.example.Constants.NEWS_ID_KEY
 import com.recoveryrecord.surveyandroid.example.Constants.NEWS_MEDIA_KEY
 import com.recoveryrecord.surveyandroid.example.Constants.NEWS_TITLE_KEY
+import com.recoveryrecord.surveyandroid.example.Constants.PUSH_MEDIA_SELECTION
 import com.recoveryrecord.surveyandroid.example.Constants.TRIGGER_BY_KEY
 import com.recoveryrecord.surveyandroid.example.Constants.TRIGGER_BY_VALUE_NOTIFICATION
+import com.recoveryrecord.surveyandroid.example.Constants.UPDATE_TIME
 import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.example.activity.NewsModuleActivity
 import com.recoveryrecord.surveyandroid.example.ui.MediaType
 import kotlin.random.Random
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class FirebaseService : FirebaseMessagingService() {
@@ -30,6 +37,7 @@ class FirebaseService : FirebaseMessagingService() {
         private const val FCM_TOKEN = "fcm_token"
 
         var sharedPref: SharedPreferences? = null
+        var ref: DocumentReference? = null
 
         var token: String?
             get() {
@@ -97,4 +105,48 @@ class FirebaseService : FirebaseMessagingService() {
 
         notificationManager.notify(notificationId, notificationBuilder.build())
     }
+
+    private suspend fun updateRemoteFcm(newToken: String) {
+        try {
+            ref?.apply {
+                withContext(Dispatchers.IO) {
+                    this@apply.update(
+                        FCM_TOKEN, newToken,
+                        PUSH_MEDIA_SELECTION, "",
+                        UPDATE_TIME, Timestamp.now()
+                    ).await()
+                }
+            }
+        } catch (e: Exception) {
+            Timber.d("get failed with " + e)
+
+        }
+    }
+
+
+//    private suspend fun updateMediaOrder(newMediaOrder: String) {
+//        try {
+//            remoteMediaOrder?.apply {
+//                add(newMediaOrder)
+//                withContext(Dispatchers.IO) {
+//                    ref.update(Constants.MEDIA_BAR_ORDER, this@apply).await()
+//                }
+//            }
+//        } catch (e: Exception) {
+//            Timber.d("get failed with " + e)
+//
+//        }
+//    }
+//
+//    private suspend fun getRemoteMediaOrder() {
+//        try {
+//            val documentSnapshot = withContext(Dispatchers.IO) { ref.get().await() }
+//            if (documentSnapshot.exists()) {
+//                remoteMediaOrder =
+//                    documentSnapshot[Constants.MEDIA_BAR_ORDER] as MutableList<String>?
+//            }
+//        } catch (e: Exception) {
+//            Timber.d("get failed with " + e)
+//        }
+//    }
 }
