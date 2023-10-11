@@ -2,6 +2,7 @@
 
 buildscript {
     ext {
+        retrofit_version = '2.9.0'
         glide_version = '4.15.1'
         coroutine_version = "1.6.4"
         lifecycle_verion = '2.5.0'
@@ -17,10 +18,11 @@ buildscript {
         google()
         jcenter()
         maven { url 'https://jitpack.io' }
+        maven { url 'https://github.com/facebook/flipper' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.2'
-        classpath 'com.google.gms:google-services:4.2.0'
+        classpath 'com.android.tools.build:gradle:7.4.2'
+        classpath 'com.google.gms:google-services:4.3.10'
         // Check that you have the Google Services Gradle plugin v4.3.2 or later
         // (if not, add it).
         classpath 'com.google.gms:google-services:4.3.13'

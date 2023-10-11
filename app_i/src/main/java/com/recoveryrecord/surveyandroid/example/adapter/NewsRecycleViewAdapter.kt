@@ -12,6 +12,10 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
+import com.recoveryrecord.surveyandroid.example.Constants.NEWS_ID_KEY
+import com.recoveryrecord.surveyandroid.example.Constants.NEWS_MEDIA_KEY
+import com.recoveryrecord.surveyandroid.example.Constants.TRIGGER_BY_KEY
+import com.recoveryrecord.surveyandroid.example.Constants.TRIGGER_BY_SELF
 import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.example.activity.NewsModuleActivity
 import com.recoveryrecord.surveyandroid.example.model.News
@@ -81,9 +85,9 @@ class NewsRecycleViewAdapter(
                 val (_, media, id) = dataModelArrayList[adapterPosition]
                 val intent = Intent()
                 intent.setClass(context, NewsModuleActivity::class.java)
-                intent.putExtra("trigger_by", "self_trigger")
-                intent.putExtra("news_id", id)
-                intent.putExtra("media", media)
+                intent.putExtra(TRIGGER_BY_KEY, TRIGGER_BY_SELF)
+                intent.putExtra(NEWS_ID_KEY, id)
+                intent.putExtra(NEWS_MEDIA_KEY, media)
                 context.startActivity(intent)
             }
         }

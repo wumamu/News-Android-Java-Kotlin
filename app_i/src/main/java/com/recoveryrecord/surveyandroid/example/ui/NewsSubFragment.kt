@@ -23,8 +23,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
-const val NEWS_SOURCE = "news_source"
-const val NEWS_CATEGORY = "news_category"
+private const val NEWS_SOURCE = "news_source"
+private const val NEWS_CATEGORY = "news_category"
 
 class NewsSubFragment : Fragment() {
     private lateinit var courseRV: RecyclerView

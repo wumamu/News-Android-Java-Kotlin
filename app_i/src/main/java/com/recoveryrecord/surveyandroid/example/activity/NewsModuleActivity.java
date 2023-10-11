@@ -99,7 +99,6 @@ import com.recoveryrecord.surveyandroid.example.model.ReadingBehavior;
 import com.recoveryrecord.surveyandroid.example.receiever.ApplicationSelectorReceiver;
 import com.recoveryrecord.surveyandroid.example.sqlite.DragObj;
 import com.recoveryrecord.surveyandroid.example.sqlite.FlingObj;
-import com.recoveryrecord.surveyandroid.example.sqlite.PushNews;
 
 import java.io.InputStream;
 import java.text.ParseException;
@@ -345,15 +344,17 @@ public class NewsModuleActivity extends AppCompatActivity implements SimpleGestu
         full_en.add('Ｍ');
     }
 
-    public static boolean is_except(Character c){
+    static String TAG = "NewsModuleActivity";
+
+    public static boolean is_except(Character c) {
         return ch_except.contains(c);
     }
 
-    public static boolean is_full_num(Character c){
+    public static boolean is_full_num(Character c) {
         return full_num.contains(c);
     }
 
-    public static boolean is_latin(Character c){
+    public static boolean is_latin(Character c) {
         return latin.contains(c);
     }
 
@@ -364,51 +365,36 @@ public class NewsModuleActivity extends AppCompatActivity implements SimpleGestu
     @SuppressLint({"ClickableViewAccessibility", "HardwareIds"})
     @RequiresApi(api = Build.VERSION_CODES.O)
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("log: activity cycle", "NewsModuleActivity On create");
         super.onCreate(savedInstanceState);
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         text_size_string = sharedPrefs.getString(SHARE_PREFERENCE_TEST_SIZE, "1");
         device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-//        getSupportActionBar().hide();
         setContentView(R.layout.activity_news_module);
-//        toolbar = (Toolbar) findViewById(R.id.main_toolbar);
-//        setSupportActionBar(toolbar);
-
-        //set time in ##############################################################################
-//        Date date = new Date(System.currentTimeMillis());
-//        @SuppressLint("SimpleDateFormat")
-//        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-//        String time_now = formatter.format(date);
         myReadingBehavior.setInTimestamp(Timestamp.now().getSeconds());
-        //check trigger from #######################################################################
-//        Log.d("555 news LoginActivity", String.valueOf(sharedPrefs.getInt(SHARE_PREFERENCE_IS_LOGIN, 0)));
-//        Log.d("555 news LoginActivity", String.valueOf(sharedPrefs.getString(SHARE_PREFERENCE_DEVICE_ID, "123")));
         if (getIntent().getExtras() != null) {
             Bundle b = getIntent().getExtras();
 
-            if (b.getString(NEWS_ID_KEY)!= null){
+            if (b.getString(NEWS_ID_KEY)!= null) {
                 news_id = b.getString(NEWS_ID_KEY);
+                Log.d(TAG, "news id" + news_id);
+
             }
-            if (b.getString(NEWS_MEDIA_KEY)!= null){
+            if (b.getString(NEWS_MEDIA_KEY)!= null) {
                 media_eng = b.getString(NEWS_MEDIA_KEY);
                 media_ch = media_eng;
+                Log.d(TAG, "media" + media_eng + media_ch);
+
             }
             if(b.getString(TRIGGER_BY_KEY)!=null){
                 myReadingBehavior.setTriggerBy(b.getString(TRIGGER_BY_KEY, "UNKNOWN"));
+                Log.d(TAG, "trigger by" + b.getString(TRIGGER_BY_KEY));
             }
 
             if (myReadingBehavior.getTriggerBy().equals(READING_BEHAVIOR_TRIGGER_BY_NOTIFICATION)) {
-                PushNews myPushNews = new PushNews();
-                myPushNews.setKEY_DOC_ID(device_id + " " + news_id);
-                myPushNews.setKEY_OPEN_TIMESTAMP(Timestamp.now().getSeconds());
-//                PushNewsDbHelper dbHandler = new PushNewsDbHelper(getApplicationContext());
-//                dbHandler.UpdatePushNewsDetailsClick(myPushNews);
-
                 db.collection(PUSH_NEWS_COLLECTION)
                         .document(device_id + " " + news_id)
                         .update(PUSH_NEWS_CLICK, 0,
                                 PUSH_NEWS_OPEN_TIME, Timestamp.now())
-//                                PUSH_NEWS_READING_BEHAVIOR_ID, myReadingBehavior.getKEY_IN_TIMESTAMP())
                         .addOnSuccessListener(aVoid -> Log.d("lognewsselect", "mark as click successfully updated!"))
                         .addOnFailureListener(e -> Log.w("lognewsselect", "mark as click Error updating document", e));
             } else {
@@ -478,7 +464,6 @@ public class NewsModuleActivity extends AppCompatActivity implements SimpleGestu
                 media_ch = "三立";
                 break;
             default:
-//                media_name = "";
                 break;
 
         }
@@ -1152,10 +1137,10 @@ public class NewsModuleActivity extends AppCompatActivity implements SimpleGestu
                         VisibleChecker visibleChecker = new VisibleChecker();
                         Future<Integer> future1 = visibleChecker.visibility_check(1, 0);
                     } else {
-                        Log.d("log: firebase", "NewsModuleActivity No such document");
+                        Log.d(TAG, "No such document");
                     }
                 } else {
-                    Log.d("log: firebase", "get failed with ", task.getException());
+                    Log.d(TAG, "get failed with ", task.getException());
                 }
             }
         });

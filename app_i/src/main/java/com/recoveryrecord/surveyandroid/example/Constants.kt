@@ -58,8 +58,8 @@ object Constants {
     //NEWS NewsModuleActivity
     const val TRIGGER_BY_KEY = "trigger_by"
     const val TRIGGER_BY_VALUE_NOTIFICATION = "Notification"
+    const val TRIGGER_BY_SELF = "self_trigger"
 
-    //    public static final String TRIGGER_BY_VALUE_SELF_TRIGGER = "self_trigger";
     const val NEWS_ID_KEY = "news_id"
     const val NEWS_MEDIA_KEY = "media"
 
@@ -261,7 +261,7 @@ object Constants {
     const val NEWS_CATEGORY = "news_category"
     const val CONFIG = "config"
 
-    const val STORM_ENG = "strom"
+    const val STORM_ENG = "storm"
     const val SETN_ENG = "setn"
     const val LTN_ENG = "ltn"
     const val ETTODAY_ENG = "ettoday"

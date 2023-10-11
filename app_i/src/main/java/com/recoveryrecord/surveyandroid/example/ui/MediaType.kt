@@ -11,7 +11,7 @@ import com.recoveryrecord.surveyandroid.example.Constants.STORM_ENG
 import com.recoveryrecord.surveyandroid.example.Constants.UDN_ENG
 
 sealed class MediaType(
-    val englisgId: String,
+    val englishId: String,
     val chineseId: String
 ) {
     private var _categoryMap: Map<Int, String> = emptyMap()
