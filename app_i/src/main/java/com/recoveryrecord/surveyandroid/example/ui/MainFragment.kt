@@ -10,10 +10,21 @@ import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.example.adapter.NewsCategoryPagerAdapter
 import com.recoveryrecord.surveyandroid.example.model.MediaType
 
-const val MEDIA_SOURCE = "media_source"
 
 class MainFragment : Fragment() {
+
     private var source: String = ""
+
+    companion object {
+        const val MEDIA_SOURCE = "media_source"
+        fun newInstance(source: String) =
+            MainFragment().apply {
+                arguments = Bundle().apply {
+                    putString(MEDIA_SOURCE, source)
+                }
+            }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -36,16 +47,5 @@ class MainFragment : Fragment() {
             )
         mViewPager.adapter = mNewsCategoryPagerAdapter
         return view
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance(source: String) =
-            MainFragment().apply {
-                arguments = Bundle().apply {
-                    putString(MEDIA_SOURCE, source)
-                }
-            }
-
     }
 }

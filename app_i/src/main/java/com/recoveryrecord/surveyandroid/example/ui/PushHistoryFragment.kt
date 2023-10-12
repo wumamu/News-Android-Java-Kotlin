@@ -1,135 +1,98 @@
-package com.recoveryrecord.surveyandroid.example.ui;
+package com.recoveryrecord.surveyandroid.example.ui
 
-import static com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_HISTORY_LIMIT_PER_PAGE;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_DEVICE_ID;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_RECEIEVE_TIME;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_TYPE;
+import android.annotation.SuppressLint
+import android.os.Bundle
+import android.provider.Settings
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
+import com.recoveryrecord.surveyandroid.example.R
+import com.recoveryrecord.surveyandroid.example.adapter.NewsRecycleViewAdapter
+import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_HISTORY_LIMIT_PER_PAGE
+import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_COLLECTION
+import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_DEVICE_ID
+import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_RECEIEVE_TIME
+import com.recoveryrecord.surveyandroid.example.model.News
+import com.recoveryrecord.surveyandroid.util.fetchRemote
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+import kotlinx.coroutines.launch
 
-import android.annotation.SuppressLint;
-import android.os.Bundle;
-import android.provider.Settings;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+@AndroidEntryPoint
+class PushHistoryFragment : Fragment() {
+    private lateinit var courseRV: RecyclerView
+    private lateinit var dataRVAdapter: NewsRecycleViewAdapter
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+    private val dataModalArrayList: ArrayList<News> = ArrayList()
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.recoveryrecord.surveyandroid.example.R;
-import com.recoveryrecord.surveyandroid.example.adapter.NewsRecycleViewAdapter;
-import com.recoveryrecord.surveyandroid.example.model.News;
+    @Inject
+    lateinit var db: FirebaseFirestore
 
-import java.util.ArrayList;
-import java.util.List;
+    private lateinit var deviceId: String
 
-public class PushHistoryFragment extends Fragment {
-
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    private RecyclerView courseRV;
-    private ArrayList<News> dataModalArrayList;
-    private NewsRecycleViewAdapter dataRVAdapter;
-    private FirebaseFirestore db;
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-    private String device_id = "";
-
-    public PushHistoryFragment() {
-        // Required empty public constructor
-    }
-
-
-    // TODO: Rename and change types and number of parameters
-    public static PushHistoryFragment newInstance() {
-        PushHistoryFragment fragment = new PushHistoryFragment();
-
-        return fragment;
-    }
-
-    @SuppressLint("HardwareIds")
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        device_id = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    companion object {
+        fun newInstance(): PushHistoryFragment {
+            return PushHistoryFragment()
         }
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-//        return inflater.inflate(R.layout.fragment_nest1_category, container, false);
-        View view = inflater.inflate(R.layout.nested_layer2_readinghistory, container, false);
-        // initializing our variables.
-        courseRV = view.findViewById(R.id.idRVItems);
-
-        // initializing our variable for firebase
-        // firestore and getting its instance.
-        db = FirebaseFirestore.getInstance();
-
-        // creating our new array list
-        dataModalArrayList = new ArrayList<>();
-        courseRV.setHasFixedSize(true);
-
-        // adding horizontal layout manager for our recycler view.
-//        courseRV.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        courseRV.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-
-        // adding our array list to our recycler view adapter class.
-        dataRVAdapter = new NewsRecycleViewAdapter(dataModalArrayList, getActivity());
-
-        // setting adapter to our recycler view.
-        courseRV.setAdapter(dataRVAdapter);
-
-        loadrecyclerViewData();
-
-        return view;
+    @SuppressLint("HardwareIds")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        deviceId = Settings.Secure.getString(activity?.contentResolver, Settings.Secure.ANDROID_ID)
     }
 
-    private void loadrecyclerViewData() {
-        db.collection(PUSH_NEWS_COLLECTION)
-                .whereEqualTo(PUSH_NEWS_DEVICE_ID, device_id)
-                .orderBy(PUSH_NEWS_RECEIEVE_TIME, Query.Direction.DESCENDING)
-                .limit(PUSH_HISTORY_LIMIT_PER_PAGE)
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
-                        if (!queryDocumentSnapshots.isEmpty()) {
-                            List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
-                            for (DocumentSnapshot d : list) {
-                                if(d.getString(PUSH_NEWS_TYPE).equals("target add")){
-                                    News dataModal = d.toObject(News.class);
-                                    dataModalArrayList.add(dataModal);
-                                }
-                            }
-                            dataRVAdapter.notifyDataSetChanged();
-                        } else {
-                        }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d("lognewsselect", String.valueOf(e));
-                // if we do not get any data or any error we are displaying
-                // a toast message that we do not get any data
-//                Toast.makeText(TestNewsOneActivity.this, "Fail to get the data.", Toast.LENGTH_SHORT).show();
+        val view = inflater.inflate(R.layout.nested_layer2_readinghistory, container, false)
+        courseRV = view.findViewById(R.id.idRVItems)
+        initRecyclerView()
+        if (dataModalArrayList.isEmpty()) {
+            lifecycleScope.launch { fetchInitialData() }
+        }
+        return view
+    }
+
+    private fun initRecyclerView() {
+        dataRVAdapter = NewsRecycleViewAdapter(dataModalArrayList, requireActivity())
+        dataRVAdapter.setHasStableIds(true)
+        courseRV.apply {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+            adapter = dataRVAdapter
+        }
+    }
+
+    private suspend fun fetchInitialData() {
+        val query = db
+            .collection(PUSH_NEWS_COLLECTION)
+            .whereEqualTo(PUSH_NEWS_DEVICE_ID, deviceId)
+            .orderBy(PUSH_NEWS_RECEIEVE_TIME, Query.Direction.DESCENDING)
+            .limit(PUSH_HISTORY_LIMIT_PER_PAGE)
+        fetchRemote(query) { querySnapshot ->
+            if (!querySnapshot.isEmpty) {
+                val list = querySnapshot.documents
+                for (d in list) {
+                    val dataModal = News(
+                        title = d.getString("title"),
+                        media = d.getString("media"),
+                        id = d.getString("id"),
+                        pubDate = d.getTimestamp("pubdate"),
+                        image = d.getString("image")
+                    )
+                    dataModalArrayList.add(dataModal)
+                }
             }
-        });
+        }
     }
-
 }

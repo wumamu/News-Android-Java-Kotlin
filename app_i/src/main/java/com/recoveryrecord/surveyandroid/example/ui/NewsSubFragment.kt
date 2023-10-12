@@ -18,12 +18,10 @@ import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.example.adapter.NewsRecycleViewAdapter
 import com.recoveryrecord.surveyandroid.example.config.Constants
 import com.recoveryrecord.surveyandroid.example.model.News
+import com.recoveryrecord.surveyandroid.util.fetchRemote
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -43,6 +41,18 @@ class NewsSubFragment : Fragment() {
     private var category: String = ""
     private var lastVisibleDocument: DocumentSnapshot? = null
     private var isFetchingData: Boolean = false
+
+    companion object {
+        private const val NEWS_SOURCE = "news_source"
+        private const val NEWS_CATEGORY = "news_category"
+        fun newInstance(source: String, category: String) =
+            NewsSubFragment().apply {
+                arguments = Bundle().apply {
+                    putString(NEWS_SOURCE, source)
+                    putString(NEWS_CATEGORY, category)
+                }
+            }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -127,45 +137,6 @@ class NewsSubFragment : Fragment() {
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    private suspend fun fetchInitialData() {
-        val query = createQuery()
-        isFetchingData = true
-        withContext(Dispatchers.Main) {
-            progressBar.visibility = View.VISIBLE
-        }
-        try {
-            val querySnapshot = withContext(Dispatchers.IO) {
-                query.limit(Constants.NEWS_LIMIT_PER_PAGE).get().await()
-            }
-
-            if (!querySnapshot.isEmpty) {
-                val list = querySnapshot.documents
-                lastVisibleDocument = querySnapshot.documents.lastOrNull()
-
-                for (d in list) {
-                    val dataModal = News(
-                        title = d.getString("title"),
-                        media = d.getString("media"),
-                        id = d.getString("id"),
-                        pubDate = d.getTimestamp("pubdate"),
-                        image = d.getString("image")
-                    )
-                    dataModalArrayList.add(dataModal)
-                }
-            }
-        } catch (e: Exception) {
-            Timber.d("Fail to get the data.$e")
-        } finally {
-            // Update the UI on the main thread
-            withContext(Dispatchers.Main) {
-                dataRVAdapter.notifyDataSetChanged()
-                progressBar.visibility = View.GONE
-            }
-            isFetchingData = false
-        }
-    }
-
     private fun createQuery(): Query {
         return if (source == "storm") {
             db.collection("news")
@@ -180,18 +151,40 @@ class NewsSubFragment : Fragment() {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    private suspend fun fetchInitialData() {
+        val query = createQuery()
+            .limit(Constants.NEWS_LIMIT_PER_PAGE)
+        isFetchingData = true
+        progressBar.visibility = View.VISIBLE
+        fetchRemote(query) { querySnapshot ->
+            if (!querySnapshot.isEmpty) {
+                val list = querySnapshot.documents
+                lastVisibleDocument = querySnapshot.documents.lastOrNull()
+
+                for (d in list) {
+                    val dataModal = News(
+                        title = d.getString("title"),
+                        media = d.getString("media"),
+                        id = d.getString("id"),
+                        pubDate = d.getTimestamp("pubdate"),
+                        image = d.getString("image")
+                    )
+                    dataModalArrayList.add(dataModal)
+                }
+                dataRVAdapter.notifyDataSetChanged()
+            }
+            progressBar.visibility = View.GONE
+            isFetchingData = false
+        }
+    }
+
     private suspend fun fetchMoreData() {
         val query = createQuery()
+            .startAfter(lastVisibleDocument?.getTimestamp("pubdate"))
+            .limit(Constants.NEWS_LIMIT_PER_PAGE)
         isFetchingData = true
-        try {
-            val querySnapshot = withContext(Dispatchers.IO) {
-                query
-                    .startAfter(lastVisibleDocument?.getTimestamp("pubdate"))
-                    .limit(Constants.NEWS_LIMIT_PER_PAGE)
-                    .get()
-                    .await()
-            }
-
+        fetchRemote(query) { querySnapshot ->
             if (!querySnapshot.isEmpty) {
                 val list = querySnapshot.documents
                 lastVisibleDocument = querySnapshot.documents.lastOrNull()
@@ -207,27 +200,9 @@ class NewsSubFragment : Fragment() {
                     )
                     dataModalArrayList.add(dataModal)
                 }
-                withContext(Dispatchers.Main) {
-                    dataRVAdapter.notifyItemRangeInserted(insertStartPosition, list.size)
-                }
+                dataRVAdapter.notifyItemRangeInserted(insertStartPosition, list.size)
             }
-        } catch (e: Exception) {
-            Timber.d("Fail to get more data.$e")
-        } finally {
             isFetchingData = false
         }
-    }
-
-    companion object {
-        private const val NEWS_SOURCE = "news_source"
-        private const val NEWS_CATEGORY = "news_category"
-        fun newInstance(source: String, category: String) =
-            NewsSubFragment().apply {
-                arguments = Bundle().apply {
-                    putString(NEWS_SOURCE, source)
-                    putString(NEWS_CATEGORY, category)
-                }
-            }
-
     }
 }

@@ -1,10 +1,26 @@
 package com.recoveryrecord.surveyandroid.util
 
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+
+suspend fun fetchRemote(
+    query: Query,
+    onSuccess: (QuerySnapshot) -> Unit = {}
+) {
+    try {
+        val querySnapshot = withContext(Dispatchers.IO) {
+            query.get().await()
+        }
+        onSuccess(querySnapshot) // main thread
+    } catch (e: Exception) {
+        Timber.w("Firestore fetch failed $e")
+    }
+}
 
 suspend fun updateRemote(
     document: DocumentReference,
@@ -14,10 +30,10 @@ suspend fun updateRemote(
     try {
         withContext(Dispatchers.IO) {
             document.update(newData).await()
-            onSuccess()
         }
+        onSuccess()
     } catch (e: Exception) {
-        Timber.w("Fire store uodate failed$e")
+        Timber.w("Firestore u[date failed$e")
     }
 }
 
@@ -29,13 +45,10 @@ suspend fun insertRemote(
 ) {
     try {
         withContext(Dispatchers.IO) {
-            //TODO remove
-            Timber.d("1")
-            document.set(newData).await().apply { Timber.d("2") }
-            Timber.d("3")
-            onSuccess()
+            document.set(newData).await()
         }
+        onSuccess()
     } catch (e: Exception) {
-        Timber.w("Fire store update failed$e")
+        Timber.w("Firestore insert failed$e")
     }
 }

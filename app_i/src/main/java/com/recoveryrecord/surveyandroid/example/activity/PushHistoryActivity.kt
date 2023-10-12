@@ -10,8 +10,9 @@ import com.google.android.material.tabs.TabLayout
 import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.example.ui.EmptyFragment.Companion.newInstance
 import com.recoveryrecord.surveyandroid.example.ui.PushHistoryFragment
-import com.recoveryrecord.surveyandroid.example.ui.ReadHistorySummaryFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class PushHistoryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +33,6 @@ class PushHistoryActivity : AppCompatActivity() {
         override fun getItem(position: Int): Fragment {
             return when (position) {
                 0 -> PushHistoryFragment.newInstance()
-                1 -> ReadHistorySummaryFragment.newInstance()
                 else -> newInstance()
             }
         }

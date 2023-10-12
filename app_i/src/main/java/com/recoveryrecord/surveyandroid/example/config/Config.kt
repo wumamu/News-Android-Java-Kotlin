@@ -25,7 +25,7 @@ object Config {
     const val DATE_FORMAT_NOW = "yyyy/MM/dd HH:mm:ss" //yyyy-MM-dd HH:mm:ss Z
 
     //    const val MILLISECONDS_PER_MINUTE = SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND
-    const val DATE_FORMAT_NOW_SLASH = "yyyy/MM/dd HH:mm:ss Z"
+    private const val DATE_FORMAT_NOW_SLASH = "yyyy/MM/dd HH:mm:ss Z"
 
     @JvmStatic
     val currentTimeInMillis: Long
@@ -41,9 +41,9 @@ object Config {
     @SuppressLint("SimpleDateFormat")
     @JvmStatic
     fun getTimeString(time: Long): String {
-        val sdf_now =
+        val sdfNow =
             SimpleDateFormat(DATE_FORMAT_NOW_SLASH)
-        return sdf_now.format(time)
+        return sdfNow.format(time)
     }
 
     @JvmStatic
