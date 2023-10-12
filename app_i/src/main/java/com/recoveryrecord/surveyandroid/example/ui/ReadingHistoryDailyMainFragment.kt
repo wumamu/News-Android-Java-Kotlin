@@ -10,8 +10,11 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.firebase.Timestamp
 import com.recoveryrecord.surveyandroid.example.R
+import com.recoveryrecord.surveyandroid.example.config.Constants.READING_DAILY
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.Calendar
 
+@AndroidEntryPoint
 class ReadingHistoryDailyMainFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,7 +37,7 @@ class ReadingHistoryDailyMainFragment : Fragment() {
     ) {
 
         override fun getItem(position: Int): Fragment {
-            return ReadingHistoryDailyFragment.newInstance(position + 1)
+            return HistoryFragment.newInstance(READING_DAILY, position + 1)
         }
 
         override fun getCount(): Int {

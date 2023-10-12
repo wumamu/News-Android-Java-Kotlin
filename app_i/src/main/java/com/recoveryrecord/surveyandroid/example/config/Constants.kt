@@ -170,5 +170,6 @@ object Constants {
 
     //fragment type
     const val PUSH_NEWS = "push_news"
-    const val READING = "reading"
+    const val READING_ALL = "reading_all"
+    const val READING_DAILY = "reading_daily"
 }

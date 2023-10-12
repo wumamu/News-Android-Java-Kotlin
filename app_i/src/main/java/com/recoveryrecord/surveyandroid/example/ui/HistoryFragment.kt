@@ -19,14 +19,17 @@ import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS
 import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_COLLECTION
 import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_DEVICE_ID
 import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_RECEIEVE_TIME
-import com.recoveryrecord.surveyandroid.example.config.Constants.READING
+import com.recoveryrecord.surveyandroid.example.config.Constants.READING_ALL
 import com.recoveryrecord.surveyandroid.example.config.Constants.READING_BEHAVIOR_COLLECTION
 import com.recoveryrecord.surveyandroid.example.config.Constants.READING_BEHAVIOR_DEVICE_ID
+import com.recoveryrecord.surveyandroid.example.config.Constants.READING_BEHAVIOR_IN_TIME_LONG
 import com.recoveryrecord.surveyandroid.example.config.Constants.READING_BEHAVIOR_OUT_TIME
+import com.recoveryrecord.surveyandroid.example.config.Constants.READING_DAILY
 import com.recoveryrecord.surveyandroid.example.config.Constants.READ_HISTORY_LIMIT_PER_PAGE
 import com.recoveryrecord.surveyandroid.example.model.News
 import com.recoveryrecord.surveyandroid.util.fetchRemote
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Calendar
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -36,6 +39,7 @@ class HistoryFragment : Fragment() {
     private lateinit var courseRV: RecyclerView
     private lateinit var dataRVAdapter: NewsRecycleViewAdapter
     private var type: String = ""
+    private var day: Int = -1
 
     private val dataModalArrayList: ArrayList<News> = ArrayList()
 
@@ -46,10 +50,12 @@ class HistoryFragment : Fragment() {
 
     companion object {
         private const val TYPE = "type"
-        fun newInstance(type: String): HistoryFragment {
+        private const val DAY = "day"
+        fun newInstance(type: String, day: Int = -1): HistoryFragment {
             return HistoryFragment().apply {
                 arguments = Bundle().apply {
                     putString(TYPE, type)
+                    putInt(DAY, day)
                 }
             }
         }
@@ -61,6 +67,7 @@ class HistoryFragment : Fragment() {
         deviceId = Settings.Secure.getString(activity?.contentResolver, Settings.Secure.ANDROID_ID)
         arguments?.let {
             type = it.getString(TYPE, "")
+            day = it.getInt(DAY, -1)
         }
     }
 
@@ -87,25 +94,50 @@ class HistoryFragment : Fragment() {
     }
 
     private fun createQuery(): Query? {
-        return when (type) {
-            PUSH_NEWS -> db
+        return when {
+            type == PUSH_NEWS -> db
                 .collection(PUSH_NEWS_COLLECTION)
                 .whereEqualTo(PUSH_NEWS_DEVICE_ID, deviceId)
                 .orderBy(PUSH_NEWS_RECEIEVE_TIME, Query.Direction.DESCENDING)
                 .limit(PUSH_HISTORY_LIMIT_PER_PAGE)
 
-            READING -> db
+            type == READING_ALL -> db
                 .collection(READING_BEHAVIOR_COLLECTION)
                 .whereEqualTo(READING_BEHAVIOR_DEVICE_ID, deviceId)
                 .orderBy(READING_BEHAVIOR_OUT_TIME, Query.Direction.DESCENDING)
                 .limit(READ_HISTORY_LIMIT_PER_PAGE)
 
+            (type == READING_DAILY) && day != -1 -> {
+                val range = countRange()
+                db.collection(READING_BEHAVIOR_COLLECTION)
+                    .whereEqualTo(READING_BEHAVIOR_DEVICE_ID, deviceId)
+                    .whereGreaterThanOrEqualTo(READING_BEHAVIOR_IN_TIME_LONG, range.first)
+                    .whereLessThanOrEqualTo(READING_BEHAVIOR_IN_TIME_LONG, range.second)
+                    .orderBy(READING_BEHAVIOR_IN_TIME_LONG, Query.Direction.DESCENDING)
+            }
+
             else -> null
         }
     }
 
+    private fun countRange(): Pair<Long, Long> {
+        val startTime = Calendar.getInstance()
+        val endTime = Calendar.getInstance()
+        startTime.add(Calendar.DAY_OF_YEAR, -(day - 1))
+        endTime.add(Calendar.DAY_OF_YEAR, -(day - 1))
+        startTime.set(Calendar.HOUR_OF_DAY, 0)
+        startTime.set(Calendar.MINUTE, 0)
+        startTime.set(Calendar.SECOND, 0)
+        endTime.set(Calendar.HOUR_OF_DAY, 23)
+        endTime.set(Calendar.MINUTE, 59)
+        endTime.set(Calendar.SECOND, 59)
+        val startLong = startTime.timeInMillis / 1000
+        val endLong = endTime.timeInMillis / 1000
+        return Pair(startLong, endLong)
+    }
+
     private suspend fun fetchData() {
-        Timber.d(type)
+        Timber.d("$type $day")
 
         val query = createQuery() ?: return
         fetchRemote(query) { querySnapshot ->
@@ -114,15 +146,16 @@ class HistoryFragment : Fragment() {
                 val insertStartPosition = dataModalArrayList.size
 
                 for (d in list) {
-                    val dataModal = News(
+                    Timber.d("$type ${list.size}")
+                    News(
                         title = d.getString("title"),
                         media = d.getString("media"),
                         id = d.getString("id"),
                         pubDate = d.getTimestamp("pubdate"),
                         image = d.getString("image")
-                    )
-                    Timber.d(dataModal.toString())
-                    dataModalArrayList.add(dataModal)
+                    ).takeIf { it.isValid }?.apply {
+                        dataModalArrayList.add(this)
+                    }
                 }
                 dataRVAdapter.notifyItemRangeInserted(insertStartPosition, list.size)
             } else {

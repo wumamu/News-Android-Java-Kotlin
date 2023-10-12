@@ -162,14 +162,15 @@ class NewsSubFragment : Fragment() {
                 val insertStartPosition = dataModalArrayList.size
 
                 for (d in list) {
-                    val dataModal = News(
-                        title = d.getString("title"),
-                        media = d.getString("media"),
-                        id = d.getString("id"),
-                        pubDate = d.getTimestamp("pubdate"),
-                        image = d.getString("image")
-                    )
-                    dataModalArrayList.add(dataModal)
+                     News(
+                         title = d.getString("title"),
+                         media = d.getString("media"),
+                         id = d.getString("id"),
+                         pubDate = d.getTimestamp("pubdate"),
+                         image = d.getString("image")
+                     ).takeIf { it.isValid }?.apply {
+                         dataModalArrayList.add(this)
+                     }
                 }
                 dataRVAdapter.notifyItemRangeInserted(insertStartPosition, list.size)
             }
@@ -190,14 +191,15 @@ class NewsSubFragment : Fragment() {
                 val insertStartPosition = dataModalArrayList.size
 
                 for (d in list) {
-                    val dataModal = News(
+                    News(
                         title = d.getString("title"),
                         media = d.getString("media"),
                         id = d.getString("id"),
                         pubDate = d.getTimestamp("pubdate"),
                         image = d.getString("image")
-                    )
-                    dataModalArrayList.add(dataModal)
+                    ).takeIf { it.isValid }?.apply {
+                        dataModalArrayList.add(this)
+                    }
                 }
                 dataRVAdapter.notifyItemRangeInserted(insertStartPosition, list.size)
             }
