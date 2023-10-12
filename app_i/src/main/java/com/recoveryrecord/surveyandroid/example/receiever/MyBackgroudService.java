@@ -1,15 +1,13 @@
 package com.recoveryrecord.surveyandroid.example.receiever;
 
+import static com.recoveryrecord.surveyandroid.example.config.Config.DetectTime;
+
 import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
-import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-
-import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
 
 public class MyBackgroudService extends Service{
     MyStreamManager mystreamManager = new MyStreamManager();

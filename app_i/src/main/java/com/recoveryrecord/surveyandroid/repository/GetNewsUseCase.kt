@@ -1,6 +1,6 @@
 package com.recoveryrecord.surveyandroid.repository
 
-import com.recoveryrecord.surveyandroid.example.Constants
+import com.recoveryrecord.surveyandroid.example.config.Constants
 import com.recoveryrecord.surveyandroid.example.model.News
 import javax.inject.Inject
 

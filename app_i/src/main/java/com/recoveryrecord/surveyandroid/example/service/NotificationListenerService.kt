@@ -1,20 +1,20 @@
-package com.recoveryrecord.surveyandroid.example
+package com.recoveryrecord.surveyandroid.example.service
 
 import android.annotation.SuppressLint
 import android.content.IntentFilter
 import android.os.Build
-import android.provider.ContactsContract.Directory.PACKAGE_NAME
 import android.provider.Settings
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import androidx.annotation.RequiresApi
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
-import com.recoveryrecord.surveyandroid.example.Constants.NEWS_ID_KEY
-import com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_COLLECTION
-import com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_RECEIEVE_TIME
-import com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_REMOVE_TIME
-import com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_REMOVE_TYPE
+import com.recoveryrecord.surveyandroid.example.config.Constants
+import com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_ID_KEY
+import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_COLLECTION
+import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_RECEIEVE_TIME
+import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_REMOVE_TIME
+import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_REMOVE_TYPE
 import com.recoveryrecord.surveyandroid.util.updateRemote
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -94,7 +94,7 @@ class NotificationListenerService : NotificationListenerService() {
             Timber.d(sbn.packageName + "being canceled")
         }
         // my notification
-        if (sbn.packageName == PACKAGE_NAME) {
+        if (sbn.packageName == this.packageName) {
             val notificationNewId = sbn.notification.extras?.getString(NEWS_ID_KEY)
             notificationNewId?.let { newsId ->
                 val updateData = hashMapOf<String, Any>(
@@ -182,7 +182,7 @@ class NotificationListenerService : NotificationListenerService() {
         val removeReason = notificationRemoveReason.value[reason] ?: "UNKNOWN"
         Timber.d("onNotificationRemoved $removeReason ${sbn.packageName}")
 
-        if (sbn.packageName == PACKAGE_NAME) {
+        if (sbn.packageName == this.packageName) {
             val notificationNewId = sbn.notification.extras?.getString(NEWS_ID_KEY)
             notificationNewId?.let { newsId ->
                 val updateData = hashMapOf<String, Any>(

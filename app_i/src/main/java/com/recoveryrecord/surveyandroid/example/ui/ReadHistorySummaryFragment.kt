@@ -15,8 +15,9 @@ import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.PercentFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
-import com.recoveryrecord.surveyandroid.example.Constants.READ_TOTAL
 import com.recoveryrecord.surveyandroid.example.R
+import com.recoveryrecord.surveyandroid.example.config.Constants.READ_TOTAL
+import com.recoveryrecord.surveyandroid.example.model.MediaType
 
 class ReadHistorySummaryFragment : Fragment() {
     private lateinit var pieChart: PieChart

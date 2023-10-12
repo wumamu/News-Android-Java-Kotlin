@@ -1,23 +1,23 @@
-package com.recoveryrecord.surveyandroid.example.ui
+package com.recoveryrecord.surveyandroid.example.model
 
-import com.recoveryrecord.surveyandroid.example.Constants.CHINATIMES_CHI
-import com.recoveryrecord.surveyandroid.example.Constants.CHINATIMES_ENG
-import com.recoveryrecord.surveyandroid.example.Constants.CNA_CHI
-import com.recoveryrecord.surveyandroid.example.Constants.CNA_ENG
-import com.recoveryrecord.surveyandroid.example.Constants.CTS_CHI
-import com.recoveryrecord.surveyandroid.example.Constants.CTS_ENG
-import com.recoveryrecord.surveyandroid.example.Constants.EBC_CHI
-import com.recoveryrecord.surveyandroid.example.Constants.EBC_ENG
-import com.recoveryrecord.surveyandroid.example.Constants.ETTODAY_CHI
-import com.recoveryrecord.surveyandroid.example.Constants.ETTODAY_ENG
-import com.recoveryrecord.surveyandroid.example.Constants.LTN_CHI
-import com.recoveryrecord.surveyandroid.example.Constants.LTN_ENG
-import com.recoveryrecord.surveyandroid.example.Constants.SETN_CHI
-import com.recoveryrecord.surveyandroid.example.Constants.SETN_ENG
-import com.recoveryrecord.surveyandroid.example.Constants.STORM_CHI
-import com.recoveryrecord.surveyandroid.example.Constants.STORM_ENG
-import com.recoveryrecord.surveyandroid.example.Constants.UDN_CHI
-import com.recoveryrecord.surveyandroid.example.Constants.UDN_ENG
+import com.recoveryrecord.surveyandroid.example.config.Constants.CHINATIMES_CHI
+import com.recoveryrecord.surveyandroid.example.config.Constants.CHINATIMES_ENG
+import com.recoveryrecord.surveyandroid.example.config.Constants.CNA_CHI
+import com.recoveryrecord.surveyandroid.example.config.Constants.CNA_ENG
+import com.recoveryrecord.surveyandroid.example.config.Constants.CTS_CHI
+import com.recoveryrecord.surveyandroid.example.config.Constants.CTS_ENG
+import com.recoveryrecord.surveyandroid.example.config.Constants.EBC_CHI
+import com.recoveryrecord.surveyandroid.example.config.Constants.EBC_ENG
+import com.recoveryrecord.surveyandroid.example.config.Constants.ETTODAY_CHI
+import com.recoveryrecord.surveyandroid.example.config.Constants.ETTODAY_ENG
+import com.recoveryrecord.surveyandroid.example.config.Constants.LTN_CHI
+import com.recoveryrecord.surveyandroid.example.config.Constants.LTN_ENG
+import com.recoveryrecord.surveyandroid.example.config.Constants.SETN_CHI
+import com.recoveryrecord.surveyandroid.example.config.Constants.SETN_ENG
+import com.recoveryrecord.surveyandroid.example.config.Constants.STORM_CHI
+import com.recoveryrecord.surveyandroid.example.config.Constants.STORM_ENG
+import com.recoveryrecord.surveyandroid.example.config.Constants.UDN_CHI
+import com.recoveryrecord.surveyandroid.example.config.Constants.UDN_ENG
 
 sealed class MediaType(
     val englishId: String,

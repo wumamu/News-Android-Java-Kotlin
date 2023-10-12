@@ -22,15 +22,15 @@
 //import java.util.List;
 //import java.util.Map;
 //
-//import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_COLLECTION;
-//import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_KEY;
-//import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_CYCLE_VALUE_BOOT_UP;
-//import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_DEVICE_ID;
-//import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_KEY;
-//import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_STATUS_VALUE_RESTART;
-//import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_SERVICE_TIME;
-//import static com.recoveryrecord.surveyandroid.example.Constants.RESTART_ALARM_ACTION;
-//import static com.recoveryrecord.surveyandroid.example.Constants.USER_COLLECTION;
+//import static com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_SERVICE_COLLECTION;
+//import static com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_SERVICE_CYCLE_KEY;
+//import static com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_SERVICE_CYCLE_VALUE_BOOT_UP;
+//import static com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_SERVICE_DEVICE_ID;
+//import static com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_SERVICE_STATUS_KEY;
+//import static com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_SERVICE_STATUS_VALUE_RESTART;
+//import static com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_SERVICE_TIME;
+//import static com.recoveryrecord.surveyandroid.example.config.Constants.RESTART_ALARM_ACTION;
+//import static com.recoveryrecord.surveyandroid.example.config.Constants.USER_COLLECTION;
 //
 //public class BootUpReceiver extends BroadcastReceiver {
 //

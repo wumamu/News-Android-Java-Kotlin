@@ -1,5 +1,9 @@
 package com.recoveryrecord.surveyandroid.example.CSVDataRecord;
 
+import static com.recoveryrecord.surveyandroid.example.config.Config.PACKAGE_DIRECTORY_PATH;
+import static com.recoveryrecord.surveyandroid.example.config.Config.getCurrentTimeInMillis;
+import static com.recoveryrecord.surveyandroid.example.config.Config.getTimeString;
+
 import android.os.Environment;
 
 import com.opencsv.CSVWriter;
@@ -11,13 +15,8 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.recoveryrecord.surveyandroid.example.config.Constants.PACKAGE_DIRECTORY_PATH;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.getCurrentTimeInMillis;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.getTimeString;
 
 public class CSVHelper {
     public static final String TAG = "CSVHelper";

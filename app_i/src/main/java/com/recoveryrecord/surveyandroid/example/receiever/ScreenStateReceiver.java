@@ -1,9 +1,9 @@
 package com.recoveryrecord.surveyandroid.example.receiever;//package com.example.test;
 
-import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_NAME;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
+import static com.recoveryrecord.surveyandroid.example.config.Config.DetectTime;
+import static com.recoveryrecord.surveyandroid.example.config.Config.SessionID;
+import static com.recoveryrecord.surveyandroid.example.config.Config.UsingApp;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_USER_ID;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -96,7 +96,7 @@ public class ScreenStateReceiver implements StreamGenerator{
             myscreen.setKEY_TIMESTAMP(Timestamp.now().getSeconds());
             myscreen.setKEY_DOC_ID(device_id + " " + time_now);
             myscreen.setKEY_DEVICE_ID(device_id);
-            myscreen.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_NAME, "尚未設定實驗編號"));
+            myscreen.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
             myscreen.setKEY_SESSION(SessionID);
             myscreen.setKEY_USING_APP(UsingApp);
             myscreen.setKEY_SCREEN(ScreenState);
@@ -129,7 +129,7 @@ public class ScreenStateReceiver implements StreamGenerator{
         myscreen.setKEY_TIMESTAMP(Timestamp.now().getSeconds());
         myscreen.setKEY_DOC_ID(device_id + " " + time_now);
         myscreen.setKEY_DEVICE_ID(device_id);
-        myscreen.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_NAME, "尚未設定實驗編號"));
+        myscreen.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
         myscreen.setKEY_SESSION(SessionID);
         myscreen.setKEY_USING_APP(UsingApp);
         myscreen.setKEY_SCREEN(ScreenState);

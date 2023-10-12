@@ -1,9 +1,9 @@
 package com.recoveryrecord.surveyandroid.example.receiever;
 
-import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_NAME;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
+import static com.recoveryrecord.surveyandroid.example.config.Config.DetectTime;
+import static com.recoveryrecord.surveyandroid.example.config.Config.SessionID;
+import static com.recoveryrecord.surveyandroid.example.config.Config.UsingApp;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_USER_ID;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -121,7 +121,7 @@ public class LightSensorReceiver implements StreamGenerator{
         mylight.setKEY_TIMESTAMP(Timestamp.now().getSeconds());
         mylight.setKEY_DOC_ID(device_id + " " + time_now);
         mylight.setKEY_DEVICE_ID(device_id);
-        mylight.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_NAME, "尚未設定實驗編號"));
+        mylight.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
         mylight.setKEY_SESSION(SessionID);
         mylight.setKEY_USING_APP(UsingApp);
         mylight.setKEY_LIGHT(LightState);

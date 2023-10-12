@@ -7,9 +7,9 @@
 //import android.content.Context;
 //import android.content.Intent;
 //
-//import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_NEWS_NOTIFICATION;
+//import static com.recoveryrecord.surveyandroid.example.config.Constants.DEFAULT_NEWS_NOTIFICATION;
 //
-//import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_CHANNEL_ID;
+//import static com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_CHANNEL_ID;
 //
 //public class NotificationListenerNews extends BroadcastReceiver {
 //    public void onReceive (Context context , Intent intent) {

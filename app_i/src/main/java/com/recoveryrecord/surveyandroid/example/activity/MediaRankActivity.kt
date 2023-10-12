@@ -12,14 +12,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
-import com.recoveryrecord.surveyandroid.example.Constants
-import com.recoveryrecord.surveyandroid.example.Constants.MEDIA_BAR_ORDER
-import com.recoveryrecord.surveyandroid.example.Constants.MEDIA_ORDER
 import com.recoveryrecord.surveyandroid.example.R
-import com.recoveryrecord.surveyandroid.example.SimpleItemTouchHelperCallback
 import com.recoveryrecord.surveyandroid.example.adapter.MediaRankRecycleViewAdapter
+import com.recoveryrecord.surveyandroid.example.config.Constants
+import com.recoveryrecord.surveyandroid.example.config.Constants.MEDIA_BAR_ORDER
+import com.recoveryrecord.surveyandroid.example.config.Constants.MEDIA_ORDER
 import com.recoveryrecord.surveyandroid.example.model.Media
-import com.recoveryrecord.surveyandroid.example.ui.MediaType
+import com.recoveryrecord.surveyandroid.example.model.MediaType
+import com.recoveryrecord.surveyandroid.example.ui.SimpleItemTouchHelperCallback
 import com.recoveryrecord.surveyandroid.util.parseTabArray
 import com.recoveryrecord.surveyandroid.util.parseToString
 import com.recoveryrecord.surveyandroid.util.showToast
@@ -70,7 +70,10 @@ class MediaRankActivity : AppCompatActivity() {
         }
 
         // Drag and drop
-        val callback: ItemTouchHelper.Callback = SimpleItemTouchHelperCallback(dataRVAdapter)
+        val callback: ItemTouchHelper.Callback =
+            SimpleItemTouchHelperCallback(
+                dataRVAdapter
+            )
         val touchHelper = ItemTouchHelper(callback)
         touchHelper.attachToRecyclerView(courseRV)
 

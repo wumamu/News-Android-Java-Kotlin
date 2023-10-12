@@ -8,7 +8,7 @@ import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-import com.recoveryrecord.surveyandroid.example.Constants
+import com.recoveryrecord.surveyandroid.example.config.Constants
 
 class ApplicationSelectorReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {

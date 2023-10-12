@@ -1,10 +1,10 @@
 package com.recoveryrecord.surveyandroid.example.ui;
 
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_DEVICE_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_OUT_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_TITLE;
-import static com.recoveryrecord.surveyandroid.example.Constants.READ_HISTORY_LIMIT_PER_PAGE;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.READING_BEHAVIOR_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.READING_BEHAVIOR_DEVICE_ID;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.READING_BEHAVIOR_OUT_TIME;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.READING_BEHAVIOR_TITLE;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.READ_HISTORY_LIMIT_PER_PAGE;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;

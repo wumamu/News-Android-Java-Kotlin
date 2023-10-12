@@ -35,7 +35,7 @@
 //import java.util.concurrent.ScheduledExecutorService;
 //
 //import static android.util.Log.e;
-//import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
+//import static com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_USER_ID;
 //import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
 //import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
 //import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;

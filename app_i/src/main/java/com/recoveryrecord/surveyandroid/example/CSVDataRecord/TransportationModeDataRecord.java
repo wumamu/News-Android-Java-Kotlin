@@ -1,13 +1,13 @@
 package com.recoveryrecord.surveyandroid.example.CSVDataRecord;
 
+import static com.recoveryrecord.surveyandroid.example.config.Config.DATE_FORMAT_for_storing;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import static com.recoveryrecord.surveyandroid.example.config.Constants.DATE_FORMAT_for_storing;
 
 @Entity(tableName = "TransportationModeDataRecord")
 public class TransportationModeDataRecord implements DataRecord{

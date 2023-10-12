@@ -43,12 +43,12 @@
 //import java.util.TreeMap;
 //
 //import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-//import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_NEWS_DEVICE_ID;
-//import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_NEWS_MONITOR_COLLECTION;
-//import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_NEWS_NOTI_TIME;
-//import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_NEWS_PACKAGE_ID;
-//import static com.recoveryrecord.surveyandroid.example.Constants.NOTIFICATION_BAR_NEWS_SOURCE;
-//import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
+//import static com.recoveryrecord.surveyandroid.example.config.Constants.NOTIFICATION_BAR_NEWS_DEVICE_ID;
+//import static com.recoveryrecord.surveyandroid.example.config.Constants.NOTIFICATION_BAR_NEWS_MONITOR_COLLECTION;
+//import static com.recoveryrecord.surveyandroid.example.config.Constants.NOTIFICATION_BAR_NEWS_NOTI_TIME;
+//import static com.recoveryrecord.surveyandroid.example.config.Constants.NOTIFICATION_BAR_NEWS_PACKAGE_ID;
+//import static com.recoveryrecord.surveyandroid.example.config.Constants.NOTIFICATION_BAR_NEWS_SOURCE;
+//import static com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_USER_ID;
 //import static com.recoveryrecord.surveyandroid.example.Utils.facebook;
 //import static com.recoveryrecord.surveyandroid.example.Utils.line;
 //import static com.recoveryrecord.surveyandroid.example.Utils.messenger;

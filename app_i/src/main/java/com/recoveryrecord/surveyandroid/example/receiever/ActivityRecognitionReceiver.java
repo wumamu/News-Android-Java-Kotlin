@@ -39,7 +39,7 @@
 //import androidx.core.app.NotificationManagerCompat;
 //import androidx.preference.PreferenceManager;
 //
-//import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
+//import static com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_USER_ID;
 //import static com.recoveryrecord.surveyandroid.example.NotificationScheduler.TAG;
 //import static com.recoveryrecord.surveyandroid.example.config.Constants.ACTIVITY_DELIMITER;
 //import static com.recoveryrecord.surveyandroid.example.config.Constants.DATE_FORMAT_NOW_SLASH;

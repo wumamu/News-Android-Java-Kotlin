@@ -1,5 +1,8 @@
 package com.recoveryrecord.surveyandroid.example.receiever;
 
+import static com.recoveryrecord.surveyandroid.example.config.Config.DetectTime;
+import static com.recoveryrecord.surveyandroid.example.config.Config.UsingApp;
+
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -8,22 +11,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.provider.Settings;
 import android.util.Log;
-import android.widget.Toast;
-
-import androidx.core.app.ActivityCompat;
 
 import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import static androidx.core.app.ActivityCompat.startActivityForResult;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
 
 public class BlueToothReceiver implements StreamGenerator{
     private static final String TAG = "Main";

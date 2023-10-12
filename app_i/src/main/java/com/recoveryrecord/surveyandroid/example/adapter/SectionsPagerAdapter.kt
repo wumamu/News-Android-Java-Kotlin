@@ -3,8 +3,8 @@ package com.recoveryrecord.surveyandroid.example.adapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import com.recoveryrecord.surveyandroid.example.model.MediaType
 import com.recoveryrecord.surveyandroid.example.ui.MainFragment
-import com.recoveryrecord.surveyandroid.example.ui.MediaType
 
 class SectionsPagerAdapter(
     fm: FragmentManager?,

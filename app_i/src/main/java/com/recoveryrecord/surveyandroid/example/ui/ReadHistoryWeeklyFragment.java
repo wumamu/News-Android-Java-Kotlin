@@ -1,6 +1,6 @@
 package com.recoveryrecord.surveyandroid.example.ui;
 
-import static com.recoveryrecord.surveyandroid.example.Constants.READ_TOTAL;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.READ_TOTAL;
 
 import android.content.SharedPreferences;
 import android.graphics.Color;

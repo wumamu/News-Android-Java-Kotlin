@@ -1,10 +1,10 @@
 package com.recoveryrecord.surveyandroid.example.ui;
 
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_HISTORY_LIMIT_PER_PAGE;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_DEVICE_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_RECEIEVE_TIME;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_TYPE;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_HISTORY_LIMIT_PER_PAGE;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_DEVICE_ID;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_RECEIEVE_TIME;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_TYPE;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;

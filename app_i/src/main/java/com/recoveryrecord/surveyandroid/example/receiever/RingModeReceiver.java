@@ -1,9 +1,9 @@
 package com.recoveryrecord.surveyandroid.example.receiever;
 
-import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_NAME;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
+import static com.recoveryrecord.surveyandroid.example.config.Config.DetectTime;
+import static com.recoveryrecord.surveyandroid.example.config.Config.SessionID;
+import static com.recoveryrecord.surveyandroid.example.config.Config.UsingApp;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_USER_ID;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -75,7 +75,7 @@ public class RingModeReceiver implements StreamGenerator{
         myring.setKEY_TIMESTAMP(Timestamp.now().getSeconds());
         myring.setKEY_DOC_ID(device_id + " " + time_now);
         myring.setKEY_DEVICE_ID(device_id);
-        myring.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_NAME, "尚未設定實驗編號"));
+        myring.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
         myring.setKEY_SESSION(SessionID);
         myring.setKEY_USING_APP(UsingApp);
         myring.setKEY_RING(RingerState);
@@ -137,7 +137,7 @@ public class RingModeReceiver implements StreamGenerator{
                 myring.setKEY_TIMESTAMP(Timestamp.now().getSeconds());
                 myring.setKEY_DOC_ID(device_id + " " + time_now);
                 myring.setKEY_DEVICE_ID(device_id);
-                myring.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_NAME, "尚未設定實驗編號"));
+                myring.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
                 myring.setKEY_SESSION(SessionID);
                 myring.setKEY_USING_APP(UsingApp);
                 myring.setKEY_RING(RingerState);

@@ -1,9 +1,9 @@
 package com.recoveryrecord.surveyandroid.example.ui;
 
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_DEVICE_ID;
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_IN_TIME_LONG;
-import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_TITLE;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.READING_BEHAVIOR_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.READING_BEHAVIOR_DEVICE_ID;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.READING_BEHAVIOR_IN_TIME_LONG;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.READING_BEHAVIOR_TITLE;
 
 import android.annotation.SuppressLint;
 import android.os.Build;
@@ -32,7 +32,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
-//import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_ESM_TARGET_TITLE;
+//import static com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_ESM_TARGET_TITLE;
 
 public class ReadingHistoryDailyFragment extends Fragment {
 

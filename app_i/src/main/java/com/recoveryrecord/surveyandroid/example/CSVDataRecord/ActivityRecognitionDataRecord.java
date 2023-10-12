@@ -1,5 +1,8 @@
 package com.recoveryrecord.surveyandroid.example.CSVDataRecord;
 
+import static com.recoveryrecord.surveyandroid.example.config.Config.DATE_FORMAT_NOW;
+import static com.recoveryrecord.surveyandroid.example.config.Config.DATE_FORMAT_for_storing;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -13,9 +16,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import static com.recoveryrecord.surveyandroid.example.config.Constants.DATE_FORMAT_NOW;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.DATE_FORMAT_for_storing;
 
 @Entity(tableName = "ActivityRecognitionDataRecord")
 public class ActivityRecognitionDataRecord implements DataRecord{

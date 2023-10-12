@@ -43,19 +43,19 @@
 //import androidx.preference.PreferenceManager;
 //
 //import static android.content.Context.ALARM_SERVICE;
-//import static com.recoveryrecord.surveyandroid.example.Constants.*;
-////import static com.recoveryrecord.surveyandroid.example.Constants.DAIRY_ALARM_ACTION;
-////import static com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_ESM_PARCELABLE;
-////import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_NOT_IN_PUSH_RANGE;
-////import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_OUT_OF_INTERVAL_LIMIT;
-////import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_PUSH;
-////import static com.recoveryrecord.surveyandroid.example.Constants.DIARY_STATUS;
-////import static com.recoveryrecord.surveyandroid.example.Constants.ESM_ID;
-////import static com.recoveryrecord.surveyandroid.example.Constants.ESM_NOT_IN_PUSH_RANGE;
-////import static com.recoveryrecord.surveyandroid.example.Constants.ESM_OUT_OF_INTERVAL_LIMIT;
-////import static com.recoveryrecord.surveyandroid.example.Constants.ESM_PUSH;
-////import static com.recoveryrecord.surveyandroid.example.Constants.ESM_SCHEDULE_SOURCE;
-////import static com.recoveryrecord.surveyandroid.example.Constants.ESM_STATUS;
+//import static com.recoveryrecord.surveyandroid.example.config.Constants.*;
+////import static com.recoveryrecord.surveyandroid.example.config.Constants.DAIRY_ALARM_ACTION;
+////import static com.recoveryrecord.surveyandroid.example.config.Constants.DEFAULT_ESM_PARCELABLE;
+////import static com.recoveryrecord.surveyandroid.example.config.Constants.DIARY_NOT_IN_PUSH_RANGE;
+////import static com.recoveryrecord.surveyandroid.example.config.Constants.DIARY_OUT_OF_INTERVAL_LIMIT;
+////import static com.recoveryrecord.surveyandroid.example.config.Constants.DIARY_PUSH;
+////import static com.recoveryrecord.surveyandroid.example.config.Constants.DIARY_STATUS;
+////import static com.recoveryrecord.surveyandroid.example.config.Constants.ESM_ID;
+////import static com.recoveryrecord.surveyandroid.example.config.Constants.ESM_NOT_IN_PUSH_RANGE;
+////import static com.recoveryrecord.surveyandroid.example.config.Constants.ESM_OUT_OF_INTERVAL_LIMIT;
+////import static com.recoveryrecord.surveyandroid.example.config.Constants.ESM_PUSH;
+////import static com.recoveryrecord.surveyandroid.example.config.Constants.ESM_SCHEDULE_SOURCE;
+////import static com.recoveryrecord.surveyandroid.example.config.Constants.ESM_STATUS;
 //
 //
 //public class AlarmReceiver extends BroadcastReceiver {

@@ -9,15 +9,16 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.recoveryrecord.surveyandroid.example.ItemTouchHelperAdapter
 import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.example.model.Media
-import com.recoveryrecord.surveyandroid.example.ui.MediaType
+import com.recoveryrecord.surveyandroid.example.model.MediaType
+import com.recoveryrecord.surveyandroid.example.ui.ItemTouchHelperAdapter
 
 class MediaRankRecycleViewAdapter(
     private val dataModelArrayList: ArrayList<Media>,
     private val context: Context
-) : RecyclerView.Adapter<MediaRankRecycleViewAdapter.ViewHolder>(), ItemTouchHelperAdapter {
+) : RecyclerView.Adapter<MediaRankRecycleViewAdapter.ViewHolder>(),
+    ItemTouchHelperAdapter {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             LayoutInflater.from(

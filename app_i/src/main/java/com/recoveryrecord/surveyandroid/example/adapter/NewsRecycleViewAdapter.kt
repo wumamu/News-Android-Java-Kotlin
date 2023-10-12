@@ -12,14 +12,14 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
-import com.recoveryrecord.surveyandroid.example.Constants.NEWS_ID_KEY
-import com.recoveryrecord.surveyandroid.example.Constants.NEWS_MEDIA_KEY
-import com.recoveryrecord.surveyandroid.example.Constants.TRIGGER_BY_KEY
-import com.recoveryrecord.surveyandroid.example.Constants.TRIGGER_BY_SELF
 import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.example.activity.NewsModuleActivity
+import com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_ID_KEY
+import com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_MEDIA_KEY
+import com.recoveryrecord.surveyandroid.example.config.Constants.TRIGGER_BY_KEY
+import com.recoveryrecord.surveyandroid.example.config.Constants.TRIGGER_BY_SELF
+import com.recoveryrecord.surveyandroid.example.model.MediaType
 import com.recoveryrecord.surveyandroid.example.model.News
-import com.recoveryrecord.surveyandroid.example.ui.MediaType
 import com.recoveryrecord.surveyandroid.util.loadImageWithGlide
 import java.text.SimpleDateFormat
 

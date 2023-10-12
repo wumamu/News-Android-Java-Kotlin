@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.example.adapter.NewsCategoryPagerAdapter
+import com.recoveryrecord.surveyandroid.example.model.MediaType
 
 const val MEDIA_SOURCE = "media_source"
 

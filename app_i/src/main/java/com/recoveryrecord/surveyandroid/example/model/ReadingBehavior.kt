@@ -1,6 +1,6 @@
 package com.recoveryrecord.surveyandroid.example.model
 
-import com.recoveryrecord.surveyandroid.example.Constants
+import com.recoveryrecord.surveyandroid.example.config.Constants
 
 data class ReadingBehavior(
     var docId: String = "NA",

@@ -37,37 +37,38 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
-import com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_KEY
-import com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_VALUE
-import com.recoveryrecord.surveyandroid.example.Constants.CATEGORY_POST_FIX
-import com.recoveryrecord.surveyandroid.example.Constants.CONFIG
-import com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_TEST_CHANNEL_ID
-import com.recoveryrecord.surveyandroid.example.Constants.LAST_UPDATE_TIME
-import com.recoveryrecord.surveyandroid.example.Constants.MEDIA_BAR_ORDER
-import com.recoveryrecord.surveyandroid.example.Constants.MEDIA_ORDER
-import com.recoveryrecord.surveyandroid.example.Constants.NEWS_CATEGORY
-import com.recoveryrecord.surveyandroid.example.Constants.PUSH_MEDIA_SELECTION
-import com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_NAME
-import com.recoveryrecord.surveyandroid.example.Constants.TEST_CHANNEL_ID
-import com.recoveryrecord.surveyandroid.example.Constants.UNKNOWN_USER_NAME
-import com.recoveryrecord.surveyandroid.example.Constants.UPDATE_TIME
-import com.recoveryrecord.surveyandroid.example.Constants.USER_ANDROID_RELEASE
-import com.recoveryrecord.surveyandroid.example.Constants.USER_ANDROID_SDK
-import com.recoveryrecord.surveyandroid.example.Constants.USER_COLLECTION
-import com.recoveryrecord.surveyandroid.example.Constants.USER_DEVICE_ID
-import com.recoveryrecord.surveyandroid.example.Constants.USER_FIRESTORE_ID
-import com.recoveryrecord.surveyandroid.example.Constants.USER_PHONE_ID
-import com.recoveryrecord.surveyandroid.example.Constants.USER_SURVEY_NAME
 import com.recoveryrecord.surveyandroid.example.activity.PushHistoryActivity
 import com.recoveryrecord.surveyandroid.example.activity.ReadHistoryActivity
 import com.recoveryrecord.surveyandroid.example.activity.SettingsActivity
 import com.recoveryrecord.surveyandroid.example.adapter.SectionsPagerAdapter
+import com.recoveryrecord.surveyandroid.example.config.Constants
+import com.recoveryrecord.surveyandroid.example.config.Constants.APP_VERSION_KEY
+import com.recoveryrecord.surveyandroid.example.config.Constants.APP_VERSION_VALUE
+import com.recoveryrecord.surveyandroid.example.config.Constants.CATEGORY_POST_FIX
+import com.recoveryrecord.surveyandroid.example.config.Constants.CONFIG
+import com.recoveryrecord.surveyandroid.example.config.Constants.DEFAULT_TEST_CHANNEL_ID
+import com.recoveryrecord.surveyandroid.example.config.Constants.LAST_UPDATE_TIME
+import com.recoveryrecord.surveyandroid.example.config.Constants.MEDIA_BAR_ORDER
+import com.recoveryrecord.surveyandroid.example.config.Constants.MEDIA_ORDER
+import com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_CATEGORY
+import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_MEDIA_SELECTION
+import com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_USER_ID
+import com.recoveryrecord.surveyandroid.example.config.Constants.TEST_CHANNEL_ID
+import com.recoveryrecord.surveyandroid.example.config.Constants.UNKNOWN_USER_ID
+import com.recoveryrecord.surveyandroid.example.config.Constants.UPDATE_TIME
+import com.recoveryrecord.surveyandroid.example.config.Constants.USER_ANDROID_RELEASE
+import com.recoveryrecord.surveyandroid.example.config.Constants.USER_ANDROID_SDK
+import com.recoveryrecord.surveyandroid.example.config.Constants.USER_COLLECTION
+import com.recoveryrecord.surveyandroid.example.config.Constants.USER_DEVICE_ID
+import com.recoveryrecord.surveyandroid.example.config.Constants.USER_FIRESTORE_ID
+import com.recoveryrecord.surveyandroid.example.config.Constants.USER_ID
+import com.recoveryrecord.surveyandroid.example.config.Constants.USER_PHONE_ID
+import com.recoveryrecord.surveyandroid.example.model.MediaType
 import com.recoveryrecord.surveyandroid.example.receiever.LightSensorReceiver
 import com.recoveryrecord.surveyandroid.example.receiever.NetworkChangeReceiver
 import com.recoveryrecord.surveyandroid.example.receiever.RingModeReceiver
 import com.recoveryrecord.surveyandroid.example.receiever.ScreenStateReceiver
 import com.recoveryrecord.surveyandroid.example.service.FirebaseService
-import com.recoveryrecord.surveyandroid.example.ui.MediaType
 import com.recoveryrecord.surveyandroid.util.insertRemote
 import com.recoveryrecord.surveyandroid.util.parseTabArray
 import com.recoveryrecord.surveyandroid.util.showToast
@@ -147,9 +148,9 @@ class NewsHybridActivity
         FirebaseCrashlytics.getInstance().setUserId(deviceId)
 
         //first in app
-        userName = intent.extras?.getString(SHARE_PREFERENCE_USER_NAME) ?: run {
-            sharedPrefs.getString(SHARE_PREFERENCE_USER_NAME, UNKNOWN_USER_NAME)
-        } ?: UNKNOWN_USER_NAME
+        userName = intent.extras?.getString(SHARE_PREFERENCE_USER_ID) ?: run {
+            sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, UNKNOWN_USER_ID)
+        } ?: UNKNOWN_USER_ID
 
         val clear = sharedPrefs.getBoolean(Constants.SHARE_PREFERENCE_CLEAR_CACHE, true)
         if (clear) {
@@ -171,10 +172,10 @@ class NewsHybridActivity
                 USER_DEVICE_ID to deviceId,
                 USER_FIRESTORE_ID to (auth.currentUser?.uid ?: ""),
                 // TODO rename
-                USER_SURVEY_NAME to (sharedPrefs.getString(
-                    SHARE_PREFERENCE_USER_NAME,
-                    UNKNOWN_USER_NAME
-                ) ?: UNKNOWN_USER_NAME),
+                USER_ID to (sharedPrefs.getString(
+                    SHARE_PREFERENCE_USER_ID,
+                    UNKNOWN_USER_ID
+                ) ?: UNKNOWN_USER_ID),
                 USER_PHONE_ID to Build.MODEL,
                 USER_ANDROID_SDK to Build.VERSION.SDK_INT,
                 USER_ANDROID_RELEASE to Build.VERSION.RELEASE,
@@ -200,10 +201,10 @@ class NewsHybridActivity
 
             val dataMap = hashMapOf(
                 PUSH_MEDIA_SELECTION to remotePushNews,
-                USER_SURVEY_NAME to (sharedPrefs.getString(
-                    SHARE_PREFERENCE_USER_NAME,
-                    UNKNOWN_USER_NAME
-                ) ?: UNKNOWN_USER_NAME),
+                USER_ID to (sharedPrefs.getString(
+                    SHARE_PREFERENCE_USER_ID,
+                    UNKNOWN_USER_ID
+                ) ?: UNKNOWN_USER_ID),
                 UPDATE_TIME to Timestamp.now(),
                 APP_VERSION_KEY to APP_VERSION_VALUE,
                 USER_DEVICE_ID to deviceId,
