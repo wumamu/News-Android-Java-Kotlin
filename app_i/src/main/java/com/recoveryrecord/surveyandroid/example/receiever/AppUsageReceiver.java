@@ -1,5 +1,10 @@
 package com.recoveryrecord.surveyandroid.example.receiever;
 
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_NAME;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
+
 import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Context;
@@ -10,6 +15,8 @@ import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
 
+import androidx.preference.PreferenceManager;
+
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.recoveryrecord.surveyandroid.example.DbHelper.AppUsageReceiverDbHelper;
@@ -19,13 +26,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import androidx.preference.PreferenceManager;
-
-import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
 
 public class
 AppUsageReceiver extends Service {
@@ -81,7 +81,7 @@ AppUsageReceiver extends Service {
             myappusage.setKEY_TIMESTAMP(Timestamp.now().getSeconds());
             myappusage.setKEY_DOC_ID(device_id + " " + time_now);
             myappusage.setKEY_DEVICE_ID(device_id);
-            myappusage.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+            myappusage.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_NAME, "尚未設定實驗編號"));
             myappusage.setKEY_SESSION(SessionID);
             myappusage.setKEY_USING_APP(UsingApp);
             myappusage.setKEY_APPUSAGE(foregroundActivityName);
@@ -126,7 +126,7 @@ AppUsageReceiver extends Service {
         myappusage.setKEY_TIMESTAMP(Timestamp.now().getSeconds());
         myappusage.setKEY_DOC_ID(device_id + " " + time_now);
         myappusage.setKEY_DEVICE_ID(device_id);
-        myappusage.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+        myappusage.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_NAME, "尚未設定實驗編號"));
         myappusage.setKEY_SESSION(SessionID);
         myappusage.setKEY_USING_APP(UsingApp);
         myappusage.setKEY_APPUSAGE(foregroundActivityName);

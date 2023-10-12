@@ -30,21 +30,34 @@ import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import androidx.viewpager.widget.ViewPager
-import com.google.android.gms.tasks.Task
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_KEY
+import com.recoveryrecord.surveyandroid.example.Constants.APP_VERSION_VALUE
 import com.recoveryrecord.surveyandroid.example.Constants.CATEGORY_POST_FIX
 import com.recoveryrecord.surveyandroid.example.Constants.CONFIG
+import com.recoveryrecord.surveyandroid.example.Constants.DEFAULT_TEST_CHANNEL_ID
 import com.recoveryrecord.surveyandroid.example.Constants.LAST_UPDATE_TIME
+import com.recoveryrecord.surveyandroid.example.Constants.MEDIA_BAR_ORDER
 import com.recoveryrecord.surveyandroid.example.Constants.MEDIA_ORDER
 import com.recoveryrecord.surveyandroid.example.Constants.NEWS_CATEGORY
-import com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID
-import com.recoveryrecord.surveyandroid.example.Constants.UNKNOWN_USER_ID
+import com.recoveryrecord.surveyandroid.example.Constants.PUSH_MEDIA_SELECTION
+import com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_NAME
+import com.recoveryrecord.surveyandroid.example.Constants.TEST_CHANNEL_ID
+import com.recoveryrecord.surveyandroid.example.Constants.UNKNOWN_USER_NAME
+import com.recoveryrecord.surveyandroid.example.Constants.UPDATE_TIME
+import com.recoveryrecord.surveyandroid.example.Constants.USER_ANDROID_RELEASE
+import com.recoveryrecord.surveyandroid.example.Constants.USER_ANDROID_SDK
+import com.recoveryrecord.surveyandroid.example.Constants.USER_COLLECTION
+import com.recoveryrecord.surveyandroid.example.Constants.USER_DEVICE_ID
+import com.recoveryrecord.surveyandroid.example.Constants.USER_FIRESTORE_ID
+import com.recoveryrecord.surveyandroid.example.Constants.USER_PHONE_ID
+import com.recoveryrecord.surveyandroid.example.Constants.USER_SURVEY_NAME
 import com.recoveryrecord.surveyandroid.example.activity.PushHistoryActivity
 import com.recoveryrecord.surveyandroid.example.activity.ReadHistoryActivity
 import com.recoveryrecord.surveyandroid.example.activity.SettingsActivity
@@ -54,8 +67,8 @@ import com.recoveryrecord.surveyandroid.example.receiever.NetworkChangeReceiver
 import com.recoveryrecord.surveyandroid.example.receiever.RingModeReceiver
 import com.recoveryrecord.surveyandroid.example.receiever.ScreenStateReceiver
 import com.recoveryrecord.surveyandroid.example.service.FirebaseService
-import com.recoveryrecord.surveyandroid.example.service.FirebaseService.Companion.NEWS_CHANNEL
 import com.recoveryrecord.surveyandroid.example.ui.MediaType
+import com.recoveryrecord.surveyandroid.util.insertRemote
 import com.recoveryrecord.surveyandroid.util.parseTabArray
 import com.recoveryrecord.surveyandroid.util.showToast
 import com.recoveryrecord.surveyandroid.util.updateRemote
@@ -85,14 +98,14 @@ class NewsHybridActivity
     private var doubleBackToExitPressedOnce = false
     private var mServiceIntent: Intent? = null
     private var deviceId = ""
-    private var userId = ""
+    private var userName = ""
 
     private var _NetworkChangeReceiver: NetworkChangeReceiver? = null
     private var _ScreenStateReceiver: ScreenStateReceiver? = null
     private var _RingModeReceiver: RingModeReceiver? = null
     private var _LightSensorReceiver: LightSensorReceiver? = null
     lateinit var sharedPrefs: SharedPreferences
-    private var rankingString = MediaType.DEFAULT_MEDIA_ORDER
+    lateinit var rankingString: String
 
     @Inject
     lateinit var db: FirebaseFirestore
@@ -100,8 +113,12 @@ class NewsHybridActivity
     @Inject
     lateinit var auth: FirebaseAuth
 
+    private var remotePushNews: MutableList<String> = mutableListOf()
+
+    private lateinit var userDocRef: DocumentReference
+
+
     companion object {
-        const val TAG = "NewsHybridActivity"
         const val PERMISSION_REQUEST_CODE = 112
     }
 
@@ -111,28 +128,28 @@ class NewsHybridActivity
         super.onCreate(savedInstanceState)
         context = applicationContext
         setContentView(R.layout.activity_news_hybrid)
-        initLayout()
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        rankingString =
+            sharedPrefs.getString(MEDIA_ORDER, MediaType.DEFAULT_MEDIA_ORDER)
+                ?: MediaType.DEFAULT_MEDIA_ORDER
         deviceId = Settings.Secure.getString(
             applicationContext.contentResolver,
             Settings.Secure.ANDROID_ID
         )
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        userDocRef = db.collection(USER_COLLECTION).document(deviceId)
 
-        rankingString =
-            sharedPrefs.getString(MEDIA_ORDER, MediaType.DEFAULT_MEDIA_ORDER)
-                ?: MediaType.DEFAULT_MEDIA_ORDER
         loadCategoryFromLocal()
+        initLayout()
+        lifecycleScope.launch { getRemotePushNews() }
 
-        FirebaseService.sharedPref =
-            PreferenceManager.getDefaultSharedPreferences(applicationContext)
-        FirebaseService.ref = db.collection("FCMToken").document(deviceId)
-//        FirebaseMessaging.getInstance().apply { subscribeToTopic(TOPIC) }
+        FirebaseService.sharedPref = sharedPrefs
+        FirebaseService.deviceId = deviceId
         FirebaseCrashlytics.getInstance().setUserId(deviceId)
 
         //first in app
-        userId = intent.extras?.getString(SHARE_PREFERENCE_USER_ID) ?: run {
-            sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, UNKNOWN_USER_ID)
-        } ?: UNKNOWN_USER_ID
+        userName = intent.extras?.getString(SHARE_PREFERENCE_USER_NAME) ?: run {
+            sharedPrefs.getString(SHARE_PREFERENCE_USER_NAME, UNKNOWN_USER_NAME)
+        } ?: UNKNOWN_USER_NAME
 
         val clear = sharedPrefs.getBoolean(Constants.SHARE_PREFERENCE_CLEAR_CACHE, true)
         if (clear) {
@@ -150,74 +167,51 @@ class NewsHybridActivity
                     emptySet()
                 ) ?: emptySet()).joinToString(",")
             )
-            val userUpdateData: MutableMap<String, Any?> = HashMap()
-            userUpdateData[Constants.MEDIA_BAR_ORDER] =
-                ArrayList<String>().apply { add(rankingString) }
-            userUpdateData[Constants.USER_DEVICE_ID] = deviceId
+            val userInitData = hashMapOf(
+                USER_DEVICE_ID to deviceId,
+                USER_FIRESTORE_ID to (auth.currentUser?.uid ?: ""),
+                // TODO rename
+                USER_SURVEY_NAME to (sharedPrefs.getString(
+                    SHARE_PREFERENCE_USER_NAME,
+                    UNKNOWN_USER_NAME
+                ) ?: UNKNOWN_USER_NAME),
+                USER_PHONE_ID to Build.MODEL,
+                USER_ANDROID_SDK to Build.VERSION.SDK_INT,
+                USER_ANDROID_RELEASE to Build.VERSION.RELEASE,
+                MEDIA_BAR_ORDER to ArrayList<String>().apply { add(rankingString) },
+                PUSH_MEDIA_SELECTION to mediaPushResult,
+                UPDATE_TIME to Timestamp.now(),
+                APP_VERSION_KEY to APP_VERSION_VALUE,
+                // TODO FCM token?, check_last_news
+            )
 
-            auth.currentUser?.apply {
-                userUpdateData[Constants.USER_FIRESTORE_ID] = uid
+            lifecycleScope.launch {
+                insertRemote(userDocRef, userInitData)
             }
-            userUpdateData[Constants.USER_SURVEY_NUMBER] =
-                sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, UNKNOWN_USER_ID)
-            userUpdateData[Constants.USER_PHONE_ID] = Build.MODEL
-            userUpdateData[Constants.USER_ANDROID_SDK] = Build.VERSION.SDK_INT
-            userUpdateData[Constants.USER_ANDROID_RELEASE] = Build.VERSION.RELEASE
-            userUpdateData[Constants.UPDATE_TIME] = Timestamp.now()
-            userUpdateData[Constants.APP_VERSION_KEY] = Constants.APP_VERSION_VALUE
-            userUpdateData[Constants.PUSH_MEDIA_SELECTION] = mediaPushResult
-            userUpdateData["check_last_service"] = Timestamp(0, 0)
-            userUpdateData["check_last_schedule"] = Timestamp(0, 0)
-            userUpdateData["check_last_news"] = Timestamp(0, 0)
-//            first["check_last_diary"] = Timestamp(0, 0)
-//            first["check_last_esm"] = Timestamp(0, 0)
-            db.collection(Constants.USER_COLLECTION)
-                .document(deviceId)
-                .set(userUpdateData)
-//            db.collection(Constants.TEST_USER_COLLECTION)
-//                .document(deviceId)
-//                .set(first)
         } else {
-            val rbRef = db.collection(Constants.USER_COLLECTION).document(deviceId)
-            rbRef.get().addOnCompleteListener { task: Task<DocumentSnapshot?> ->
-                if (task.isSuccessful) {
-                    val document = task.result!!
-                    if (document.exists()) {
-                        val mediaPushResult =
-                            (document[Constants.PUSH_MEDIA_SELECTION] as MutableList<String>?)
-                                ?: mutableListOf()
-                        val tmp = (sharedPrefs.getStringSet(
-                            Constants.SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION,
-                            emptySet()
-                        ) ?: emptySet()).joinToString(",")
+            val tmp = (sharedPrefs.getStringSet(
+                Constants.SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION,
+                emptySet()
+            ) ?: emptySet()).joinToString(",")
 
-                        if (mediaPushResult.isEmpty() || mediaPushResult[mediaPushResult.size - 1] != tmp) {
-                            mediaPushResult.add(tmp)
-                        }
+            if (remotePushNews.isEmpty() || remotePushNews[remotePushNews.size - 1] != tmp) {
+                remotePushNews.add(tmp)
+            }
 
-                        val dataMap = hashMapOf(
-                            Constants.PUSH_MEDIA_SELECTION to mediaPushResult,
-                            Constants.USER_SURVEY_NUMBER to
-                                    (sharedPrefs.getString(
-                                        SHARE_PREFERENCE_USER_ID,
-                                        "尚未設定實驗編號"
-                                    ) ?: "尚未設定實驗編號"),
-                            Constants.UPDATE_TIME to Timestamp.now(),
-                            Constants.APP_VERSION_KEY to Constants.APP_VERSION_VALUE,
-                            "check_last_service" to Timestamp.now(),
-                            Constants.USER_DEVICE_ID to deviceId,
-                            Constants.USER_ANDROID_SDK to Build.VERSION.SDK_INT,
-                            Constants.USER_ANDROID_RELEASE to Build.VERSION.RELEASE
-                        )
-                        lifecycleScope.launch {
-                            withContext(Dispatchers.IO) { updateRemote(rbRef, dataMap) }
-                        }
-                    } else {
-                        Timber.d("No such document")
-                    }
-                } else {
-                    Timber.d(task.exception, "get failed with ")
-                }
+            val dataMap = hashMapOf(
+                PUSH_MEDIA_SELECTION to remotePushNews,
+                USER_SURVEY_NAME to (sharedPrefs.getString(
+                    SHARE_PREFERENCE_USER_NAME,
+                    UNKNOWN_USER_NAME
+                ) ?: UNKNOWN_USER_NAME),
+                UPDATE_TIME to Timestamp.now(),
+                APP_VERSION_KEY to APP_VERSION_VALUE,
+                USER_DEVICE_ID to deviceId,
+                USER_ANDROID_SDK to Build.VERSION.SDK_INT,
+                USER_ANDROID_RELEASE to Build.VERSION.RELEASE
+            )
+            lifecycleScope.launch {
+                updateRemote(userDocRef, dataMap)
             }
         }
 
@@ -233,7 +227,7 @@ class NewsHybridActivity
         val userId = header.findViewById<TextView>(R.id.textView_user_id)
         userId.text = deviceId
         val userName = header.findViewById<TextView>(R.id.textView_user_name)
-        userName.text = this.userId
+        userName.text = this.userName
         val actionBarDrawerToggle = ActionBarDrawerToggle(
             this,
             drawerLayout,
@@ -244,32 +238,6 @@ class NewsHybridActivity
         drawerLayout.addDrawerListener(actionBarDrawerToggle)
         actionBarDrawerToggle.syncState()
         title = "新聞列表"
-
-//        //check notification service running
-//        val mYourService = NewsNotificationService()
-//        mServiceIntent = Intent(this, NewsNotificationService::class.java)
-//        val log_service: MutableMap<String, Any> = HashMap()
-//        if (!isMyServiceRunning(mYourService.javaClass)) {
-//            log_service[Constants.NEWS_SERVICE_STATUS_KEY] =
-//                Constants.NEWS_SERVICE_STATUS_VALUE_RESTART
-//            log_service[Constants.NEWS_SERVICE_CYCLE_KEY] =
-//                Constants.NEWS_SERVICE_CYCLE_VALUE_FAILED_RESTART
-//            startService(mServiceIntent)
-//        } else {
-//            log_service[Constants.NEWS_SERVICE_STATUS_KEY] =
-//                Constants.NEWS_SERVICE_STATUS_VALUE_RUNNING
-//            log_service[Constants.NEWS_SERVICE_CYCLE_KEY] =
-//                Constants.NEWS_SERVICE_CYCLE_VALUE_MAIN_PAGE
-//        }
-//        log_service[Constants.NEWS_SERVICE_TIME] = Timestamp.now()
-//        log_service[Constants.NEWS_SERVICE_DEVICE_ID] = deviceId
-//        val date = Date(System.currentTimeMillis())
-//        @SuppressLint("SimpleDateFormat") val formatter =
-//            SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z")
-//        db.collection(Constants.NEWS_SERVICE_COLLECTION)
-//            .document(deviceId + " " + formatter.format(date))
-//            .set(log_service)
-
 
         //Network
         _NetworkChangeReceiver = NetworkChangeReceiver()
@@ -311,7 +279,6 @@ class NewsHybridActivity
         tabLayout = findViewById(R.id.tabs_hy)
         mViewPager.adapter = mSectionsPagerAdapter
         tabLayout.setupWithViewPager(mViewPager)
-
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -342,7 +309,7 @@ class NewsHybridActivity
                     putExtra(Intent.EXTRA_SUBJECT, "NewsMoment App 問題回報")
                     putExtra(
                         Intent.EXTRA_TEXT,
-                        "Hi, 我的 user id 是$userId，\ndevice id 是$deviceId，\n我有問題要回報(以文字描述發生的問題)：\n以下是相關問題截圖(如有截圖或是錄影，可以幫助我們更快了解問題)："
+                        "Hi, 我的 user id 是$userName，\ndevice id 是$deviceId，\n我有問題要回報(以文字描述發生的問題)：\n以下是相關問題截圖(如有截圖或是錄影，可以幫助我們更快了解問題)："
                     )
                     selector = selectorIntent
                 }
@@ -363,16 +330,6 @@ class NewsHybridActivity
         return intent != null
     }
 
-//    private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
-//        val manager = (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager)
-//        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
-//            if (serviceClass.name == service.service.className) {
-//                return true
-//            }
-//        }
-//        return false
-//    }
-
     override fun onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START)
@@ -390,6 +347,7 @@ class NewsHybridActivity
     }
 
     override fun onRefresh() {
+
         loadCategoryFromLocal()
         updateViewPager()
     }
@@ -445,7 +403,9 @@ class NewsHybridActivity
             // Fetch and update tab data from the network
             showToast(this@NewsHybridActivity, "正在更新資料請稍候")
             swipeRefreshLayout.isRefreshing = true
-            lifecycleScope.launch { fetchTabDataFromNetwork() }
+            lifecycleScope.launch {
+                fetchTabDataFromNetwork()
+            }
             showToast(this@NewsHybridActivity, "更新完成")
         }
     }
@@ -473,8 +433,8 @@ class NewsHybridActivity
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel() {
         val channel = NotificationChannel(
-            NEWS_CHANNEL,
-            "Important Notification Channel",
+            TEST_CHANNEL_ID,
+            DEFAULT_TEST_CHANNEL_ID,
             NotificationManager.IMPORTANCE_HIGH,
         ).apply {
             description = "This notification contains important announcement, etc."
@@ -483,7 +443,7 @@ class NewsHybridActivity
     }
 
     private fun showDummyNotification() {
-        val builder = NotificationCompat.Builder(this, FirebaseService.NEWS_CHANNEL)
+        val builder = NotificationCompat.Builder(this, TEST_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle("Congratulations! 🎉🎉🎉")
             .setContentText("You have post a notification to Android 13!!!")
@@ -491,6 +451,18 @@ class NewsHybridActivity
 
         with(NotificationManagerCompat.from(this)) {
             notify(1, builder.build())
+        }
+    }
+
+    private suspend fun getRemotePushNews() {
+        try {
+            val documentSnapshot = withContext(Dispatchers.IO) { userDocRef.get().await() }
+            if (documentSnapshot.exists()) {
+                remotePushNews =
+                    documentSnapshot[PUSH_MEDIA_SELECTION] as MutableList<String>
+            }
+        } catch (e: Exception) {
+            Timber.d("get failed with " + e)
         }
     }
 //    private fun sendNotification(notification: PushNotification) = CoroutineScope(Dispatchers.IO).launch {

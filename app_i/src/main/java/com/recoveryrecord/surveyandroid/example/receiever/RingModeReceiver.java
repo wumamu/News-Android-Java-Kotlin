@@ -1,40 +1,30 @@
 package com.recoveryrecord.surveyandroid.example.receiever;
 
-import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_NAME;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.preference.PreferenceManager;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.recoveryrecord.surveyandroid.example.DbHelper.AppUsageReceiverDbHelper;
 import com.recoveryrecord.surveyandroid.example.DbHelper.RingModeReceiverDbHelper;
-import com.recoveryrecord.surveyandroid.example.sqlite.AppUsage;
 import com.recoveryrecord.surveyandroid.example.sqlite.RingMode;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import static androidx.core.content.ContextCompat.getSystemService;
-import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
-import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
 
 public class RingModeReceiver implements StreamGenerator{
         private static final String TAG = "Main";
@@ -85,7 +75,7 @@ public class RingModeReceiver implements StreamGenerator{
         myring.setKEY_TIMESTAMP(Timestamp.now().getSeconds());
         myring.setKEY_DOC_ID(device_id + " " + time_now);
         myring.setKEY_DEVICE_ID(device_id);
-        myring.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+        myring.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_NAME, "尚未設定實驗編號"));
         myring.setKEY_SESSION(SessionID);
         myring.setKEY_USING_APP(UsingApp);
         myring.setKEY_RING(RingerState);
@@ -147,7 +137,7 @@ public class RingModeReceiver implements StreamGenerator{
                 myring.setKEY_TIMESTAMP(Timestamp.now().getSeconds());
                 myring.setKEY_DOC_ID(device_id + " " + time_now);
                 myring.setKEY_DEVICE_ID(device_id);
-                myring.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+                myring.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_NAME, "尚未設定實驗編號"));
                 myring.setKEY_SESSION(SessionID);
                 myring.setKEY_USING_APP(UsingApp);
                 myring.setKEY_RING(RingerState);

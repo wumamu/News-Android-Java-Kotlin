@@ -10,9 +10,6 @@ import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_MEDIA_KEY;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_PUBDATE;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_TITLE;
 import static com.recoveryrecord.surveyandroid.example.Constants.NEWS_URL;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_CLICK;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_COLLECTION;
-import static com.recoveryrecord.surveyandroid.example.Constants.PUSH_NEWS_OPEN_TIME;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_BYTE_PER_LINE;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_CONTENT_LENGTH;
@@ -47,7 +44,7 @@ import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIO
 import static com.recoveryrecord.surveyandroid.example.Constants.READING_BEHAVIOR_VIEWPORT_RECORD;
 import static com.recoveryrecord.surveyandroid.example.Constants.READ_TOTAL;
 import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_TEST_SIZE;
-import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_NAME;
 import static com.recoveryrecord.surveyandroid.example.Constants.TRIGGER_BY_KEY;
 
 import android.annotation.SuppressLint;
@@ -394,12 +391,12 @@ public class NewsModuleActivity extends AppCompatActivity implements SimpleGestu
             }
 
             if (myReadingBehavior.getTriggerBy().equals(READING_BEHAVIOR_TRIGGER_BY_NOTIFICATION)) {
-                db.collection(PUSH_NEWS_COLLECTION)
-                        .document(device_id + " " + news_id)
-                        .update(PUSH_NEWS_CLICK, 0,
-                                PUSH_NEWS_OPEN_TIME, Timestamp.now())
-                        .addOnSuccessListener(aVoid -> Timber.d("mark as click successfully updated!"))
-                        .addOnFailureListener(e -> Timber.w(e, "mark as click Error updating document"));
+//                db.collection(PUSH_NEWS_COLLECTION)
+//                        .document(device_id + " " + news_id)
+//                        .update(PUSH_NEWS_CLICK, 0,
+//                                PUSH_NEWS_OPEN_TIME, Timestamp.now())
+//                        .addOnSuccessListener(aVoid -> Timber.d("mark as click successfully updated!"))
+//                        .addOnFailureListener(e -> Timber.w(e, "mark as click Error updating document"));
             } else {
                 self_trigger = true;
             }
@@ -728,7 +725,6 @@ public class NewsModuleActivity extends AppCompatActivity implements SimpleGestu
                                         }
                                         String finalString = stringBuilder.toString();
                                         divList.add(finalString);
-                                        Timber.d(finalString);
                                     } else {
                                         divList.add(childStr);
                                     }
@@ -738,7 +734,6 @@ public class NewsModuleActivity extends AppCompatActivity implements SimpleGestu
                                     String childStr = str.substring(front, iter_char_para);
                                     divList.add(childStr);
                                     front = iter_char_para;
-                                    Timber.d(childStr);
                                 }
                             }
                         }
@@ -1430,7 +1425,7 @@ public class NewsModuleActivity extends AppCompatActivity implements SimpleGestu
 
         readingBehavior.put(READING_BEHAVIOR_DOC_ID, device_id + " " + myReadingBehavior.getInTimestamp());
         readingBehavior.put(READING_BEHAVIOR_DEVICE_ID, device_id);
-        readingBehavior.put(READING_BEHAVIOR_USER_ID, sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+        readingBehavior.put(READING_BEHAVIOR_USER_ID, sharedPrefs.getString(SHARE_PREFERENCE_USER_NAME, "尚未設定實驗編號"));
         readingBehavior.put(READING_BEHAVIOR_SAMPLE_CHECK_ID, "NA");
         //select esm id
         readingBehavior.put(READING_BEHAVIOR_TRIGGER_BY, myReadingBehavior.getTriggerBy());
@@ -1467,7 +1462,7 @@ public class NewsModuleActivity extends AppCompatActivity implements SimpleGestu
 
         myReadingBehavior.setDocId(device_id + " " + myReadingBehavior.getInTimestamp());
         myReadingBehavior.setDeviceId(device_id);
-        myReadingBehavior.setUserId(sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+        myReadingBehavior.setUserId(sharedPrefs.getString(SHARE_PREFERENCE_USER_NAME, "尚未設定實驗編號"));
         myReadingBehavior.setSelectEsmId("NA");
         myReadingBehavior.setHasImg(has_img);
         myReadingBehavior.setPubdate(0);

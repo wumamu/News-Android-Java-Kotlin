@@ -9,7 +9,7 @@ object Constants {
     //    const val SHAREPREFERENCE_TEST = "com.recoveryrecord.surveyandroid.example.SHAREPREFERENCE_TEST"
 //    const val MILLISECONDS_PER_SECOND: Long = 1000
 //    const val SECONDS_PER_MINUTE = 60
-    const val PACKAGE_NAME = "com.recoveryrecord.surveyandroid"
+//    const val PACKAGE_NAME = "com.recoveryrecord.surveyandroid"
     const val DetectTime = 1 * 60 * 1000
 
     @JvmField

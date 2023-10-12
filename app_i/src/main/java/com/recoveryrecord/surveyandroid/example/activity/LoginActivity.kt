@@ -17,7 +17,7 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
-import com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID
+import com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_NAME
 import com.recoveryrecord.surveyandroid.example.NewsHybridActivity
 import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.util.showToast
@@ -67,7 +67,7 @@ class LoginActivity : AppCompatActivity() {
         user?.apply {
             val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
             val editor = sharedPrefs.edit()
-            editor.putString(SHARE_PREFERENCE_USER_ID, email?.split("@")?.get(0))
+            editor.putString(SHARE_PREFERENCE_USER_NAME, email?.split("@")?.get(0))
             editor.apply()
             startActivity(Intent(this@LoginActivity, NewsHybridActivity::class.java))
             finish()

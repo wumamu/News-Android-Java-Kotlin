@@ -1,6 +1,6 @@
 package com.recoveryrecord.surveyandroid.example.receiever;
 
-import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_ID;
+import static com.recoveryrecord.surveyandroid.example.Constants.SHARE_PREFERENCE_USER_NAME;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
@@ -86,7 +86,7 @@ public class NetworkChangeReceiver implements StreamGenerator{
         mynetwork.setKEY_TIMESTAMP(Timestamp.now().getSeconds());
         mynetwork.setKEY_DOC_ID(device_id + " " + time_now);
         mynetwork.setKEY_DEVICE_ID(device_id);
-        mynetwork.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+        mynetwork.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_NAME, "尚未設定實驗編號"));
         mynetwork.setKEY_SESSION(SessionID);
         mynetwork.setKEY_USING_APP(UsingApp);
         mynetwork.setKEY_NETWORK(NetworkState);
@@ -174,7 +174,7 @@ public class NetworkChangeReceiver implements StreamGenerator{
                 mynetwork.setKEY_TIMESTAMP(Timestamp.now().getSeconds());
                 mynetwork.setKEY_DOC_ID(device_id + " " + time_now);
                 mynetwork.setKEY_DEVICE_ID(device_id);
-                mynetwork.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, "尚未設定實驗編號"));
+                mynetwork.setKEY_USER_ID(sharedPrefs.getString(SHARE_PREFERENCE_USER_NAME, "尚未設定實驗編號"));
                 mynetwork.setKEY_SESSION(SessionID);
                 mynetwork.setKEY_USING_APP(UsingApp);
                 mynetwork.setKEY_NETWORK(NetworkState);

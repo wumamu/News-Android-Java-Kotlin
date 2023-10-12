@@ -101,7 +101,7 @@
         <!-- Mention the receiever name here -->
         <!-- Mention the receiever name here -->
         <!-- Mention the receiever name here -->
-        <receiver android:name=".NotificationListenerNews" />
+<!--        <receiver android:name=".NotificationListenerNews" />-->
         <receiver android:name=".receiever.ApplicationSelectorReceiver" />
         <receiver
             android:name=".receiever.ScreenStateReceiver"
@@ -109,23 +109,25 @@
         <receiver
             android:name=".receiever.BlueToothReceiver"
             tools:ignore="Instantiatable" />
-        <receiver android:name=".receiever.NetworkChangeReceiver$NetworkChangeBroadcastReceiver"
+        <receiver
+            android:name=".receiever.NetworkChangeReceiver$NetworkChangeBroadcastReceiver"
             android:enabled="true"
             tools:ignore="Instantiatable"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"
+                <action
+                    android:name="android.net.conn.CONNECTIVITY_CHANGE"
                     tools:ignore="BatteryLife" />
             </intent-filter>
         </receiver>
-        <receiver
-            android:name=".NewsNotificationRestarter"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="CheckService" />
-            </intent-filter>
-        </receiver>
+        <!--        <receiver-->
+        <!--            android:name=".NewsNotificationRestarter"-->
+        <!--            android:enabled="true"-->
+        <!--            android:exported="true">-->
+        <!--            <intent-filter>-->
+        <!--                <action android:name="CheckService" />-->
+        <!--            </intent-filter>-->
+        <!--        </receiver>-->
         <!--        <receiver android:name=".AlarmReceiver"-->
         <!--            android:permission="android.permission.RECEIVE_BOOT_COMPLETED"-->
         <!--            android:directBootAware="true"-->
@@ -159,27 +161,27 @@
             </intent-filter>
         </service>
 
-        <receiver
-            android:name=".receiever.ShutDownReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.ACTION_SHUTDOWN" />
-                <action android:name="android.intent.action.QUICKBOOT_POWEROFF" />
-                <action android:name="com.htc.intent.action.QUICKBOOT_POWEROFF" />
+        <!--        <receiver-->
+        <!--            android:name=".receiever.ShutDownReceiver"-->
+        <!--            android:enabled="true"-->
+        <!--            android:exported="true">-->
+        <!--            <intent-filter>-->
+        <!--                <action android:name="android.intent.action.ACTION_SHUTDOWN" />-->
+        <!--                <action android:name="android.intent.action.QUICKBOOT_POWEROFF" />-->
+        <!--                <action android:name="com.htc.intent.action.QUICKBOOT_POWEROFF" />-->
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </receiver>
+        <!--                <category android:name="android.intent.category.DEFAULT" />-->
+        <!--            </intent-filter>-->
+        <!--        </receiver>-->
         <!-- Mention the service name here -->
-        <service android:name=".NewsNotificationService"
-            android:stopWithTask="false"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </service>
+        <!--        <service android:name=".NewsNotificationService"-->
+        <!--            android:stopWithTask="false"-->
+        <!--            android:enabled="true"-->
+        <!--            android:exported="true">-->
+        <!--            <intent-filter>-->
+        <!--                <category android:name="android.intent.category.DEFAULT" />-->
+        <!--            </intent-filter>-->
+        <!--        </service>-->
         <service
             android:name=".NotificationListenerService"
             android:label="@string/app_name"
