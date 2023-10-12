@@ -167,4 +167,8 @@ object Constants {
     const val CNA_CHI = "中央社"
     const val CHINATIMES_CHI = "旺旺中時"
     const val UDN_CHI = "聯合"
+
+    //fragment type
+    const val PUSH_NEWS = "push_news"
+    const val READING = "reading"
 }

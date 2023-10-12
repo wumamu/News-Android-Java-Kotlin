@@ -32,8 +32,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
-//import static com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_ESM_TARGET_TITLE;
-
 public class ReadingHistoryDailyFragment extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
@@ -98,7 +96,7 @@ public class ReadingHistoryDailyFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 //        return inflater.inflate(R.layout.fragment_nest1_category, container, false);
-        View view = inflater.inflate(R.layout.nested_layer2_readinghistory, container, false);
+        View view = inflater.inflate(R.layout.nested_layer_history, container, false);
         // initializing our variables.
         RecyclerView courseRV = view.findViewById(R.id.idRVItems);
 //        courseRV.setRotationY(180);

@@ -8,13 +8,16 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.recoveryrecord.surveyandroid.example.R
+import com.recoveryrecord.surveyandroid.example.config.Constants.READING
 import com.recoveryrecord.surveyandroid.example.ui.EmptyFragment.Companion.newInstance
+import com.recoveryrecord.surveyandroid.example.ui.HistoryFragment
 import com.recoveryrecord.surveyandroid.example.ui.ReadHistorySummaryFragment
 import com.recoveryrecord.surveyandroid.example.ui.ReadHistoryTimeFragment
 import com.recoveryrecord.surveyandroid.example.ui.ReadHistoryWeeklyFragment
 import com.recoveryrecord.surveyandroid.example.ui.ReadingHistoryDailyMainFragment
-import com.recoveryrecord.surveyandroid.example.ui.ReadingHistoryFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ReadHistoryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +37,7 @@ class ReadHistoryActivity : AppCompatActivity() {
     ) {
         override fun getItem(position: Int): Fragment {
             return when (position) {
-                0 -> ReadingHistoryFragment.newInstance()
+                0 -> HistoryFragment.newInstance(READING)
                 1 -> ReadingHistoryDailyMainFragment()
                 2 -> ReadHistoryWeeklyFragment.newInstance()
                 3 -> ReadHistorySummaryFragment.newInstance()

@@ -1,7 +1,6 @@
 package com.recoveryrecord.surveyandroid.example.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,26 +34,18 @@ class ReadingHistoryDailyMainFragment : Fragment() {
     ) {
 
         override fun getItem(position: Int): Fragment {
-            Log.d("lognewsselect1231", "getItem$position")
-            return when (position) {
-                else -> ReadingHistoryDailyFragment.newInstance(position + 1)
-            }
+            return ReadingHistoryDailyFragment.newInstance(position + 1)
         }
 
         override fun getCount(): Int {
-            // Show 4 total pages.
             return 30
         }
 
-        override fun getPageTitle(position: Int): CharSequence? {
+        override fun getPageTitle(position: Int): CharSequence {
             val calendar = Calendar.getInstance()
             calendar.time = Timestamp.now().toDate()
-            return when (position) {
-                else -> {
-                    calendar.add(Calendar.DAY_OF_YEAR, -position)
-                    (calendar[Calendar.MONTH] + 1).toString() + "/" + calendar[Calendar.DAY_OF_MONTH]
-                }
-            }
+            calendar.add(Calendar.DAY_OF_YEAR, -position)
+            return (calendar[Calendar.MONTH] + 1).toString() + "/" + calendar[Calendar.DAY_OF_MONTH]
         }
     }
 }

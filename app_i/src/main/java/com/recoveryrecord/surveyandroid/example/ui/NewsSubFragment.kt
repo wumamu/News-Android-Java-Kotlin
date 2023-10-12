@@ -1,6 +1,5 @@
 package com.recoveryrecord.surveyandroid.example.ui
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -151,7 +150,6 @@ class NewsSubFragment : Fragment() {
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private suspend fun fetchInitialData() {
         val query = createQuery()
             .limit(Constants.NEWS_LIMIT_PER_PAGE)
@@ -161,6 +159,7 @@ class NewsSubFragment : Fragment() {
             if (!querySnapshot.isEmpty) {
                 val list = querySnapshot.documents
                 lastVisibleDocument = querySnapshot.documents.lastOrNull()
+                val insertStartPosition = dataModalArrayList.size
 
                 for (d in list) {
                     val dataModal = News(
@@ -172,7 +171,7 @@ class NewsSubFragment : Fragment() {
                     )
                     dataModalArrayList.add(dataModal)
                 }
-                dataRVAdapter.notifyDataSetChanged()
+                dataRVAdapter.notifyItemRangeInserted(insertStartPosition, list.size)
             }
             progressBar.visibility = View.GONE
             isFetchingData = false

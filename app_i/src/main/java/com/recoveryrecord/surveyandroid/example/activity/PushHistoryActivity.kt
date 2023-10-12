@@ -8,8 +8,9 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.recoveryrecord.surveyandroid.example.R
+import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS
 import com.recoveryrecord.surveyandroid.example.ui.EmptyFragment.Companion.newInstance
-import com.recoveryrecord.surveyandroid.example.ui.PushHistoryFragment
+import com.recoveryrecord.surveyandroid.example.ui.HistoryFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -32,7 +33,7 @@ class PushHistoryActivity : AppCompatActivity() {
     ) {
         override fun getItem(position: Int): Fragment {
             return when (position) {
-                0 -> PushHistoryFragment.newInstance()
+                0 -> HistoryFragment.newInstance(PUSH_NEWS)
                 else -> newInstance()
             }
         }
