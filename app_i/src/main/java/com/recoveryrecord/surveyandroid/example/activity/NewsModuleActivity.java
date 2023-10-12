@@ -10,6 +10,8 @@ import static com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_MED
 import static com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_PUBDATE;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_TITLE;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_URL;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_COLLECTION;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_OPEN_TIME;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.READING_BEHAVIOR_BYTE_PER_LINE;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.READING_BEHAVIOR_COLLECTION;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.READING_BEHAVIOR_CONTENT_LENGTH;
@@ -391,12 +393,11 @@ public class NewsModuleActivity extends AppCompatActivity implements SimpleGestu
             }
 
             if (myReadingBehavior.getTriggerBy().equals(READING_BEHAVIOR_TRIGGER_BY_NOTIFICATION)) {
-//                db.collection(PUSH_NEWS_COLLECTION)
-//                        .document(device_id + " " + news_id)
-//                        .update(PUSH_NEWS_CLICK, 0,
-//                                PUSH_NEWS_OPEN_TIME, Timestamp.now())
-//                        .addOnSuccessListener(aVoid -> Timber.d("mark as click successfully updated!"))
-//                        .addOnFailureListener(e -> Timber.w(e, "mark as click Error updating document"));
+                db.collection(PUSH_NEWS_COLLECTION)
+                        .document(device_id + news_id)
+                        .update(PUSH_NEWS_OPEN_TIME, Timestamp.now())
+                        .addOnSuccessListener(aVoid -> Timber.d("mark as click successfully updated!"))
+                        .addOnFailureListener(e -> Timber.w(e, "mark as click Error updating document"));
             } else {
                 self_trigger = true;
             }
