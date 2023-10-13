@@ -202,7 +202,7 @@ class FirebaseService : FirebaseMessagingService() {
             PUSH_NEWS_TITLE to notification.title,
             PUSH_NEWS_MEDIA to notification.media,
             // TODO add to python
-            PUSH_NEWS_PUBDATE to "",
+            PUSH_NEWS_PUBDATE to ZERO_TIME,
             PUSH_NEWS_NOTI_TIME to Timestamp.now(),
             PUSH_NEWS_RECEIEVE_TIME to ZERO_TIME,
             PUSH_NEWS_OPEN_TIME to ZERO_TIME,

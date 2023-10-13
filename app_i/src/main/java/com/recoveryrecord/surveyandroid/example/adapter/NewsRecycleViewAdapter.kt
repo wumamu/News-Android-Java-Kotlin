@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.example.activity.NewsModuleActivity
@@ -25,7 +26,8 @@ import java.text.SimpleDateFormat
 
 class NewsRecycleViewAdapter(
     private val dataModelArrayList: ArrayList<News>,
-    private val context: Context
+    private val context: Context,
+    private val showImg: Boolean = true
 ): RecyclerView.Adapter<NewsRecycleViewAdapter.ViewHolder>() {
     @RequiresApi(api = Build.VERSION_CODES.O)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -47,10 +49,11 @@ class NewsRecycleViewAdapter(
             holder.newsPubTime.text = formattedDate
         }
 
-        model.image?.let {
+        model.image.takeIf { showImg }?.let {
             loadImageWithGlide(context, model.image, holder.newsImg, holder.progressBar)
         } ?: run {
             holder.newsImg.visibility = View.GONE
+            holder.imgCard.visibility = View.GONE
         }
         holder.newsMedia.text = MediaType.getChinese(model.media)
     }
@@ -72,6 +75,7 @@ class NewsRecycleViewAdapter(
         val newsMedia: TextView
         val newsImg: ImageView
         val progressBar: ProgressBar
+        val imgCard: CardView
 
         init {
             // initializing the views of recycler views.
@@ -80,6 +84,7 @@ class NewsRecycleViewAdapter(
             newsMedia = itemView.findViewById(R.id.text_view_media)
             newsImg = itemView.findViewById(R.id.imgView)
             progressBar = itemView.findViewById(R.id.loadingProgressBar)
+            imgCard = itemView.findViewById(R.id.imgCard)
             // 點擊項目時
             itemView.setOnClickListener {
                 val (_, media, id) = dataModelArrayList[adapterPosition]

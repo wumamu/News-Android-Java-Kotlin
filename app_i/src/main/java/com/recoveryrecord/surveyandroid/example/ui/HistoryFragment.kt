@@ -10,10 +10,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.example.adapter.NewsRecycleViewAdapter
+import com.recoveryrecord.surveyandroid.example.config.Constants.NO_VALUE
 import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_HISTORY_LIMIT_PER_PAGE
 import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS
 import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_COLLECTION
@@ -51,6 +53,8 @@ class HistoryFragment : Fragment() {
     companion object {
         private const val TYPE = "type"
         private const val DAY = "day"
+        private val ZERO_TIME = Timestamp(0, 0)
+
         fun newInstance(type: String, day: Int = -1): HistoryFragment {
             return HistoryFragment().apply {
                 arguments = Bundle().apply {
@@ -84,7 +88,11 @@ class HistoryFragment : Fragment() {
     }
 
     private fun initRecyclerView() {
-        dataRVAdapter = NewsRecycleViewAdapter(dataModalArrayList, requireActivity())
+        dataRVAdapter = NewsRecycleViewAdapter(
+            dataModalArrayList,
+            requireActivity(),
+            type != PUSH_NEWS
+        )
         dataRVAdapter.setHasStableIds(true)
         courseRV.apply {
             setHasFixedSize(true)
@@ -144,16 +152,24 @@ class HistoryFragment : Fragment() {
             if (!querySnapshot.isEmpty) {
                 val list = querySnapshot.documents
                 val insertStartPosition = dataModalArrayList.size
+                Timber.d("$type list size ${list.size}")
 
                 for (d in list) {
-                    Timber.d("$type ${list.size}")
+                    Timber.d(d.toString())
+                    val curPubdate = try {
+                        d.getTimestamp("pubdate")
+                    } catch (e: Exception) {
+                        null // Handle the case where "pubdate" is not in timestamp format
+                    }
                     News(
                         title = d.getString("title"),
                         media = d.getString("media"),
                         id = d.getString("id"),
-                        pubDate = d.getTimestamp("pubdate"),
-                        image = d.getString("image")
+                        pubDate = curPubdate ?: ZERO_TIME,
+//                        pubDate = d.getTimestamp("pubdate") ?: ZERO_TIME,
+                        image = d.getString("image") ?: NO_VALUE
                     ).takeIf { it.isValid }?.apply {
+                        Timber.d(this.toString())
                         dataModalArrayList.add(this)
                     }
                 }
