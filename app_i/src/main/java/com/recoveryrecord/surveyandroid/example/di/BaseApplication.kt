@@ -29,6 +29,12 @@ class BaseApplication : Application() {
                         this@BaseApplication.packageName + "_preferences"
                     )
                 )
+//                addPlugin(
+//                    SharedPreferencesFlipperPlugin(
+//                        this@BaseApplication,
+//                        "token"
+//                    )
+//                )
                 addPlugin(
                     InspectorFlipperPlugin(
                         this@BaseApplication,

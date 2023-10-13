@@ -58,7 +58,6 @@ import com.recoveryrecord.surveyandroid.example.config.Constants.UNKNOWN_USER_ID
 import com.recoveryrecord.surveyandroid.example.config.Constants.UPDATE_TIME
 import com.recoveryrecord.surveyandroid.example.config.Constants.USER_ANDROID_RELEASE
 import com.recoveryrecord.surveyandroid.example.config.Constants.USER_ANDROID_SDK
-import com.recoveryrecord.surveyandroid.example.config.Constants.USER_COLLECTION
 import com.recoveryrecord.surveyandroid.example.config.Constants.USER_DEVICE_ID
 import com.recoveryrecord.surveyandroid.example.config.Constants.USER_FIRESTORE_ID
 import com.recoveryrecord.surveyandroid.example.config.Constants.USER_ID
@@ -80,8 +79,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-
-//private const val TOPIC = "/topics/news"
 
 @AndroidEntryPoint
 class NewsHybridActivity
@@ -128,24 +125,26 @@ class NewsHybridActivity
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         context = applicationContext
-        setContentView(R.layout.activity_news_hybrid)
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        setContentView(R.layout.activity_news_hybrid).apply { findLayout() }
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(applicationContext).also {
+            FirebaseService.sharedPref = it
+            //        FirebaseService.sharedPref = getSharedPreferences("token", MODE_PRIVATE)
+        }
         rankingString =
             sharedPrefs.getString(MEDIA_ORDER, MediaType.DEFAULT_MEDIA_ORDER)
                 ?: MediaType.DEFAULT_MEDIA_ORDER
         deviceId = Settings.Secure.getString(
             applicationContext.contentResolver,
             Settings.Secure.ANDROID_ID
-        )
-        userDocRef = db.collection(USER_COLLECTION).document(deviceId)
+        ).also {
+            FirebaseService.deviceId = it
+            FirebaseCrashlytics.getInstance().setUserId(it)
+            userDocRef = db.collection(Constants.USER_COLLECTION).document(it)
+        }
 
         loadCategoryFromLocal()
         initLayout()
         lifecycleScope.launch { getRemotePushNews() }
-
-        FirebaseService.sharedPref = sharedPrefs
-        FirebaseService.deviceId = deviceId
-        FirebaseCrashlytics.getInstance().setUserId(deviceId)
 
         //first in app
         userName = intent.extras?.getString(SHARE_PREFERENCE_USER_ID) ?: run {
@@ -255,6 +254,12 @@ class NewsHybridActivity
         //LightSensor
         _LightSensorReceiver = LightSensorReceiver()
         _LightSensorReceiver?.registerLightSensorReceiver(this)
+
+//        val listeners = Settings.Secure.getString(
+//            contentResolver,
+//            "enabled_notification_listeners"
+//        )
+//        if (listeners != null) Timber.d("Listeners are : $listeners")
     }
 
     override fun onDestroy() {
@@ -265,19 +270,23 @@ class NewsHybridActivity
         super.onDestroy()
     }
 
-    private fun initLayout() {
+    private fun findLayout() {
         swipeRefreshLayout = findViewById(R.id.mainSwipeContainer)
+        drawerLayout = findViewById(R.id.drawer_layout_hy)
+        mViewPager = findViewById(R.id.container_hy)
+        tabLayout = findViewById(R.id.tabs_hy)
+    }
+
+
+    private fun initLayout() {
         swipeRefreshLayout.apply {
             setOnRefreshListener(this@NewsHybridActivity)
             setDistanceToTriggerSync(200)
             setColorSchemeResources(R.color.blue, R.color.red, R.color.black)
         }
-        drawerLayout = findViewById(R.id.drawer_layout_hy)
         mSectionsPagerAdapter = SectionsPagerAdapter(
             supportFragmentManager, parseTabArray(rankingString)
         )
-        mViewPager = findViewById(R.id.container_hy)
-        tabLayout = findViewById(R.id.tabs_hy)
         mViewPager.adapter = mSectionsPagerAdapter
         tabLayout.setupWithViewPager(mViewPager)
     }
