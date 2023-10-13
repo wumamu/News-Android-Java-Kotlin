@@ -22,7 +22,7 @@ import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_COLLE
 import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_RECEIEVE_TIME
 import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_REMOVE_TIME
 import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_REMOVE_TYPE
-import com.recoveryrecord.surveyandroid.example.util.insertRemote
+import com.recoveryrecord.surveyandroid.example.util.addRemote
 import com.recoveryrecord.surveyandroid.example.util.updateRemote
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -144,8 +144,8 @@ class NotificationListenerService : NotificationListenerService() {
                             ?: NO_VALUE),
                     )
                     CoroutineScope(Dispatchers.IO).launch {
-                        insertRemote(
-                            db.collection(COMPARE_COLLECTION).document(getCompareDocId()),
+                        addRemote(
+                            db.collection(COMPARE_COLLECTION),
                             updateData
                         ) {
                             Timber.d("Compare new update!")
