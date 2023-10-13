@@ -53,6 +53,12 @@
             android:elevation="50dp"
             android:id="@+id/bt_login" />
 
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/sign_in_button"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:visibility="visible" />
     </LinearLayout>
 
     <ImageView

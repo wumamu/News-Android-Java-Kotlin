@@ -2,7 +2,6 @@ package com.recoveryrecord.surveyandroid.example
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
@@ -21,8 +20,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -46,14 +43,12 @@ import com.recoveryrecord.surveyandroid.example.config.Constants.APP_VERSION_KEY
 import com.recoveryrecord.surveyandroid.example.config.Constants.APP_VERSION_VALUE
 import com.recoveryrecord.surveyandroid.example.config.Constants.CATEGORY_POST_FIX
 import com.recoveryrecord.surveyandroid.example.config.Constants.CONFIG
-import com.recoveryrecord.surveyandroid.example.config.Constants.DEFAULT_TEST_CHANNEL_ID
 import com.recoveryrecord.surveyandroid.example.config.Constants.LAST_UPDATE_TIME
 import com.recoveryrecord.surveyandroid.example.config.Constants.MEDIA_BAR_ORDER
 import com.recoveryrecord.surveyandroid.example.config.Constants.MEDIA_ORDER
 import com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_CATEGORY
 import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_MEDIA_SELECTION
 import com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_USER_ID
-import com.recoveryrecord.surveyandroid.example.config.Constants.TEST_CHANNEL_ID
 import com.recoveryrecord.surveyandroid.example.config.Constants.UNKNOWN_USER_ID
 import com.recoveryrecord.surveyandroid.example.config.Constants.UPDATE_TIME
 import com.recoveryrecord.surveyandroid.example.config.Constants.USER_ANDROID_RELEASE
@@ -68,8 +63,10 @@ import com.recoveryrecord.surveyandroid.example.receiever.NetworkChangeReceiver
 import com.recoveryrecord.surveyandroid.example.receiever.RingModeReceiver
 import com.recoveryrecord.surveyandroid.example.receiever.ScreenStateReceiver
 import com.recoveryrecord.surveyandroid.example.service.FirebaseService
+import com.recoveryrecord.surveyandroid.util.createNotificationChannel
 import com.recoveryrecord.surveyandroid.util.insertRemote
 import com.recoveryrecord.surveyandroid.util.parseTabArray
+import com.recoveryrecord.surveyandroid.util.showDummyNotification
 import com.recoveryrecord.surveyandroid.util.showToast
 import com.recoveryrecord.surveyandroid.util.updateRemote
 import dagger.hilt.android.AndroidEntryPoint
@@ -144,7 +141,7 @@ class NewsHybridActivity
 
         loadCategoryFromLocal()
         initLayout()
-        lifecycleScope.launch { getRemotePushNews() }
+        lifecycleScope.launch { getRemotePushNewsSelection() }
 
         //first in app
         userName = intent.extras?.getString(SHARE_PREFERENCE_USER_ID) ?: run {
@@ -153,7 +150,7 @@ class NewsHybridActivity
 
         val clear = sharedPrefs.getBoolean(Constants.SHARE_PREFERENCE_CLEAR_CACHE, true)
         if (clear) {
-            createNotificationChannel()
+            createNotificationChannel(notificationManager)
             checkNotificationPermission()
             val editor = sharedPrefs.edit()
             editor.putBoolean(Constants.SHARE_PREFERENCE_CLEAR_CACHE, false)
@@ -299,18 +296,6 @@ class NewsHybridActivity
             R.id.nav_history -> Intent(this@NewsHybridActivity, ReadHistoryActivity::class.java)
             R.id.nav_reschedule -> Intent(this@NewsHybridActivity, PushHistoryActivity::class.java)
             R.id.nav_contact -> {
-//                FirebaseService.token?.let { token ->
-//                    PushNotification(
-//                        NotificationData(
-//                            title = "去影帝告別式被發掘！謝祖武20歲帥兒正式出道　獲林心如、吳慷仁青睞", //messageBody["title"],
-//                            media = "setn",
-//                            newsId = "00005448a87e8688fd3323099455bc6b092a3fab"
-//                        ),
-//                        token
-//                    ).also {
-//                        sendNotification(it)
-//                    }
-//                }
                 val selectorIntent = Intent(Intent.ACTION_SENDTO).apply {
                     data = Uri.parse("mailto:")
                 }
@@ -322,6 +307,7 @@ class NewsHybridActivity
                         "Hi, 我的 user id 是$userName，\ndevice id 是$deviceId，\n我有問題要回報(以文字描述發生的問題)：\n以下是相關問題截圖(如有截圖或是錄影，可以幫助我們更快了解問題)："
                     )
                     selector = selectorIntent
+                    type = "message/rfc822"
                 }
             }
 
@@ -329,11 +315,14 @@ class NewsHybridActivity
         }
 
         intent?.let {
-            if (it.resolveActivity(packageManager) != null) {
-                startActivity(Intent.createChooser(it, "Send email..."))
-            } else {
-                Toast.makeText(this, "Gmail App is not installed", Toast.LENGTH_LONG).show()
-            }
+            // TODO fix bug, and notification
+            // startActivity with intent with chooser as Email client using createChooser function
+            startActivity(Intent.createChooser(it, "Choose an Email client :"));
+//            if (it.resolveActivity(packageManager) != null) {
+//                startActivity(Intent.createChooser(it, "Send email..."))
+//            } else {
+//                Toast.makeText(this, "Gmail App is not installed", Toast.LENGTH_LONG).show()
+//            }
         }
 
         drawerLayout.closeDrawer(GravityCompat.START)
@@ -357,7 +346,6 @@ class NewsHybridActivity
     }
 
     override fun onRefresh() {
-
         loadCategoryFromLocal()
         updateViewPager()
     }
@@ -427,7 +415,7 @@ class NewsHybridActivity
                 Manifest.permission.POST_NOTIFICATIONS,
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            showDummyNotification()
+            showDummyNotification(context)
         } else {
             ActivityCompat.requestPermissions(
                 this,
@@ -437,34 +425,7 @@ class NewsHybridActivity
         }
     }
 
-    /**
-     * Creates Notification Channel (required for API level >= 26) before sending any notification.
-     */
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun createNotificationChannel() {
-        val channel = NotificationChannel(
-            TEST_CHANNEL_ID,
-            DEFAULT_TEST_CHANNEL_ID,
-            NotificationManager.IMPORTANCE_HIGH,
-        ).apply {
-            description = "This notification contains important announcement, etc."
-        }
-        notificationManager.createNotificationChannel(channel)
-    }
-
-    private fun showDummyNotification() {
-        val builder = NotificationCompat.Builder(this, TEST_CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentTitle("Congratulations! 🎉🎉🎉")
-            .setContentText("You have post a notification to Android 13!!!")
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-
-        with(NotificationManagerCompat.from(this)) {
-            notify(1, builder.build())
-        }
-    }
-
-    private suspend fun getRemotePushNews() {
+    private suspend fun getRemotePushNewsSelection() {
         try {
             val documentSnapshot = withContext(Dispatchers.IO) { userDocRef.get().await() }
             if (documentSnapshot.exists()) {
@@ -472,19 +433,7 @@ class NewsHybridActivity
                     documentSnapshot[PUSH_MEDIA_SELECTION] as MutableList<String>
             }
         } catch (e: Exception) {
-            Timber.d("get failed with " + e)
+            Timber.w("getRemotePushNewsSelection failed cause $e")
         }
     }
-//    private fun sendNotification(notification: PushNotification) = CoroutineScope(Dispatchers.IO).launch {
-//        try {
-//            val response = RetrofitInstance.api.postNotification(notification)
-//            if(response.isSuccessful) {
-//                Timber.d("Response: ${Gson().toJson(response)}")
-//            } else {
-//                Timber.e(response.message())
-//            }
-//        } catch(e: Exception) {
-//            Timber.e(e.toString())
-//        }
-//    }
 }

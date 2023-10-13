@@ -11,10 +11,18 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.recoveryrecord.surveyandroid.example.config.Constants
 import com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_ID_KEY
+import com.recoveryrecord.surveyandroid.example.config.Constants.NOTIFICATION_BAR_NEWS_DEVICE_ID
+import com.recoveryrecord.surveyandroid.example.config.Constants.NOTIFICATION_BAR_NEWS_NOTI_TIME
+import com.recoveryrecord.surveyandroid.example.config.Constants.NOTIFICATION_BAR_NEWS_PACKAGE_ID
+import com.recoveryrecord.surveyandroid.example.config.Constants.NOTIFICATION_BAR_NEWS_SOURCE
+import com.recoveryrecord.surveyandroid.example.config.Constants.NOTIFICATION_BAR_NEWS_TEXT
+import com.recoveryrecord.surveyandroid.example.config.Constants.NOTIFICATION_BAR_NEWS_TITLE
+import com.recoveryrecord.surveyandroid.example.config.Constants.NO_VALUE
 import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_COLLECTION
 import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_RECEIEVE_TIME
 import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_REMOVE_TIME
 import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_REMOVE_TYPE
+import com.recoveryrecord.surveyandroid.util.insertRemote
 import com.recoveryrecord.surveyandroid.util.updateRemote
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -68,9 +76,17 @@ class NotificationListenerService : NotificationListenerService() {
                 Constants.SETS_PACKAGE_NAME
             )
         }
+        private val selectedDevice = lazy {
+            setOf("9601fcc5ef9fc3be", "0ceac22db4d7789f", "cd96440867380664", "d254e371a0970955")
+        }
         var deviceId: String = ""
+        const val COMPARE_COLLECTION = "compare"
         fun getPushNewsDocId(curNewsId: String): String {
             return "$deviceId$curNewsId"
+        }
+
+        fun getCompareDocId(): String {
+            return "$deviceId${Timestamp.now().nanoseconds}"
         }
     }
 
@@ -110,67 +126,33 @@ class NotificationListenerService : NotificationListenerService() {
                 }
             }
         } else if (isTarget) {
-            // TODO Save monitor data to firstore
             Timber.d(
                 "onNotificationReceived is target ${sbn.packageName}" +
                         " ${sbn.notification.extras?.getString("android.title")}" +
-                        " ${sbn.notification.extras?.getString("android.text")}"
+                        " ${sbn.notification.extras?.getCharSequence("android.text")}"
             )
-
-            //new media
-//            var check_title = false
-//            var check_text = false
-//            Log.d("checking", "NLService")
-//            val extras = sbn.notification.extras
-//
-//            val db = FirebaseFirestore.getInstance()
-//            val mytimestamp = Timestamp.now() //new Timestamp(System.currentTimeMillis());
-//            @SuppressLint("HardwareIds") val device_id = Settings.Secure.getString(
-//                applicationContext.contentResolver, Settings.Secure.ANDROID_ID
-//            )
-//            val receieve_notification: MutableMap<String, Any> = HashMap()
-//            receieve_notification[NOTIFICATION_BAR_NEWS_SOURCE] = sbn.packageName
-//            receieve_notification[NOTIFICATION_BAR_NEWS_NOTI_TIME] = mytimestamp
-//            receieve_notification[NOTIFICATION_BAR_NEWS_PACKAGE_ID] = sbn.key
-//            receieve_notification[NOTIFICATION_BAR_NEWS_DEVICE_ID] = device_id
-//            if (extras.containsKey("android.title")) {
-//                if (extras.getString("android.title") != null) {
-//                    receieve_notification[NOTIFICATION_BAR_NEWS_TITLE] =
-//                        Objects.requireNonNull<String?>(extras.getString("android.title"))
-//                    check_title = true
-//                } else {
-//                    receieve_notification[NOTIFICATION_BAR_NEWS_TITLE] = "null"
-//                }
-//            } else {
-//                receieve_notification[NOTIFICATION_BAR_NEWS_TITLE] = "null"
-//            }
-//            if (extras.containsKey("android.text")) {
-//                if (extras.getCharSequence("android.text") != null) {
-//                    receieve_notification[NOTIFICATION_BAR_NEWS_TEXT] =
-//                        extras.getCharSequence("android.text").toString()
-//                    check_text = true
-//                } else {
-//                    receieve_notification[NOTIFICATION_BAR_NEWS_TEXT] = "null"
-//                }
-//            } else {
-//                receieve_notification[NOTIFICATION_BAR_NEWS_TEXT] = "null"
-//            }
-//            // if both is null then we don't need it
-//            if (check_title && check_text) {
-//                var is_me = false
-//                if ((device_id == "318f4fea56e7070c") || (device_id == "c067c6c688c792b2") || (device_id == "37824129045c645a")) {
-//                    // || device_id.equals("3f726664ceaad94f")
-//                    is_me = true
-//                    receieve_notification["source"] = device_id
-//                }
-//                if (is_me) {
-//                    db.collection("compare") //.document(formatter.format(date))
-//                        .add(receieve_notification)
-//                }
-//                db.collection(NOTIFICATION_BAR_NEWS_MONITOR_COLLECTION)
-//                    .document(device_id + " " + sbn.postTime)
-//                    .set(receieve_notification)
-//            }
+            if (deviceId in selectedDevice.value) {
+                sbn.notification.extras?.apply {
+                    val updateData = hashMapOf<String, Any>(
+                        NOTIFICATION_BAR_NEWS_SOURCE to sbn.packageName,
+                        NOTIFICATION_BAR_NEWS_NOTI_TIME to Timestamp.now(),
+                        NOTIFICATION_BAR_NEWS_PACKAGE_ID to sbn.key,
+                        NOTIFICATION_BAR_NEWS_DEVICE_ID to deviceId,
+                        NOTIFICATION_BAR_NEWS_TITLE to (this.getString("android.title")
+                            ?: NO_VALUE),
+                        NOTIFICATION_BAR_NEWS_TEXT to (this.getCharSequence("android.text")
+                            ?: NO_VALUE),
+                    )
+                    CoroutineScope(Dispatchers.IO).launch {
+                        insertRemote(
+                            db.collection(COMPARE_COLLECTION).document(getCompareDocId()),
+                            updateData
+                        ) {
+                            Timber.d("Compare new update!")
+                        }
+                    }
+                }
+            }
         }
     }
 

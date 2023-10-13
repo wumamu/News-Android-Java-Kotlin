@@ -1,7 +1,6 @@
 package com.recoveryrecord.surveyandroid.example.service
 
 import android.app.Notification
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
@@ -19,11 +18,10 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.example.activity.NewsModuleActivity
-import com.recoveryrecord.surveyandroid.example.config.Constants.DEFAULT_NEWS_CHANNEL_ID
-import com.recoveryrecord.surveyandroid.example.config.Constants.GROUP_NEWS
 import com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_CHANNEL_ID
 import com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_ID_KEY
 import com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_MEDIA_KEY
+import com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_PUBDATE
 import com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_TITLE_KEY
 import com.recoveryrecord.surveyandroid.example.config.Constants.NO_VALUE
 import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_MEDIA_SELECTION
@@ -48,7 +46,9 @@ import com.recoveryrecord.surveyandroid.example.config.Constants.UPDATE_TIME
 import com.recoveryrecord.surveyandroid.example.config.Constants.VIBRATE_EFFECT
 import com.recoveryrecord.surveyandroid.example.model.MediaType
 import com.recoveryrecord.surveyandroid.example.model.NotificationData
+import com.recoveryrecord.surveyandroid.util.createNotificationChannel
 import com.recoveryrecord.surveyandroid.util.insertRemote
+import com.recoveryrecord.surveyandroid.util.toTimeStamp
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
@@ -58,6 +58,9 @@ import timber.log.Timber
 
 @AndroidEntryPoint
 class FirebaseService : FirebaseMessagingService() {
+    private val notificationManager: NotificationManager by lazy {
+        getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    }
 
     @Inject
     lateinit var db: FirebaseFirestore
@@ -107,7 +110,8 @@ class FirebaseService : FirebaseMessagingService() {
             val curNoti = NotificationData(
                 title = remoteMessage.data[NEWS_TITLE_KEY]!!,
                 media = remoteMessage.data[NEWS_MEDIA_KEY]!!,
-                newsId = remoteMessage.data[NEWS_ID_KEY]!!
+                newsId = remoteMessage.data[NEWS_ID_KEY]!!,
+                pubDate = remoteMessage.data.getOrDefault(NEWS_PUBDATE, null),
             )
             // filter selected media
             val trigger = checkNotificationPreference(curNoti.media)
@@ -120,7 +124,7 @@ class FirebaseService : FirebaseMessagingService() {
                 Timber.d("Did not select current media")
             }
         } catch (e: Exception) {
-            Timber.d("Cast to NotificationData failed $e")
+            Timber.w("Send notification failed $e")
         }
     }
 
@@ -161,7 +165,8 @@ class FirebaseService : FirebaseMessagingService() {
         extras.putString(NEWS_ID_KEY, notification.newsId)
 
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        val notificationBuilder = NotificationCompat.Builder(this, NEWS_CHANNEL_ID)
+        val notificationBuilder = NotificationCompat
+            .Builder(this, NEWS_CHANNEL_ID)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(notification.title)
             .setContentText(MediaType.getChinese(notification.media))
@@ -171,22 +176,12 @@ class FirebaseService : FirebaseMessagingService() {
             .setVibrate(VIBRATE_EFFECT)
             .setContentIntent(pendingIntent)
             .setCategory(Notification.CATEGORY_RECOMMENDATION)
-            .setGroup(GROUP_NEWS)
+            .setOnlyAlertOnce(true)
             .setExtras(extras)
+        // Do not set group manually, it automatically done for you
+        //    .setGroup(GROUP_NEWS)
 
-        val notificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        // Since android Oreo notification channel is needed.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                NEWS_CHANNEL_ID,
-                DEFAULT_NEWS_CHANNEL_ID,
-                NotificationManager.IMPORTANCE_DEFAULT,
-            )
-            notificationManager.createNotificationChannel(channel)
-        }
-
+        createNotificationChannel(notificationManager)
         notificationManager.notify(notificationId, notificationBuilder.build())
     }
 
@@ -201,8 +196,7 @@ class FirebaseService : FirebaseMessagingService() {
             PUSH_NEWS_ID to notification.newsId,
             PUSH_NEWS_TITLE to notification.title,
             PUSH_NEWS_MEDIA to notification.media,
-            // TODO add to python
-            PUSH_NEWS_PUBDATE to ZERO_TIME,
+            PUSH_NEWS_PUBDATE to (notification.pubDate?.toTimeStamp() ?: ZERO_TIME),
             PUSH_NEWS_NOTI_TIME to Timestamp.now(),
             PUSH_NEWS_RECEIEVE_TIME to ZERO_TIME,
             PUSH_NEWS_OPEN_TIME to ZERO_TIME,

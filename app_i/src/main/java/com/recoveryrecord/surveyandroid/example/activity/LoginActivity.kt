@@ -9,8 +9,6 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
@@ -31,29 +29,29 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var useremail: EditText
     private lateinit var password: EditText
     private lateinit var localLoginButton: Button
-    private lateinit var googleLoginButton: com.google.android.gms.common.SignInButton
+//    private lateinit var googleLoginButton: com.google.android.gms.common.SignInButton
 
     @Inject
     lateinit var auth: FirebaseAuth
-    private lateinit var googleSignInClient: GoogleSignInClient
+//    private lateinit var googleSignInClient: GoogleSignInClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         supportActionBar?.hide()
         auth = FirebaseAuth.getInstance()
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-        googleSignInClient = GoogleSignIn.getClient(this, gso)
+//        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//            .requestIdToken(getString(R.string.default_web_client_id))
+//            .requestEmail()
+//            .build()
+//        googleSignInClient = GoogleSignIn.getClient(this, gso)
 
         localLoginButton = findViewById(R.id.bt_login)
-        googleLoginButton = findViewById(R.id.sign_in_button)
+//        googleLoginButton = findViewById(R.id.sign_in_button)
         useremail = findViewById(R.id.et_username)
         password = findViewById(R.id.et_password)
         localLoginButton.setOnClickListener { localLoginCheck() }
-        googleLoginButton.setOnClickListener { googleSignIn() }
+//        googleLoginButton.setOnClickListener { googleSignIn() }
     }
 
     override fun onStart() {
@@ -123,7 +121,7 @@ class LoginActivity : AppCompatActivity() {
             try {
                 val account = task.getResult(ApiException::class.java)
                 account?.apply {
-                    Timber.d("firebaseAuthWithGoogle:" + id)
+                    Timber.d("firebaseAuthWithGoogle:$id")
                     firebaseAuthWithGoogle(idToken!!)
                 }
 
@@ -148,13 +146,12 @@ class LoginActivity : AppCompatActivity() {
             }
     }
 
-    private fun googleSignIn() {
-        val signInIntent = googleSignInClient.signInIntent
-        startActivityForResult(signInIntent, RC_SIGN_IN)
-    }
+//    private fun googleSignIn() {
+//        val signInIntent = googleSignInClient.signInIntent
+//        startActivityForResult(signInIntent, RC_SIGN_IN)
+//    }
 
     companion object {
-        private const val TAG = "GoogleActivity"
         private const val RC_SIGN_IN = 9001
     }
 }

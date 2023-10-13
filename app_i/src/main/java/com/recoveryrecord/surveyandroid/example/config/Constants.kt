@@ -128,6 +128,13 @@ object Constants {
     const val PUSH_NEWS_REMOVE_TYPE = "remove_type"
     const val PUSH_NEWS_TYPE = "type"
 
+    const val NOTIFICATION_BAR_NEWS_TITLE = "title"
+    const val NOTIFICATION_BAR_NEWS_TEXT = "text"
+    const val NOTIFICATION_BAR_NEWS_NOTI_TIME = "noti_timestamp"
+    const val NOTIFICATION_BAR_NEWS_PACKAGE_ID = "package_id"
+    const val NOTIFICATION_BAR_NEWS_SOURCE = "media"
+    const val NOTIFICATION_BAR_NEWS_DEVICE_ID = "device_id"
+
     //SHARE PREFERENCE #############################################################################
     const val SHARE_PREFERENCE_CLEAR_CACHE = "SharePreferenceClear"
     const val SHARE_PREFERENCE_TEST_SIZE = "text_size"
