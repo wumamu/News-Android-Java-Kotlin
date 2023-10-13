@@ -3,6 +3,7 @@ package com.recoveryrecord.surveyandroid.example
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.NotificationManager
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -47,6 +48,7 @@ import com.recoveryrecord.surveyandroid.example.config.Constants.LAST_UPDATE_TIM
 import com.recoveryrecord.surveyandroid.example.config.Constants.MEDIA_BAR_ORDER
 import com.recoveryrecord.surveyandroid.example.config.Constants.MEDIA_ORDER
 import com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_CATEGORY
+import com.recoveryrecord.surveyandroid.example.config.Constants.OUR_EMAIL
 import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_MEDIA_SELECTION
 import com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_USER_ID
 import com.recoveryrecord.surveyandroid.example.config.Constants.UNKNOWN_USER_ID
@@ -296,33 +298,29 @@ class NewsHybridActivity
             R.id.nav_history -> Intent(this@NewsHybridActivity, ReadHistoryActivity::class.java)
             R.id.nav_reschedule -> Intent(this@NewsHybridActivity, PushHistoryActivity::class.java)
             R.id.nav_contact -> {
-                val selectorIntent = Intent(Intent.ACTION_SENDTO).apply {
+                Intent(Intent.ACTION_SENDTO).apply {
                     data = Uri.parse("mailto:")
-                }
-                Intent(Intent.ACTION_SEND).apply {
-                    putExtra(Intent.EXTRA_EMAIL, arrayOf(Constants.OUR_EMAIL))
+                    // why array :)
+                    putExtra(Intent.EXTRA_EMAIL, arrayOf(OUR_EMAIL))
                     putExtra(Intent.EXTRA_SUBJECT, "NewsMoment App 問題回報")
                     putExtra(
                         Intent.EXTRA_TEXT,
                         "Hi, 我的 user id 是$userName，\ndevice id 是$deviceId，\n我有問題要回報(以文字描述發生的問題)：\n以下是相關問題截圖(如有截圖或是錄影，可以幫助我們更快了解問題)："
                     )
-                    selector = selectorIntent
-                    type = "message/rfc822"
                 }
             }
-
             else -> null
         }
 
         intent?.let {
-            // TODO fix bug, and notification
-            // startActivity with intent with chooser as Email client using createChooser function
-            startActivity(Intent.createChooser(it, "Choose an Email client :"));
-//            if (it.resolveActivity(packageManager) != null) {
-//                startActivity(Intent.createChooser(it, "Send email..."))
-//            } else {
-//                Toast.makeText(this, "Gmail App is not installed", Toast.LENGTH_LONG).show()
-//            }
+            try {
+                startActivity(Intent.createChooser(it, "Send mail..."))
+            } catch (e: ActivityNotFoundException) {
+                showToast(
+                    this@NewsHybridActivity,
+                    "There are no email clients installed.",
+                )
+            }
         }
 
         drawerLayout.closeDrawer(GravityCompat.START)
