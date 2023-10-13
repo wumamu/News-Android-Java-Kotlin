@@ -1,4 +1,4 @@
-package com.recoveryrecord.surveyandroid
+package com.recoveryrecord.surveyandroid.example.util
 
 import com.recoveryrecord.surveyandroid.example.sqlite.DragObj
 import com.recoveryrecord.surveyandroid.example.sqlite.FlingObj

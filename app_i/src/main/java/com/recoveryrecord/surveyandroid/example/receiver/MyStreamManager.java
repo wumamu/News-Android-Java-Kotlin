@@ -1,4 +1,4 @@
-package com.recoveryrecord.surveyandroid.example.receiever;
+package com.recoveryrecord.surveyandroid.example.receiver;
 
 import static androidx.constraintlayout.motion.utils.Oscillator.TAG;
 

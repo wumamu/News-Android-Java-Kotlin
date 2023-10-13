@@ -1,6 +1,6 @@
-package com.recoveryrecord.surveyandroid.util
+package com.recoveryrecord.surveyandroid.example.util
 
-import com.recoveryrecord.surveyandroid.util.Constants.Companion.BASE_URL
+import com.recoveryrecord.surveyandroid.example.util.Constants.Companion.BASE_URL
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 

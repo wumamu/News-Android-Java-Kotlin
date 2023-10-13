@@ -5,9 +5,9 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
-import com.recoveryrecord.surveyandroid.SimpleGestureListener;
 import com.recoveryrecord.surveyandroid.example.sqlite.DragObj;
 import com.recoveryrecord.surveyandroid.example.sqlite.FlingObj;
+import com.recoveryrecord.surveyandroid.example.util.SimpleGestureListener;
 
 public class GestureListener extends GestureDetector.SimpleOnGestureListener{
 

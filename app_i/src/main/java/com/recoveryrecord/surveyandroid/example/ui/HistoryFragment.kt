@@ -29,7 +29,7 @@ import com.recoveryrecord.surveyandroid.example.config.Constants.READING_BEHAVIO
 import com.recoveryrecord.surveyandroid.example.config.Constants.READING_DAILY
 import com.recoveryrecord.surveyandroid.example.config.Constants.READ_HISTORY_LIMIT_PER_PAGE
 import com.recoveryrecord.surveyandroid.example.model.News
-import com.recoveryrecord.surveyandroid.util.fetchRemote
+import com.recoveryrecord.surveyandroid.example.util.fetchRemote
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Calendar
 import javax.inject.Inject

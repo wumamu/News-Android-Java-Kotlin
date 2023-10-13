@@ -22,8 +22,8 @@ import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_COLLE
 import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_RECEIEVE_TIME
 import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_REMOVE_TIME
 import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_REMOVE_TYPE
-import com.recoveryrecord.surveyandroid.util.insertRemote
-import com.recoveryrecord.surveyandroid.util.updateRemote
+import com.recoveryrecord.surveyandroid.example.util.insertRemote
+import com.recoveryrecord.surveyandroid.example.util.updateRemote
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope

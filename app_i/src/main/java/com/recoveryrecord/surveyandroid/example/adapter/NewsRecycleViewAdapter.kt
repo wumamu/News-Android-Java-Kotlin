@@ -21,7 +21,7 @@ import com.recoveryrecord.surveyandroid.example.config.Constants.TRIGGER_BY_KEY
 import com.recoveryrecord.surveyandroid.example.config.Constants.TRIGGER_BY_SELF
 import com.recoveryrecord.surveyandroid.example.model.MediaType
 import com.recoveryrecord.surveyandroid.example.model.News
-import com.recoveryrecord.surveyandroid.util.loadImageWithGlide
+import com.recoveryrecord.surveyandroid.example.util.loadImageWithGlide
 import java.text.SimpleDateFormat
 
 class NewsRecycleViewAdapter(

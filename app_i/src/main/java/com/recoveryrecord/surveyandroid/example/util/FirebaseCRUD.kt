@@ -1,4 +1,4 @@
-package com.recoveryrecord.surveyandroid.util
+package com.recoveryrecord.surveyandroid.example.util
 
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.Query

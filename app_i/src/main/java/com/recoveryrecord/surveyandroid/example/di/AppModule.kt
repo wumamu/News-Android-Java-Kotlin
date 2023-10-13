@@ -2,8 +2,8 @@ package com.recoveryrecord.surveyandroid.example.di
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.recoveryrecord.surveyandroid.repository.NewsRepository
-import com.recoveryrecord.surveyandroid.repository.NewsRepositoryImpl
+import com.recoveryrecord.surveyandroid.example.repository.NewsRepository
+import com.recoveryrecord.surveyandroid.example.repository.NewsRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

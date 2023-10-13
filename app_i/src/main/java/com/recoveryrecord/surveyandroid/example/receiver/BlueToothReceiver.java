@@ -1,4 +1,4 @@
-package com.recoveryrecord.surveyandroid.example.receiever;
+package com.recoveryrecord.surveyandroid.example.receiver;
 
 import static com.recoveryrecord.surveyandroid.example.config.Config.DetectTime;
 import static com.recoveryrecord.surveyandroid.example.config.Config.UsingApp;

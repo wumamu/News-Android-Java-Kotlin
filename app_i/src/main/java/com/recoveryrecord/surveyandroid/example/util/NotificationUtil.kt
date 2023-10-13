@@ -1,4 +1,4 @@
-package com.recoveryrecord.surveyandroid.util
+package com.recoveryrecord.surveyandroid.example.util
 
 import android.app.NotificationChannel
 import android.app.NotificationManager

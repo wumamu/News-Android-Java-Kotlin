@@ -20,10 +20,10 @@ import com.recoveryrecord.surveyandroid.example.config.Constants.MEDIA_ORDER
 import com.recoveryrecord.surveyandroid.example.model.Media
 import com.recoveryrecord.surveyandroid.example.model.MediaType
 import com.recoveryrecord.surveyandroid.example.ui.SimpleItemTouchHelperCallback
-import com.recoveryrecord.surveyandroid.util.parseTabArray
-import com.recoveryrecord.surveyandroid.util.parseToString
-import com.recoveryrecord.surveyandroid.util.showToast
-import com.recoveryrecord.surveyandroid.util.updateRemote
+import com.recoveryrecord.surveyandroid.example.util.parseTabArray
+import com.recoveryrecord.surveyandroid.example.util.parseToString
+import com.recoveryrecord.surveyandroid.example.util.showToast
+import com.recoveryrecord.surveyandroid.example.util.updateRemote
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await

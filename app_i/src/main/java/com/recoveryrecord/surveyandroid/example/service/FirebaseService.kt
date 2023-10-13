@@ -46,9 +46,9 @@ import com.recoveryrecord.surveyandroid.example.config.Constants.UPDATE_TIME
 import com.recoveryrecord.surveyandroid.example.config.Constants.VIBRATE_EFFECT
 import com.recoveryrecord.surveyandroid.example.model.MediaType
 import com.recoveryrecord.surveyandroid.example.model.NotificationData
-import com.recoveryrecord.surveyandroid.util.createNotificationChannel
-import com.recoveryrecord.surveyandroid.util.insertRemote
-import com.recoveryrecord.surveyandroid.util.toTimeStamp
+import com.recoveryrecord.surveyandroid.example.util.createNotificationChannel
+import com.recoveryrecord.surveyandroid.example.util.insertRemote
+import com.recoveryrecord.surveyandroid.example.util.toTimeStamp
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope

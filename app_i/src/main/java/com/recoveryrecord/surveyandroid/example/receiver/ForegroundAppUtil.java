@@ -1,19 +1,15 @@
-package com.recoveryrecord.surveyandroid.example.receiever;
+package com.recoveryrecord.surveyandroid.example.receiver;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
-import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
 
 import java.util.List;
 

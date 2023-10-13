@@ -1,4 +1,4 @@
-package com.recoveryrecord.surveyandroid.util
+package com.recoveryrecord.surveyandroid.example.util
 
 import android.content.Context
 import android.widget.Toast

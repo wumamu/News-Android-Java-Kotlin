@@ -18,7 +18,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.recoveryrecord.surveyandroid.example.NewsHybridActivity
 import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_USER_ID
-import com.recoveryrecord.surveyandroid.util.showToast
+import com.recoveryrecord.surveyandroid.example.util.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import timber.log.Timber

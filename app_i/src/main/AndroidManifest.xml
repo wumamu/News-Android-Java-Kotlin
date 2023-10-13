@@ -22,17 +22,17 @@
     <!-- Required for 28 and below. -->
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
     <!-- Required for 29+. -->
-    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/>
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
     <!-- permission required to automatically restart a repeating alarm if the user reboots the device -->
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <uses-permission
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!--    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
+    <!--    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />-->
 
     <uses-feature
         android:name="android.hardware.sensor.accelerometer"
@@ -54,7 +54,7 @@
         <activity
             android:name=".activity.SplashScreenActivity"
             android:theme="@style/SplashScreenTheme"
-            android:screenOrientation="portrait"
+            android:screenOrientation="fullSensor"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -63,25 +63,26 @@
         </activity>
         <activity
             android:name=".activity.LoginActivity"
-            android:screenOrientation="portrait" />
-        <activity android:name=".NewsHybridActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="fullSensor" />
+        <activity
+            android:name=".NewsHybridActivity"
+            android:screenOrientation="fullSensor" />
         <activity
             android:name=".activity.SettingsActivity"
             android:theme="@style/ActionBarLight"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="fullSensor" />
         <activity
             android:name=".activity.ReadHistoryActivity"
             android:theme="@style/ActionBarLight"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="fullSensor" />
         <activity
             android:name=".activity.PushHistoryActivity"
             android:theme="@style/ActionBarLight"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="fullSensor" />
         <activity
             android:name=".activity.MediaRankActivity"
             android:theme="@style/ActionBarLight"
-            android:screenOrientation="portrait"
+            android:screenOrientation="fullSensor"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.recoveryrecord.surveyandroid.example.MediaRankActivity" />
@@ -92,8 +93,7 @@
             android:name=".activity.NewsModuleActivity"
             android:parentActivityName=".NewsHybridActivity"
             android:theme="@style/ActionBarLight"
-            tools:targetApi="jelly_bean"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="fullSensor" />
         <activity
             android:name="com.facebook.flipper.android.diagnostics.FlipperDiagnosticActivity"
             android:exported="true" />
@@ -102,15 +102,15 @@
         <!-- Mention the receiever name here -->
         <!-- Mention the receiever name here -->
 <!--        <receiver android:name=".NotificationListenerNews" />-->
-        <receiver android:name=".receiever.ApplicationSelectorReceiver" />
+        <receiver android:name=".receiver.ApplicationSelectorReceiver" />
         <receiver
-            android:name=".receiever.ScreenStateReceiver"
+            android:name=".receiver.ScreenStateReceiver"
             tools:ignore="Instantiatable" />
         <receiver
-            android:name=".receiever.BlueToothReceiver"
+            android:name=".receiver.BlueToothReceiver"
             tools:ignore="Instantiatable" />
         <receiver
-            android:name=".receiever.NetworkChangeReceiver$NetworkChangeBroadcastReceiver"
+            android:name=".receiver.NetworkChangeReceiver$NetworkChangeBroadcastReceiver"
             android:enabled="true"
             tools:ignore="Instantiatable"
             android:exported="true">
@@ -204,11 +204,11 @@
         <!--        </service>-->
 
         <receiver
-            android:name=".receiever.LightSensorReceiver"
+            android:name=".receiver.LightSensorReceiver"
             tools:ignore="Instantiatable" />
         <!--        <service android:name=".receiever.ActivityRecognitionReceiver"/>-->
-        <service android:name=".receiever.AppUsageReceiver" />
-        <service android:name=".receiever.MyBackgroudService" />
+        <service android:name=".receiver.AppUsageReceiver" />
+        <service android:name=".receiver.MyBackgroudService" />
     </application>
 
 </manifest>

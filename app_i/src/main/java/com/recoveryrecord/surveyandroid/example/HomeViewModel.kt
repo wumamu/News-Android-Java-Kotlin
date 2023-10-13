@@ -3,7 +3,7 @@ package com.recoveryrecord.surveyandroid.example
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.recoveryrecord.surveyandroid.example.model.News
-import com.recoveryrecord.surveyandroid.repository.GetNewsUseCase
+import com.recoveryrecord.surveyandroid.example.repository.GetNewsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

@@ -90,15 +90,15 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.recoveryrecord.surveyandroid.SimpleGestureListener;
 import com.recoveryrecord.surveyandroid.example.NewsHybridActivity;
 import com.recoveryrecord.surveyandroid.example.R;
 import com.recoveryrecord.surveyandroid.example.model.MediaType;
 import com.recoveryrecord.surveyandroid.example.model.ReadingBehavior;
-import com.recoveryrecord.surveyandroid.example.receiever.ApplicationSelectorReceiver;
+import com.recoveryrecord.surveyandroid.example.receiver.ApplicationSelectorReceiver;
 import com.recoveryrecord.surveyandroid.example.sqlite.DragObj;
 import com.recoveryrecord.surveyandroid.example.sqlite.FlingObj;
 import com.recoveryrecord.surveyandroid.example.ui.GestureListener;
+import com.recoveryrecord.surveyandroid.example.util.SimpleGestureListener;
 
 import java.io.InputStream;
 import java.text.ParseException;

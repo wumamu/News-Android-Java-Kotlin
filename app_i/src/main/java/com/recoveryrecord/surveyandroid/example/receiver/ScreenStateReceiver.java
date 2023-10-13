@@ -1,4 +1,4 @@
-package com.recoveryrecord.surveyandroid.example.receiever;//package com.example.test;
+package com.recoveryrecord.surveyandroid.example.receiver;//package com.example.test;
 
 import static com.recoveryrecord.surveyandroid.example.config.Config.DetectTime;
 import static com.recoveryrecord.surveyandroid.example.config.Config.SessionID;

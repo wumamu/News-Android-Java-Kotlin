@@ -1,4 +1,4 @@
-package com.recoveryrecord.surveyandroid.example.receiever
+package com.recoveryrecord.surveyandroid.example.receiver
 
 import android.content.BroadcastReceiver
 import android.content.Context
