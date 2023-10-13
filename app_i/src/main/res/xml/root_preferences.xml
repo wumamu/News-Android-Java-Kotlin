@@ -29,7 +29,7 @@
         <Preference
             app:title="電池最佳化頁面"
             app:summary="進入系統設定頁面確認關閉狀態">
-            <intent android:action="android.settings.IGNORE_BATTERY_OPTIMIZATION_SETTINGS"/>
+            <intent android:action="android.settings.IGNORE_BATTERY_OPTIMIZATION_SETTINGS" />
         </Preference>
         <Preference
             app:key="@string/notification_policy_access"
@@ -39,27 +39,16 @@
             app:key="@string/physical_activity"
             android:title="體能紀錄存取權"
             app:summary="點選允許存取權限" />
-        <Preference
-            app:key="@string/storage_access"
-            android:title="讀寫存取權"
-            app:summary="點選允許存取權限" />
+        <!--        <Preference-->
+        <!--            app:key="@string/storage_access"-->
+        <!--            android:title="讀寫存取權"-->
+        <!--            app:summary="點選允許存取權限" />-->
         <!--        <Preference-->
         <!--            app:title="無障礙協助工具讀取權"-->
         <!--            app:summary="進入系統設定頁面打開">-->
         <!--            <intent android:action="android.settings.ACCESSIBILITY_SETTINGS"/>-->
         <!--        </Preference>-->
     </PreferenceCategory>
-    <!--    <PreferenceCategory app:title="基礎設置">-->
-    <!--        <PreferenceScreen-->
-    <!--            android:title="問卷推播時間設定"-->
-    <!--            app:summary="記得按下儲存">-->
-    <!--            <intent android:action="com.recoveryrecord.surveyandroid.example.NotificationRangeActivity"/>-->
-    <!--        </PreferenceScreen>-->
-    <!--        <Preference-->
-    <!--            app:key="SharePreferenceClear"-->
-    <!--            android:title="重置初始設定"-->
-    <!--            app:summary="清除本地端設定資料"/>-->
-    <!--    </PreferenceCategory>-->
     <PreferenceCategory app:title="偏好">
         <MultiSelectListPreference
             app:key="media_select"
