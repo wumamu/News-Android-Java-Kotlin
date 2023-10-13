@@ -18,12 +18,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
-//import com.google.gson.internal.$Gson$Preconditions;
 
 public class MyStreamManager{
-//    private static ScreenStateReceiver screenStateReceiver = new ScreenStateReceiver();
-////    Context context;
-////    Intent intent = new Intent(context, ScreenStateReceiver.class);
+
 
     StreamGenerator streamGenerator1 = new ScreenStateReceiver();
 //    StreamGenerator streamGenerator2 = new BlueToothReceiver();

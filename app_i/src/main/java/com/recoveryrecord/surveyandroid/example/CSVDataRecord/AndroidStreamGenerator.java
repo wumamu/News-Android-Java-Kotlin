@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.recoveryrecord.surveyandroid.example.receiver.StreamGenerator;
 
+
 public class AndroidStreamGenerator<T extends DataRecord>
         implements StreamGenerator<T> {
     protected Context mApplicationContext;

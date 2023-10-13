@@ -179,4 +179,33 @@ object Constants {
     const val PUSH_NEWS = "push_news"
     const val READING_ALL = "reading_all"
     const val READING_DAILY = "reading_daily"
+
+    // light sensor
+    const val LIGHT_COLLECTION = "light_sensor"
+    const val NETWORK_COLLECTION = "network_sensor"
+    const val RING_COLLECTION = "ring_mode"
+    const val SCREEN_STATUS_COLLECTION = "screen_status"
+    const val ACTIVITY_COLLECTION = "activity_recognition"
+
+    const val CURRENT_TIME = "current_timestamp"
+
+    const val SCREEN_STATUS = "screen_status"
+    const val SCREEN_ON = "Screen On"
+    const val SCREEN_OFF = "Screen Off"
+
+    const val LIGHT_LEVEL = "light_level"
+
+    const val RING_MODE = "ring_mode"
+    const val VIBRATE = "VIBRATE"
+    const val NORMAL = "NORMAL"
+    const val SILENT = "SILENT"
+
+    const val NETWORK_STATUE = "network_statue"
+    const val WIFI = "Connected by Wifi"
+    const val MOBILE = "Connected by Mobile"
+    const val DISCONNECT = "Disconnected"
+
+    const val USING_APP_OR_NOT = "using_app"
+    const val USING_APP = "Using APP"
+    const val NOT_USING_APP = "Not Using APP"
 }

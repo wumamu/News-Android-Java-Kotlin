@@ -238,6 +238,11 @@ class NewsHybridActivity
         actionBarDrawerToggle.syncState()
         title = "新聞列表"
 
+//        if (listeners != null) Timber.d("Listeners are : $listeners")
+    }
+
+    override fun onResume() {
+        super.onResume()
         //Network
         _NetworkChangeReceiver = NetworkChangeReceiver()
         _NetworkChangeReceiver?.registerNetworkReceiver(this)
@@ -253,20 +258,14 @@ class NewsHybridActivity
         //LightSensor
         _LightSensorReceiver = LightSensorReceiver()
         _LightSensorReceiver?.registerLightSensorReceiver(this)
-
-//        val listeners = Settings.Secure.getString(
-//            contentResolver,
-//            "enabled_notification_listeners"
-//        )
-//        if (listeners != null) Timber.d("Listeners are : $listeners")
     }
 
-    override fun onDestroy() {
+    override fun onPause() {
+        super.onPause()
         _NetworkChangeReceiver?.unregisterNetworkReceiver(this)
         _ScreenStateReceiver?.unregisterScreenStateReceiver(this)
         _RingModeReceiver?.unregisterBluetoothReceiver(this)
-        _LightSensorReceiver?.unregisterLightSensorReceiver(this)
-        super.onDestroy()
+        _LightSensorReceiver?.unregisterLightSensorReceiver()
     }
 
     private fun findLayout() {

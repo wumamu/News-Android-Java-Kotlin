@@ -1,5 +1,6 @@
 package com.recoveryrecord.surveyandroid.example.util
 
+import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
@@ -46,6 +47,25 @@ suspend fun insertRemote(
     try {
         withContext(Dispatchers.IO) {
             document.set(newData).await()
+        }
+        onSuccess()
+    } catch (e: Exception) {
+        Timber.w("Firestore insert failed$e")
+    }
+}
+
+/**
+ * Adds a new document to this collection with the specified data, assigning it a document ID automatically.
+ */
+suspend fun addRemote(
+    document: CollectionReference,
+    newData: HashMap<String, Any>,
+    onSuccess: () -> Unit = {},
+//    onError: (Exception) -> Unit
+) {
+    try {
+        withContext(Dispatchers.IO) {
+            document.add(newData).await()
         }
         onSuccess()
     } catch (e: Exception) {
