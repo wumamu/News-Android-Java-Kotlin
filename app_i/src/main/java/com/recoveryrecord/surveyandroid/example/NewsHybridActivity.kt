@@ -264,7 +264,7 @@ class NewsHybridActivity
         super.onPause()
         _NetworkChangeReceiver?.unregisterNetworkReceiver(this)
         _ScreenStateReceiver?.unregisterScreenStateReceiver(this)
-        _RingModeReceiver?.unregisterBluetoothReceiver(this)
+        _RingModeReceiver?.unregisterRingModeReceiver(this)
         _LightSensorReceiver?.unregisterLightSensorReceiver()
     }
 

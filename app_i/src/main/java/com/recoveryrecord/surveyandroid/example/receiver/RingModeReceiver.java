@@ -79,8 +79,8 @@ public class RingModeReceiver implements StreamGenerator {
             db.collection(RING_COLLECTION).add(sensordb);
         }
         };
-        public void unregisterBluetoothReceiver(Context context){
-            if(mReceiver != null){
+        public void unregisterRingModeReceiver(Context context) {
+            if (mReceiver != null) {
                 context.unregisterReceiver(mReceiver);
                 mReceiver = null;
             }

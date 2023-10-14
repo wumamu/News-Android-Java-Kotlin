@@ -31,7 +31,7 @@ public class LightSensorReceiver implements StreamGenerator {
     private LightSensorListener lightSensorListener;
     private boolean mHasStarted = false;
 
-    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private static final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private static String device_id;
     private static float lightLevel = (float) 0.0;
 
@@ -78,20 +78,16 @@ public class LightSensorReceiver implements StreamGenerator {
 
 
     @Override
-
     public void updateStream(Context context) {
         Map<String, Object> sensordb = new HashMap<>();
-
         sensordb.put(CURRENT_TIME, Timestamp.now());
         sensordb.put(LIGHT_LEVEL, lightLevel);
         sensordb.put(USING_APP_OR_NOT, USING_APP);
         sensordb.put(USER_DEVICE_ID, device_id);
         // TODO
         sensordb.put(USER_ID, "");
-//        sensordb.put("period", DetectTime);
         db.collection(LIGHT_COLLECTION)
                 .add(sensordb);
-
     }
 
     private static class LightSensorListener implements SensorEventListener {
@@ -103,6 +99,16 @@ public class LightSensorReceiver implements StreamGenerator {
             if (event.sensor.getType() == Sensor.TYPE_LIGHT) {
                 lux = event.values[0];
                 lightLevel = lux;
+                Map<String, Object> sensordb = new HashMap<>();
+                sensordb.put(CURRENT_TIME, Timestamp.now());
+                sensordb.put(LIGHT_LEVEL, lightLevel);
+                sensordb.put(USING_APP_OR_NOT, USING_APP);
+                sensordb.put(USER_DEVICE_ID, device_id);
+                // TODO
+                sensordb.put(USER_ID, "");
+                db.collection(LIGHT_COLLECTION)
+                        .add(sensordb);
+
             }
         }
 

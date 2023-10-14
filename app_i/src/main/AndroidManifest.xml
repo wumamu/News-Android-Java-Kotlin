@@ -5,14 +5,13 @@
     android:installLocation="internalOnly"
     tools:ignore="ExtraText">
 
-    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission
-        android:name="android.permission.BLUETOOTH"
-        android:label="BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
@@ -105,14 +104,21 @@
         <!-- Mention the receiever name here -->
         <!-- Mention the receiever name here -->
         <!-- Mention the receiever name here -->
-<!--        <receiver android:name=".NotificationListenerNews" />-->
+        <!--        <receiver android:name=".NotificationListenerNews" />-->
         <receiver android:name=".receiver.ApplicationSelectorReceiver" />
         <receiver
             android:name=".receiver.ScreenStateReceiver"
             tools:ignore="Instantiatable" />
         <receiver
             android:name=".receiver.BlueToothReceiver"
-            tools:ignore="Instantiatable" />
+            tools:ignore="Instantiatable"
+            android:permission="android.permission.BLUETOOTH"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_FOUND" />
+            </intent-filter>
+        </receiver>
+
         <receiver
             android:name=".receiver.NetworkChangeReceiver$NetworkChangeBroadcastReceiver"
             android:enabled="true"
@@ -124,37 +130,7 @@
                     tools:ignore="BatteryLife" />
             </intent-filter>
         </receiver>
-        <!--        <receiver-->
-        <!--            android:name=".NewsNotificationRestarter"-->
-        <!--            android:enabled="true"-->
-        <!--            android:exported="true">-->
-        <!--            <intent-filter>-->
-        <!--                <action android:name="CheckService" />-->
-        <!--            </intent-filter>-->
-        <!--        </receiver>-->
-        <!--        <receiver android:name=".AlarmReceiver"-->
-        <!--            android:permission="android.permission.RECEIVE_BOOT_COMPLETED"-->
-        <!--            android:directBootAware="true"-->
-        <!--            android:enabled="true"-->
-        <!--            android:exported="true"-->
-        <!--            tools:targetApi="n">-->
-        <!--            <intent-filter>-->
-        <!--                <action android:name="android.intent.action.BOOT_COMPLETED" />-->
-        <!--&lt;!&ndash;                <action android:name="UploadSQLite" />&ndash;&gt;-->
-        <!--            </intent-filter>-->
-        <!--        </receiver>-->
-        <!--        <receiver-->
-        <!--            android:name=".BootUpReceiver"-->
-        <!--            android:enabled="true"-->
-        <!--            android:permission="android.permission.RECEIVE_BOOT_COMPLETED"-->
-        <!--            android:exported="true">-->
-        <!--            <intent-filter>-->
-        <!--                <action android:name="android.intent.action.BOOT_COMPLETED"/>-->
-        <!--                <action android:name="android.intent.action.QUICKBOOT_POWERON"/>-->
-        <!--                <category android:name="android.intent.category.DEFAULT" />-->
-        <!--                <category android:name="android.intent.category.LAUNCHER" />-->
-        <!--            </intent-filter>-->
-        <!--        </receiver>-->
+
         <service
             android:name=".service.FirebaseService"
             android:exported="false"
@@ -164,28 +140,6 @@
                 <action android:name="com.google.android.c2dm.permission.RECEIVE" />
             </intent-filter>
         </service>
-
-        <!--        <receiver-->
-        <!--            android:name=".receiever.ShutDownReceiver"-->
-        <!--            android:enabled="true"-->
-        <!--            android:exported="true">-->
-        <!--            <intent-filter>-->
-        <!--                <action android:name="android.intent.action.ACTION_SHUTDOWN" />-->
-        <!--                <action android:name="android.intent.action.QUICKBOOT_POWEROFF" />-->
-        <!--                <action android:name="com.htc.intent.action.QUICKBOOT_POWEROFF" />-->
-
-        <!--                <category android:name="android.intent.category.DEFAULT" />-->
-        <!--            </intent-filter>-->
-        <!--        </receiver>-->
-        <!-- Mention the service name here -->
-        <!--        <service android:name=".NewsNotificationService"-->
-        <!--            android:stopWithTask="false"-->
-        <!--            android:enabled="true"-->
-        <!--            android:exported="true">-->
-        <!--            <intent-filter>-->
-        <!--                <category android:name="android.intent.category.DEFAULT" />-->
-        <!--            </intent-filter>-->
-        <!--        </service>-->
         <service
             android:name=".service.NotificationListenerService"
             android:label="@string/app_name"
@@ -196,23 +150,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </service>
-        <!--        <service android:name=".MyAccessibilityService"-->
-        <!--            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"-->
-        <!--            android:exported="true">-->
-        <!--            <intent-filter>-->
-        <!--                <action android:name="android.accessibilityservice.AccessibilityService" />-->
-        <!--            </intent-filter>-->
-        <!--            <meta-data-->
-        <!--                android:name="android.accessibilityservice"-->
-        <!--                android:resource="@xml/accessibility_service_config" />-->
-        <!--        </service>-->
 
         <receiver
             android:name=".receiver.LightSensorReceiver"
             tools:ignore="Instantiatable" />
         <!--        <service android:name=".receiever.ActivityRecognitionReceiver"/>-->
-        <service android:name=".receiver.AppUsageReceiver" />
-        <service android:name=".receiver.MyBackgroudService" />
+        <!--        <service android:name=".receiver.AppUsageReceiver" />-->
+        <!--        <service android:name=".receiver.MyBackgroudService" />-->
     </application>
 
 </manifest>
