@@ -35,6 +35,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.recoveryrecord.surveyandroid.example.activity.PushHistoryActivity
 import com.recoveryrecord.surveyandroid.example.activity.ReadHistoryActivity
 import com.recoveryrecord.surveyandroid.example.activity.SettingsActivity
@@ -76,6 +77,7 @@ import com.recoveryrecord.surveyandroid.example.util.showToast
 import com.recoveryrecord.surveyandroid.example.util.updateRemote
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -188,32 +190,46 @@ class NewsHybridActivity
             )
 
             lifecycleScope.launch {
-                insertRemote(userDocRef, userInitData)
+                insertRemote(userDocRef, userInitData) {
+                    Timber.d("Init user data success $deviceId")
+                    showToast(this@NewsHybridActivity, "User 資料庫建立成功")
+                }
             }
         } else {
-            val tmp = (sharedPrefs.getStringSet(
+            val prevPushData = (sharedPrefs.getStringSet(
                 SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION,
                 emptySet()
             ) ?: emptySet()).joinToString(",")
 
-            if (remotePushNews.isEmpty() || remotePushNews[remotePushNews.size - 1] != tmp) {
-                remotePushNews.add(tmp)
+            if (remotePushNews.isEmpty() || remotePushNews[remotePushNews.size - 1] != prevPushData) {
+                remotePushNews.add(prevPushData)
             }
 
             val dataMap = hashMapOf(
-                PUSH_MEDIA_SELECTION to remotePushNews,
+                USER_DEVICE_ID to deviceId,
+                USER_FIRESTORE_ID to (auth.currentUser?.uid ?: ""),
                 USER_ID to (sharedPrefs.getString(
                     SHARE_PREFERENCE_USER_ID,
                     UNKNOWN_USER_ID
                 ) ?: UNKNOWN_USER_ID),
+                PUSH_MEDIA_SELECTION to remotePushNews,
                 UPDATE_TIME to Timestamp.now(),
+                USER_PHONE_ID to Build.MODEL,
                 APP_VERSION_KEY to APP_VERSION_VALUE,
-                USER_DEVICE_ID to deviceId,
                 USER_ANDROID_SDK to Build.VERSION.SDK_INT,
                 USER_ANDROID_RELEASE to Build.VERSION.RELEASE
             )
             lifecycleScope.launch {
-                updateRemote(userDocRef, dataMap)
+                updateRemote(
+                    userDocRef, dataMap,
+                    onSuccess = { Timber.d("Update user data success $deviceId") }
+                ) {
+                    if ((it is FirebaseFirestoreException) && (it.code == FirebaseFirestoreException.Code.NOT_FOUND)) {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            insertRemote(userDocRef, dataMap)
+                        }
+                    }
+                }
             }
         }
 

@@ -27,6 +27,7 @@ suspend fun updateRemote(
     document: DocumentReference,
     newData: HashMap<String, Any>,
     onSuccess: () -> Unit = {},
+    onError: (Exception) -> Unit = {}
 ) {
     try {
         withContext(Dispatchers.IO) {
@@ -34,7 +35,8 @@ suspend fun updateRemote(
         }
         onSuccess()
     } catch (e: Exception) {
-        Timber.w("Firestore u[date failed$e")
+        Timber.w("Firestore update failed$e")
+        onError(e)
     }
 }
 
