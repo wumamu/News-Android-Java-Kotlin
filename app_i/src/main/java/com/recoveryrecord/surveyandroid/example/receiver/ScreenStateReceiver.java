@@ -31,7 +31,7 @@ public class ScreenStateReceiver implements StreamGenerator {
     @SuppressLint("HardwareIds")
     public void registerScreenStateReceiver(Context context) {
         if (mReceiver == null) {
-            mReceiver = new ScreenStateReceiver.ScreenStateBroadcastReceiver();
+            mReceiver = new ScreenStateBroadcastReceiver();
         }
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SCREEN_ON);
@@ -40,7 +40,8 @@ public class ScreenStateReceiver implements StreamGenerator {
         context.registerReceiver(mReceiver, filter);
     }
 
-    public class ScreenStateBroadcastReceiver extends BroadcastReceiver{
+    public static class ScreenStateBroadcastReceiver extends BroadcastReceiver {
+        @SuppressLint("HardwareIds")
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();

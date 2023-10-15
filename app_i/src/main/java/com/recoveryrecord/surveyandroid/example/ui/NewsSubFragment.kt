@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,6 +28,8 @@ import timber.log.Timber
 class NewsSubFragment : Fragment() {
     private lateinit var courseRV: RecyclerView
     private lateinit var progressBar: ProgressBar
+    private lateinit var noDataTextView: TextView
+
 
     private lateinit var fabScrollToTop: FloatingActionButton
     private lateinit var dataRVAdapter: NewsRecycleViewAdapter
@@ -36,6 +39,7 @@ class NewsSubFragment : Fragment() {
 
     private val dataModalArrayList: ArrayList<News> = ArrayList()
 
+    private var initFetching = false
     private var source: String = ""
     private var category: String = ""
     private var lastVisibleDocument: DocumentSnapshot? = null
@@ -70,15 +74,21 @@ class NewsSubFragment : Fragment() {
         courseRV = view.findViewById(R.id.idRVItems)
         fabScrollToTop = view.findViewById(R.id.fab)
         progressBar = view.findViewById(R.id.progressBar)
+        noDataTextView = view.findViewById(R.id.noDataTextView)
+
 
         fabScrollToTop.hide()
         initRecyclerView()
         // Check if data is already cached
-        if (dataModalArrayList.isEmpty()) {
+        if (!initFetching) {
             lifecycleScope.launch { fetchInitialData() }
+        } else if (dataModalArrayList.isEmpty()) {
+            noDataTextView.visibility = View.VISIBLE  // Show "No data available" message
+//            progressBar.visibility = View.GONE
         } else {
             // Data is in the cache, use it to populate UI
             Timber.d("do nothing $source $category ${this.hashCode()}")
+            noDataTextView.visibility = View.GONE  // Hide the message
         }
 
 
@@ -151,6 +161,7 @@ class NewsSubFragment : Fragment() {
     }
 
     private suspend fun fetchInitialData() {
+        initFetching = true
         val query = createQuery()
             .limit(Constants.NEWS_LIMIT_PER_PAGE)
         isFetchingData = true
@@ -173,6 +184,8 @@ class NewsSubFragment : Fragment() {
                      }
                 }
                 dataRVAdapter.notifyItemRangeInserted(insertStartPosition, list.size)
+            } else {
+                noDataTextView.visibility = View.VISIBLE
             }
             progressBar.visibility = View.GONE
             isFetchingData = false
