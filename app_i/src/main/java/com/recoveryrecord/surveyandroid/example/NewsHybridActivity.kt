@@ -48,8 +48,11 @@ import com.recoveryrecord.surveyandroid.example.config.Constants.LAST_UPDATE_TIM
 import com.recoveryrecord.surveyandroid.example.config.Constants.MEDIA_BAR_ORDER
 import com.recoveryrecord.surveyandroid.example.config.Constants.MEDIA_ORDER
 import com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_CATEGORY
+import com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_CHANNEL_ID
 import com.recoveryrecord.surveyandroid.example.config.Constants.OUR_EMAIL
 import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_MEDIA_SELECTION
+import com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_CLEAR_CACHE
+import com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION
 import com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_USER_ID
 import com.recoveryrecord.surveyandroid.example.config.Constants.UNKNOWN_USER_ID
 import com.recoveryrecord.surveyandroid.example.config.Constants.UPDATE_TIME
@@ -150,19 +153,19 @@ class NewsHybridActivity
             sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, UNKNOWN_USER_ID)
         } ?: UNKNOWN_USER_ID
 
-        val clear = sharedPrefs.getBoolean(Constants.SHARE_PREFERENCE_CLEAR_CACHE, true)
+        val clear = sharedPrefs.getBoolean(SHARE_PREFERENCE_CLEAR_CACHE, true)
         if (clear) {
-            createNotificationChannel(notificationManager)
+            createNotificationChannel(notificationManager, NEWS_CHANNEL_ID)
             checkNotificationPermission()
             val editor = sharedPrefs.edit()
-            editor.putBoolean(Constants.SHARE_PREFERENCE_CLEAR_CACHE, false)
+            editor.putBoolean(SHARE_PREFERENCE_CLEAR_CACHE, false)
             editor.putString(MEDIA_ORDER, rankingString)
             editor.apply()
 
             val mediaPushResult: MutableList<String> = ArrayList()
             mediaPushResult.add(
                 (sharedPrefs.getStringSet(
-                    Constants.SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION,
+                    SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION,
                     emptySet()
                 ) ?: emptySet()).joinToString(",")
             )
@@ -189,7 +192,7 @@ class NewsHybridActivity
             }
         } else {
             val tmp = (sharedPrefs.getStringSet(
-                Constants.SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION,
+                SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION,
                 emptySet()
             ) ?: emptySet()).joinToString(",")
 
@@ -289,7 +292,6 @@ class NewsHybridActivity
         tabLayout.setupWithViewPager(mViewPager)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("NonConstantResourceId", "QueryPermissionsNeeded")
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val intent: Intent? = when (item.itemId) {
@@ -412,7 +414,11 @@ class NewsHybridActivity
                 Manifest.permission.POST_NOTIFICATIONS,
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            showDummyNotification(context)
+            showDummyNotification(
+                context,
+                getString(R.string.dummy_notification_title),
+                getString(R.string.dummy_notification_text)
+            )
         } else {
             ActivityCompat.requestPermissions(
                 this,

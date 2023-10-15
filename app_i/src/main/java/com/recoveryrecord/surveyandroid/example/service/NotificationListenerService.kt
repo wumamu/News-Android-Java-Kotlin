@@ -1,15 +1,18 @@
 package com.recoveryrecord.surveyandroid.example.service
 
 import android.annotation.SuppressLint
+import android.app.NotificationManager
+import android.content.Context
 import android.content.IntentFilter
-import android.os.Build
 import android.provider.Settings
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
-import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationCompat
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
+import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.example.config.Constants
+import com.recoveryrecord.surveyandroid.example.config.Constants.FCM_CHANNEL_ID
 import com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_ID_KEY
 import com.recoveryrecord.surveyandroid.example.config.Constants.NOTIFICATION_BAR_NEWS_DEVICE_ID
 import com.recoveryrecord.surveyandroid.example.config.Constants.NOTIFICATION_BAR_NEWS_NOTI_TIME
@@ -22,7 +25,9 @@ import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_COLLE
 import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_RECEIEVE_TIME
 import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_REMOVE_TIME
 import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_REMOVE_TYPE
+import com.recoveryrecord.surveyandroid.example.config.Constants.SYSTEM_CHANNEL_ID
 import com.recoveryrecord.surveyandroid.example.util.addRemote
+import com.recoveryrecord.surveyandroid.example.util.createNotificationChannel
 import com.recoveryrecord.surveyandroid.example.util.updateRemote
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -36,6 +41,10 @@ class NotificationListenerService : NotificationListenerService() {
 
     @Inject
     lateinit var db: FirebaseFirestore
+
+    private val notificationManager: NotificationManager by lazy {
+        getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    }
 
     companion object {
         private val notificationRemoveReason = lazy {
@@ -84,10 +93,6 @@ class NotificationListenerService : NotificationListenerService() {
         fun getPushNewsDocId(curNewsId: String): String {
             return "$deviceId$curNewsId"
         }
-
-        fun getCompareDocId(): String {
-            return "$deviceId${Timestamp.now().nanoseconds}"
-        }
     }
 
     @SuppressLint("HardwareIds")
@@ -99,18 +104,41 @@ class NotificationListenerService : NotificationListenerService() {
             applicationContext.contentResolver,
             Settings.Secure.ANDROID_ID
         )
+        createNotificationChannel(notificationManager, SYSTEM_CHANNEL_ID)
+        val builder = NotificationCompat.Builder(applicationContext, SYSTEM_CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentTitle(getString(R.string.persist_notification_title))
+            .setContentText(getString(R.string.persist_notification_text))
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setOngoing(true)  // Set the notification as ongoing
+            .setAutoCancel(false) // Prevent the notification from being auto-cancelled
+            .setWhen(System.currentTimeMillis())
+        startForeground(1, builder.build()) // Start as a foreground service
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     override fun onNotificationPosted(sbn: StatusBarNotification, rankingMap: RankingMap) {
         val isTarget = notificationTarget.value.contains(sbn.packageName)
+        val fromFCM = sbn.notification.channelId == FCM_CHANNEL_ID
+        Timber.d(
+            "Intercept ${sbn.packageName} " +
+                    " channelId ${sbn.notification.channelId}" +
+                    " ${sbn.notification.extras?.getString("android.title")}" +
+                    " ${sbn.notification.extras?.getCharSequence("android.text")}"
+        )
+//        sbn.notification.extras?.apply {
+//            for (key in keySet()) {
+//                val value = this[key]
+//                Timber.d("Bundle $key $value")
+//            }
+//        }
+
         // cancel notification
-        if (isTarget) {
+        if (isTarget || fromFCM) {
             cancelNotification(sbn.key)
             Timber.d(sbn.packageName + "being canceled")
         }
         // my notification
-        if (sbn.packageName == this.packageName) {
+        if (sbn.packageName == this.packageName && !fromFCM) {
             val notificationNewId = sbn.notification.extras?.getString(NEWS_ID_KEY)
             notificationNewId?.let { newsId ->
                 val updateData = hashMapOf<String, Any>(

@@ -9,6 +9,10 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission
+        android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
+        tools:ignore="ProtectedPermissions" />
+
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
@@ -101,10 +105,7 @@
             android:name="com.facebook.flipper.android.diagnostics.FlipperDiagnosticActivity"
             android:exported="true" />
         <!-- Mention the receiever name here -->
-        <!-- Mention the receiever name here -->
-        <!-- Mention the receiever name here -->
-        <!-- Mention the receiever name here -->
-        <!--        <receiver android:name=".NotificationListenerNews" />-->
+
         <receiver android:name=".receiver.ApplicationSelectorReceiver" />
         <receiver
             android:name=".receiver.ScreenStateReceiver"
@@ -154,9 +155,6 @@
         <receiver
             android:name=".receiver.LightSensorReceiver"
             tools:ignore="Instantiatable" />
-        <!--        <service android:name=".receiever.ActivityRecognitionReceiver"/>-->
-        <!--        <service android:name=".receiver.AppUsageReceiver" />-->
-        <!--        <service android:name=".receiver.MyBackgroudService" />-->
     </application>
 
 </manifest>

@@ -122,4 +122,10 @@
 
     <string name="hint_refresh">可能要手動刷新或重啟app才會生效</string>
 
+    <string name="persist_notification_title">Notification Listener Service</string>
+    <string name="persist_notification_text">Running in the background</string>
+    <string name="dummy_notification_title">Congratulations! 🎉🎉🎉</string>
+    <string name="dummy_notification_text">You have post a notification to Android 13!!!</string>
+
+
 </resources>

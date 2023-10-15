@@ -7,9 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.media.RingtoneManager
-import android.os.Build
 import android.os.Bundle
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
@@ -101,7 +99,6 @@ class FirebaseService : FirebaseMessagingService() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
         Timber.d("From: " + remoteMessage.from)
@@ -145,7 +142,6 @@ class FirebaseService : FirebaseMessagingService() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun sendNotification(notification: NotificationData) {
         Timber.d("sendNotification: $notification")
 
@@ -181,7 +177,7 @@ class FirebaseService : FirebaseMessagingService() {
         // Do not set group manually, it automatically done for you
         //    .setGroup(GROUP_NEWS)
 
-        createNotificationChannel(notificationManager)
+        createNotificationChannel(notificationManager, NEWS_CHANNEL_ID)
         notificationManager.notify(notificationId, notificationBuilder.build())
     }
 

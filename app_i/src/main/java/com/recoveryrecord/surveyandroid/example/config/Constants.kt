@@ -23,10 +23,10 @@ object Constants {
 
     @JvmField
     val VIBRATE_EFFECT = longArrayOf(100, 200, 300, 300, 500, 300, 300)
-    const val TEST_CHANNEL_ID = "10001"
+    const val SYSTEM_CHANNEL_ID = "10001"
     const val NEWS_CHANNEL_ID = "10002"
-    const val DEFAULT_TEST_CHANNEL_ID = "default_test"
-    const val DEFAULT_NEWS_CHANNEL_ID = "default_news"
+    const val FCM_CHANNEL_ID = "fcm_fallback_notification_channel"
+    const val DEFAULT_NEWS_CHANNEL_NAME = "default_news"
 
     const val TRIGGER_BY_KEY = "trigger_by"
     const val TRIGGER_BY_VALUE_NOTIFICATION = "Notification"
@@ -48,7 +48,7 @@ object Constants {
     const val APP_VERSION_KEY = "app_version"
 
     // TODO need to update every time
-    const val APP_VERSION_VALUE = "23.10.14"
+    const val APP_VERSION_VALUE = "23.10.15"
     const val UPDATE_TIME = "update_timestamp"
 
     const val USER_DEVICE_ID = "device_id"
