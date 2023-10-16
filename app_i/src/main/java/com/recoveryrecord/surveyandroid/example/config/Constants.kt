@@ -48,7 +48,7 @@ object Constants {
     const val APP_VERSION_KEY = "app_version"
 
     // TODO need to update every time
-    const val APP_VERSION_VALUE = "23.10.17-1"
+    const val APP_VERSION_VALUE = "23.10.17-2"
     const val UPDATE_TIME = "update_timestamp"
 
     const val USER_DEVICE_ID = "device_id"
@@ -127,6 +127,8 @@ object Constants {
     const val PUSH_NEWS_REMOVE_TIME = "remove_timestamp"
     const val PUSH_NEWS_REMOVE_TYPE = "remove_type"
     const val PUSH_NEWS_TYPE = "type"
+    const val NOTIFICATION_ADD = "target add"
+    const val NOTIFICATION_SKIP = "not target"
 
     const val NOTIFICATION_BAR_NEWS_TITLE = "title"
     const val NOTIFICATION_BAR_NEWS_TEXT = "text"

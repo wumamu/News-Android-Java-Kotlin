@@ -164,10 +164,7 @@ class NewsHybridActivity
         context = applicationContext
         setContentView(R.layout.activity_news_hybrid).apply { findLayout() }
         startActivityRecognition()
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(applicationContext).also {
-            FirebaseService.sharedPref = it
-            //        FirebaseService.sharedPref = getSharedPreferences("token", MODE_PRIVATE)
-        }
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         rankingString =
             sharedPrefs.getString(MEDIA_ORDER, MediaType.DEFAULT_MEDIA_ORDER)
                 ?: MediaType.DEFAULT_MEDIA_ORDER

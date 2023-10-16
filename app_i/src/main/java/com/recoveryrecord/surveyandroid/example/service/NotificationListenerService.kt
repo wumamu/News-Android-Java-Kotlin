@@ -47,6 +47,8 @@ class NotificationListenerService : NotificationListenerService() {
     }
 
     companion object {
+        private val ZERO_TIME = Timestamp(0, 0)
+
         private val notificationRemoveReason = lazy {
             mapOf(
                 1 to "REASON_CLICK",
@@ -117,8 +119,9 @@ class NotificationListenerService : NotificationListenerService() {
     }
 
     override fun onNotificationPosted(sbn: StatusBarNotification, rankingMap: RankingMap) {
-        val isTarget = notificationTarget.value.contains(sbn.packageName)
+        val isOfficialNews = notificationTarget.value.contains(sbn.packageName)
         val fromFCM = sbn.notification.channelId == FCM_CHANNEL_ID
+        val isSelectedNews = true //checkNotificationPreference(sbn.)
         Timber.d(
             "Intercept ${sbn.packageName} " +
                     " channelId ${sbn.notification.channelId}" +
@@ -133,7 +136,7 @@ class NotificationListenerService : NotificationListenerService() {
 //        }
 
         // cancel notification
-        if (isTarget || fromFCM) {
+        if (isOfficialNews || fromFCM) {
             cancelNotification(sbn.key)
             Timber.d(sbn.packageName + "being canceled")
         }
@@ -143,6 +146,7 @@ class NotificationListenerService : NotificationListenerService() {
             notificationNewId?.let { newsId ->
                 val updateData = hashMapOf<String, Any>(
                     PUSH_NEWS_RECEIEVE_TIME to Timestamp.now(),
+//                    PUSH_NEWS_TYPE to if (isSelectedNews) NOTIFICATION_ADD else NOTIFICATION_SKIP
                 )
                 CoroutineScope(Dispatchers.IO).launch {
                     updateRemote(
@@ -153,7 +157,7 @@ class NotificationListenerService : NotificationListenerService() {
                     }
                 }
             }
-        } else if (isTarget) {
+        } else if (isOfficialNews) {
             Timber.d(
                 "onNotificationReceived is target ${sbn.packageName}" +
                         " ${sbn.notification.extras?.getString("android.title")}" +
@@ -183,6 +187,14 @@ class NotificationListenerService : NotificationListenerService() {
             }
         }
     }
+
+//    private fun checkNotificationPreference(curMedia: String): Boolean {
+//        // english
+//        val mediaPushResult =
+//            NotificationListenerService.sharedPref?.getStringSet(Constants.SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, emptySet())
+//                ?: emptySet()
+//        return (curMedia in mediaPushResult)
+//    }
 
     override fun onNotificationRemoved(
         sbn: StatusBarNotification,
