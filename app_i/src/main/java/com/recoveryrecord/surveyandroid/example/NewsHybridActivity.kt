@@ -1,11 +1,10 @@
 package com.recoveryrecord.surveyandroid.example
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.app.NotificationManager
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -21,7 +20,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
@@ -41,15 +39,17 @@ import com.recoveryrecord.surveyandroid.example.activity.ReadHistoryActivity
 import com.recoveryrecord.surveyandroid.example.activity.SettingsActivity
 import com.recoveryrecord.surveyandroid.example.adapter.SectionsPagerAdapter
 import com.recoveryrecord.surveyandroid.example.config.Constants
+import com.recoveryrecord.surveyandroid.example.config.Constants.ACTIVITY_COLLECTION
 import com.recoveryrecord.surveyandroid.example.config.Constants.APP_VERSION_KEY
 import com.recoveryrecord.surveyandroid.example.config.Constants.APP_VERSION_VALUE
 import com.recoveryrecord.surveyandroid.example.config.Constants.CATEGORY_POST_FIX
 import com.recoveryrecord.surveyandroid.example.config.Constants.CONFIG
+import com.recoveryrecord.surveyandroid.example.config.Constants.CURRENT_TIME
+import com.recoveryrecord.surveyandroid.example.config.Constants.DETECT_ACTIVITY
 import com.recoveryrecord.surveyandroid.example.config.Constants.LAST_UPDATE_TIME
 import com.recoveryrecord.surveyandroid.example.config.Constants.MEDIA_BAR_ORDER
 import com.recoveryrecord.surveyandroid.example.config.Constants.MEDIA_ORDER
 import com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_CATEGORY
-import com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_CHANNEL_ID
 import com.recoveryrecord.surveyandroid.example.config.Constants.OUR_EMAIL
 import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_MEDIA_SELECTION
 import com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_CLEAR_CACHE
@@ -63,16 +63,26 @@ import com.recoveryrecord.surveyandroid.example.config.Constants.USER_DEVICE_ID
 import com.recoveryrecord.surveyandroid.example.config.Constants.USER_FIRESTORE_ID
 import com.recoveryrecord.surveyandroid.example.config.Constants.USER_ID
 import com.recoveryrecord.surveyandroid.example.config.Constants.USER_PHONE_ID
+import com.recoveryrecord.surveyandroid.example.detectedactivity.DetectedActivityService
+import com.recoveryrecord.surveyandroid.example.detectedactivity.SUPPORTED_ACTIVITY_KEY
+import com.recoveryrecord.surveyandroid.example.detectedactivity.SupportedActivity
 import com.recoveryrecord.surveyandroid.example.model.MediaType
+import com.recoveryrecord.surveyandroid.example.model.PermissionType
 import com.recoveryrecord.surveyandroid.example.receiver.LightSensorReceiver
 import com.recoveryrecord.surveyandroid.example.receiver.NetworkChangeReceiver
 import com.recoveryrecord.surveyandroid.example.receiver.RingModeReceiver
 import com.recoveryrecord.surveyandroid.example.receiver.ScreenStateReceiver
 import com.recoveryrecord.surveyandroid.example.service.FirebaseService
-import com.recoveryrecord.surveyandroid.example.util.createNotificationChannel
+import com.recoveryrecord.surveyandroid.example.transitions.TransitionsReceiver
+import com.recoveryrecord.surveyandroid.example.transitions.TransitionsReceiver.Companion.TRANSITIONS_RECEIVER_ACTION
+import com.recoveryrecord.surveyandroid.example.transitions.removeActivityTransitionUpdates
+import com.recoveryrecord.surveyandroid.example.transitions.requestActivityTransitionUpdates
+import com.recoveryrecord.surveyandroid.example.util.addRemote
 import com.recoveryrecord.surveyandroid.example.util.insertRemote
+import com.recoveryrecord.surveyandroid.example.util.isPermissionGranted
 import com.recoveryrecord.surveyandroid.example.util.parseTabArray
-import com.recoveryrecord.surveyandroid.example.util.showDummyNotification
+import com.recoveryrecord.surveyandroid.example.util.requestPermission
+import com.recoveryrecord.surveyandroid.example.util.showSettingsDialog
 import com.recoveryrecord.surveyandroid.example.util.showToast
 import com.recoveryrecord.surveyandroid.example.util.updateRemote
 import dagger.hilt.android.AndroidEntryPoint
@@ -88,9 +98,6 @@ import timber.log.Timber
 class NewsHybridActivity
     : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnRefreshListener {
 
-    private val notificationManager: NotificationManager by lazy {
-        getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    }
     lateinit var context: Context
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var swipeRefreshLayout: CustomSwipeRefreshLayout
@@ -98,7 +105,6 @@ class NewsHybridActivity
     private lateinit var mViewPager: ViewPager
     private lateinit var tabLayout: TabLayout
     private var doubleBackToExitPressedOnce = false
-    private var mServiceIntent: Intent? = null
     private var deviceId = ""
     private var userName = ""
 
@@ -106,6 +112,12 @@ class NewsHybridActivity
     private var _ScreenStateReceiver: ScreenStateReceiver? = null
     private var _RingModeReceiver: RingModeReceiver? = null
     private var _LightSensorReceiver: LightSensorReceiver? = null
+    private var isTrackingStarted = false
+
+    private val transitionBroadcastReceiver: TransitionsReceiver = TransitionsReceiver().apply {
+        action = { setDetectedActivity(it) }
+    }
+
     lateinit var sharedPrefs: SharedPreferences
     lateinit var rankingString: String
 
@@ -120,8 +132,29 @@ class NewsHybridActivity
     private lateinit var userDocRef: DocumentReference
 
 
-    companion object {
-        const val PERMISSION_REQUEST_CODE = 112
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        if (intent.hasExtra(SUPPORTED_ACTIVITY_KEY)) {
+            val supportedActivity = intent.getSerializableExtra(
+                SUPPORTED_ACTIVITY_KEY
+            ) as SupportedActivity
+            setDetectedActivity(supportedActivity)
+        }
+    }
+
+    private fun setDetectedActivity(supportedActivity: SupportedActivity) {
+        val detectedActivity = getString(supportedActivity.activityText)
+        lifecycleScope.launch {
+            val updateData = hashMapOf<String, Any>(
+                USER_DEVICE_ID to deviceId,
+                USER_ID to userName,
+                CURRENT_TIME to Timestamp.now(),
+                DETECT_ACTIVITY to detectedActivity
+            )
+            addRemote(db.collection(ACTIVITY_COLLECTION), updateData) {
+                Timber.d("Activity Recognition Update Success")
+            }
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -130,6 +163,7 @@ class NewsHybridActivity
         super.onCreate(savedInstanceState)
         context = applicationContext
         setContentView(R.layout.activity_news_hybrid).apply { findLayout() }
+        startActivityRecognition()
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(applicationContext).also {
             FirebaseService.sharedPref = it
             //        FirebaseService.sharedPref = getSharedPreferences("token", MODE_PRIVATE)
@@ -157,8 +191,8 @@ class NewsHybridActivity
 
         val clear = sharedPrefs.getBoolean(SHARE_PREFERENCE_CLEAR_CACHE, true)
         if (clear) {
-            createNotificationChannel(notificationManager, NEWS_CHANNEL_ID)
-            checkNotificationPermission()
+//            createNotificationChannel(notificationManager, NEWS_CHANNEL_ID)
+//            checkNotificationPermission()
             val editor = sharedPrefs.edit()
             editor.putBoolean(SHARE_PREFERENCE_CLEAR_CACHE, false)
             editor.putString(MEDIA_ORDER, rankingString)
@@ -260,6 +294,7 @@ class NewsHybridActivity
 //        if (listeners != null) Timber.d("Listeners are : $listeners")
     }
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun onResume() {
         super.onResume()
         //Network
@@ -277,6 +312,8 @@ class NewsHybridActivity
         //LightSensor
         _LightSensorReceiver = LightSensorReceiver()
         _LightSensorReceiver?.registerLightSensorReceiver(this)
+
+        registerReceiver(transitionBroadcastReceiver, IntentFilter(TRANSITIONS_RECEIVER_ACTION))
     }
 
     override fun onPause() {
@@ -285,6 +322,13 @@ class NewsHybridActivity
         _ScreenStateReceiver?.unregisterScreenStateReceiver(this)
         _RingModeReceiver?.unregisterRingModeReceiver(this)
         _LightSensorReceiver?.unregisterLightSensorReceiver()
+        unregisterReceiver(transitionBroadcastReceiver)
+    }
+
+    override fun onDestroy() {
+        removeActivityTransitionUpdates()
+        stopService(Intent(this, DetectedActivityService::class.java))
+        super.onDestroy()
     }
 
     private fun findLayout() {
@@ -423,27 +467,6 @@ class NewsHybridActivity
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    fun checkNotificationPermission() {
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.POST_NOTIFICATIONS,
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            showDummyNotification(
-                context,
-                getString(R.string.dummy_notification_title),
-                getString(R.string.dummy_notification_text)
-            )
-        } else {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                PERMISSION_REQUEST_CODE
-            )
-        }
-    }
-
     private suspend fun getRemotePushNewsSelection() {
         try {
             val documentSnapshot = withContext(Dispatchers.IO) { userDocRef.get().await() }
@@ -453,6 +476,44 @@ class NewsHybridActivity
             }
         } catch (e: Exception) {
             Timber.w("getRemotePushNewsSelection failed cause $e")
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun startActivityRecognition() {
+        if (isPermissionGranted(PermissionType.ACTIVITY_RECOGNITION)) {
+            startService(Intent(this, DetectedActivityService::class.java))
+            requestActivityTransitionUpdates()
+            isTrackingStarted = true
+            showToast(this@NewsHybridActivity, "You've started activity tracking")
+        } else {
+            requestPermission(PermissionType.ACTIVITY_RECOGNITION)
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (ActivityCompat.shouldShowRequestPermissionRationale(
+                this,
+                PermissionType.ACTIVITY_RECOGNITION.string
+            ).not() &&
+            grantResults.size == 1 &&
+            grantResults[0] == PackageManager.PERMISSION_DENIED
+        ) {
+            showSettingsDialog(this@NewsHybridActivity, PermissionType.ACTIVITY_RECOGNITION)
+        } else if (requestCode == PermissionType.ACTIVITY_RECOGNITION.code &&
+            permissions.contains(PermissionType.ACTIVITY_RECOGNITION.string) &&
+            grantResults.size == 1 &&
+            grantResults[0] == PackageManager.PERMISSION_GRANTED
+        ) {
+            Timber.d("permission granted")
+            startService(Intent(this, DetectedActivityService::class.java))
+            requestActivityTransitionUpdates()
+            isTrackingStarted = true
         }
     }
 }

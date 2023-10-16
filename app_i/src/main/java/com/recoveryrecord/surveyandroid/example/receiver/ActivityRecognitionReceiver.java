@@ -1,5 +1,17 @@
 //package com.recoveryrecord.surveyandroid.example.receiever;
 //
+//import static com.recoveryrecord.surveyandroid.example.NotificationScheduler.TAG;
+//import static com.recoveryrecord.surveyandroid.example.config.Constants.ACTIVITY_DELIMITER;
+//import static com.recoveryrecord.surveyandroid.example.config.Constants.DATE_FORMAT_NOW_SLASH;
+//import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
+//import static com.recoveryrecord.surveyandroid.example.config.Constants.MILLISECONDS_PER_MINUTE;
+//import static com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_USER_ID;
+//import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
+//import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
+//import static com.recoveryrecord.surveyandroid.example.config.Constants.getCurrentTimeString;
+//import static com.recoveryrecord.surveyandroid.example.config.Constants.sharedPrefString;
+//import static com.recoveryrecord.surveyandroid.example.receiever.TransportationModeReceiver.getConfirmedActivityString;
+//
 //import android.annotation.SuppressLint;
 //import android.app.IntentService;
 //import android.content.Context;
@@ -7,6 +19,10 @@
 //import android.content.SharedPreferences;
 //import android.provider.Settings;
 //import android.util.Log;
+//
+//import androidx.core.app.NotificationCompat;
+//import androidx.core.app.NotificationManagerCompat;
+//import androidx.preference.PreferenceManager;
 //
 //import com.google.android.gms.location.ActivityRecognitionResult;
 //import com.google.android.gms.location.DetectedActivity;
@@ -20,6 +36,8 @@
 //import com.recoveryrecord.surveyandroid.example.CSVDataRecord.TransportationModeDataRecord;
 //import com.recoveryrecord.surveyandroid.example.DbHelper.ActivityRecognitionReceiverDbHelper;
 //import com.recoveryrecord.surveyandroid.example.R;
+//import com.recoveryrecord.surveyandroid.example.receiver.MyStreamManager;
+//import com.recoveryrecord.surveyandroid.example.receiver.StreamGenerator;
 //import com.recoveryrecord.surveyandroid.example.sqlite.ActivityRecognition;
 //
 //import org.json.JSONArray;
@@ -35,23 +53,7 @@
 //import java.util.Map;
 //import java.util.TimeZone;
 //
-//import androidx.core.app.NotificationCompat;
-//import androidx.core.app.NotificationManagerCompat;
-//import androidx.preference.PreferenceManager;
-//
-//import static com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_USER_ID;
-//import static com.recoveryrecord.surveyandroid.example.NotificationScheduler.TAG;
-//import static com.recoveryrecord.surveyandroid.example.config.Constants.ACTIVITY_DELIMITER;
-//import static com.recoveryrecord.surveyandroid.example.config.Constants.DATE_FORMAT_NOW_SLASH;
-//import static com.recoveryrecord.surveyandroid.example.config.Constants.DetectTime;
-//import static com.recoveryrecord.surveyandroid.example.config.Constants.MILLISECONDS_PER_MINUTE;
-//import static com.recoveryrecord.surveyandroid.example.config.Constants.SessionID;
-//import static com.recoveryrecord.surveyandroid.example.config.Constants.UsingApp;
-//import static com.recoveryrecord.surveyandroid.example.config.Constants.getCurrentTimeString;
-//import static com.recoveryrecord.surveyandroid.example.config.Constants.sharedPrefString;
-//import static com.recoveryrecord.surveyandroid.example.receiever.TransportationModeReceiver.getConfirmedActivityString;
-//
-//public class ActivityRecognitionReceiver extends IntentService implements StreamGenerator{
+//public class ActivityRecognitionReceiver extends IntentService implements StreamGenerator {
 //    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 //    public static String device_id = "NA";
 //

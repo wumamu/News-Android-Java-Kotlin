@@ -1,12 +1,18 @@
 package com.recoveryrecord.surveyandroid.example.activity
 
 import android.annotation.SuppressLint
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Patterns
 import android.widget.Button
 import android.widget.EditText
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.preference.PreferenceManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
@@ -17,7 +23,14 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.recoveryrecord.surveyandroid.example.NewsHybridActivity
 import com.recoveryrecord.surveyandroid.example.R
+import com.recoveryrecord.surveyandroid.example.config.Constants
 import com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_USER_ID
+import com.recoveryrecord.surveyandroid.example.model.PermissionType
+import com.recoveryrecord.surveyandroid.example.util.createNotificationChannel
+import com.recoveryrecord.surveyandroid.example.util.isPermissionGranted
+import com.recoveryrecord.surveyandroid.example.util.requestPermission
+import com.recoveryrecord.surveyandroid.example.util.showDummyNotification
+import com.recoveryrecord.surveyandroid.example.util.showSettingsDialog
 import com.recoveryrecord.surveyandroid.example.util.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -26,6 +39,10 @@ import timber.log.Timber
 @AndroidEntryPoint
 
 class LoginActivity : AppCompatActivity() {
+    private val notificationManager: NotificationManager by lazy {
+        getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    }
+
     private lateinit var useremail: EditText
     private lateinit var password: EditText
     private lateinit var localLoginButton: Button
@@ -35,9 +52,12 @@ class LoginActivity : AppCompatActivity() {
     lateinit var auth: FirebaseAuth
 //    private lateinit var googleSignInClient: GoogleSignInClient
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+        createNotificationChannel(notificationManager, Constants.NEWS_CHANNEL_ID)
+        checkNotificationPermission()
         supportActionBar?.hide()
         auth = FirebaseAuth.getInstance()
 //        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -144,6 +164,45 @@ class LoginActivity : AppCompatActivity() {
                     showToast(this@LoginActivity, getString(R.string.google_sign_in_failed))
                 }
             }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    fun checkNotificationPermission() {
+        if (isPermissionGranted(PermissionType.NOTIFICATION_PERMISSION).not()) {
+            requestPermission(PermissionType.NOTIFICATION_PERMISSION)
+        } else {
+            showDummyNotification(
+                getString(R.string.dummy_notification_title),
+                getString(R.string.dummy_notification_text)
+            )
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (ActivityCompat.shouldShowRequestPermissionRationale(
+                this,
+                PermissionType.NOTIFICATION_PERMISSION.string
+            ).not() &&
+            grantResults.size == 1 &&
+            grantResults[0] == PackageManager.PERMISSION_DENIED
+        ) {
+            showSettingsDialog(this, PermissionType.NOTIFICATION_PERMISSION)
+        } else if (requestCode == PermissionType.NOTIFICATION_PERMISSION.code &&
+            permissions.contains(PermissionType.NOTIFICATION_PERMISSION.string) &&
+            grantResults.size == 1 &&
+            grantResults[0] == PackageManager.PERMISSION_GRANTED
+        ) {
+            Timber.d("permission granted")
+            showDummyNotification(
+                getString(R.string.dummy_notification_title),
+                getString(R.string.dummy_notification_text)
+            )
+        }
     }
 
 //    private fun googleSignIn() {
