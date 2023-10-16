@@ -33,22 +33,53 @@
  */
 package com.recoveryrecord.surveyandroid.example.detectedactivity
 
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.provider.Settings
 import com.google.android.gms.location.ActivityRecognitionResult
 import com.google.android.gms.location.DetectedActivity
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FirebaseFirestore
+import com.recoveryrecord.surveyandroid.example.config.Constants.ACTIVITY_COLLECTION
+import com.recoveryrecord.surveyandroid.example.config.Constants.CURRENT_TIME
+import com.recoveryrecord.surveyandroid.example.config.Constants.USER_DEVICE_ID
+import com.recoveryrecord.surveyandroid.example.config.Constants.USER_ID
+import com.recoveryrecord.surveyandroid.example.model.ActivityType
+import com.recoveryrecord.surveyandroid.example.util.addRemote
+import javax.inject.Inject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 
 class DetectedActivityReceiver : BroadcastReceiver() {
+
+    @Inject
+    lateinit var db: FirebaseFirestore
+
+    private var deviceId = ""
 
     companion object {
         private const val DETECTED_PENDING_INTENT_REQUEST_CODE = 100
         private const val RELIABLE_CONFIDENCE = 75
 
-        //        private const val DETECTED_ACTIVITY_CHANNEL_ID = "detected_activity_channel_id"
-//        const val DETECTED_ACTIVITY_NOTIFICATION_ID = 10
+        val activityTypes = lazy {
+            listOf(
+                ActivityType("automotive", DetectedActivity.IN_VEHICLE),
+                ActivityType("cycling", DetectedActivity.ON_BICYCLE),
+                ActivityType("walking", DetectedActivity.ON_FOOT),
+                ActivityType("running", DetectedActivity.RUNNING),
+                ActivityType("stationary", DetectedActivity.STILL),
+                ActivityType("tilting", DetectedActivity.TILTING),
+                ActivityType("Walking", DetectedActivity.WALKING),
+                ActivityType("Unknown", DetectedActivity.UNKNOWN)
+            )
+        }
+
         fun getPendingIntent(context: Context): PendingIntent {
             val intent = Intent(context, DetectedActivityReceiver::class.java)
             return PendingIntent.getBroadcast(
@@ -58,7 +89,11 @@ class DetectedActivityReceiver : BroadcastReceiver() {
         }
     }
 
+    @SuppressLint("HardwareIds")
     override fun onReceive(context: Context, intent: Intent) {
+        if (deviceId.isEmpty()) deviceId =
+            Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID);
+
         if (ActivityRecognitionResult.hasResult(intent)) {
             val result = ActivityRecognitionResult.extractResult(intent)
             result?.let { handleDetectedActivities(it.probableActivities) }
@@ -76,11 +111,36 @@ class DetectedActivityReceiver : BroadcastReceiver() {
                         it.type == DetectedActivity.RUNNING
             }
             .filter { it.confidence > RELIABLE_CONFIDENCE }
-//            .run {
-//                if (isNotEmpty()) {
-////            showNotification(this[0], context)
-//                }
-//            }
+            .run {
+                if (isNotEmpty()) {
+                    updateActivityData(this[0])
+//            showNotification(this[0], context)
+                }
+            }
+    }
+
+    private fun updateActivityData(activity: DetectedActivity) {
+
+        val updateData = HashMap<String, Any>().apply {
+            activityTypes.value.forEach { put(it.key, false) }
+        }.apply {
+            put(USER_DEVICE_ID, deviceId)
+            put(USER_ID, "")
+            put(CURRENT_TIME, Timestamp.now())
+        }
+
+        val activityTypeKey = activityTypes.value.find { it.type == activity.type }?.key
+
+        if (activityTypeKey != null) {
+            updateData[activityTypeKey] = true
+        }
+        CoroutineScope(Dispatchers.IO).launch {
+            addRemote(db.collection(ACTIVITY_COLLECTION), updateData) {
+                Timber.d("Activity Recognition Update Success")
+            }
+        }
+
+
     }
 
 //  private fun showNotification(detectedActivity: DetectedActivity, context: Context) {

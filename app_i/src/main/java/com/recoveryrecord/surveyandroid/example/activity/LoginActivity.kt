@@ -56,16 +56,21 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        createNotificationChannel(notificationManager, Constants.NEWS_CHANNEL_ID)
-        checkNotificationPermission()
-        supportActionBar?.hide()
-        auth = FirebaseAuth.getInstance()
+        initView()
+        if (auth.currentUser == null) {
+            createNotificationChannel(notificationManager, Constants.NEWS_CHANNEL_ID)
+            checkNotificationPermission()
+        }
 //        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
 //            .requestIdToken(getString(R.string.default_web_client_id))
 //            .requestEmail()
 //            .build()
 //        googleSignInClient = GoogleSignIn.getClient(this, gso)
 
+    }
+
+    private fun initView() {
+        supportActionBar?.hide()
         localLoginButton = findViewById(R.id.bt_login)
 //        googleLoginButton = findViewById(R.id.sign_in_button)
         useremail = findViewById(R.id.et_username)
@@ -74,6 +79,7 @@ class LoginActivity : AppCompatActivity() {
 //        googleLoginButton.setOnClickListener { googleSignIn() }
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onStart() {
         super.onStart()
         // Check if user is signed in (non-null) and update UI accordingly.

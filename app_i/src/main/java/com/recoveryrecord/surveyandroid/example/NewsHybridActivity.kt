@@ -485,7 +485,7 @@ class NewsHybridActivity
             startService(Intent(this, DetectedActivityService::class.java))
             requestActivityTransitionUpdates()
             isTrackingStarted = true
-            showToast(this@NewsHybridActivity, "You've started activity tracking")
+//            showToast(this@NewsHybridActivity, "You've started activity tracking")
         } else {
             requestPermission(PermissionType.ACTIVITY_RECOGNITION)
         }

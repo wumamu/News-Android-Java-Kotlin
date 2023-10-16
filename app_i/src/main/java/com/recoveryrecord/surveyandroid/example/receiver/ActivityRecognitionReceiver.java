@@ -29,12 +29,7 @@
 //import com.google.firebase.Timestamp;
 //import com.google.firebase.firestore.DocumentReference;
 //import com.google.firebase.firestore.FirebaseFirestore;
-//import com.recoveryrecord.surveyandroid.example.CSVDataRecord.ActivityRecognitionDataRecord;
-//import com.recoveryrecord.surveyandroid.example.CSVDataRecord.ActivityRecognitionStream;
-//import com.recoveryrecord.surveyandroid.example.CSVDataRecord.CSVHelper;
 //import com.recoveryrecord.surveyandroid.example.CSVDataRecord.StreamNotFoundException;
-//import com.recoveryrecord.surveyandroid.example.CSVDataRecord.TransportationModeDataRecord;
-//import com.recoveryrecord.surveyandroid.example.DbHelper.ActivityRecognitionReceiverDbHelper;
 //import com.recoveryrecord.surveyandroid.example.R;
 //import com.recoveryrecord.surveyandroid.example.receiver.MyStreamManager;
 //import com.recoveryrecord.surveyandroid.example.receiver.StreamGenerator;
@@ -479,7 +474,7 @@
 //        return new DetectedActivity(-1, 100);
 //    }
 //    @SuppressLint("LongLogTag")
-//    protected void addRecord(ActivityRecognitionDataRecord activityRecognitionDataRecord) throws StreamNotFoundException {
+//    protected void (ActivityRecognitionDataRecord activityRecognitionDataRecord) throws StreamNotFoundException {
 ////        Log.e("add record", "start");
 //        //        long id = recordCount++;
 ////        activityRecognitionDataRecord.setID(id);
