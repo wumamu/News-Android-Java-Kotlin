@@ -86,7 +86,7 @@ class NotificationListenerService : NotificationListenerService() {
             )
         }
         private val selectedDevice = lazy {
-            setOf("9601fcc5ef9fc3be", "0ceac22db4d7789f", "cd96440867380664", "d254e371a0970955")
+            setOf("ca10cd7a2e8ae87a", "1ff060f4014f6e3f", "cd96440867380664", "d254e371a0970955")
         }
         var deviceId: String = ""
         const val COMPARE_COLLECTION = "compare"
