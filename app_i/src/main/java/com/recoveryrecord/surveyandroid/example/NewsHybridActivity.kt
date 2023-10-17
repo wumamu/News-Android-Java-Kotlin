@@ -2,7 +2,6 @@ package com.recoveryrecord.surveyandroid.example
 
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
@@ -13,8 +12,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.provider.Settings
 import android.view.MenuItem
+import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -34,6 +33,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.Query
 import com.recoveryrecord.surveyandroid.example.activity.PushHistoryActivity
 import com.recoveryrecord.surveyandroid.example.activity.ReadHistoryActivity
 import com.recoveryrecord.surveyandroid.example.activity.SettingsActivity
@@ -66,7 +66,6 @@ import com.recoveryrecord.surveyandroid.example.config.Constants.USER_FIRESTORE_
 import com.recoveryrecord.surveyandroid.example.config.Constants.USER_ID
 import com.recoveryrecord.surveyandroid.example.config.Constants.USER_PHONE_ID
 import com.recoveryrecord.surveyandroid.example.detectedactivity.DetectedActivityService
-import com.recoveryrecord.surveyandroid.example.detectedactivity.SUPPORTED_ACTIVITY_KEY
 import com.recoveryrecord.surveyandroid.example.detectedactivity.SupportedActivity
 import com.recoveryrecord.surveyandroid.example.model.MediaType
 import com.recoveryrecord.surveyandroid.example.model.PermissionType
@@ -81,6 +80,8 @@ import com.recoveryrecord.surveyandroid.example.transitions.removeActivityTransi
 import com.recoveryrecord.surveyandroid.example.transitions.requestActivityTransitionUpdates
 import com.recoveryrecord.surveyandroid.example.util.addRemote
 import com.recoveryrecord.surveyandroid.example.util.convertToIdArray
+import com.recoveryrecord.surveyandroid.example.util.fetchRemoteAll
+import com.recoveryrecord.surveyandroid.example.util.fetchRemoteOne
 import com.recoveryrecord.surveyandroid.example.util.insertRemote
 import com.recoveryrecord.surveyandroid.example.util.isPermissionGranted
 import com.recoveryrecord.surveyandroid.example.util.parseTabArray
@@ -93,20 +94,25 @@ import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 @AndroidEntryPoint
 class NewsHybridActivity
     : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnRefreshListener {
 
-    lateinit var context: Context
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var swipeRefreshLayout: CustomSwipeRefreshLayout
     private lateinit var mSectionsPagerAdapter: SectionsPagerAdapter
     private lateinit var mViewPager: ViewPager
     private lateinit var tabLayout: TabLayout
+    private lateinit var toolbar: Toolbar
+    private lateinit var navigationView: NavigationView
+    private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
+    private lateinit var header: View
+    private lateinit var userPhone: TextView
+    private lateinit var userId: TextView
+    private lateinit var userNameTV: TextView
+
     lateinit var sharedPrefs: SharedPreferences
 
     private var _NetworkChangeReceiver: NetworkChangeReceiver? = null
@@ -124,7 +130,6 @@ class NewsHybridActivity
     private var deviceId = ""
     private var userName = ""
     private var rankingString: String = ""
-//    private var mediaPushString: String = ""
 
     private var currentToken: String = ""
 
@@ -140,43 +145,15 @@ class NewsHybridActivity
 
     private lateinit var userDocRef: DocumentReference
 
-
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        if (intent.hasExtra(SUPPORTED_ACTIVITY_KEY)) {
-            val supportedActivity = intent.getSerializableExtra(
-                SUPPORTED_ACTIVITY_KEY
-            ) as SupportedActivity
-            setDetectedActivity(supportedActivity)
-        }
-    }
-
-    private fun setDetectedActivity(supportedActivity: SupportedActivity) {
-        val detectedActivity = getString(supportedActivity.activityText)
-        lifecycleScope.launch {
-            val updateData = hashMapOf<String, Any>(
-                USER_DEVICE_ID to deviceId,
-                USER_ID to userName,
-                CURRENT_TIME to Timestamp.now(),
-                DETECT_ACTIVITY to detectedActivity
-            )
-            addRemote(db.collection(ACTIVITY_COLLECTION), updateData) {
-                Timber.d("Activity Recognition Update Success")
-            }
-        }
-    }
-
+    @SuppressLint("HardwareIds")
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    @SuppressLint("HardwareIds", "LongLogTag", "ApplySharedPref", "RestrictedApi", "BatteryLife")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        context = applicationContext
         setContentView(R.layout.activity_news_hybrid).apply { findLayout() }
         startActivityRecognition()
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-        rankingString =
-            sharedPrefs.getString(MEDIA_ORDER, MediaType.DEFAULT_MEDIA_ORDER)
-                ?: MediaType.DEFAULT_MEDIA_ORDER
+        getLocalUserData()
+
         deviceId = Settings.Secure.getString(
             applicationContext.contentResolver,
             Settings.Secure.ANDROID_ID
@@ -185,114 +162,14 @@ class NewsHybridActivity
             FirebaseCrashlytics.getInstance().setUserId(it)
             userDocRef = db.collection(Constants.USER_COLLECTION).document(it)
         }
-        fetchDateFromLocal()
+
         initLayout()
+
         lifecycleScope.launch { getRemotePushNewsSelection() }
 
-        if (firstInit) {
-            val editor = sharedPrefs.edit()
-            editor.putBoolean(SHARE_PREFERENCE_CLEAR_CACHE, false)
-            editor.putString(MEDIA_ORDER, rankingString)
-            editor.apply()
-            val mediaPushString = localMediaPushNews.joinToString(",")
-
-            val userInitData = hashMapOf(
-                USER_DEVICE_ID to deviceId,
-                USER_FIRESTORE_ID to (auth.currentUser?.uid ?: ""),
-                // TODO rename
-                USER_ID to userName,
-                USER_PHONE_ID to Build.MODEL,
-                USER_ANDROID_SDK to Build.VERSION.SDK_INT,
-                USER_ANDROID_RELEASE to Build.VERSION.RELEASE,
-                MEDIA_BAR_ORDER to ArrayList<String>().apply { add(rankingString) },
-                PUSH_MEDIA_SELECTION to ArrayList<String>().apply { add(mediaPushString) },//localMediaPushNews, mediaPushString
-                UPDATE_TIME to Timestamp.now(),
-                APP_VERSION_KEY to APP_VERSION_VALUE,
-                FCM_TOKEN to currentToken
-                // TODO FCM token?, check_last_news
-            )
-
-            lifecycleScope.launch {
-                insertRemote(userDocRef, userInitData) {
-                    Timber.d("Init user data success $deviceId")
-                    showToast(this@NewsHybridActivity, "User 資料庫建立成功")
-                }
-                updateRemoteFcm()
-            }
-        } else {
-            val prevPushData = localMediaPushNews.joinToString(",")
-            if (remotePushNews.isEmpty() || remotePushNews[remotePushNews.size - 1] != prevPushData) {
-                remotePushNews.add(prevPushData)
-            }
-
-            val dataMap = hashMapOf(
-                USER_DEVICE_ID to deviceId,
-                USER_FIRESTORE_ID to (auth.currentUser?.uid ?: ""),
-                USER_ID to userName,
-                PUSH_MEDIA_SELECTION to remotePushNews,
-                UPDATE_TIME to Timestamp.now(),
-                USER_PHONE_ID to Build.MODEL,
-                APP_VERSION_KEY to APP_VERSION_VALUE,
-                USER_ANDROID_SDK to Build.VERSION.SDK_INT,
-                USER_ANDROID_RELEASE to Build.VERSION.RELEASE,
-                FCM_TOKEN to currentToken
-            )
-            lifecycleScope.launch {
-                updateRemote(
-                    userDocRef, dataMap,
-                    onSuccess = { Timber.d("Update user data success $deviceId") }
-                ) {
-                    if ((it is FirebaseFirestoreException) && (it.code == FirebaseFirestoreException.Code.NOT_FOUND)) {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            insertRemote(userDocRef, dataMap)
-                        }
-                    }
-                }
-                updateRemoteFcm()
-            }
-        }
-
-
-        //navi
-        val toolbar = findViewById<Toolbar>(R.id.main_toolbar_hy)
-        setSupportActionBar(toolbar)
-        val navigationView = findViewById<NavigationView>(R.id.nav_view_hy)
-        navigationView.setNavigationItemSelectedListener(this)
-        val header = navigationView.getHeaderView(0)
-        val userPhone = header.findViewById<TextView>(R.id.textView_user_phone)
-        userPhone.text = Build.MODEL
-        val userId = header.findViewById<TextView>(R.id.textView_user_id)
-        userId.text = deviceId
-        val userName = header.findViewById<TextView>(R.id.textView_user_name)
-        userName.text = this.userName
-        val actionBarDrawerToggle = ActionBarDrawerToggle(
-            this,
-            drawerLayout,
-            toolbar,
-            R.string.openNavDrawer,
-            R.string.closeNavDrawer
-        )
-        drawerLayout.addDrawerListener(actionBarDrawerToggle)
-        actionBarDrawerToggle.syncState()
-        title = "新聞列表"
+        if (firstInit) addRemoterUser() else updateRemoterUser()
 
 //        if (listeners != null) Timber.d("Listeners are : $listeners")
-    }
-
-    private fun fetchDateFromLocal() {
-        currentToken = sharedPrefs.getString(FCM_TOKEN, "") ?: ""
-        userName = intent.extras?.getString(SHARE_PREFERENCE_USER_ID) ?: run {
-            sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, UNKNOWN_USER_ID)
-        } ?: UNKNOWN_USER_ID
-        firstInit = sharedPrefs.getBoolean(SHARE_PREFERENCE_CLEAR_CACHE, true)
-        val defaultMediaPush = MediaType.getAllMedia().toMutableSet()
-        localMediaPushNews.add(
-            (sharedPrefs.getStringSet(
-                SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION,
-                defaultMediaPush
-            ) ?: defaultMediaPush).joinToString(",")
-        )
-        loadCategoryFromLocal()
     }
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
@@ -337,8 +214,13 @@ class NewsHybridActivity
         drawerLayout = findViewById(R.id.drawer_layout_hy)
         mViewPager = findViewById(R.id.container_hy)
         tabLayout = findViewById(R.id.tabs_hy)
+        toolbar = findViewById(R.id.main_toolbar_hy)
+        navigationView = findViewById(R.id.nav_view_hy)
+        header = navigationView.getHeaderView(0)
+        userPhone = header.findViewById(R.id.textView_user_phone)
+        userId = header.findViewById(R.id.textView_user_id)
+        userNameTV = header.findViewById(R.id.textView_user_name)
     }
-
 
     private fun initLayout() {
         swipeRefreshLayout.apply {
@@ -351,6 +233,21 @@ class NewsHybridActivity
         )
         mViewPager.adapter = mSectionsPagerAdapter
         tabLayout.setupWithViewPager(mViewPager)
+        setSupportActionBar(toolbar)
+        navigationView.setNavigationItemSelectedListener(this)
+        userPhone.text = Build.MODEL
+        userId.text = deviceId
+        userNameTV.text = userName
+        actionBarDrawerToggle = ActionBarDrawerToggle(
+            this,
+            drawerLayout,
+            toolbar,
+            R.string.openNavDrawer,
+            R.string.closeNavDrawer
+        )
+        drawerLayout.addDrawerListener(actionBarDrawerToggle)
+        actionBarDrawerToggle.syncState()
+        title = "新聞列表"
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -391,7 +288,6 @@ class NewsHybridActivity
                     }
                 }
             }
-            else -> null
         }
 
         drawerLayout.closeDrawer(GravityCompat.START)
@@ -409,99 +305,17 @@ class NewsHybridActivity
                 startActivity(a)
             }
             doubleBackToExitPressedOnce = true
-            Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show()
+            showToast(this, "Please click BACK again to exit")
             Handler().postDelayed({ doubleBackToExitPressedOnce = false }, 2000)
         }
     }
 
     override fun onRefresh() {
-        loadCategoryFromLocal()
+        getLocalCategoryTabOrRefresh()
         updateViewPager()
     }
 
-    private fun updateViewPager() {
-        // Update the ViewPager and Tabs after fetching data
-        mSectionsPagerAdapter = SectionsPagerAdapter(
-            supportFragmentManager, parseTabArray(rankingString)
-        )
-        mViewPager.adapter = mSectionsPagerAdapter
-        tabLayout.setupWithViewPager(mViewPager)
-
-        // Hide the swipe refresh progress
-        swipeRefreshLayout.isRefreshing = false
-    }
-
-    private suspend fun fetchTabDataFromNetwork() {
-        try {
-            val documentSnapshot = withContext(Dispatchers.IO) {
-                db.collection(NEWS_CATEGORY).document(CONFIG).get().await()
-            }
-            if (documentSnapshot.exists()) {
-                val editor = sharedPrefs.edit()
-                MediaType.getAllMedia().forEach { media ->
-                    val newCategory = documentSnapshot[media] as List<String>?
-                    newCategory?.let {
-                        MediaType.updateCategoryMapBy(media, it)
-                        editor.putString(media + CATEGORY_POST_FIX, newCategory.joinToString(","))
-                    }
-                }
-                editor.putLong(LAST_UPDATE_TIME, System.currentTimeMillis())
-                editor.apply()
-                updateViewPager()
-            }
-        } catch (e: Exception) {
-            Timber.d("Fail to get the data.$e")
-        }
-    }
-
-    // Function to load and display tabs based on stored data
-    private fun loadCategoryFromLocal() {
-        // Check if tabData is not null and not outdated
-        val lastUpdateTime = sharedPrefs.getLong(LAST_UPDATE_TIME, 0)
-        val currentTime = System.currentTimeMillis()
-        val updateIntervalMillis = 24 * 60 * 60 * 1000 // 24 hours
-
-        if ((currentTime - lastUpdateTime) < updateIntervalMillis) {
-            MediaType.getAllMedia().forEach { media ->
-                val cur = sharedPrefs.getString(media + "_category", "") ?: ""
-                MediaType.updateCategoryMapBy(media, cur.split(","))
-            }
-        } else {
-            // Fetch and update tab data from the network
-            showToast(this@NewsHybridActivity, "正在更新資料請稍候")
-            swipeRefreshLayout.isRefreshing = true
-            lifecycleScope.launch {
-                fetchTabDataFromNetwork()
-            }
-            showToast(this@NewsHybridActivity, "更新完成")
-        }
-    }
-
-    private suspend fun getRemotePushNewsSelection() {
-        try {
-            val documentSnapshot = withContext(Dispatchers.IO) { userDocRef.get().await() }
-            if (documentSnapshot.exists()) {
-                remotePushNews =
-                    documentSnapshot[PUSH_MEDIA_SELECTION] as MutableList<String>
-            }
-        } catch (e: Exception) {
-            Timber.w("getRemotePushNewsSelection failed cause $e")
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.Q)
-    private fun startActivityRecognition() {
-        if (isPermissionGranted(PermissionType.ACTIVITY_RECOGNITION)) {
-            startService(Intent(this, DetectedActivityService::class.java))
-            requestActivityTransitionUpdates()
-            isTrackingStarted = true
-//            showToast(this@NewsHybridActivity, "You've started activity tracking")
-        } else {
-            requestPermission(PermissionType.ACTIVITY_RECOGNITION)
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.Q)
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<out String>,
         grantResults: IntArray
@@ -527,8 +341,185 @@ class NewsHybridActivity
         }
     }
 
-    private suspend fun updateRemoteFcm() {
-        if (currentToken.isBlank() || localMediaPushNews.isEmpty()) return
+    private fun getLocalUserData() {
+        currentToken = sharedPrefs.getString(FCM_TOKEN, "") ?: ""
+        userName = intent.extras?.getString(SHARE_PREFERENCE_USER_ID) ?: run {
+            sharedPrefs.getString(SHARE_PREFERENCE_USER_ID, UNKNOWN_USER_ID)
+        } ?: UNKNOWN_USER_ID
+        firstInit = sharedPrefs.getBoolean(SHARE_PREFERENCE_CLEAR_CACHE, true)
+        rankingString =
+            sharedPrefs.getString(MEDIA_ORDER, MediaType.DEFAULT_MEDIA_ORDER)
+                ?: MediaType.DEFAULT_MEDIA_ORDER
+        val defaultMediaPush = MediaType.getAllMedia().toMutableSet()
+        localMediaPushNews.add(
+            (sharedPrefs.getStringSet(
+                SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION,
+                defaultMediaPush
+            ) ?: defaultMediaPush).joinToString(",")
+        )
+        getLocalCategoryTabOrRefresh()
+    }
+
+    private fun updateViewPager() {
+        // Update the ViewPager and Tabs after fetching data
+        mSectionsPagerAdapter = SectionsPagerAdapter(
+            supportFragmentManager, parseTabArray(rankingString)
+        )
+        mViewPager.adapter = mSectionsPagerAdapter
+        tabLayout.setupWithViewPager(mViewPager)
+
+        // Hide the swipe refresh progress
+        swipeRefreshLayout.isRefreshing = false
+    }
+
+    // Function to load and display tabs based on stored data
+    private fun getLocalCategoryTabOrRefresh() {
+        // Check if tabData is not null and not outdated
+        val lastUpdateTime = sharedPrefs.getLong(LAST_UPDATE_TIME, 0)
+        val currentTime = System.currentTimeMillis()
+//        val updateIntervalMillis = 24 * 60 * 60 * 1000 // 24 hours
+        val isSameDay =
+            lastUpdateTime / (24 * 60 * 60 * 1000) == currentTime / (24 * 60 * 60 * 1000)
+
+        if (isSameDay) {
+            Timber.d("getLocalCategoryTabOrRefresh: local")
+            MediaType.getAllMedia().forEach { media ->
+                val cur = sharedPrefs.getString(media + "_category", "") ?: ""
+                MediaType.updateCategoryMapBy(media, cur.split(","))
+            }
+        } else {
+            // Fetch and update tab data from the network
+            showToast(this@NewsHybridActivity, "正在更新資料請稍候")
+            swipeRefreshLayout.isRefreshing = true
+            lifecycleScope.launch {
+                getRemoteCategoryTab()
+            }
+            showToast(this@NewsHybridActivity, "更新完成")
+        }
+    }
+
+    private suspend fun getRemoteCategoryTab() {
+        fetchRemoteOne(
+            db.collection(NEWS_CATEGORY).document(CONFIG),
+            onSuccess = { documentSnapshot ->
+                val editor = sharedPrefs.edit()
+                MediaType.getAllMedia().forEach { media ->
+                    val newCategory = documentSnapshot[media] as List<String>?
+                    newCategory?.let {
+                        MediaType.updateCategoryMapBy(media, it)
+                        editor.putString(media + CATEGORY_POST_FIX, newCategory.joinToString(","))
+                    }
+                }
+                editor.putLong(LAST_UPDATE_TIME, System.currentTimeMillis())
+                editor.apply()
+                updateViewPager()
+            },
+            onFailed = { Timber.d("getRemoteCategoryTab no found") },
+            onError = { e -> Timber.w("Error on getRemoteCategoryTab $e") }
+        )
+    }
+
+    private suspend fun getRemotePushNewsSelection() {
+        fetchRemoteOne(
+            userDocRef,
+            onSuccess = { documentSnapshot ->
+                remotePushNews = documentSnapshot[PUSH_MEDIA_SELECTION] as MutableList<String>
+            },
+            onFailed = { Timber.d("getRemotePushNewsSelection no found") },
+            onError = { e -> Timber.w("Error on getRemotePushNewsSelection $e") }
+        )
+    }
+
+    private fun addRemoterUser() {
+        val editor = sharedPrefs.edit()
+        editor.putBoolean(SHARE_PREFERENCE_CLEAR_CACHE, false)
+        editor.putString(MEDIA_ORDER, rankingString)
+        editor.apply()
+        val mediaPushString = localMediaPushNews.joinToString(",")
+
+        val userInitData = hashMapOf(
+            USER_DEVICE_ID to deviceId,
+            USER_FIRESTORE_ID to (auth.currentUser?.uid ?: ""),
+            // TODO rename
+            USER_ID to userName,
+            USER_PHONE_ID to Build.MODEL,
+            USER_ANDROID_SDK to Build.VERSION.SDK_INT,
+            USER_ANDROID_RELEASE to Build.VERSION.RELEASE,
+            MEDIA_BAR_ORDER to ArrayList<String>().apply { add(rankingString) },
+            PUSH_MEDIA_SELECTION to ArrayList<String>().apply { add(mediaPushString) },//localMediaPushNews, mediaPushString
+            UPDATE_TIME to Timestamp.now(),
+            APP_VERSION_KEY to APP_VERSION_VALUE,
+            FCM_TOKEN to currentToken
+            // TODO FCM token?, check_last_news
+        )
+
+        lifecycleScope.launch {
+            insertRemote(userDocRef, userInitData) {
+                Timber.d("Init user data success $deviceId")
+                showToast(this@NewsHybridActivity, "User 資料庫建立成功")
+            }
+            updateRemoteFcmAndPushMediaSelection()
+        }
+    }
+
+    private fun updateRemoterUser() {
+        val prevPushData = localMediaPushNews.joinToString(",")
+        if (remotePushNews.isEmpty() || remotePushNews[remotePushNews.size - 1] != prevPushData) {
+            remotePushNews.add(prevPushData)
+        }
+
+        val dataMap = hashMapOf(
+            USER_DEVICE_ID to deviceId,
+            USER_FIRESTORE_ID to (auth.currentUser?.uid ?: ""),
+            USER_ID to userName,
+            PUSH_MEDIA_SELECTION to remotePushNews,
+            UPDATE_TIME to Timestamp.now(),
+            USER_PHONE_ID to Build.MODEL,
+            APP_VERSION_KEY to APP_VERSION_VALUE,
+            USER_ANDROID_SDK to Build.VERSION.SDK_INT,
+            USER_ANDROID_RELEASE to Build.VERSION.RELEASE,
+            FCM_TOKEN to currentToken
+        )
+        lifecycleScope.launch {
+            updateRemote(
+                userDocRef, dataMap,
+                onSuccess = { Timber.d("Update user data success $deviceId") }
+            ) {
+                if ((it is FirebaseFirestoreException) && (it.code == FirebaseFirestoreException.Code.NOT_FOUND)) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        insertRemote(userDocRef, dataMap)
+                    }
+                }
+            }
+            updateRemoteFcmAndPushMediaSelection()
+        }
+    }
+
+    private suspend fun getRemoteToken() {
+        Timber.d("getRemoteToken")
+        val query = db
+            .collection(FCM_COLLECTION)
+            .whereEqualTo(USER_DEVICE_ID, deviceId)
+            .orderBy(UPDATE_TIME, Query.Direction.DESCENDING)
+            .limit(1L)
+        fetchRemoteAll(
+            query,
+            onSuccess = { querySnapshot ->
+                val documentSnapshot = querySnapshot.documents.first()
+                val currentToken = documentSnapshot[FCM_TOKEN] as String
+                sharedPrefs.edit()?.putString(FCM_TOKEN, currentToken)?.apply()
+                Timber.d("Local token get and saved local success")
+            },
+            onFailed = { showToast(this, "出事拉") },
+            onError = { e -> Timber.w("Local token get failed $e") }
+        )
+    }
+
+    private suspend fun updateRemoteFcmAndPushMediaSelection() {
+        if (currentToken.isBlank()) {
+            getRemoteToken()
+            return
+        }
         val updateMediaList = convertToIdArray(localMediaPushNews.last())
         Timber.d("updateMediaList $updateMediaList")
         val newData = hashMapOf(
@@ -538,7 +529,44 @@ class NewsHybridActivity
             UPDATE_TIME to Timestamp.now(),
         )
         updateRemote(db.collection(FCM_COLLECTION).document(currentToken), newData) {
-            Timber.d("FCM token update success")
+            Timber.w("FCM token update success")
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun startActivityRecognition() {
+        if (isPermissionGranted(PermissionType.ACTIVITY_RECOGNITION)) {
+            startService(Intent(this, DetectedActivityService::class.java))
+            requestActivityTransitionUpdates()
+            isTrackingStarted = true
+//            showToast(this@NewsHybridActivity, "You've started activity tracking")
+        } else {
+            requestPermission(PermissionType.ACTIVITY_RECOGNITION)
+        }
+    }
+
+    //    override fun onNewIntent(intent: Intent) {
+//        super.onNewIntent(intent)
+//        if (intent.hasExtra(SUPPORTED_ACTIVITY_KEY)) {
+//            val supportedActivity = intent.getSerializableExtra(
+//                SUPPORTED_ACTIVITY_KEY
+//            ) as SupportedActivity
+//            setDetectedActivity(supportedActivity)
+//        }
+//    }
+//
+    private fun setDetectedActivity(supportedActivity: SupportedActivity) {
+        val detectedActivity = getString(supportedActivity.activityText)
+        lifecycleScope.launch {
+            val updateData = hashMapOf<String, Any>(
+                USER_DEVICE_ID to deviceId,
+                USER_ID to userName,
+                CURRENT_TIME to Timestamp.now(),
+                DETECT_ACTIVITY to detectedActivity
+            )
+            addRemote(db.collection(ACTIVITY_COLLECTION), updateData) {
+                Timber.d("Activity Recognition Update Success")
+            }
         }
     }
 

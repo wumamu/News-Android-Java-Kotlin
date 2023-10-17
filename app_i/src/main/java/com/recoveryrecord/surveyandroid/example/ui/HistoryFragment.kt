@@ -29,7 +29,7 @@ import com.recoveryrecord.surveyandroid.example.config.Constants.READING_BEHAVIO
 import com.recoveryrecord.surveyandroid.example.config.Constants.READING_DAILY
 import com.recoveryrecord.surveyandroid.example.config.Constants.READ_HISTORY_LIMIT_PER_PAGE
 import com.recoveryrecord.surveyandroid.example.model.News
-import com.recoveryrecord.surveyandroid.example.util.fetchRemote
+import com.recoveryrecord.surveyandroid.example.util.fetchRemoteAll
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Calendar
 import javax.inject.Inject
@@ -148,7 +148,7 @@ class HistoryFragment : Fragment() {
         Timber.d("$type $day")
 
         val query = createQuery() ?: return
-        fetchRemote(query) { querySnapshot ->
+        fetchRemoteAll(query) { querySnapshot ->
             if (!querySnapshot.isEmpty) {
                 val list = querySnapshot.documents
                 val insertStartPosition = dataModalArrayList.size

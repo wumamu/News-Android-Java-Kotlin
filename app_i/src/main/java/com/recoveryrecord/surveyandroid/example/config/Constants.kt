@@ -48,7 +48,7 @@ object Constants {
     const val APP_VERSION_KEY = "app_version"
 
     // TODO need to update every time
-    const val APP_VERSION_VALUE = "23.10.17-7"
+    const val APP_VERSION_VALUE = "23.10.18-1"
     const val UPDATE_TIME = "update_timestamp"
 
     const val USER_DEVICE_ID = "device_id"

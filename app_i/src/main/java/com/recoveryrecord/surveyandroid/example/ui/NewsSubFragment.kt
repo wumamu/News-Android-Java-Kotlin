@@ -18,7 +18,7 @@ import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.example.adapter.NewsRecycleViewAdapter
 import com.recoveryrecord.surveyandroid.example.config.Constants
 import com.recoveryrecord.surveyandroid.example.model.News
-import com.recoveryrecord.surveyandroid.example.util.fetchRemote
+import com.recoveryrecord.surveyandroid.example.util.fetchRemoteAll
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.launch
@@ -166,17 +166,17 @@ class NewsSubFragment : Fragment() {
             .limit(Constants.NEWS_LIMIT_PER_PAGE)
         isFetchingData = true
         progressBar.visibility = View.VISIBLE
-        fetchRemote(query) { querySnapshot ->
+        fetchRemoteAll(query) { querySnapshot ->
             if (!querySnapshot.isEmpty) {
                 val list = querySnapshot.documents
                 lastVisibleDocument = querySnapshot.documents.lastOrNull()
                 val insertStartPosition = dataModalArrayList.size
 
                 for (d in list) {
-                     News(
-                         title = d.getString("title"),
-                         media = d.getString("media"),
-                         id = d.getString("id"),
+                    News(
+                        title = d.getString("title"),
+                        media = d.getString("media"),
+                        id = d.getString("id"),
                          pubDate = d.getTimestamp("pubdate"),
                          image = d.getString("image")
                      ).takeIf { it.isValid }?.apply {
@@ -197,7 +197,7 @@ class NewsSubFragment : Fragment() {
             .startAfter(lastVisibleDocument?.getTimestamp("pubdate"))
             .limit(Constants.NEWS_LIMIT_PER_PAGE)
         isFetchingData = true
-        fetchRemote(query) { querySnapshot ->
+        fetchRemoteAll(query) { querySnapshot ->
             if (!querySnapshot.isEmpty) {
                 val list = querySnapshot.documents
                 lastVisibleDocument = querySnapshot.documents.lastOrNull()
