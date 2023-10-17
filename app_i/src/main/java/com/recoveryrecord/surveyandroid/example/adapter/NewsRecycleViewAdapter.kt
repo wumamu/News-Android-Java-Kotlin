@@ -3,14 +3,12 @@ package com.recoveryrecord.surveyandroid.example.adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.recoveryrecord.surveyandroid.example.R
@@ -29,7 +27,6 @@ class NewsRecycleViewAdapter(
     private val context: Context,
     private val showImg: Boolean = true
 ): RecyclerView.Adapter<NewsRecycleViewAdapter.ViewHolder>() {
-    @RequiresApi(api = Build.VERSION_CODES.O)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         // passing our layout file for displaying our card item
         return ViewHolder(
@@ -67,7 +64,7 @@ class NewsRecycleViewAdapter(
         return position.toLong()
     }
 
-    inner class ViewHolder @RequiresApi(api = Build.VERSION_CODES.O) constructor(itemView: View) :
+    inner class ViewHolder constructor(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
 
         val newsTitle: TextView

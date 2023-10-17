@@ -110,15 +110,6 @@
         <receiver
             android:name=".receiver.ScreenStateReceiver"
             tools:ignore="Instantiatable" />
-        <!--        <receiver-->
-        <!--            android:name=".receiver.BlueToothReceiver"-->
-        <!--            tools:ignore="Instantiatable"-->
-        <!--            android:permission="android.permission.BLUETOOTH"-->
-        <!--            android:exported="true">-->
-        <!--            <intent-filter>-->
-        <!--                <action android:name="android.intent.action.ACTION_FOUND" />-->
-        <!--            </intent-filter>-->
-        <!--        </receiver>-->
 
         <receiver
             android:name=".receiver.NetworkChangeReceiver$NetworkChangeBroadcastReceiver"
@@ -155,7 +146,7 @@
         <receiver
             android:name=".receiver.LightSensorReceiver"
             tools:ignore="Instantiatable" />
-        <receiver android:name=".transitions.TransitionsReceiver"></receiver>
+        <receiver android:name=".transitions.TransitionsReceiver" />
 
         <service android:name=".detectedactivity.DetectedActivityService" />
         <receiver

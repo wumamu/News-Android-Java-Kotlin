@@ -1,7 +1,5 @@
 package com.recoveryrecord.surveyandroid.example.adapter
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
@@ -12,7 +10,6 @@ class NewsCategoryPagerAdapter(
     private val source: String,
     private val mediaMap: Map<Int, String>
 ) : FragmentPagerAdapter(fm!!) {
-    @RequiresApi(Build.VERSION_CODES.N)
     override fun getItem(position: Int): Fragment {
         return NewsSubFragment.newInstance(source, mediaMap.getOrDefault(position, ""))
     }
@@ -21,7 +18,6 @@ class NewsCategoryPagerAdapter(
         return mediaMap.size
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
     override fun getPageTitle(position: Int): CharSequence? {
         return mediaMap.getOrDefault(position, "")
     }

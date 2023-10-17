@@ -349,12 +349,23 @@ class NewsHybridActivity
         tabLayout.setupWithViewPager(mViewPager)
     }
 
-    @SuppressLint("NonConstantResourceId", "QueryPermissionsNeeded")
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        val intent: Intent? = when (item.itemId) {
-            R.id.nav_setting -> Intent(this@NewsHybridActivity, SettingsActivity::class.java)
-            R.id.nav_history -> Intent(this@NewsHybridActivity, ReadHistoryActivity::class.java)
-            R.id.nav_reschedule -> Intent(this@NewsHybridActivity, PushHistoryActivity::class.java)
+        when (item.itemId) {
+            R.id.nav_setting -> Intent(
+                this@NewsHybridActivity,
+                SettingsActivity::class.java
+            ).apply { startActivity(this) }
+
+            R.id.nav_history -> Intent(
+                this@NewsHybridActivity,
+                ReadHistoryActivity::class.java
+            ).apply { startActivity(this) }
+
+            R.id.nav_reschedule -> Intent(
+                this@NewsHybridActivity,
+                PushHistoryActivity::class.java
+            ).apply { startActivity(this) }
+
             R.id.nav_contact -> {
                 Intent(Intent.ACTION_SENDTO).apply {
                     data = Uri.parse("mailto:")
@@ -365,20 +376,18 @@ class NewsHybridActivity
                         Intent.EXTRA_TEXT,
                         "Hi, 我的 user id 是$userName，\ndevice id 是$deviceId，\n我有問題要回報(以文字描述發生的問題)：\n以下是相關問題截圖(如有截圖或是錄影，可以幫助我們更快了解問題)："
                     )
+                }.let {
+                    try {
+                        startActivity(Intent.createChooser(it, "Send mail..."))
+                    } catch (e: ActivityNotFoundException) {
+                        showToast(
+                            this@NewsHybridActivity,
+                            "There are no email clients installed.",
+                        )
+                    }
                 }
             }
             else -> null
-        }
-
-        intent?.let {
-            try {
-                startActivity(Intent.createChooser(it, "Send mail..."))
-            } catch (e: ActivityNotFoundException) {
-                showToast(
-                    this@NewsHybridActivity,
-                    "There are no email clients installed.",
-                )
-            }
         }
 
         drawerLayout.closeDrawer(GravityCompat.START)

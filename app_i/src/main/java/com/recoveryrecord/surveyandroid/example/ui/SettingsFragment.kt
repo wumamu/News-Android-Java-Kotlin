@@ -21,16 +21,14 @@ import com.recoveryrecord.surveyandroid.example.R
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
         setupNotificationPolicyAccessPreference()
         setupPhysicalActivityPermissionPreference()
-        setupStoragePermissionPreference()
+//        setupStoragePermissionPreference()
         setupBatteryOptimizationPreference()
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun setupNotificationPolicyAccessPreference() {
         val clearPref2 = findPreference<Preference>(getString(R.string.notification_policy_access))
         clearPref2?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
@@ -80,37 +78,34 @@ class SettingsFragment : PreferenceFragmentCompat() {
         )
     }
 
-    private fun setupStoragePermissionPreference() {
-        val clearPref1 = findPreference<Preference>(getString(R.string.storage_access))
-        clearPref1?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (isStoragePermissionNotGranted()) {
-                    requestStoragePermission()
-                } else {
-                    showToast(getString(R.string.access_granted))
-                }
-            }
-            true
-        }
-    }
+//    private fun setupStoragePermissionPreference() {
+//        val clearPref1 = findPreference<Preference>(getString(R.string.storage_access))
+//        clearPref1?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+//            if (isStoragePermissionNotGranted()) {
+//                requestStoragePermission()
+//            } else {
+//                showToast(getString(R.string.access_granted))
+//            }
+//            true
+//        }
+//    }
 
-    private fun isStoragePermissionNotGranted(): Boolean {
-        return ContextCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        ) != PackageManager.PERMISSION_GRANTED
-    }
+//    private fun isStoragePermissionNotGranted(): Boolean {
+//        return ContextCompat.checkSelfPermission(
+//            requireContext(),
+//            Manifest.permission.WRITE_EXTERNAL_STORAGE
+//        ) != PackageManager.PERMISSION_GRANTED
+//    }
 
-    private fun requestStoragePermission() {
-        ActivityCompat.requestPermissions(
-            requireActivity(),
-            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-            1
-        )
-    }
+//    private fun requestStoragePermission() {
+//        ActivityCompat.requestPermissions(
+//            requireActivity(),
+//            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+//            1
+//        )
+//    }
 
     @SuppressLint("BatteryLife")
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun setupBatteryOptimizationPreference() {
         val clearPref3 = findPreference<Preference>(getString(R.string.battery_optimization))
         clearPref3?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
