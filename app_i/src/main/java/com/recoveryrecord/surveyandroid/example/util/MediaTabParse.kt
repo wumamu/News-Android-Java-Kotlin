@@ -1,6 +1,7 @@
 package com.recoveryrecord.surveyandroid.example.util
 
 import com.recoveryrecord.surveyandroid.example.model.Media
+import com.recoveryrecord.surveyandroid.example.model.MediaType
 
 fun parseTabArray(tabString: String): Array<String> {
     // Split the input string into individual tab entries
@@ -31,4 +32,15 @@ fun parseToString(tabArray: ArrayList<Media>): String {
         "${tabName.media} ${index + 1}" // Reconstruct each tab entry
     }
     return tabEntries.joinToString(", ") // Join tab entries with a comma and space
+}
+
+/*
+    For push media
+ */
+fun convertToIdArray(mediaNames: String): List<String?> {
+    val res = mutableListOf<String>()
+    mediaNames.split(",").forEach {
+        MediaType.mediasIDMap[it]?.apply { res.add(this) }
+    }
+    return res.toList()
 }

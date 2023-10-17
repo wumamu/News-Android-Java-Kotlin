@@ -48,7 +48,7 @@ object Constants {
     const val APP_VERSION_KEY = "app_version"
 
     // TODO need to update every time
-    const val APP_VERSION_VALUE = "23.10.17-3"
+    const val APP_VERSION_VALUE = "23.10.17-7"
     const val UPDATE_TIME = "update_timestamp"
 
     const val USER_DEVICE_ID = "device_id"
@@ -136,6 +136,14 @@ object Constants {
     const val NOTIFICATION_BAR_NEWS_PACKAGE_ID = "package_id"
     const val NOTIFICATION_BAR_NEWS_SOURCE = "media"
     const val NOTIFICATION_BAR_NEWS_DEVICE_ID = "device_id"
+
+    const val FCM_COLLECTION = "FCMToken"
+
+    /**
+     * Shared Preference key
+     */
+    const val FCM_TOKEN = "fcm_token"
+
 
     //SHARE PREFERENCE #############################################################################
     const val SHARE_PREFERENCE_CLEAR_CACHE = "SharePreferenceClear"

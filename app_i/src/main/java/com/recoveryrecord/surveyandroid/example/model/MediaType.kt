@@ -49,6 +49,18 @@ sealed class MediaType(
             SETN_ENG to SETN_CHI
         )
 
+        val mediasIDMap = mapOf(
+            CHINATIMES_ENG to "1",
+            CNA_ENG to "2",
+            CTS_ENG to "3",
+            LTN_ENG to "4",
+            STORM_ENG to "5",
+            UDN_ENG to "6",
+            ETTODAY_ENG to "7",
+            SETN_ENG to "8",
+            EBC_ENG to "9"
+        )
+
         private val mediaListEnglish = lazy { mediaMap.keys.toList() }
         private val mediaListChinese = lazy { mediaMap.values.toList() }
         fun getAllMedia(english: Boolean = true): List<String> {

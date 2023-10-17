@@ -47,5 +47,15 @@
         <item>setn</item>
     </string-array>
 
-    <string-array name="empty_array"/>
+    <string-array name="empty_array">
+        <item>chinatimes</item>
+        <item>cna</item>
+        <item>cts</item>
+        <item>ebc</item>
+        <item>ltn</item>
+        <item>storm</item>
+        <item>udn</item>
+        <item>ettoday</item>
+        <item>setn</item>
+    </string-array>
 </resources>

@@ -1,6 +1,5 @@
 package com.recoveryrecord.surveyandroid.example.service
 
-//import com.recoveryrecord.surveyandroid.example.service.FirebaseService.Companion.sharedPref
 import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -18,6 +17,8 @@ import com.google.firebase.messaging.RemoteMessage
 import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.example.activity.NewsModuleActivity
 import com.recoveryrecord.surveyandroid.example.config.Constants
+import com.recoveryrecord.surveyandroid.example.config.Constants.FCM_COLLECTION
+import com.recoveryrecord.surveyandroid.example.config.Constants.FCM_TOKEN
 import com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_CHANNEL_ID
 import com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_ID_KEY
 import com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_MEDIA_KEY
@@ -39,10 +40,10 @@ import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_REMOV
 import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_TITLE
 import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_TYPE
 import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS_USER_ID
-import com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION
 import com.recoveryrecord.surveyandroid.example.config.Constants.TRIGGER_BY_KEY
 import com.recoveryrecord.surveyandroid.example.config.Constants.TRIGGER_BY_VALUE_NOTIFICATION
 import com.recoveryrecord.surveyandroid.example.config.Constants.UPDATE_TIME
+import com.recoveryrecord.surveyandroid.example.config.Constants.USER_DEVICE_ID
 import com.recoveryrecord.surveyandroid.example.config.Constants.VIBRATE_EFFECT
 import com.recoveryrecord.surveyandroid.example.model.MediaType
 import com.recoveryrecord.surveyandroid.example.model.NotificationData
@@ -64,7 +65,7 @@ class FirebaseService : FirebaseMessagingService() {
         getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     }
 
-    private var mediaPushResult: Set<String> = emptySet()
+//    private var mediaPushResult: Set<String> = emptySet()
 
 
     @Inject
@@ -75,68 +76,81 @@ class FirebaseService : FirebaseMessagingService() {
 
     companion object {
         private var notificationId = 0
-        private const val FCM_TOKEN = "fcm_token"
-        private const val FCM_COLLECTION = "FCMToken"
         private val ZERO_TIME = Timestamp(0, 0)
 
-        //        var sharedPref: SharedPreferences? = null
         var deviceId: String = ""
-
-//        var token: String?
-//            get() {
-//                return sharedPref?.getString(FCM_TOKEN, "")
-//            }
-//            set(value) {
-//                try {
-//                    sharedPref?.edit()?.putString(FCM_TOKEN, value)?.apply()
-//                    Timber.d("token saved success")
-//                    // Save was successful
-//                } catch (e: Exception) {
-//                    // Save failed
-//                    Timber.d("token saved failed")
-//                }
-//            }
-
-//        var mediaPushResult = sharedPref?.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, emptySet())
-//            ?: emptySet()
 
         fun getPushNewsDocId(curNewsId: String): String {
             return "$deviceId$curNewsId"
         }
     }
 
-    private val sharedPrefChangeListener =
-        SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
-            if (key == SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION) {
-                // Update mediaPushResult when the shared preference changes
-                mediaPushResult = sharedPreferences.getStringSet(
-                    SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION,
-                    emptySet()
-                ) ?: emptySet()
-            }
-        }
+//    private val sharedPrefChangeListener =
+//        SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+//            if (key == SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION) {
+//                // Update mediaPushResult when the shared preference changes
+//                mediaPushResult = sharedPreferences.getStringSet(
+//                    SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION,
+//                    emptySet()
+//                ) ?: emptySet()
+//            }
+//        }
 
     override fun onCreate() {
         super.onCreate()
         Timber.d("onCreate")
         sharedPref = getSharedPreferences(this.packageName + "_preferences", Context.MODE_PRIVATE)
-        sharedPref.registerOnSharedPreferenceChangeListener(sharedPrefChangeListener)
+//        sharedPref.registerOnSharedPreferenceChangeListener(sharedPrefChangeListener)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         Timber.d("onDestroy")
         // Unregister the listener when the service is destroyed
-        sharedPref.unregisterOnSharedPreferenceChangeListener(sharedPrefChangeListener)
+//        sharedPref.unregisterOnSharedPreferenceChangeListener(sharedPrefChangeListener)
     }
 
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
+        Timber.d("onMessageReceived")
         Timber.d("From: " + remoteMessage.from)
         Timber.d("Data: " + remoteMessage.data)
-        if (remoteMessage.data.isNotEmpty()) {
-            handleRemoteMessage(remoteMessage.data)
+//        if (remoteMessage.data.isNotEmpty()) {
+//            handleRemoteMessage(remoteMessage.data)
+//        }
+    }
+
+    override fun onNewToken(newToken: String) {
+        Timber.d("Refreshed token: $newToken")
+//        token = newToken
+        try {
+            sharedPref.edit()?.putString(FCM_TOKEN, newToken)?.apply()
+            Timber.d("token saved success")
+            // Save was successful
+        } catch (e: Exception) {
+            // Save failed
+            Timber.d("token saved failed")
+        }
+        CoroutineScope(Dispatchers.IO).launch {
+            addRemoteFcm(newToken)
+        }
+    }
+
+    override fun handleIntent(intent: Intent?) {
+        super.handleIntent(intent)
+        try {
+            Timber.i("handleIntent:${intent.toString()}")
+            val data = intent?.extras as Bundle
+            val remoteMessage = RemoteMessage(data)
+            Timber.d("From: " + remoteMessage.from)
+            Timber.d("Data: " + remoteMessage.data)
+
+            if (remoteMessage.data.isNotEmpty()) {
+                handleRemoteMessage(remoteMessage.data)
+            }
+        } catch (e: Exception) {
+            Timber.e("Error handling intent: ${e.message}")
         }
     }
 
@@ -150,12 +164,11 @@ class FirebaseService : FirebaseMessagingService() {
             )
             // filter selected media
             val trigger =
-                (curNoti.media in mediaPushResult)//checkNotificationPreference(curNoti.media)
-            Timber.d(mediaPushResult.toString())
+                true // (curNoti.media in mediaPushResult)//checkNotificationPreference(curNoti.media)
+//            Timber.d(mediaPushResult.toString())
             CoroutineScope(Dispatchers.IO).launch {
                 insertRemotePushNews(curNoti, trigger)
             }
-//            sendNotification(curNoti)
             if (trigger) {
                 sendNotification(curNoti)
             } else {
@@ -163,24 +176,6 @@ class FirebaseService : FirebaseMessagingService() {
             }
         } catch (e: Exception) {
             Timber.w("Send notification failed $e")
-        }
-    }
-
-//    private fun checkNotificationPreference(curMedia: String): Boolean {
-//        // english
-//        val mediaPushResult =
-//            sharedPref?.getStringSet(SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION, emptySet())
-//                ?: emptySet()
-//        return (curMedia in mediaPushResult)
-//    }
-
-
-    override fun onNewToken(newToken: String) {
-        Timber.d("Refreshed token: $newToken")
-//        token = newToken
-        sharedPref.edit()?.putString(FCM_TOKEN, newToken)?.apply()
-        CoroutineScope(Dispatchers.IO).launch {
-            updateRemoteFcm(newToken)
         }
     }
 
@@ -246,26 +241,10 @@ class FirebaseService : FirebaseMessagingService() {
         }
     }
 
-    override fun handleIntent(intent: Intent?) {
-        try {
-            Timber.i("handleIntent:${intent.toString()}")
-            val data = intent?.extras as Bundle
-            val remoteMessage = RemoteMessage(data)
-            Timber.d("From: " + remoteMessage.from)
-            Timber.d("Data: " + remoteMessage.data)
-
-            if (remoteMessage.data.isNotEmpty()) {
-                handleRemoteMessage(remoteMessage.data)
-            }
-        } catch (e: Exception) {
-            Timber.e("Error handling intent: ${e.message}")
-        }
-    }
-
-    private suspend fun updateRemoteFcm(newToken: String) {
+    private suspend fun addRemoteFcm(newToken: String) {
         // TODO sync with ios
         val newData = hashMapOf(
-//            "device_name" to deviceId,
+            USER_DEVICE_ID to deviceId,
             FCM_TOKEN to newToken,
             PUSH_MEDIA_SELECTION to List(9) { "${it + 1}" },
             UPDATE_TIME to Timestamp.now(),
