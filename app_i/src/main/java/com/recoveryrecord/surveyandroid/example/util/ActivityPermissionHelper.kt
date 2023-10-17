@@ -77,14 +77,12 @@ fun Activity.isPermissionGranted(request: PermissionType): Boolean {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.Q)
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 private fun showRationalDialog(activity: Activity, request: PermissionType) {
     when (request) {
         PermissionType.ACTIVITY_RECOGNITION -> R.string.activity_recognition_permission_rational_dialog_title
-
         PermissionType.NOTIFICATION_PERMISSION -> R.string.notification_permission_rational_dialog_title
-        else -> null
-    }?.let {
+    }.let {
         AlertDialog.Builder(activity).apply {
             setTitle(it)
             setMessage(R.string.permission_rational_dialog_message)
@@ -105,13 +103,12 @@ private fun showRationalDialog(activity: Activity, request: PermissionType) {
 
 }
 
-@RequiresApi(Build.VERSION_CODES.Q)
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 fun showSettingsDialog(activity: Activity, permissionType: PermissionType) {
     when (permissionType) {
         PermissionType.ACTIVITY_RECOGNITION -> R.string.activity_recognition_settings_dialog_title
         PermissionType.NOTIFICATION_PERMISSION -> R.string.notification_settings_dialog_title
-        else -> null
-    }?.let {
+    }.let {
         AlertDialog.Builder(activity).apply {
             setTitle(it)
             setMessage(R.string.settings_dialog_message)

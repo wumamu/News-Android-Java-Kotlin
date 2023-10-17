@@ -13,14 +13,18 @@
 
     <PreferenceCategory app:title="權限設定">
         <Preference
+            app:key="@string/notification_permission"
+            android:title="推播通知權限"
+            app:summary="點選允許存取權限" />
+        <Preference
             app:title="通知存取權"
             app:summary="進入系統設定頁面打開">
-            <intent android:action="android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"/>
+            <intent android:action="android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS" />
         </Preference>
         <Preference
             app:title="使用紀錄存取權"
             app:summary="進入系統設定頁面打開">
-            <intent android:action="android.settings.USAGE_ACCESS_SETTINGS"/>
+            <intent android:action="android.settings.USAGE_ACCESS_SETTINGS" />
         </Preference>
         <Preference
             app:key="@string/battery_optimization"

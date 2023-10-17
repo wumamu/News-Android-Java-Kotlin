@@ -1,11 +1,8 @@
 package com.recoveryrecord.surveyandroid.example.ui
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -13,16 +10,26 @@ import android.os.PowerManager
 import android.provider.Settings
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.recoveryrecord.surveyandroid.example.R
+import com.recoveryrecord.surveyandroid.example.model.PermissionType
+import com.recoveryrecord.surveyandroid.example.util.isPermissionGranted
+import com.recoveryrecord.surveyandroid.example.util.requestPermission
 
 class SettingsFragment : PreferenceFragmentCompat() {
+    //    private val notificationManager: NotificationManager by lazy {
+//        activity?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+//    }
+    private val powerManager: PowerManager by lazy {
+        context?.getSystemService(Context.POWER_SERVICE) as PowerManager
+    }
 
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
+        setupNotificationPermissionPreference()
         setupNotificationPolicyAccessPreference()
         setupPhysicalActivityPermissionPreference()
 //        setupStoragePermissionPreference()
@@ -32,50 +39,46 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private fun setupNotificationPolicyAccessPreference() {
         val clearPref2 = findPreference<Preference>(getString(R.string.notification_policy_access))
         clearPref2?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            val mNotificationManager =
-                requireActivity().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            if (!mNotificationManager.isNotificationPolicyAccessGranted) {
-                val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
-                startActivity(intent)
+            val intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
+            startActivity(intent)
+//            if (notificationManager.isNotificationListenerAccessGranted().not()) {
+////                val intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
+//
+////                val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
+//                startActivity(intent)
+//            } else {
+//                showToast(getString(R.string.access_granted))
+//            }
+            true
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun setupNotificationPermissionPreference() {
+        val clearPref0 = findPreference<Preference>(getString(R.string.notification_permission))
+        clearPref0?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+            if (activity?.isPermissionGranted(PermissionType.NOTIFICATION_PERMISSION)
+                    ?.not() == true
+            ) {
+                activity?.requestPermission(PermissionType.NOTIFICATION_PERMISSION)
             } else {
                 showToast(getString(R.string.access_granted))
             }
-
             true
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun setupPhysicalActivityPermissionPreference() {
         val clearPref0 = findPreference<Preference>(getString(R.string.physical_activity))
         clearPref0?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                if (isActivityRecognitionPermissionNotGranted()) {
-                    requestActivityRecognitionPermission()
-                } else {
-                    showToast(getString(R.string.access_granted))
-                }
+            if (activity?.isPermissionGranted(PermissionType.ACTIVITY_RECOGNITION)?.not() == true) {
+                activity?.requestPermission(PermissionType.ACTIVITY_RECOGNITION)
             } else {
-                showToast("Android 10 以下版本不需要開此權限")
+                showToast(getString(R.string.access_granted))
             }
             true
         }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.Q)
-    private fun isActivityRecognitionPermissionNotGranted(): Boolean {
-        return ContextCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.ACTIVITY_RECOGNITION
-        ) != PackageManager.PERMISSION_GRANTED
-    }
-
-    @RequiresApi(Build.VERSION_CODES.Q)
-    private fun requestActivityRecognitionPermission() {
-        ActivityCompat.requestPermissions(
-            requireActivity(),
-            arrayOf(Manifest.permission.ACTIVITY_RECOGNITION),
-            1
-        )
     }
 
 //    private fun setupStoragePermissionPreference() {
@@ -110,13 +113,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val clearPref3 = findPreference<Preference>(getString(R.string.battery_optimization))
         clearPref3?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
             val intent = Intent()
-            val packageName = requireContext().packageName
-            val pm = requireContext().getSystemService(Context.POWER_SERVICE) as PowerManager
-            if (!pm.isIgnoringBatteryOptimizations(packageName)) {
+            val packageName = context?.packageName
+            if (powerManager.isIgnoringBatteryOptimizations(packageName)) {
                 intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
                 intent.data = Uri.parse("package:$packageName")
                 intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-                requireContext().startActivity(intent)
+                startActivity(intent)
             } else {
                 showToast(getString(R.string.access_granted))
             }

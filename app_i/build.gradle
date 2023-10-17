@@ -63,7 +63,7 @@ dependencies {
     // TODO: Review play services library required for activity recognition.
     implementation 'com.google.android.gms:play-services-location:21.0.1'
     //reload
-    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'com.opencsv:opencsv:5.3'
 //    implementation 'androidx.room:room-runtime:2.3.0'
 //    annotationProcessor 'androidx.room:room-compiler:2.3.0'

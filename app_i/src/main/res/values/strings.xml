@@ -109,6 +109,7 @@
     <string name="battery_optimization">battery_optimization</string>
     <string name="storage_access">storage_access</string>
     <string name="physical_activity">physical_activity</string>
+    <string name="notification_permission">notification permission</string>
     <string name="notification_policy_access">notification_policy_access</string>
     <string name="access_granted">權限已經開啟</string>
     <!--    login -->
