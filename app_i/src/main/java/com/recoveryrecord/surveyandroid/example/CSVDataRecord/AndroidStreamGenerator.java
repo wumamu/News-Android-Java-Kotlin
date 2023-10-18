@@ -2,7 +2,8 @@ package com.recoveryrecord.surveyandroid.example.CSVDataRecord;
 
 import android.content.Context;
 
-import com.recoveryrecord.surveyandroid.example.receiever.StreamGenerator;
+import com.recoveryrecord.surveyandroid.example.receiver.StreamGenerator;
+
 
 public class AndroidStreamGenerator<T extends DataRecord>
         implements StreamGenerator<T> {

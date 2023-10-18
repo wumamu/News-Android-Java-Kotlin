@@ -24,27 +24,18 @@
 
 
     <string-array name="media_select_entries">
-        <item>中時</item>
+        <item>旺旺中時</item>
         <item>中央社</item>
-        <item>華視</item>
+        <item>華視新聞</item>
         <item>東森</item>
         <item>自由時報</item>
         <item>風傳媒</item>
         <item>聯合</item>
-        <item>ETTODAY</item>
-        <item>三立</item>
+        <item>Ettoday</item>
+        <item>三立新聞網</item>
     </string-array>
 
     <string-array name="media_select_values">
-<!--        <item>中時</item>-->
-<!--        <item>中央社</item>-->
-<!--        <item>華視</item>-->
-<!--        <item>東森</item>-->
-<!--        <item>自由時報</item>-->
-<!--        <item>風傳媒</item>-->
-<!--        <item>聯合</item>-->
-<!--        <item>ettoday</item>-->
-<!--        <item>三立</item>-->
         <item>chinatimes</item>
         <item>cna</item>
         <item>cts</item>
@@ -56,5 +47,15 @@
         <item>setn</item>
     </string-array>
 
-    <string-array name="empty_array"/>
+    <string-array name="empty_array">
+        <item>chinatimes</item>
+        <item>cna</item>
+        <item>cts</item>
+        <item>ebc</item>
+        <item>ltn</item>
+        <item>storm</item>
+        <item>udn</item>
+        <item>ettoday</item>
+        <item>setn</item>
+    </string-array>
 </resources>

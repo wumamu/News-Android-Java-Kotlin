@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">News Moment</string>
     <string name="news_test">範例新聞</string>
     <string name="to_diary">回顧問卷</string>
     <string name="to_test">test</string>
@@ -87,31 +88,80 @@
 
     <string name="chart_label_newsmoment">NewsMoment screen time</string>
 
-    <string name="chart_label_chinatimes">中時</string>
-    <string name="chart_label_ltn">自由</string>
-    <string name="chart_label_setn">三立</string>
+    <string name="chart_label_chinatimes">旺旺中時</string>
+    <string name="chart_label_ltn">自由時報</string>
+    <string name="chart_label_setn">三立新聞網</string>
     <string name="chart_label_udn">聯合</string>
     <string name="chart_label_storm">風傳媒</string>
     <string name="chart_label_cna">中央社</string>
     <string name="chart_label_ebc">東森</string>
-    <string name="chart_label_ettoday">ETTODAY</string>
-    <string name="chart_label_cts">華視</string>
+    <string name="chart_label_ettoday">Ettoday</string>
+    <string name="chart_label_cts">華視新聞</string>
 
     <string name="upload">上傳本地資料</string>
-
-    <string-array name="device_array">
-        <item>請選擇</item>
-        <item>318f4fea56e7070c (pixel 4a)</item>
-        <!--        <item>046827517ac92b09 (sm a52s)</item>-->
-        <!--        <item>021c8258f6279b04 (p10)</item>-->
-        <!--        <item>e058f98bffc294fe (asus zenfone3)</item>-->
-        <!--        <item>25b143070cd8e420 (sm_a51)</item>-->
-        <!--        <item>a7a44570861f9f64 (xiaomi)</item>-->
-        <item>286c25bc68ef882d (pixel 6)</item>
-    </string-array>
 
     <string name="accessibility_service_description">My Description</string>
     <string name="category_text">Category Text</string>
     <string name="_2022_03_2418_06_02">2022/03/2418:06:02</string>
     <string name="media_name">Media Name</string>
+
+    <!--     setting -->
+    <string name="battery_optimization">battery_optimization</string>
+    <string name="storage_access">storage_access</string>
+    <string name="physical_activity">physical_activity</string>
+    <string name="notification_permission">notification permission</string>
+    <string name="notification_policy_access">notification_policy_access</string>
+    <string name="access_granted">權限已經開啟</string>
+    <!--    login -->
+    <string name="login_success">登入成功</string>
+    <string name="login_failed">登入失敗，需要幫忙請來信詢問</string>
+    <string name="google_sign_in_failed">Google sign in failed</string>
+    <string name="account_is_empty">帳號還沒打阿</string>
+    <string name="password_is_empty">密碼還沒打阿</string>
+    <string name="account_wrong_format">帳號格式好像錯了阿</string>
+
+
+    <string name="hint_refresh">可能要手動刷新或重啟app才會生效</string>
+
+    <string name="persist_notification_title">NewMoment Service</string>
+    <string name="persist_notification_text">Running in the background</string>
+    <string name="dummy_notification_title">Congratulations! 🎉🎉🎉</string>
+    <string name="dummy_notification_text">You have post a notification to Android 13!!!</string>
+
+    <string name="activity_recognition_permission_rational_dialog_title">Activity Recognition Permission Needed</string>
+    <string name="notification_permission_rational_dialog_title">Notification Permission Needed</string>
+    <string name="permission_rational_dialog_message">To make everything properly work, you need to give permission to New Moment.</string>
+    <string name="permission_rational_dialog_positive_button_text">Request a permission</string>
+    <string name="permission_rational_dialog_negative_button_text">No thanks</string>
+
+    <string name="activity_recognition_settings_dialog_title">Activity Recognition Permission Needed</string>
+    <string name="settings_dialog_message">Give permission manually inside the app\'s settings</string>
+
+    <string name="notification_settings_dialog_title">Notification Permission Needed</string>
+
+    <string name="settings_dialog_positive_button_text">Go to settings</string>
+    <string name="settings_dialog_negative_button_text">No thanks</string>
+
+    <string name="transition_update_request_success">Transition updates requested</string>
+    <string name="transition_update_request_failed">Requesting transition updates failed</string>
+    <string name="transition_update_remove_success">Transition updates removed</string>
+    <string name="transition_update_remove_failed">Removing transition updates failed</string>
+
+    <string name="activity_update_request_success">Activity updates requested</string>
+    <string name="activity_update_request_failed">Requesting activity updates failed</string>
+    <string name="activity_update_remove_success">Activity updates removed</string>
+    <string name="activity_update_remove_failed">Removing activity updates failed</string>
+
+    <string name="start_tracking">Start</string>
+    <string name="stop_tracking">Stop</string>
+    <string name="reset_tracking">Reset</string>
+    <string name="time_to_start">It\'s time to start activity</string>
+
+    <string name="still">Still</string>
+    <string name="walking">Walking</string>
+    <string name="running">Running</string>
+
+    <string name="still_text">You are currently standing still!</string>
+    <string name="walking_text">You are walking!</string>
+    <string name="running_text">You are running, keep doing it!</string>
 </resources>

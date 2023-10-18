@@ -7,6 +7,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/idRVItems"
             android:layout_width="match_parent"
@@ -21,8 +29,16 @@
             app:fabSize="mini"
             android:backgroundTint="#bcd4e3"
             app:borderWidth="0dp"
-            android:src="@drawable/baseline_keyboard_arrow_up_24" />
+            android:src="@drawable/baseline_keyboard_arrow_up_24"
+            android:contentDescription="floating_action_button" />
 
+        <TextView
+            android:id="@+id/noDataTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Oops 沒有資料，refresh 看看"
+            android:visibility="gone" /> <!-- Initially hidden -->
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </FrameLayout>

@@ -4,41 +4,53 @@
     package="com.recoveryrecord.surveyandroid.example"
     android:installLocation="internalOnly"
     tools:ignore="ExtraText">
+
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission
+        android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
+        tools:ignore="ProtectedPermissions" />
+
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.BLUETOOTH" android:label="BLUETOOTH"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name= "android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
 
     <!-- TODO: Add both activity recognition permissions to the manifest. -->
     <!-- Required for 28 and below. -->
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
     <!-- Required for 29+. -->
-    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/>
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
     <!-- permission required to automatically restart a repeating alarm if the user reboots the device -->
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-<!--    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"-->
-<!--        tools:ignore="ScopedStorage" />-->
 
-    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="true" />
+    <!--    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
+    <!--    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />-->
+
+    <uses-feature
+        android:name="android.hardware.sensor.accelerometer"
+        android:required="true" />
 
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
+
     <application
-        android:name="androidx.multidex.MultiDexApplication"
+        android:name=".di.BaseApplication"
         android:allowBackup="true"
         android:icon="@mipmap/muilab_logo"
         android:label="@string/app_name"
@@ -46,156 +58,82 @@
         android:supportsRtl="true"
         android:requestLegacyExternalStorage="true"
         android:theme="@style/NoActionBarLight">
-        <activity android:name=".SplashScreenActivity"
+        <activity
+            android:name=".activity.SplashScreenActivity"
             android:theme="@style/SplashScreenTheme"
-            android:screenOrientation="portrait"
+            android:screenOrientation="fullSensor"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".NewsHybridActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".SettingsActivity"
+        <activity
+            android:name=".activity.LoginActivity"
+            android:screenOrientation="fullSensor" />
+        <activity
+            android:name=".NewsHybridActivity"
+            android:screenOrientation="fullSensor" />
+        <activity
+            android:name=".activity.SettingsActivity"
             android:theme="@style/ActionBarLight"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".SurveyProgressActivity"
+            android:screenOrientation="fullSensor" />
+        <activity
+            android:name=".activity.ReadHistoryActivity"
             android:theme="@style/ActionBarLight"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".UploadPagesActivity"
+            android:screenOrientation="fullSensor" />
+        <activity
+            android:name=".activity.PushHistoryActivity"
             android:theme="@style/ActionBarLight"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".CheckUpdateActivity"
+            android:screenOrientation="fullSensor" />
+        <activity
+            android:name=".activity.MediaRankActivity"
             android:theme="@style/ActionBarLight"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ListenActivity"
-            android:theme="@style/ActionBarLight"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ReadHistoryActivity"
-            android:theme="@style/ActionBarLight"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".PushHistoryActivity"
-            android:theme="@style/ActionBarLight"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".NotificationRangeActivity"
-            android:theme="@style/ActionBarLight"
-            android:screenOrientation="portrait"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.recoveryrecord.surveyandroid.example.NotificationRangeActivity" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".MediaRankActivity"
-            android:theme="@style/ActionBarLight"
-            android:screenOrientation="portrait"
+            android:screenOrientation="fullSensor"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.recoveryrecord.surveyandroid.example.MediaRankActivity" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".NewsModuleActivity"
+        <activity
+            android:name=".activity.NewsModuleActivity"
             android:parentActivityName=".NewsHybridActivity"
             android:theme="@style/ActionBarLight"
-            tools:targetApi="jelly_bean"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".SurveyActivity"
-            android:launchMode="singleTask"
-            android:excludeFromRecents="true"
-            android:theme="@style/Widget.SurveyAndroid"
-            android:screenOrientation="portrait"/>
-<!--        <activity android:name=".ActivityRecognitionPermissionRationalActivity"-->
-<!--            android:screenOrientation="portrait"/>-->
+            android:screenOrientation="fullSensor" />
+        <activity
+            android:name="com.facebook.flipper.android.diagnostics.FlipperDiagnosticActivity"
+            android:exported="true" />
+        <!-- Mention the receiever name here -->
 
-        <activity android:name=".ESMLoadingPageActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".DiaryLoadingPageActivity"
-            android:screenOrientation="portrait"/>
-        <!-- Mention the receiever name here -->
-        <!-- Mention the receiever name here -->
-        <!-- Mention the receiever name here -->
-        <!-- Mention the receiever name here -->
-        <receiver android:name = ".NotificationListenerNews" />
-        <receiver android:name = ".NotificationListenerESM" />
-        <receiver android:name = ".NotificationListenerDiary" />
-        <receiver android:name=".receiever.ApplicationSelectorReceiver" />
-        <receiver android:name=".receiever.ScreenStateReceiver"
+        <receiver android:name=".receiver.ApplicationSelectorReceiver" />
+        <receiver
+            android:name=".receiver.ScreenStateReceiver"
             tools:ignore="Instantiatable" />
-        <receiver android:name=".receiever.ApplicationSelectorReceiver" />
-        <receiver android:name=".receiever.BlueToothReceiver"
-            tools:ignore="Instantiatable" />
-        <receiver android:name=".receiever.NetworkChangeReceiver$NetworkChangeBroadcastReceiver"
+
+        <receiver
+            android:name=".receiver.NetworkChangeReceiver$NetworkChangeBroadcastReceiver"
             android:enabled="true"
             tools:ignore="Instantiatable"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"
+                <action
+                    android:name="android.net.conn.CONNECTIVITY_CHANGE"
                     tools:ignore="BatteryLife" />
             </intent-filter>
         </receiver>
-        <receiver
-            android:name=".NewsNotificationRestarter"
-            android:enabled="true"
-            android:exported="true">
+
+        <service
+            android:name=".service.FirebaseService"
+            android:exported="false"
+            android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
-                <action android:name="CheckService" />
-            </intent-filter>
-        </receiver>
-        <receiver android:name=".AlarmReceiver"
-            android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
-            android:directBootAware="true"
-            android:enabled="true"
-            android:exported="true"
-            tools:targetApi="n">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-<!--                <action android:name="UploadSQLite" />-->
-            </intent-filter>
-        </receiver>
-<!--        <receiver android:name=".MyAlarmReceiver"-->
-<!--            android:enabled="true"-->
-<!--            android:exported="true">-->
-<!--        </receiver>-->
-        <receiver
-            android:name=".BootUpReceiver"
-            android:enabled="true"
-            android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-                <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </receiver>
-        <receiver
-            android:name=".ShutDownReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.ACTION_SHUTDOWN" />
-                <action android:name="android.intent.action.QUICKBOOT_POWEROFF" />
-                <action android:name="com.htc.intent.action.QUICKBOOT_POWEROFF" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </receiver>
-        <!-- Mention the service name here -->
-        <!-- Mention the service name here -->
-        <!-- Mention the service name here -->
-        <!-- Mention the service name here -->
-        <service android:name=".NewsNotificationService"
-            android:stopWithTask="false"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+                <action android:name="com.google.android.c2dm.permission.RECEIVE" />
             </intent-filter>
         </service>
-        <service android:name=".NotificationListenerService"
+        <service
+            android:name=".service.NotificationListenerService"
             android:label="@string/app_name"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
             android:exported="true">
@@ -204,58 +142,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </service>
-        <service android:name=".MyAccessibilityService"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+
+        <receiver
+            android:name=".receiver.LightSensorReceiver"
+            tools:ignore="Instantiatable" />
+        <receiver android:name=".transitions.TransitionsReceiver" />
+
+        <service android:name=".detectedactivity.DetectedActivityService" />
+        <receiver
+            android:name=".detectedactivity.DetectedActivityReceiver"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.accessibilityservice.AccessibilityService" />
+                <action android:name="com.google.android.gms.location.ACTIVITY_RECOGNITION" />
             </intent-filter>
-            <meta-data
-                android:name="android.accessibilityservice"
-                android:resource="@xml/accessibility_service_config" />
-        </service>
-
-        <receiver android:name=".receiever.LightSensorReceiver"
-            tools:ignore="Instantiatable" />
-        <service android:name=".receiever.ActivityRecognitionReceiver"/>
-        <service android:name=".receiever.AppUsageReceiver" />
-        <service android:name=".receiever.MyBackgroudService"/>
+        </receiver>
     </application>
 
 </manifest>
-    <!--        <activity android:name=".TestActivityRecognitionActivity"/>-->
-    <!--        <activity android:name=".TestNewsAllActivity"/>-->
-
-    <!--        <activity android:name=".TestServiceActivity"-->
-    <!--            android:theme="@style/AppThemeActionBar"/>-->
-    <!--        <activity android:name=".TestDoubleBarActivity" />-->
-    <!--        <activity android:name=".NetworkCheckerActivity" />-->
-    <!--        <activity android:name=".TestNotificationSettingActivity"-->
-    <!--            android:theme="@style/AppThemeActionBar"/>-->
-    <!--        <activity android:name=".TestAddNotificationActivity"-->
-    <!--            android:theme="@style/AppThemeActionBar"/>-->
-    <!--        <activity android:name=".activity.NotificationDbViewActivity"-->
-    <!--            android:theme="@style/AppThemeActionBar"/>-->
-    <!--        <activity android:name=".TestBasicActivity"-->
-    <!--            android:theme="@style/AppThemeActionBar">-->
-    <!--            <intent-filter>-->
-    <!--                <action android:name="com.recoveryrecord.surveyandroid.example.BasicActivity" />-->
-    <!--                <category android:name="android.intent.category.DEFAULT" />-->
-    <!--            </intent-filter>-->
-    <!--        </activity>-->
-    <!--        <service-->
-    <!--            android:name=".MyPushNotificationService"-->
-    <!--            android:stopWithTask="false"-->
-    <!--            android:enabled="true">-->
-    <!--        </service>-->
-    <!--        <receiver android:name=".TAlarmReceiver"-->
-    <!--            android:enabled="true"-->
-    <!--            android:exported="true">-->
-    <!--        </receiver>-->
-    <!--        <receiver android:name=".TAlarmReceiver"-->
-    <!--            android:enabled="true">-->
-    <!--            <intent-filter>-->
-    <!--                <action android:name="android.intent.action.BOOT_COMPLETED" />-->
-    <!--            </intent-filter>-->
-    <!--        </receiver>-->
-    <!--        <activity android:name=".TestNewsOneActivity" />-->
