@@ -100,13 +100,27 @@
             android:name=".activity.NewsContentActivity"
             android:parentActivityName=".NewsHybridActivity"
             android:theme="@style/ActionBarLight"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="fullSensor"
+            android:exported="true">
+            <!--
+                Handle ACTION_SEND intents to receive data shared by other apps.
+            -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:mimeType="text/*" />
+                <data android:mimeType="image/*" />
+            </intent-filter>
+        </activity>
         <activity
             android:name="com.facebook.flipper.android.diagnostics.FlipperDiagnosticActivity"
             android:exported="true" />
         <!-- Mention the receiever name here -->
 
-        <receiver android:name=".receiver.ApplicationSelectorReceiver" />
         <receiver
             android:name=".receiver.ScreenStateReceiver"
             tools:ignore="Instantiatable" />
@@ -143,6 +157,9 @@
             </intent-filter>
         </service>
 
+        <receiver
+            android:name=".receiver.ShareResultReceiver"
+            android:exported="false" />
         <receiver
             android:name=".receiver.LightSensorReceiver"
             tools:ignore="Instantiatable" />

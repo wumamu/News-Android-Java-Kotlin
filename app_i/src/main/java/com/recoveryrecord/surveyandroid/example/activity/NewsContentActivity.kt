@@ -1,6 +1,7 @@
 package com.recoveryrecord.surveyandroid.example.activity
 
 import android.annotation.SuppressLint
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -21,6 +22,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ShareCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import com.google.firebase.Timestamp
@@ -74,11 +76,12 @@ import com.recoveryrecord.surveyandroid.example.config.Constants.READING_BEHAVIO
 import com.recoveryrecord.surveyandroid.example.config.Constants.READING_BEHAVIOR_VIEWPORT_RECORD
 import com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_TEST_SIZE
 import com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_USER_ID
+import com.recoveryrecord.surveyandroid.example.config.Constants.TMP_ACCESS_DOC_ID
 import com.recoveryrecord.surveyandroid.example.config.Constants.TRIGGER_BY_KEY
 import com.recoveryrecord.surveyandroid.example.config.Constants.UNKNOWN_USER_ID
 import com.recoveryrecord.surveyandroid.example.model.MediaType.Companion.getChinese
 import com.recoveryrecord.surveyandroid.example.model.ReadingBehavior
-import com.recoveryrecord.surveyandroid.example.receiver.ApplicationSelectorReceiver
+import com.recoveryrecord.surveyandroid.example.receiver.ShareResultReceiver
 import com.recoveryrecord.surveyandroid.example.sqlite.DragObj
 import com.recoveryrecord.surveyandroid.example.sqlite.FlingObj
 import com.recoveryrecord.surveyandroid.example.ui.GestureListener
@@ -920,8 +923,9 @@ class NewsContentActivity : AppCompatActivity(), SimpleGestureListener {
                 )
                 updateRemote(rbRef, updateData)
             }
+            sharedPrefs.edit().putString(TMP_ACCESS_DOC_ID, myReadingBehavior.docId).apply()
             try {
-                shareContent(mUrl)
+                knowReceiver(mUrl)
             } catch (e: Exception) {
                 Toast.makeText(this, "Hmm.. Sorry, \nCannot be share", Toast.LENGTH_SHORT).show()
             }
@@ -931,41 +935,21 @@ class NewsContentActivity : AppCompatActivity(), SimpleGestureListener {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun shareContent(content: String) {
-        val shareIntent = Intent(this, ApplicationSelectorReceiver::class.java)
-
-        // Add extras to the intent
-        shareIntent.putExtra("doc_id", myReadingBehavior.docId) // Replace with your document ID
-        shareIntent.putExtra("package_name", packageName) // Add your app's package name
-
-        // Send the intent
-        sendBroadcast(shareIntent)
-
-        // Start the share action
-        val sendIntent = Intent().apply {
-            action = Intent.ACTION_SEND
-            type = "text/plain"
-            putExtra(Intent.EXTRA_TEXT, content)
-        }
-        startActivity(Intent.createChooser(sendIntent, "Share via..."))
+    private fun knowReceiver(url: String) {
+        val sendIntent = ShareCompat.IntentBuilder(this)
+            .setType("text/plain")
+            .setText(url)
+            .intent
+        // We can set up a BroadcastReceiver to be notified who has received the data we shared.
+        val sender = PendingIntent.getBroadcast(
+            this,
+            1,
+            Intent(this, ShareResultReceiver::class.java),
+            PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+        )
+        val chooserIntent = Intent.createChooser(sendIntent, null, sender.intentSender)
+        startActivity(chooserIntent)
     }
-
-
-    // TODO share failed
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//        if (requestCode == 123 && resultCode == Activity.RESULT_OK) {
-//            val chosenApp = data?.getStringExtra("android.intent.extra.CHOSEN_COMPONENT")
-//            if (chosenApp != null) {
-//                // The user picked a specific app to share
-//                // 'chosenApp' contains the package name of the chosen app
-//                Toast.makeText(this, "User chose: $chosenApp", Toast.LENGTH_SHORT).show()
-//            } else {
-//                // User didn't pick a specific app
-//                Toast.makeText(this, "User didn't choose a specific app", Toast.LENGTH_SHORT).show()
-//            }
-//        }
-//    }
 
     override fun dispatchTouchEvent(me: MotionEvent): Boolean {
         detector.onTouchEvent(me)

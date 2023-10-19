@@ -224,4 +224,9 @@ object Constants {
     const val USING_APP_OR_NOT = "using_app"
     const val USING_APP = "Using APP"
     const val NOT_USING_APP = "Not Using APP"
+
+    /*
+        Specific share prefrence field for tmp access reading behavior dos path in firestor
+     */
+    const val TMP_ACCESS_DOC_ID = "tmp_access_doc_id"
 }

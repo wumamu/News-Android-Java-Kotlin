@@ -49,13 +49,14 @@ import com.recoveryrecord.surveyandroid.example.config.Constants.USER_DEVICE_ID
 import com.recoveryrecord.surveyandroid.example.config.Constants.USER_ID
 import com.recoveryrecord.surveyandroid.example.model.ActivityType
 import com.recoveryrecord.surveyandroid.example.util.addRemote
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-
+@AndroidEntryPoint
 class DetectedActivityReceiver : BroadcastReceiver() {
 
     @Inject
@@ -139,8 +140,6 @@ class DetectedActivityReceiver : BroadcastReceiver() {
                 Timber.d("Activity Recognition Update Success")
             }
         }
-
-
     }
 
 //  private fun showNotification(detectedActivity: DetectedActivity, context: Context) {

@@ -66,6 +66,7 @@ import com.recoveryrecord.surveyandroid.example.config.Constants.USER_FIRESTORE_
 import com.recoveryrecord.surveyandroid.example.config.Constants.USER_ID
 import com.recoveryrecord.surveyandroid.example.config.Constants.USER_PHONE_ID
 import com.recoveryrecord.surveyandroid.example.detectedactivity.DetectedActivityService
+import com.recoveryrecord.surveyandroid.example.detectedactivity.SUPPORTED_ACTIVITY_KEY
 import com.recoveryrecord.surveyandroid.example.detectedactivity.SupportedActivity
 import com.recoveryrecord.surveyandroid.example.model.MediaType
 import com.recoveryrecord.surveyandroid.example.model.PermissionType
@@ -545,16 +546,16 @@ class NewsHybridActivity
         }
     }
 
-    //    override fun onNewIntent(intent: Intent) {
-//        super.onNewIntent(intent)
-//        if (intent.hasExtra(SUPPORTED_ACTIVITY_KEY)) {
-//            val supportedActivity = intent.getSerializableExtra(
-//                SUPPORTED_ACTIVITY_KEY
-//            ) as SupportedActivity
-//            setDetectedActivity(supportedActivity)
-//        }
-//    }
-//
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        if (intent.hasExtra(SUPPORTED_ACTIVITY_KEY)) {
+            val supportedActivity = intent.getSerializableExtra(
+                SUPPORTED_ACTIVITY_KEY
+            ) as SupportedActivity
+            setDetectedActivity(supportedActivity)
+        }
+    }
+
     private fun setDetectedActivity(supportedActivity: SupportedActivity) {
         val detectedActivity = getString(supportedActivity.activityText)
         lifecycleScope.launch {
