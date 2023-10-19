@@ -36,21 +36,21 @@ object Constants {
     const val NEWS_MEDIA_KEY = "media"
     const val NEWS_TITLE_KEY = "title"
 
-    //NotificationListenerService
-    const val GROUP_NEWS = "NewsMoment"
-
     //FIRESTORE FIELD###############################################################################
     //FIRESTORE FIELD###############################################################################
     //FIRESTORE FIELD###############################################################################
     //FIRESTORE FIELD###############################################################################
     //FIRESTORE FIELD###############################################################################
+    /*
+        User Collection field
+     */
     const val USER_COLLECTION = "user"
+
     const val APP_VERSION_KEY = "app_version"
 
     // TODO need to update every time
-    const val APP_VERSION_VALUE = "23.10.18-1"
+    const val APP_VERSION_VALUE = "23.10.20-1"
     const val UPDATE_TIME = "update_timestamp"
-
     const val USER_DEVICE_ID = "device_id"
     const val USER_FIRESTORE_ID = "firestore_id"
     const val USER_PHONE_ID = "phone_id"
@@ -60,26 +60,28 @@ object Constants {
     const val MEDIA_BAR_ORDER = "media_bar_order"
     const val USER_ID = "user_id"
 
-    //MEDIA
-    const val MEDIA_COLLECTION = "medias"
+    /*
+        News Collection field
+     */
     const val NEWS_COLLECTION = "news"
-    const val NEWS_URL = "url"
 
+    const val NEWS_URL = "url"
     const val NEWS_TITLE = "title"
     const val NEWS_PUBDATE = "pubdate"
     const val NEWS_IMAGE = "image"
     const val NEWS_CONTENT = "content"
-
+    const val NEWS_CATEGORY = "category"
+    const val NEWS_MEDIA = "media"
     const val NEWS_ID = "id"
 
-    //READING BEHAVIOR
+    /*
+        Reading Behavior collection field
+     */
     const val READING_BEHAVIOR_COLLECTION = "reading_behaviors"
 
-    //    public static final String READING_BEHAVIOR_MID = " RB ";
     const val READING_BEHAVIOR_DOC_ID = "doc_id"
     const val READING_BEHAVIOR_DEVICE_ID = "device_id"
     const val READING_BEHAVIOR_USER_ID = "user_id"
-    const val READING_BEHAVIOR_SAMPLE_CHECK_ID = "select_esm_id"
     const val READING_BEHAVIOR_TRIGGER_BY = "trigger_by"
     const val READING_BEHAVIOR_NEWS_ID = "id"
     const val READING_BEHAVIOR_TITLE = "title"
@@ -87,8 +89,6 @@ object Constants {
     const val READING_BEHAVIOR_HAS_IMAGE = "has_img"
     const val READING_BEHAVIOR_IMAGE_URL = "image"
     const val READING_BEHAVIOR_PUBDATE = "pubdate"
-
-    //    public static final String READING_BEHAVIOR_CATEGORY = "category";
     const val READING_BEHAVIOR_ROW_SPACING = "row_spacing(dp)"
     const val READING_BEHAVIOR_BYTE_PER_LINE = "byte_per_line"
     const val READING_BEHAVIOR_FONT_SIZE = "font_size"
@@ -98,8 +98,7 @@ object Constants {
     const val READING_BEHAVIOR_IN_TIME = "in_timestamp"
     const val READING_BEHAVIOR_OUT_TIME = "out_timestamp"
     const val READING_BEHAVIOR_IN_TIME_LONG = "in_timestamp_long"
-
-    //    public static final String READING_BEHAVIOR_OUT_TIME_LONG = "out_timestamp_long";
+    const val READING_BEHAVIOR_OUT_TIME_LONG = "out_timestamp_long"
     const val READING_BEHAVIOR_TIME_ON_PAGE = "time_on_page(s)"
     const val READING_BEHAVIOR_PAUSE_COUNT = "pause_count"
     const val READING_BEHAVIOR_VIEWPORT_NUM = "viewport_num"
@@ -112,7 +111,9 @@ object Constants {
     const val READING_BEHAVIOR_TIME_SERIES = "time_series(s)"
     const val READING_BEHAVIOR_TRIGGER_BY_NOTIFICATION = "Notification"
 
-    //PUSH NEWS
+    /*
+        Push News collection field
+     */
     const val PUSH_NEWS_COLLECTION = "push_news"
     const val PUSH_NEWS_DOC_ID = "doc_id"
     const val PUSH_NEWS_DEVICE_ID = "device_id"
@@ -129,7 +130,6 @@ object Constants {
     const val PUSH_NEWS_TYPE = "type"
     const val NOTIFICATION_ADD = "target add"
     const val NOTIFICATION_SKIP = "not target"
-
     const val NOTIFICATION_BAR_NEWS_TITLE = "title"
     const val NOTIFICATION_BAR_NEWS_TEXT = "text"
     const val NOTIFICATION_BAR_NEWS_NOTI_TIME = "noti_timestamp"
@@ -137,6 +137,9 @@ object Constants {
     const val NOTIFICATION_BAR_NEWS_SOURCE = "media"
     const val NOTIFICATION_BAR_NEWS_DEVICE_ID = "device_id"
 
+    /*
+        FCM token collection field
+     */
     const val FCM_COLLECTION = "FCMToken"
 
     /**
@@ -162,7 +165,7 @@ object Constants {
     const val CATEGORY_POST_FIX = "_category"
 
     // collection path
-    const val NEWS_CATEGORY = "news_category"
+    const val NEWS_CATEGORY_COLLECTION = "news_category"
     const val CONFIG = "config"
 
     const val STORM_ENG = "storm"

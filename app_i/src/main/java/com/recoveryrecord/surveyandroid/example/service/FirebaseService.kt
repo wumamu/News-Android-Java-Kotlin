@@ -15,7 +15,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.recoveryrecord.surveyandroid.example.R
-import com.recoveryrecord.surveyandroid.example.activity.NewsModuleActivity
+import com.recoveryrecord.surveyandroid.example.activity.NewsContentActivity
 import com.recoveryrecord.surveyandroid.example.config.Constants
 import com.recoveryrecord.surveyandroid.example.config.Constants.FCM_COLLECTION
 import com.recoveryrecord.surveyandroid.example.config.Constants.FCM_TOKEN
@@ -182,7 +182,7 @@ class FirebaseService : FirebaseMessagingService() {
     private fun sendNotification(notification: NotificationData) {
         Timber.d("sendNotification: $notification")
 
-        val intent = Intent(this, NewsModuleActivity::class.java)
+        val intent = Intent(this, NewsContentActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         intent.putExtra(TRIGGER_BY_KEY, TRIGGER_BY_VALUE_NOTIFICATION)
         intent.putExtra(NEWS_ID_KEY, notification.newsId)

@@ -12,9 +12,9 @@ import timber.log.Timber
 
 suspend fun fetchRemoteOne(
     document: DocumentReference,
-    onSuccess: (DocumentSnapshot) -> Unit = {},
     onFailed: () -> Unit = {},
-    onError: (Exception) -> Unit = {}
+    onError: (Exception) -> Unit = {},
+    onSuccess: (DocumentSnapshot) -> Unit = {},
 ) {
     try {
         val documentSnapshot = withContext(Dispatchers.IO) {

@@ -37,7 +37,7 @@ import com.google.firebase.firestore.Query
 import com.recoveryrecord.surveyandroid.example.activity.PushHistoryActivity
 import com.recoveryrecord.surveyandroid.example.activity.ReadHistoryActivity
 import com.recoveryrecord.surveyandroid.example.activity.SettingsActivity
-import com.recoveryrecord.surveyandroid.example.adapter.SectionsPagerAdapter
+import com.recoveryrecord.surveyandroid.example.adapter.MediaTypeAdapter
 import com.recoveryrecord.surveyandroid.example.config.Constants
 import com.recoveryrecord.surveyandroid.example.config.Constants.ACTIVITY_COLLECTION
 import com.recoveryrecord.surveyandroid.example.config.Constants.APP_VERSION_KEY
@@ -51,7 +51,7 @@ import com.recoveryrecord.surveyandroid.example.config.Constants.FCM_TOKEN
 import com.recoveryrecord.surveyandroid.example.config.Constants.LAST_UPDATE_TIME
 import com.recoveryrecord.surveyandroid.example.config.Constants.MEDIA_BAR_ORDER
 import com.recoveryrecord.surveyandroid.example.config.Constants.MEDIA_ORDER
-import com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_CATEGORY
+import com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_CATEGORY_COLLECTION
 import com.recoveryrecord.surveyandroid.example.config.Constants.OUR_EMAIL
 import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_MEDIA_SELECTION
 import com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_CLEAR_CACHE
@@ -102,7 +102,7 @@ class NewsHybridActivity
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var swipeRefreshLayout: CustomSwipeRefreshLayout
-    private lateinit var mSectionsPagerAdapter: SectionsPagerAdapter
+    private lateinit var mMediaTypeAdapter: MediaTypeAdapter
     private lateinit var mViewPager: ViewPager
     private lateinit var tabLayout: TabLayout
     private lateinit var toolbar: Toolbar
@@ -228,10 +228,10 @@ class NewsHybridActivity
             setDistanceToTriggerSync(200)
             setColorSchemeResources(R.color.blue, R.color.red, R.color.black)
         }
-        mSectionsPagerAdapter = SectionsPagerAdapter(
+        mMediaTypeAdapter = MediaTypeAdapter(
             supportFragmentManager, parseTabArray(rankingString)
         )
-        mViewPager.adapter = mSectionsPagerAdapter
+        mViewPager.adapter = mMediaTypeAdapter
         tabLayout.setupWithViewPager(mViewPager)
         setSupportActionBar(toolbar)
         navigationView.setNavigationItemSelectedListener(this)
@@ -362,10 +362,10 @@ class NewsHybridActivity
 
     private fun updateViewPager() {
         // Update the ViewPager and Tabs after fetching data
-        mSectionsPagerAdapter = SectionsPagerAdapter(
+        mMediaTypeAdapter = MediaTypeAdapter(
             supportFragmentManager, parseTabArray(rankingString)
         )
-        mViewPager.adapter = mSectionsPagerAdapter
+        mViewPager.adapter = mMediaTypeAdapter
         tabLayout.setupWithViewPager(mViewPager)
 
         // Hide the swipe refresh progress
@@ -400,7 +400,7 @@ class NewsHybridActivity
 
     private suspend fun getRemoteCategoryTab() {
         fetchRemoteOne(
-            db.collection(NEWS_CATEGORY).document(CONFIG),
+            db.collection(NEWS_CATEGORY_COLLECTION).document(CONFIG),
             onSuccess = { documentSnapshot ->
                 val editor = sharedPrefs.edit()
                 MediaType.getAllMedia().forEach { media ->

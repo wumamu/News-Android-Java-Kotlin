@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 import com.recoveryrecord.surveyandroid.example.model.MediaType
 import com.recoveryrecord.surveyandroid.example.ui.MainFragment
 
-class SectionsPagerAdapter(
+class MediaTypeAdapter(
     fm: FragmentManager?,
     private val tabs: Array<String>
 ) : FragmentPagerAdapter(fm!!) {

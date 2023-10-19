@@ -12,7 +12,7 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.recoveryrecord.surveyandroid.example.R
-import com.recoveryrecord.surveyandroid.example.activity.NewsModuleActivity
+import com.recoveryrecord.surveyandroid.example.activity.NewsContentActivity
 import com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_ID_KEY
 import com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_MEDIA_KEY
 import com.recoveryrecord.surveyandroid.example.config.Constants.TRIGGER_BY_KEY
@@ -88,7 +88,7 @@ class NewsRecycleViewAdapter(
             itemView.setOnClickListener {
                 val (_, media, id) = dataModelArrayList[adapterPosition]
                 val intent = Intent()
-                intent.setClass(context, NewsModuleActivity::class.java)
+                intent.setClass(context, NewsContentActivity::class.java)
                 intent.putExtra(TRIGGER_BY_KEY, TRIGGER_BY_SELF)
                 intent.putExtra(NEWS_ID_KEY, id)
                 intent.putExtra(NEWS_MEDIA_KEY, media) // english

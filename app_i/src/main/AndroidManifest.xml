@@ -97,7 +97,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.NewsModuleActivity"
+            android:name=".activity.NewsContentActivity"
             android:parentActivityName=".NewsHybridActivity"
             android:theme="@style/ActionBarLight"
             android:screenOrientation="fullSensor" />
