@@ -47,6 +47,8 @@ class NewsRecycleViewAdapter(
         }
 
         model.image.takeIf { showImg }?.let {
+            holder.newsImg.adjustViewBounds = true
+            holder.newsImg.maxHeight = 200
             loadImageWithGlide(context, model.image, holder.newsImg, holder.progressBar)
         } ?: run {
             holder.newsImg.visibility = View.GONE

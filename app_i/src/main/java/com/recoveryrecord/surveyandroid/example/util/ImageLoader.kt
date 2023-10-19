@@ -17,11 +17,9 @@ fun loadImageWithGlide(
     context: Context,
     imageUrl: String?,
     imageView: ImageView,
-    progressBar: ProgressBar
+    progressBar: ProgressBar?
 ) {
-    progressBar.visibility = View.VISIBLE
-    imageView.adjustViewBounds = true
-    imageView.maxHeight = 200
+    progressBar?.visibility = View.VISIBLE
     Glide.with(context)
         .load(imageUrl)
 //        .placeholder(R.drawable.ic_baseline_downloading_24)
@@ -35,7 +33,7 @@ fun loadImageWithGlide(
                 isFirstResource: Boolean
             ): Boolean {
                 // Hide the progress bar when the image loading fails
-                progressBar.visibility = View.GONE
+                progressBar?.visibility = View.GONE
                 return false
             }
 
@@ -47,7 +45,7 @@ fun loadImageWithGlide(
                 isFirstResource: Boolean
             ): Boolean {
                 // Hide the progress bar when the image is loaded successfully
-                progressBar.visibility = View.GONE
+                progressBar?.visibility = View.GONE
                 return false
             }
         })

@@ -48,6 +48,7 @@ import static com.recoveryrecord.surveyandroid.example.config.Constants.READ_TOT
 import static com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_TEST_SIZE;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_USER_ID;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.TRIGGER_BY_KEY;
+import static com.recoveryrecord.surveyandroid.example.util.ImageLoaderKt.loadImageWithGlide;
 
 import android.annotation.SuppressLint;
 import android.app.PendingIntent;
@@ -55,11 +56,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -78,7 +76,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -100,7 +97,6 @@ import com.recoveryrecord.surveyandroid.example.sqlite.FlingObj;
 import com.recoveryrecord.surveyandroid.example.ui.GestureListener;
 import com.recoveryrecord.surveyandroid.example.util.SimpleGestureListener;
 
-import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -122,12 +118,11 @@ import java.util.concurrent.Future;
 import timber.log.Timber;
 
 
-@RequiresApi(api = Build.VERSION_CODES.O)
 public class NewsModuleActivity extends AppCompatActivity implements SimpleGestureListener {
     String device_id = "";
     String text_size_string = "1";
 
-    private ActivityResultLauncher<Void> shareLauncher;
+    //    private ActivityResultLauncher<Void> shareLauncher;
     volatile boolean activityStopped = false;
     volatile boolean activityEnd = false;
     boolean share_clicked = false;
@@ -346,7 +341,7 @@ public class NewsModuleActivity extends AppCompatActivity implements SimpleGestu
         full_en.add('Ｍ');
     }
 
-    static String TAG = "NewsModuleActivity";
+//    static String TAG = "NewsModuleActivity";
 
     public static boolean is_except(Character c) {
         return ch_except.contains(c);
@@ -364,8 +359,7 @@ public class NewsModuleActivity extends AppCompatActivity implements SimpleGestu
         return full_en.contains(c);
     }
 
-    @SuppressLint({"ClickableViewAccessibility", "HardwareIds"})
-    @RequiresApi(api = Build.VERSION_CODES.O)
+    @SuppressLint({"HardwareIds"})
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -783,9 +777,10 @@ public class NewsModuleActivity extends AppCompatActivity implements SimpleGestu
                         ((LinearLayout) findViewById(R.id.layout_inside)).addView(myTextViewsSrc);
                         //put img into layout ######################################################
                         final ImageView imageView = new ImageView(NewsModuleActivity.this);
-                        if(!mImg.equals("NA") ){
+                        if(!mImg.equals("NA") ) {
                             has_img = 1;
-                            new DownloadImageTask(imageView).execute(mImg);
+                            loadImageWithGlide(imageView.getContext(), mImg, imageView, null);
+//                            new DownloadImageTask(imageView).execute(mImg);
                             ((LinearLayout) findViewById(R.id.layout_inside)).addView(imageView);
                         }
                         //put content into layut
@@ -1031,10 +1026,10 @@ public class NewsModuleActivity extends AppCompatActivity implements SimpleGestu
                         VisibleChecker visibleChecker = new VisibleChecker();
                         Future<Integer> future1 = visibleChecker.visibility_check(1, 0);
                     } else {
-                        Log.d(TAG, "No such document");
+                        Timber.d("No such document");
                     }
                 } else {
-                    Log.d(TAG, "get failed with ", task.getException());
+                    Timber.d(task.getException(), "get failed with ");
                 }
             }
         });
@@ -1046,23 +1041,22 @@ public class NewsModuleActivity extends AppCompatActivity implements SimpleGestu
             addReadingBehavior();
             first_in = false;
         }
-        Log.d("log: activity cycle", "NewsModuleActivity On start");
+        Timber.d("NewsModuleActivity On start");
         activityStopped = false;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("log: activity cycle", "NewsModuleActivity On resume");
+        Timber.d("NewsModuleActivity On resume");
         activityStopped = false;
-        //isScreenOn(R.layout.activity_news_detail);
         in_time = System.currentTimeMillis();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d("log: activity cycle", "NewsModuleActivity On pause");
+        Timber.d("NewsModuleActivity On pause");
         activityStopped = true;
         myReadingBehavior.setPauseOnPage(myReadingBehavior.getPauseOnPage() + 1);
         long tmp = myReadingBehavior.getTimeOnPage() + (System.currentTimeMillis() - in_time) / 1000;
@@ -1208,79 +1202,35 @@ public class NewsModuleActivity extends AppCompatActivity implements SimpleGestu
 //        in_time = System.currentTimeMillis();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onDestroy() {
-        Log.d("log: activity cycle", "NewsHybridActivity On destroy");
-//        Map<String, Object> log_service = new HashMap<>();
-//        log_service.put("service_timestamp", Timestamp.now());
-//        log_service.put("flag", false);
-//        log_service.put("cycle", "destroy");
-//        log_service.put("activity", "NewsModuleActivity");
-//        db.collection("test_users")
-//                .document(device_id)
-//                .collection("notification_service")
-//                .document(String.valueOf(Timestamp.now()))
-//                .set(log_service);
         super.onDestroy();
-        Log.d("log: activity cycle", "NewsModuleActivity On destroy");
+        Timber.d("NewsModuleActivity On destroy");
         activityEnd = true;
-
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         supportFinishAfterTransition();
-        if (!self_trigger){
+        if (!self_trigger) {
             Intent intent = new Intent(NewsModuleActivity.this, NewsHybridActivity.class);
             startActivity(intent);
         }
-
     }
 
-    public int pxToDp(int px, Context tmp) {
-        DisplayMetrics displayMetrics = tmp.getResources().getDisplayMetrics();
+    public int pxToDp(int px, Context context) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         return Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
     private boolean isChineseChar(char c) {
         Character.UnicodeBlock ub = Character.UnicodeBlock.of(c);
-        if (ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS
+        return ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS
                 || ub == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
                 || ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A
                 || ub == Character.UnicodeBlock.GENERAL_PUNCTUATION
-                || ub == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION ) {
-            return true;
-        }
-        return false;
-    }
-
-    //image download ###############################################################################
-    private static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        @SuppressLint("StaticFieldLeak")
-        ImageView bmImage;
-
-        public DownloadImageTask(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", Objects.requireNonNull(e.getMessage()));
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
-        }
+                || ub == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION;
     }
 
     @Override
@@ -1289,7 +1239,6 @@ public class NewsModuleActivity extends AppCompatActivity implements SimpleGestu
         return true;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -1304,7 +1253,7 @@ public class NewsModuleActivity extends AppCompatActivity implements SimpleGestu
                         DocumentSnapshot document = task.getResult();
                         assert document != null;
                         if (document.exists()) {
-                            Log.d("log: firebase", "Success");
+                            Timber.d("Success");
                             List<String> share_result = (List<String>) document.get(READING_BEHAVIOR_SHARE);
                             share_result.add("none");
 //                                share_result.set(0,"none");
@@ -1528,10 +1477,5 @@ public class NewsModuleActivity extends AppCompatActivity implements SimpleGestu
                 )//auto
                 .addOnSuccessListener(aVoid -> Log.d("log: firebase update", "DocumentSnapshot successfully updated!"))
                 .addOnFailureListener(e -> Log.w("log: firebase update", "Error updating document", e));
-
-
-
     }
-
-
 }
