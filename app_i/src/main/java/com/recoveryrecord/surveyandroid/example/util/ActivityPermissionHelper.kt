@@ -46,7 +46,7 @@ import androidx.core.app.ActivityCompat
 import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.example.model.PermissionType
 
-@RequiresApi(Build.VERSION_CODES.Q)
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 fun Activity.requestPermission(request: PermissionType) {
     if (ActivityCompat.shouldShowRequestPermissionRationale(
             this,
