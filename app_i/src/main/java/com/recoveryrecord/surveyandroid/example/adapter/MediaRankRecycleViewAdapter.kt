@@ -16,34 +16,41 @@ import com.recoveryrecord.surveyandroid.example.ui.ItemTouchHelperAdapter
 
 class MediaRankRecycleViewAdapter(
     private val dataModelArrayList: ArrayList<Media>,
-    private val context: Context
+    private val context: Context,
 ) : RecyclerView.Adapter<MediaRankRecycleViewAdapter.ViewHolder>(),
     ItemTouchHelperAdapter {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): ViewHolder {
         return ViewHolder(
             LayoutInflater.from(
-                context
-            ).inflate(R.layout.media_rv_item, parent, false)
+                context,
+            ).inflate(R.layout.media_rv_item, parent, false),
         )
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: ViewHolder,
+        position: Int,
+    ) {
         val (media) = dataModelArrayList[position]
         holder.newsMedia.text = media
-        val mediaDrawableId = when (media) {
-            MediaType.Chinatimes.chineseId -> R.drawable.ct
-            MediaType.Cna.chineseId -> R.drawable.cna
-            MediaType.Cts.chineseId -> R.drawable.cts
-            MediaType.Ebc.chineseId -> R.drawable.ebc
-            MediaType.Ltn.chineseId -> R.drawable.ltn
-            MediaType.Storm.chineseId -> R.drawable.storm
-            MediaType.Udn.chineseId -> R.drawable.udn
-            MediaType.Ettoday.chineseId -> R.drawable.ettoday
-            MediaType.Setn.chineseId -> R.drawable.setn
-            else -> R.drawable.storm // Default drawable
-        }
-//loadImageWithGlide(context, mediaDrawableId)
+        val mediaDrawableId =
+            when (media) {
+                MediaType.Chinatimes.chineseId -> R.drawable.ct
+                MediaType.Cna.chineseId -> R.drawable.cna
+                MediaType.Cts.chineseId -> R.drawable.cts
+                MediaType.Ebc.chineseId -> R.drawable.ebc
+                MediaType.Ltn.chineseId -> R.drawable.ltn
+                MediaType.Storm.chineseId -> R.drawable.storm
+                MediaType.Udn.chineseId -> R.drawable.udn
+                MediaType.Ettoday.chineseId -> R.drawable.ettoday
+                MediaType.Setn.chineseId -> R.drawable.setn
+                else -> R.drawable.storm // Default drawable
+            }
+// loadImageWithGlide(context, mediaDrawableId)
 //        val bitmap = (context.resources.getDrawable(mediaDrawableId) as BitmapDrawable).bitmap
 //        val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 36, 36, true)
 //        val drawable = BitmapDrawable(context.resources, scaledBitmap)
@@ -57,7 +64,10 @@ class MediaRankRecycleViewAdapter(
         return dataModelArrayList.size
     }
 
-    override fun onItemMove(fromPosition: Int, toPosition: Int) {
+    override fun onItemMove(
+        fromPosition: Int,
+        toPosition: Int,
+    ) {
         val fromNote = dataModelArrayList[fromPosition]
         dataModelArrayList.remove(fromNote)
         dataModelArrayList.add(toPosition, fromNote)

@@ -47,7 +47,6 @@ import timber.log.Timber
 const val ACTIVITY_UPDATES_INTERVAL = 1000L
 
 class DetectedActivityService : Service() {
-
     inner class LocalBinder : Binder() {
         val serverInstance: DetectedActivityService
             get() = this@DetectedActivityService
@@ -63,15 +62,16 @@ class DetectedActivityService : Service() {
     private fun requestActivityUpdates() {
         if (ActivityCompat.checkSelfPermission(
                 this,
-                Manifest.permission.ACTIVITY_RECOGNITION
+                Manifest.permission.ACTIVITY_RECOGNITION,
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             return
         }
-        val task = ActivityRecognition.getClient(this).requestActivityUpdates(
-            ACTIVITY_UPDATES_INTERVAL,
-            DetectedActivityReceiver.getPendingIntent(this)
-        )
+        val task =
+            ActivityRecognition.getClient(this).requestActivityUpdates(
+                ACTIVITY_UPDATES_INTERVAL,
+                DetectedActivityReceiver.getPendingIntent(this),
+            )
 
         task.addOnSuccessListener {
             Timber.d(getString(R.string.transition_update_request_success))
@@ -85,13 +85,14 @@ class DetectedActivityService : Service() {
     private fun removeActivityUpdates() {
         if (ActivityCompat.checkSelfPermission(
                 this,
-                Manifest.permission.ACTIVITY_RECOGNITION
+                Manifest.permission.ACTIVITY_RECOGNITION,
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             return
         }
-        val task = ActivityRecognition.getClient(this)
-            .removeActivityTransitionUpdates(DetectedActivityReceiver.getPendingIntent(this))
+        val task =
+            ActivityRecognition.getClient(this)
+                .removeActivityTransitionUpdates(DetectedActivityReceiver.getPendingIntent(this))
 
         task.run {
             addOnSuccessListener {

@@ -22,7 +22,7 @@ object Config {
 //    var TimeLeftInMillis = SeesionCountDown
 //    var LastPauseTime: SimpleDateFormat? = null
     const val DATE_FORMAT_for_storing = "yyyy-MM-dd HH:mm:ss"
-    const val DATE_FORMAT_NOW = "yyyy/MM/dd HH:mm:ss" //yyyy-MM-dd HH:mm:ss Z
+    const val DATE_FORMAT_NOW = "yyyy/MM/dd HH:mm:ss" // yyyy-MM-dd HH:mm:ss Z
 
     //    const val MILLISECONDS_PER_MINUTE = SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND
     private const val DATE_FORMAT_NOW_SLASH = "yyyy/MM/dd HH:mm:ss Z"
@@ -30,7 +30,7 @@ object Config {
     @JvmStatic
     val currentTimeInMillis: Long
         get() {
-            //get timzone
+            // get timzone
             val tz = TimeZone.getDefault()
             val cal = Calendar.getInstance(tz)
             return cal.timeInMillis
@@ -47,7 +47,10 @@ object Config {
     }
 
     @JvmStatic
-    fun getTimeString(time: Long, sdf: SimpleDateFormat): String {
+    fun getTimeString(
+        time: Long,
+        sdf: SimpleDateFormat,
+    ): String {
         return sdf.format(time)
     }
 

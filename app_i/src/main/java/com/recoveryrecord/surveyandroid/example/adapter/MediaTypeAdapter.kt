@@ -8,7 +8,7 @@ import com.recoveryrecord.surveyandroid.example.ui.MainFragment
 
 class MediaTypeAdapter(
     fm: FragmentManager?,
-    private val tabs: Array<String>
+    private val tabs: Array<String>,
 ) : FragmentPagerAdapter(fm!!) {
     override fun getItem(position: Int): Fragment {
         return MainFragment.newInstance(MediaType.getEnglish(tabs[position]))
@@ -22,4 +22,3 @@ class MediaTypeAdapter(
         return tabs[position]
     }
 }
-

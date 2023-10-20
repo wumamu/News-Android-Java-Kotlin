@@ -19,9 +19,10 @@ class PushHistoryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_push_history)
         title = "歷史推播紀錄"
-        val mSectionsPagerAdapter = SectionsPagerAdapter(
-            supportFragmentManager
-        )
+        val mSectionsPagerAdapter =
+            SectionsPagerAdapter(
+                supportFragmentManager,
+            )
         val mViewPager = findViewById<ViewPager>(R.id.container)
         mViewPager.adapter = mSectionsPagerAdapter
         val tabLayout = findViewById<TabLayout>(R.id.tabs)
@@ -29,7 +30,7 @@ class PushHistoryActivity : AppCompatActivity() {
     }
 
     class SectionsPagerAdapter(fm: FragmentManager?) : FragmentPagerAdapter(
-        fm!!
+        fm!!,
     ) {
         override fun getItem(position: Int): Fragment {
             return when (position) {
@@ -45,7 +46,9 @@ class PushHistoryActivity : AppCompatActivity() {
         override fun getPageTitle(position: Int): CharSequence? {
             return if (position == 0) {
                 "近50則"
-            } else null
+            } else {
+                null
+            }
         }
     }
 }

@@ -58,7 +58,6 @@ import timber.log.Timber
 
 @AndroidEntryPoint
 class DetectedActivityReceiver : BroadcastReceiver() {
-
     @Inject
     lateinit var db: FirebaseFirestore
 
@@ -68,32 +67,40 @@ class DetectedActivityReceiver : BroadcastReceiver() {
         private const val DETECTED_PENDING_INTENT_REQUEST_CODE = 100
         private const val RELIABLE_CONFIDENCE = 75
 
-        val activityTypes = lazy {
-            listOf(
-                ActivityType("automotive", DetectedActivity.IN_VEHICLE),
-                ActivityType("cycling", DetectedActivity.ON_BICYCLE),
-                ActivityType("walking", DetectedActivity.ON_FOOT),
-                ActivityType("running", DetectedActivity.RUNNING),
-                ActivityType("stationary", DetectedActivity.STILL),
-                ActivityType("tilting", DetectedActivity.TILTING),
-                ActivityType("Walking", DetectedActivity.WALKING),
-                ActivityType("Unknown", DetectedActivity.UNKNOWN)
-            )
-        }
+        val activityTypes =
+            lazy {
+                listOf(
+                    ActivityType("automotive", DetectedActivity.IN_VEHICLE),
+                    ActivityType("cycling", DetectedActivity.ON_BICYCLE),
+                    ActivityType("walking", DetectedActivity.ON_FOOT),
+                    ActivityType("running", DetectedActivity.RUNNING),
+                    ActivityType("stationary", DetectedActivity.STILL),
+                    ActivityType("tilting", DetectedActivity.TILTING),
+                    ActivityType("Walking", DetectedActivity.WALKING),
+                    ActivityType("Unknown", DetectedActivity.UNKNOWN),
+                )
+            }
 
         fun getPendingIntent(context: Context): PendingIntent {
             val intent = Intent(context, DetectedActivityReceiver::class.java)
             return PendingIntent.getBroadcast(
-                context, DETECTED_PENDING_INTENT_REQUEST_CODE, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                context,
+                DETECTED_PENDING_INTENT_REQUEST_CODE,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
             )
         }
     }
 
     @SuppressLint("HardwareIds")
-    override fun onReceive(context: Context, intent: Intent) {
-        if (deviceId.isEmpty()) deviceId =
-            Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID);
+    override fun onReceive(
+        context: Context,
+        intent: Intent,
+    ) {
+        if (deviceId.isEmpty()) {
+            deviceId =
+                Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
+        }
 
         if (ActivityRecognitionResult.hasResult(intent)) {
             val result = ActivityRecognitionResult.extractResult(intent)
@@ -121,14 +128,14 @@ class DetectedActivityReceiver : BroadcastReceiver() {
     }
 
     private fun updateActivityData(activity: DetectedActivity) {
-
-        val updateData = HashMap<String, Any>().apply {
-            activityTypes.value.forEach { put(it.key, false) }
-        }.apply {
-            put(USER_DEVICE_ID, deviceId)
-            put(USER_ID, "")
-            put(CURRENT_TIME, Timestamp.now())
-        }
+        val updateData =
+            HashMap<String, Any>().apply {
+                activityTypes.value.forEach { put(it.key, false) }
+            }.apply {
+                put(USER_DEVICE_ID, deviceId)
+                put(USER_ID, "")
+                put(CURRENT_TIME, Timestamp.now())
+            }
 
         val activityTypeKey = activityTypes.value.find { it.type == activity.type }?.key
 

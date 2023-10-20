@@ -14,9 +14,10 @@ data class News(
     var tags: List<String>? = null,
     var content: List<String>? = null,
     var wordCount: Int = 0,
-    var update: Timestamp? = null
+    var update: Timestamp? = null,
 ) {
     val isValid: Boolean
-        get() = title != null && media != null && id != null && pubDate != null &&
-                title != NO_VALUE && media != NO_VALUE && id != NO_VALUE
+        get() =
+            title != null && media != null && id != null && pubDate != null &&
+                    title != NO_VALUE && media != NO_VALUE && id != NO_VALUE
 }

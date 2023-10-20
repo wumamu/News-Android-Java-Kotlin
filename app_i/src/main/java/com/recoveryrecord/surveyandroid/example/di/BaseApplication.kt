@@ -12,7 +12,6 @@ import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 import timber.log.Timber.Forest.plant
 
-
 @HiltAndroidApp
 class BaseApplication : Application() {
     override fun onCreate() {
@@ -26,14 +25,14 @@ class BaseApplication : Application() {
                 addPlugin(
                     SharedPreferencesFlipperPlugin(
                         this@BaseApplication,
-                        this@BaseApplication.packageName + "_preferences"
-                    )
+                        this@BaseApplication.packageName + "_preferences",
+                    ),
                 )
                 addPlugin(
                     InspectorFlipperPlugin(
                         this@BaseApplication,
-                        DescriptorMapping.withDefaults()
-                    )
+                        DescriptorMapping.withDefaults(),
+                    ),
                 )
             }
             client.start()

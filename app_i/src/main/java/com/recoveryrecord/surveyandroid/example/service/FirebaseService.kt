@@ -67,7 +67,6 @@ class FirebaseService : FirebaseMessagingService() {
 
 //    private var mediaPushResult: Set<String> = emptySet()
 
-
     @Inject
     lateinit var db: FirebaseFirestore
 
@@ -110,7 +109,6 @@ class FirebaseService : FirebaseMessagingService() {
 //        sharedPref.unregisterOnSharedPreferenceChangeListener(sharedPrefChangeListener)
     }
 
-
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
         Timber.d("onMessageReceived")
@@ -140,7 +138,7 @@ class FirebaseService : FirebaseMessagingService() {
     override fun handleIntent(intent: Intent?) {
         super.handleIntent(intent)
         try {
-            Timber.i("handleIntent:${intent.toString()}")
+            Timber.i("handleIntent:$intent")
             val data = intent?.extras as Bundle
             val remoteMessage = RemoteMessage(data)
             Timber.d("From: " + remoteMessage.from)
@@ -156,12 +154,13 @@ class FirebaseService : FirebaseMessagingService() {
 
     private fun handleRemoteMessage(dataMap: MutableMap<String, String>) {
         try {
-            val curNoti = NotificationData(
-                title = dataMap[Constants.NEWS_TITLE_KEY]!!,
-                media = dataMap[NEWS_MEDIA_KEY]!!,
-                newsId = dataMap[NEWS_ID_KEY]!!,
-                pubDate = dataMap.getOrDefault(Constants.NEWS_PUBDATE, null),
-            )
+            val curNoti =
+                NotificationData(
+                    title = dataMap[Constants.NEWS_TITLE_KEY]!!,
+                    media = dataMap[NEWS_MEDIA_KEY]!!,
+                    newsId = dataMap[NEWS_ID_KEY]!!,
+                    pubDate = dataMap.getOrDefault(Constants.NEWS_PUBDATE, null),
+                )
             // filter selected media
             val trigger =
                 true // (curNoti.media in mediaPushResult)//checkNotificationPreference(curNoti.media)
@@ -188,29 +187,31 @@ class FirebaseService : FirebaseMessagingService() {
         intent.putExtra(NEWS_ID_KEY, notification.newsId)
         intent.putExtra(NEWS_MEDIA_KEY, notification.media)
         val notificationId = getUniqueNotificationId()
-        val pendingIntent = PendingIntent.getActivity(
-            this,
-            System.currentTimeMillis().toInt(),
-            intent,
-            PendingIntent.FLAG_IMMUTABLE,
-        )
+        val pendingIntent =
+            PendingIntent.getActivity(
+                this,
+                System.currentTimeMillis().toInt(),
+                intent,
+                PendingIntent.FLAG_IMMUTABLE,
+            )
         val extras = Bundle()
         extras.putString(NEWS_ID_KEY, notification.newsId)
 
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        val notificationBuilder = NotificationCompat
-            .Builder(this, NEWS_CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher)
-            .setContentTitle(notification.title)
-            .setContentText(MediaType.getChinese(notification.media))
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setAutoCancel(true)
-            .setSound(defaultSoundUri)
-            .setVibrate(VIBRATE_EFFECT)
-            .setContentIntent(pendingIntent)
-            .setCategory(Notification.CATEGORY_RECOMMENDATION)
-            .setOnlyAlertOnce(true)
-            .setExtras(extras)
+        val notificationBuilder =
+            NotificationCompat
+                .Builder(this, NEWS_CHANNEL_ID)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(notification.title)
+                .setContentText(MediaType.getChinese(notification.media))
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                .setVibrate(VIBRATE_EFFECT)
+                .setContentIntent(pendingIntent)
+                .setCategory(Notification.CATEGORY_RECOMMENDATION)
+                .setOnlyAlertOnce(true)
+                .setExtras(extras)
         // Do not set group manually, it automatically done for you
         //    .setGroup(GROUP_NEWS)
 
@@ -218,24 +219,28 @@ class FirebaseService : FirebaseMessagingService() {
         notificationManager.notify(notificationId, notificationBuilder.build())
     }
 
-    private suspend fun insertRemotePushNews(notification: NotificationData, trigger: Boolean) {
+    private suspend fun insertRemotePushNews(
+        notification: NotificationData,
+        trigger: Boolean,
+    ) {
         val docRef =
             db.collection(PUSH_NEWS_COLLECTION).document(getPushNewsDocId(notification.newsId))
-        val updateData = hashMapOf<String, Any>(
-            PUSH_NEWS_DOC_ID to getPushNewsDocId(notification.newsId),
-            PUSH_NEWS_USER_ID to (auth.currentUser?.uid ?: ""),
-            PUSH_NEWS_DEVICE_ID to deviceId,
-            PUSH_NEWS_TYPE to if (trigger) NOTIFICATION_ADD else NOTIFICATION_SKIP, //NO_VALUE,
-            PUSH_NEWS_ID to notification.newsId,
-            PUSH_NEWS_TITLE to notification.title,
-            PUSH_NEWS_MEDIA to notification.media,
-            PUSH_NEWS_PUBDATE to (notification.pubDate?.toTimeStamp() ?: ZERO_TIME),
-            PUSH_NEWS_NOTI_TIME to Timestamp.now(),
-            PUSH_NEWS_RECEIEVE_TIME to ZERO_TIME,
-            PUSH_NEWS_OPEN_TIME to ZERO_TIME,
-            PUSH_NEWS_REMOVE_TIME to ZERO_TIME,
-            PUSH_NEWS_REMOVE_TYPE to NO_VALUE,
-        )
+        val updateData =
+            hashMapOf<String, Any>(
+                PUSH_NEWS_DOC_ID to getPushNewsDocId(notification.newsId),
+                PUSH_NEWS_USER_ID to (auth.currentUser?.uid ?: ""),
+                PUSH_NEWS_DEVICE_ID to deviceId,
+                PUSH_NEWS_TYPE to if (trigger) NOTIFICATION_ADD else NOTIFICATION_SKIP, // NO_VALUE,
+                PUSH_NEWS_ID to notification.newsId,
+                PUSH_NEWS_TITLE to notification.title,
+                PUSH_NEWS_MEDIA to notification.media,
+                PUSH_NEWS_PUBDATE to (notification.pubDate?.toTimeStamp() ?: ZERO_TIME),
+                PUSH_NEWS_NOTI_TIME to Timestamp.now(),
+                PUSH_NEWS_RECEIEVE_TIME to ZERO_TIME,
+                PUSH_NEWS_OPEN_TIME to ZERO_TIME,
+                PUSH_NEWS_REMOVE_TIME to ZERO_TIME,
+                PUSH_NEWS_REMOVE_TYPE to NO_VALUE,
+            )
         insertRemote(docRef, updateData) {
             Timber.d("insertRemotePushNews success")
         }
@@ -243,13 +248,14 @@ class FirebaseService : FirebaseMessagingService() {
 
     private suspend fun addRemoteFcm(newToken: String) {
         // TODO sync with ios
-        val newData = hashMapOf(
-            USER_DEVICE_ID to deviceId,
-            FCM_TOKEN to newToken,
-            PUSH_MEDIA_SELECTION to List(9) { "${it + 1}" },
-            UPDATE_TIME to Timestamp.now(),
+        val newData =
+            hashMapOf(
+                USER_DEVICE_ID to deviceId,
+                FCM_TOKEN to newToken,
+                PUSH_MEDIA_SELECTION to List(9) { "${it + 1}" },
+                UPDATE_TIME to Timestamp.now(),
 //            "u_id" to (auth.currentUser?.uid ?: "")
-        )
+            )
         insertRemote(db.collection(FCM_COLLECTION).document(newToken), newData) {
             Timber.d("FCM token update success")
         }

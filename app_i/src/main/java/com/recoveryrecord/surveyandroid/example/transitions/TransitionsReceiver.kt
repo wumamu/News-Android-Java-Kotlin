@@ -43,9 +43,7 @@ import com.google.android.gms.location.ActivityTransitionResult
 import com.recoveryrecord.surveyandroid.example.BuildConfig
 import com.recoveryrecord.surveyandroid.example.detectedactivity.SupportedActivity
 
-
 class TransitionsReceiver : BroadcastReceiver() {
-
     var action: ((SupportedActivity) -> Unit)? = null
 
     companion object {
@@ -56,13 +54,18 @@ class TransitionsReceiver : BroadcastReceiver() {
         fun getPendingIntent(context: Context): PendingIntent {
             val intent = Intent(TRANSITIONS_RECEIVER_ACTION)
             return PendingIntent.getBroadcast(
-                context, TRANSITION_PENDING_INTENT_REQUEST_CODE, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                context,
+                TRANSITION_PENDING_INTENT_REQUEST_CODE,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
             )
         }
     }
 
-    override fun onReceive(context: Context, intent: Intent) {
+    override fun onReceive(
+        context: Context,
+        intent: Intent,
+    ) {
         if (ActivityTransitionResult.hasResult(intent)) {
             val result = ActivityTransitionResult.extractResult(intent)
             result?.let { handleTransitionEvents(it.transitionEvents) }

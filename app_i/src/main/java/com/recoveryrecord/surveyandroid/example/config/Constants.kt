@@ -1,10 +1,10 @@
 package com.recoveryrecord.surveyandroid.example.config
 
 object Constants {
-    //email
+    // email
     const val OUR_EMAIL = "crctaiwan@gmail.com"
 
-    //other
+    // other
     const val CHINA_TIMES_PACKAGE_NAME = "cc.nexdoor.ct.activity"
     const val CNA_PACKAGE_NAME = "m.cna.com.tw.App"
     const val UDN_PACKAGE_NAME = "com.udn.news"
@@ -15,7 +15,7 @@ object Constants {
     const val STORM_PACKAGE_NAME = "cc.nexdoor.stormmedia"
     const val SETS_PACKAGE_NAME = "com.set.newsapp"
 
-    const val NO_VALUE = "NA";
+    const val NO_VALUE = "NA"
 
     const val NEWS_LIMIT_PER_PAGE = 30L
     const val PUSH_HISTORY_LIMIT_PER_PAGE = 50L
@@ -36,11 +36,11 @@ object Constants {
     const val NEWS_MEDIA_KEY = "media"
     const val NEWS_TITLE_KEY = "title"
 
-    //FIRESTORE FIELD###############################################################################
-    //FIRESTORE FIELD###############################################################################
-    //FIRESTORE FIELD###############################################################################
-    //FIRESTORE FIELD###############################################################################
-    //FIRESTORE FIELD###############################################################################
+    // FIRESTORE FIELD###############################################################################
+    // FIRESTORE FIELD###############################################################################
+    // FIRESTORE FIELD###############################################################################
+    // FIRESTORE FIELD###############################################################################
+    // FIRESTORE FIELD###############################################################################
     /*
         User Collection field
      */
@@ -147,8 +147,7 @@ object Constants {
      */
     const val FCM_TOKEN = "fcm_token"
 
-
-    //SHARE PREFERENCE #############################################################################
+    // SHARE PREFERENCE #############################################################################
     const val SHARE_PREFERENCE_CLEAR_CACHE = "SharePreferenceClear"
     const val SHARE_PREFERENCE_TEST_SIZE = "text_size"
     const val SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION = "media_select"
@@ -156,7 +155,6 @@ object Constants {
     const val SHARE_PREFERENCE_USER_ID = "signature"
     const val UNKNOWN_USER_ID = "尚未設定實驗編號"
     const val MEDIA_ORDER = "media_order"
-
 
     const val READ_TOTAL = "ReadTotal_"
 
@@ -188,7 +186,7 @@ object Constants {
     const val CHINATIMES_CHI = "旺旺中時"
     const val UDN_CHI = "聯合"
 
-    //fragment type
+    // fragment type
     const val PUSH_NEWS = "push_news"
     const val READING_ALL = "reading_all"
     const val READING_DAILY = "reading_daily"

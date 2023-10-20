@@ -10,11 +10,14 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 /**
  * Block horizontal scroll
  */
-class CustomSwipeRefreshLayout @JvmOverloads constructor(
+class CustomSwipeRefreshLayout
+@JvmOverloads
+constructor(
     context: Context,
-    attrs: AttributeSet? = null
+    attrs: AttributeSet? = null,
 ) : SwipeRefreshLayout(
-    context, attrs
+    context,
+    attrs,
 ) {
     private val mTouchSlop: Int
     private var mPrevx = 0f

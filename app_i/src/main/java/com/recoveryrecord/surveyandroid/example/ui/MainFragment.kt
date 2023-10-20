@@ -10,18 +10,18 @@ import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.example.adapter.NewsCategoryPagerAdapter
 import com.recoveryrecord.surveyandroid.example.model.MediaType
 
-
 class MainFragment : Fragment() {
-
     private var source: String = ""
 
     companion object {
         const val MEDIA_SOURCE = "media_source"
+
         fun newInstance(source: String) =
             MainFragment().apply {
-                arguments = Bundle().apply {
-                    putString(MEDIA_SOURCE, source)
-                }
+                arguments =
+                    Bundle().apply {
+                        putString(MEDIA_SOURCE, source)
+                    }
             }
     }
 
@@ -35,7 +35,7 @@ class MainFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         val view = inflater.inflate(R.layout.nested_layer1_media, container, false)
         val mViewPager = view.findViewById<View>(R.id.container_main) as ViewPager
@@ -43,7 +43,7 @@ class MainFragment : Fragment() {
             NewsCategoryPagerAdapter(
                 childFragmentManager,
                 source,
-                MediaType.getCategoryMapByEnglishId(source)
+                MediaType.getCategoryMapByEnglishId(source),
             )
         mViewPager.adapter = mNewsCategoryPagerAdapter
         return view

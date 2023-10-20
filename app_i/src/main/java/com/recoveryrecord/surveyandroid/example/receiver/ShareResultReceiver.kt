@@ -22,13 +22,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-
 @AndroidEntryPoint
 class ShareResultReceiver : BroadcastReceiver() {
-
     @Inject
     lateinit var db: FirebaseFirestore
-    override fun onReceive(context: Context, intent: Intent) {
+
+    override fun onReceive(
+        context: Context,
+        intent: Intent,
+    ) {
         val componentName: ComponentName? = intent.getParcelableExtra(Intent.EXTRA_CHOSEN_COMPONENT)
         Timber.d("componentName: $componentName")
         try {
@@ -49,7 +51,10 @@ class ShareResultReceiver : BroadcastReceiver() {
     }
 
     @SuppressLint("HardwareIds")
-    private fun updateRemoteShare(context: Context, appName: String) {
+    private fun updateRemoteShare(
+        context: Context,
+        appName: String,
+    ) {
         val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
         val docId = sharedPrefs.getString(TMP_ACCESS_DOC_ID, NO_VALUE) ?: NO_VALUE
         if (docId.isBlank()) return
@@ -62,17 +67,17 @@ class ShareResultReceiver : BroadcastReceiver() {
                 if (remoteShareData.isNotEmpty()) remoteShareData.removeLast()
                 remoteShareData.add(appName)
             }
-            val updateData = hashMapOf<String, Any>(
-                Constants.READING_BEHAVIOR_SHARE to remoteShareData
-            )
+            val updateData =
+                hashMapOf<String, Any>(
+                    Constants.READING_BEHAVIOR_SHARE to remoteShareData,
+                )
             updateRemote(
                 docRef,
                 updateData,
-                onSuccess = { Timber.d("Update app share") }
+                onSuccess = { Timber.d("Update app share") },
             ) { e ->
                 Timber.w("Fail to update remote $e")
             }
         }
     }
 }
-

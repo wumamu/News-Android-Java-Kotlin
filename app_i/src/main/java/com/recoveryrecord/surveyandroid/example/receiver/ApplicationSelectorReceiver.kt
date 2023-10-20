@@ -7,7 +7,10 @@ import android.content.pm.PackageManager.NameNotFoundException
 import timber.log.Timber
 
 class ApplicationSelectorReceiver : BroadcastReceiver() {
-    override fun onReceive(context: Context, intent: Intent) {
+    override fun onReceive(
+        context: Context,
+        intent: Intent,
+    ) {
         var docId: String? = ""
         // Get package manager
         val packageManager = context.packageManager

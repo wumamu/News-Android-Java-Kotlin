@@ -50,12 +50,13 @@ import com.recoveryrecord.surveyandroid.example.model.PermissionType
 fun Activity.requestPermission(request: PermissionType) {
     if (ActivityCompat.shouldShowRequestPermissionRationale(
             this,
-            request.string
+            request.string,
         ).not()
     ) {
         ActivityCompat.requestPermissions(
-            this, arrayOf(request.string),
-            request.code
+            this,
+            arrayOf(request.string),
+            request.code,
         )
     } else {
         showRationalDialog(this, request)
@@ -70,15 +71,19 @@ fun Activity.isPermissionGranted(request: PermissionType): Boolean {
     return if (isAndroidQOrLater.not()) {
         true
     } else {
-        PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(
-            this,
-            request.string
-        )
+        PackageManager.PERMISSION_GRANTED ==
+                ActivityCompat.checkSelfPermission(
+                    this,
+                    request.string,
+                )
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-private fun showRationalDialog(activity: Activity, request: PermissionType) {
+private fun showRationalDialog(
+    activity: Activity,
+    request: PermissionType,
+) {
     when (request) {
         PermissionType.ACTIVITY_RECOGNITION -> R.string.activity_recognition_permission_rational_dialog_title
         PermissionType.NOTIFICATION_PERMISSION -> R.string.notification_permission_rational_dialog_title
@@ -88,8 +93,9 @@ private fun showRationalDialog(activity: Activity, request: PermissionType) {
             setMessage(R.string.permission_rational_dialog_message)
             setPositiveButton(R.string.permission_rational_dialog_positive_button_text) { _, _ ->
                 ActivityCompat.requestPermissions(
-                    activity, arrayOf(request.string),
-                    request.code
+                    activity,
+                    arrayOf(request.string),
+                    request.code,
                 )
             }
             setNegativeButton(R.string.permission_rational_dialog_negative_button_text) { dialog, _ ->
@@ -100,11 +106,13 @@ private fun showRationalDialog(activity: Activity, request: PermissionType) {
             show()
         }
     }
-
 }
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-fun showSettingsDialog(activity: Activity, permissionType: PermissionType) {
+fun showSettingsDialog(
+    activity: Activity,
+    permissionType: PermissionType,
+) {
     when (permissionType) {
         PermissionType.ACTIVITY_RECOGNITION -> R.string.activity_recognition_settings_dialog_title
         PermissionType.NOTIFICATION_PERMISSION -> R.string.notification_settings_dialog_title

@@ -17,9 +17,10 @@ suspend fun fetchRemoteOne(
     onSuccess: (DocumentSnapshot) -> Unit = {},
 ) {
     try {
-        val documentSnapshot = withContext(Dispatchers.IO) {
-            document.get().await()
-        }
+        val documentSnapshot =
+            withContext(Dispatchers.IO) {
+                document.get().await()
+            }
         if (documentSnapshot.exists()) {
             onSuccess(documentSnapshot) // main thread
         } else {
@@ -35,12 +36,13 @@ suspend fun fetchRemoteAll(
     query: Query,
     onFailed: () -> Unit = {},
     onError: (Exception) -> Unit = {},
-    onSuccess: (QuerySnapshot) -> Unit = {}
+    onSuccess: (QuerySnapshot) -> Unit = {},
 ) {
     try {
-        val querySnapshot = withContext(Dispatchers.IO) {
-            query.get().await()
-        }
+        val querySnapshot =
+            withContext(Dispatchers.IO) {
+                query.get().await()
+            }
         if (!querySnapshot.isEmpty) {
             onSuccess(querySnapshot) // main thread
         } else {
@@ -56,7 +58,7 @@ suspend fun updateRemote(
     document: DocumentReference,
     newData: HashMap<String, Any>,
     onSuccess: () -> Unit = {},
-    onError: (Exception) -> Unit = {}
+    onError: (Exception) -> Unit = {},
 ) {
     try {
         withContext(Dispatchers.IO) {
