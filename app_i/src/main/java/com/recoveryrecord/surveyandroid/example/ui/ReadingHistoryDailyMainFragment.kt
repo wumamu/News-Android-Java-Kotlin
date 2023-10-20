@@ -19,23 +19,23 @@ class ReadingHistoryDailyMainFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         val view = inflater.inflate(R.layout.nested_layer1_readinghistory, container, false)
         val mViewPager = view.findViewById<View>(R.id.container_main) as ViewPager
-        val mSectionsPagerAdapter = SectionsPagerAdapter(
-            childFragmentManager
-        )
+        val mSectionsPagerAdapter =
+            SectionsPagerAdapter(
+                childFragmentManager,
+            )
         mViewPager.adapter = mSectionsPagerAdapter
         return view
     }
 
     private inner class SectionsPagerAdapter(
-        fm: FragmentManager?
+        fm: FragmentManager?,
     ) : FragmentPagerAdapter(
-        fm!!
+        fm!!,
     ) {
-
         override fun getItem(position: Int): Fragment {
             return HistoryFragment.newInstance(READING_DAILY, position + 1)
         }

@@ -8,8 +8,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class NewsViewModel @Inject constructor(
-    private val getNewsUseCase: GetNewsUseCase
+class NewsViewModel
+@Inject
+constructor(
+    private val getNewsUseCase: GetNewsUseCase,
 ) : ViewModel() {
     val dataModalArrayList: MutableLiveData<List<News>> = MutableLiveData()
 
@@ -17,9 +19,9 @@ class NewsViewModel @Inject constructor(
 //    val newsFlow = _newsFlow.asStateFlow()
 
 //    fun getNews(source: String, category: String, pageSize: Long = Constants.NEWS_LIMIT_PER_PAGE) {
-////        viewModelScope.launch {
-////            _newsFlow.value = getNewsUseCase(source, category)
-////        }
+// //        viewModelScope.launch {
+// //            _newsFlow.value = getNewsUseCase(source, category)
+// //        }
 //        viewModelScope.launch {
 //            // Perform time-consuming task using Dispatchers.IO
 //            val news = withContext(Dispatchers.IO) {

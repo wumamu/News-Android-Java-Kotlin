@@ -48,15 +48,16 @@ fun Activity.requestActivityTransitionUpdates() {
     val request = ActivityTransitionRequest(getActivitiesToTrack())
     if (ActivityCompat.checkSelfPermission(
             this,
-            Manifest.permission.ACTIVITY_RECOGNITION
+            Manifest.permission.ACTIVITY_RECOGNITION,
         ) != PackageManager.PERMISSION_GRANTED
     ) {
         return
     }
-    val task = ActivityRecognition.getClient(this).requestActivityTransitionUpdates(
-        request,
-        TransitionsReceiver.getPendingIntent(this)
-    )
+    val task =
+        ActivityRecognition.getClient(this).requestActivityTransitionUpdates(
+            request,
+            TransitionsReceiver.getPendingIntent(this),
+        )
 
     task.run {
         addOnSuccessListener {
@@ -71,14 +72,15 @@ fun Activity.requestActivityTransitionUpdates() {
 fun Activity.removeActivityTransitionUpdates() {
     if (ActivityCompat.checkSelfPermission(
             this,
-            Manifest.permission.ACTIVITY_RECOGNITION
+            Manifest.permission.ACTIVITY_RECOGNITION,
         ) != PackageManager.PERMISSION_GRANTED
     ) {
         return
     }
-    val task = ActivityRecognition.getClient(this).removeActivityTransitionUpdates(
-        TransitionsReceiver.getPendingIntent(this)
-    )
+    val task =
+        ActivityRecognition.getClient(this).removeActivityTransitionUpdates(
+            TransitionsReceiver.getPendingIntent(this),
+        )
 
     task.run {
         addOnSuccessListener {
@@ -97,36 +99,36 @@ private fun getActivitiesToTrack(): List<ActivityTransition> =
                 ActivityTransition.Builder()
                     .setActivityType(DetectedActivity.STILL)
                     .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                    .build()
+                    .build(),
             )
             add(
                 ActivityTransition.Builder()
                     .setActivityType(DetectedActivity.STILL)
                     .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                    .build()
+                    .build(),
             )
             add(
                 ActivityTransition.Builder()
                     .setActivityType(DetectedActivity.WALKING)
                     .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                    .build()
+                    .build(),
             )
             add(
                 ActivityTransition.Builder()
                     .setActivityType(DetectedActivity.WALKING)
                     .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                    .build()
+                    .build(),
             )
             add(
                 ActivityTransition.Builder()
                     .setActivityType(DetectedActivity.RUNNING)
                     .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                    .build()
+                    .build(),
             )
             add(
                 ActivityTransition.Builder()
                     .setActivityType(DetectedActivity.RUNNING)
                     .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                    .build()
+                    .build(),
             )
         }

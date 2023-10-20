@@ -23,9 +23,10 @@ class ReadHistoryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reading_history)
         title = "歷史閱讀紀錄"
-        val mSectionsPagerAdapter = SectionsPagerAdapter(
-            supportFragmentManager
-        )
+        val mSectionsPagerAdapter =
+            SectionsPagerAdapter(
+                supportFragmentManager,
+            )
         val mViewPager = findViewById<ViewPager>(R.id.container)
         mViewPager.adapter = mSectionsPagerAdapter
         val tabLayout = findViewById<TabLayout>(R.id.tabs)
@@ -33,7 +34,7 @@ class ReadHistoryActivity : AppCompatActivity() {
     }
 
     class SectionsPagerAdapter(fm: FragmentManager?) : FragmentPagerAdapter(
-        fm!!
+        fm!!,
     ) {
         override fun getItem(position: Int): Fragment {
             return when (position) {

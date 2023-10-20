@@ -35,7 +35,7 @@ class ReadHistoryTimeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         val view = inflater.inflate(R.layout.activity_read_history_weekly, container, false)
         barChart = view.findViewById(R.id.barChart_view)
@@ -45,17 +45,18 @@ class ReadHistoryTimeFragment : Fragment() {
     }
 
     private fun barChartIntiSetting() {
-        val modifyDescription = Description().apply {
-            isEnabled = false
-            text = "NewsMoment螢幕使用分鐘數"
-        }
+        val modifyDescription =
+            Description().apply {
+                isEnabled = false
+                text = "NewsMoment螢幕使用分鐘數"
+            }
         barChart.apply {
             setDrawBorders(false)
             description = modifyDescription
             animateY(1000)
             axisLeft.axisMinimum = 0f
         }
-        //set label
+        // set label
         val calendar = Calendar.getInstance()
         calendar.time = Timestamp.now().toDate()
         calendar.add(Calendar.DAY_OF_YEAR, -6)
@@ -67,8 +68,8 @@ class ReadHistoryTimeFragment : Fragment() {
         barChart.xAxis.valueFormatter = IndexAxisValueFormatter(xAxisLabel)
         barChart.xAxis.apply {
             position = XAxis.XAxisPosition.BOTTOM
-            setDrawAxisLine(true) //label 上一條橫線
-            setDrawGridLines(false) //穿越bar的線
+            setDrawAxisLine(true) // label 上一條橫線
+            setDrawGridLines(false) // 穿越bar的線
         }
         barChart.axisLeft.apply {
             setDrawAxisLine(true)
@@ -95,7 +96,7 @@ class ReadHistoryTimeFragment : Fragment() {
         val endTime = Calendar.getInstance()
         endTime.add(Calendar.DAY_OF_YEAR, -7)
 
-        //fit the data into a bar
+        // fit the data into a bar
         for (i in 0..6) {
             startTime.add(Calendar.DAY_OF_YEAR, 1)
             endTime.add(Calendar.DAY_OF_YEAR, 1)
@@ -106,10 +107,11 @@ class ReadHistoryTimeFragment : Fragment() {
             endTime.set(Calendar.MINUTE, 59)
             endTime.set(Calendar.SECOND, 59)
 
-            val usageStats = usageStatsManager.queryAndAggregateUsageStats(
-                startTime.timeInMillis,
-                endTime.timeInMillis
-            )
+            val usageStats =
+                usageStatsManager.queryAndAggregateUsageStats(
+                    startTime.timeInMillis,
+                    endTime.timeInMillis,
+                )
             var displayMinute = 0f
             if (usageStats.isNotEmpty() && usageStats.containsKey(packageName)) {
                 val totalTimeUsageInMillis =
@@ -119,11 +121,11 @@ class ReadHistoryTimeFragment : Fragment() {
             entries.add(BarEntry(i.toFloat(), floatArrayOf(displayMinute)))
         }
         val barDataSet = BarDataSet(entries, title)
-        //隱藏資料上方數值： 資料數值顯示與否與資料有關，所以相關設定在BarData裡
+        // 隱藏資料上方數值： 資料數值顯示與否與資料有關，所以相關設定在BarData裡
 
-        //設定顏色
+        // 設定顏色
         barDataSet.setColors(*chartColors)
-        //設定顯示字串
+        // 設定顯示字串
         barDataSet.stackLabels = stackLabels
         val data = BarData(barDataSet)
         data.setValueTextColor(Color.BLACK)
@@ -135,9 +137,10 @@ class ReadHistoryTimeFragment : Fragment() {
     }
 
     private val chartColors: IntArray
-        get() = intArrayOf(
-            resources.getColor(R.color.chart_color_chinatimes)
-        )
+        get() =
+            intArrayOf(
+                resources.getColor(R.color.chart_color_chinatimes),
+            )
 
 //    private fun getResourceColor(resID: Int): Int {
 //        return resources.getColor(resID)
@@ -154,7 +157,7 @@ class ReadHistoryTimeFragment : Fragment() {
                 getString(R.string.chart_label_storm),
                 getString(R.string.chart_label_udn),
                 getString(R.string.chart_label_ettoday),
-                getString(R.string.chart_label_setn)
+                getString(R.string.chart_label_setn),
             )
 
     companion object {

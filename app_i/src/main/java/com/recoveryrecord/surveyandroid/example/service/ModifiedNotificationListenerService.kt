@@ -8,9 +8,9 @@ import android.provider.Settings
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 
-
 class ModifiedNotificationListenerService : NotificationListenerService() {
     private var isServiceRunning = false // Track the service state
+
     override fun onCreate() {
         super.onCreate()
         // Check if the service is running when it's created
@@ -35,11 +35,16 @@ class ModifiedNotificationListenerService : NotificationListenerService() {
 
     // Other methods for processing notifications
     // Method to check if the service is running
-    private fun isServiceRunning(context: Context, serviceClass: Class<*>): Boolean {
+    private fun isServiceRunning(
+        context: Context,
+        serviceClass: Class<*>,
+    ): Boolean {
         val componentName = ComponentName(context, serviceClass)
-        val enabledListeners = Settings.Secure.getString(
-            context.contentResolver, "enabled_notification_listeners"
-        )
+        val enabledListeners =
+            Settings.Secure.getString(
+                context.contentResolver,
+                "enabled_notification_listeners",
+            )
         return enabledListeners != null && enabledListeners.contains(componentName.flattenToString())
     }
 
@@ -51,15 +56,19 @@ class ModifiedNotificationListenerService : NotificationListenerService() {
     }
 
     // Service Connection (for manual restart)
-    private val serviceConnection: ServiceConnection = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            // Service reconnected
-            isServiceRunning = true
-        }
+    private val serviceConnection: ServiceConnection =
+        object : ServiceConnection {
+            override fun onServiceConnected(
+                name: ComponentName,
+                service: IBinder,
+            ) {
+                // Service reconnected
+                isServiceRunning = true
+            }
 
-        override fun onServiceDisconnected(name: ComponentName) {
-            // Service disconnected
-            isServiceRunning = false
+            override fun onServiceDisconnected(name: ComponentName) {
+                // Service disconnected
+                isServiceRunning = false
+            }
         }
-    }
 }

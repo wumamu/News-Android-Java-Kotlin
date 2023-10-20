@@ -4,7 +4,9 @@ import com.recoveryrecord.surveyandroid.example.config.Constants
 import com.recoveryrecord.surveyandroid.example.model.News
 import javax.inject.Inject
 
-class GetNewsUseCase @Inject constructor(
+class GetNewsUseCase
+@Inject
+constructor(
     private val repository: NewsRepository,
 ) {
     suspend operator fun invoke(
@@ -22,20 +24,22 @@ class GetNewsUseCase @Inject constructor(
                             media = document.getString("media"),
                             id = document.getString("id"),
                             pubDate = document.getTimestamp("pubdate"),
-                            image = document.getString("image")
+                            image = document.getString("image"),
                         )
                     }
                 },
                 onFailure = {
                     // Handle the error here or log it
                     emptyList()
-                }
+                },
             )
     }
 }
 
 sealed class NewsViewState {
     object Loading : NewsViewState()
+
     data class Success(val newsList: List<News>) : NewsViewState()
+
     data class Error(val error: Throwable) : NewsViewState()
 }

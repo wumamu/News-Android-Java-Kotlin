@@ -31,7 +31,6 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class MediaRankActivity : AppCompatActivity() {
-
     private lateinit var courseRV: RecyclerView
     private val dataModalArrayList: ArrayList<Media> = ArrayList()
     private lateinit var dataRVAdapter: MediaRankRecycleViewAdapter
@@ -42,14 +41,14 @@ class MediaRankActivity : AppCompatActivity() {
     private lateinit var ref: DocumentReference
     private var remoteMediaOrder: MutableList<String> = mutableListOf()
 
-
     @SuppressLint("HardwareIds")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        deviceId = Settings.Secure.getString(
-            applicationContext.contentResolver,
-            Settings.Secure.ANDROID_ID
-        )
+        deviceId =
+            Settings.Secure.getString(
+                applicationContext.contentResolver,
+                Settings.Secure.ANDROID_ID,
+            )
         ref = db.collection(Constants.USER_COLLECTION).document(deviceId)
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this)
         mEditor = sharedPrefs.edit()
@@ -72,7 +71,7 @@ class MediaRankActivity : AppCompatActivity() {
         // Drag and drop
         val callback: ItemTouchHelper.Callback =
             SimpleItemTouchHelperCallback(
-                dataRVAdapter
+                dataRVAdapter,
             )
         val touchHelper = ItemTouchHelper(callback)
         touchHelper.attachToRecyclerView(courseRV)
@@ -114,7 +113,6 @@ class MediaRankActivity : AppCompatActivity() {
             updateRemote(ref, updateData)
         }
     }
-
 
     private suspend fun getRemoteMediaOrder() {
         try {

@@ -25,6 +25,7 @@ class ReadHistorySummaryFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var mParam1: String? = null
     private var mParam2: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.apply {
@@ -36,7 +37,7 @@ class ReadHistorySummaryFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         val view = inflater.inflate(R.layout.activity_read_history_summary, container, false)
         pieChart = view.findViewById(R.id.activity_main_piechart)
@@ -112,12 +113,13 @@ class ReadHistorySummaryFragment : Fragment() {
 
         val dataSet = PieDataSet(entries, "")
         dataSet.colors = colors
-        val newsData = PieData(dataSet).apply {
-            setDrawValues(true)
-            setValueFormatter(PercentFormatter())
-            setValueTextSize(12f)
-            setValueTextColor(Color.BLACK)
-        }
+        val newsData =
+            PieData(dataSet).apply {
+                setDrawValues(true)
+                setValueFormatter(PercentFormatter())
+                setValueTextSize(12f)
+                setValueTextColor(Color.BLACK)
+            }
 
         pieChart.apply {
             data = newsData

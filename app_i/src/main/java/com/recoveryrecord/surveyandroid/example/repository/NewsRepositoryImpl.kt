@@ -7,13 +7,15 @@ import com.google.firebase.firestore.QuerySnapshot
 import javax.inject.Inject
 import kotlinx.coroutines.tasks.await
 
-class NewsRepositoryImpl @Inject constructor(
-    private val db: FirebaseFirestore
+class NewsRepositoryImpl
+@Inject
+constructor(
+    private val db: FirebaseFirestore,
 ) : NewsRepository {
     override suspend fun getNews(
         source: String,
         category: String,
-        pageSize: Long
+        pageSize: Long,
     ): Result<QuerySnapshot> {
         val query = createQuery(source, category)
         return try {
@@ -28,7 +30,7 @@ class NewsRepositoryImpl @Inject constructor(
         source: String,
         category: String,
         pageSize: Long,
-        lastVisibleDocument: DocumentSnapshot?
+        lastVisibleDocument: DocumentSnapshot?,
     ): Result<QuerySnapshot> {
         val query = createQuery(source, category)
         return try {
@@ -41,7 +43,10 @@ class NewsRepositoryImpl @Inject constructor(
         }
     }
 
-    private fun createQuery(source: String, category: String): Query {
+    private fun createQuery(
+        source: String,
+        category: String,
+    ): Query {
         return if (source == "storm") {
             db.collection("news")
                 .whereEqualTo("media", source)

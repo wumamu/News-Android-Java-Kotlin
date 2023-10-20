@@ -28,9 +28,10 @@ fun parseTabArray(tabString: String): Array<String> {
 }
 
 fun parseToString(tabArray: ArrayList<Media>): String {
-    val tabEntries = tabArray.mapIndexed { index, tabName ->
-        "${tabName.media} ${index + 1}" // Reconstruct each tab entry
-    }
+    val tabEntries =
+        tabArray.mapIndexed { index, tabName ->
+            "${tabName.media} ${index + 1}" // Reconstruct each tab entry
+        }
     return tabEntries.joinToString(", ") // Join tab entries with a comma and space
 }
 

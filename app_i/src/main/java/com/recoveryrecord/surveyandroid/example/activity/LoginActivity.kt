@@ -37,7 +37,6 @@ import javax.inject.Inject
 import timber.log.Timber
 
 @AndroidEntryPoint
-
 class LoginActivity : AppCompatActivity() {
     private val notificationManager: NotificationManager by lazy {
         getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -66,7 +65,6 @@ class LoginActivity : AppCompatActivity() {
 //            .requestEmail()
 //            .build()
 //        googleSignInClient = GoogleSignIn.getClient(this, gso)
-
     }
 
     private fun initView() {
@@ -122,7 +120,10 @@ class LoginActivity : AppCompatActivity() {
         firebaseAuthWithLocalEmailAndPassword(stringUseremail, stringPassword)
     }
 
-    private fun firebaseAuthWithLocalEmailAndPassword(email: String, password: String) {
+    private fun firebaseAuthWithLocalEmailAndPassword(
+        email: String,
+        password: String,
+    ) {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task: Task<AuthResult?> ->
                 if (task.isSuccessful) {
@@ -139,8 +140,11 @@ class LoginActivity : AppCompatActivity() {
             }
     }
 
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?,
+    ) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
@@ -150,7 +154,6 @@ class LoginActivity : AppCompatActivity() {
                     Timber.d("firebaseAuthWithGoogle:$id")
                     firebaseAuthWithGoogle(idToken!!)
                 }
-
             } catch (e: ApiException) {
                 showToast(this@LoginActivity, getString(R.string.google_sign_in_failed))
             }
@@ -179,20 +182,21 @@ class LoginActivity : AppCompatActivity() {
         } else {
             showDummyNotification(
                 getString(R.string.dummy_notification_title),
-                getString(R.string.dummy_notification_text)
+                getString(R.string.dummy_notification_text),
             )
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<out String>,
-        grantResults: IntArray
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray,
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (ActivityCompat.shouldShowRequestPermissionRationale(
                 this,
-                PermissionType.NOTIFICATION_PERMISSION.string
+                PermissionType.NOTIFICATION_PERMISSION.string,
             ).not() &&
             grantResults.size == 1 &&
             grantResults[0] == PackageManager.PERMISSION_DENIED
@@ -206,7 +210,7 @@ class LoginActivity : AppCompatActivity() {
             Timber.d("permission granted")
             showDummyNotification(
                 getString(R.string.dummy_notification_title),
-                getString(R.string.dummy_notification_text)
+                getString(R.string.dummy_notification_text),
             )
         }
     }

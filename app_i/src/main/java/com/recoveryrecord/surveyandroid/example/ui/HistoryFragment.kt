@@ -55,12 +55,16 @@ class HistoryFragment : Fragment() {
         private const val DAY = "day"
         private val ZERO_TIME = Timestamp(0, 0)
 
-        fun newInstance(type: String, day: Int = -1): HistoryFragment {
+        fun newInstance(
+            type: String,
+            day: Int = -1,
+        ): HistoryFragment {
             return HistoryFragment().apply {
-                arguments = Bundle().apply {
-                    putString(TYPE, type)
-                    putInt(DAY, day)
-                }
+                arguments =
+                    Bundle().apply {
+                        putString(TYPE, type)
+                        putInt(DAY, day)
+                    }
             }
         }
     }
@@ -78,7 +82,7 @@ class HistoryFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         val view = inflater.inflate(R.layout.nested_layer_history, container, false)
         courseRV = view.findViewById(R.id.idRVItems)
@@ -88,11 +92,12 @@ class HistoryFragment : Fragment() {
     }
 
     private fun initRecyclerView() {
-        dataRVAdapter = NewsRecycleViewAdapter(
-            dataModalArrayList,
-            requireActivity(),
-            type != PUSH_NEWS
-        )
+        dataRVAdapter =
+            NewsRecycleViewAdapter(
+                dataModalArrayList,
+                requireActivity(),
+                type != PUSH_NEWS,
+            )
         dataRVAdapter.setHasStableIds(true)
         courseRV.apply {
             setHasFixedSize(true)
@@ -103,17 +108,19 @@ class HistoryFragment : Fragment() {
 
     private fun createQuery(): Query? {
         return when {
-            type == PUSH_NEWS -> db
-                .collection(PUSH_NEWS_COLLECTION)
-                .whereEqualTo(PUSH_NEWS_DEVICE_ID, deviceId)
-                .orderBy(PUSH_NEWS_RECEIEVE_TIME, Query.Direction.DESCENDING)
-                .limit(PUSH_HISTORY_LIMIT_PER_PAGE)
+            type == PUSH_NEWS ->
+                db
+                    .collection(PUSH_NEWS_COLLECTION)
+                    .whereEqualTo(PUSH_NEWS_DEVICE_ID, deviceId)
+                    .orderBy(PUSH_NEWS_RECEIEVE_TIME, Query.Direction.DESCENDING)
+                    .limit(PUSH_HISTORY_LIMIT_PER_PAGE)
 
-            type == READING_ALL -> db
-                .collection(READING_BEHAVIOR_COLLECTION)
-                .whereEqualTo(READING_BEHAVIOR_DEVICE_ID, deviceId)
-                .orderBy(READING_BEHAVIOR_OUT_TIME, Query.Direction.DESCENDING)
-                .limit(READ_HISTORY_LIMIT_PER_PAGE)
+            type == READING_ALL ->
+                db
+                    .collection(READING_BEHAVIOR_COLLECTION)
+                    .whereEqualTo(READING_BEHAVIOR_DEVICE_ID, deviceId)
+                    .orderBy(READING_BEHAVIOR_OUT_TIME, Query.Direction.DESCENDING)
+                    .limit(READ_HISTORY_LIMIT_PER_PAGE)
 
             (type == READING_DAILY) && day != -1 -> {
                 val range = countRange()
@@ -156,18 +163,19 @@ class HistoryFragment : Fragment() {
 
                 for (d in list) {
                     Timber.d(d.toString())
-                    val curPubdate = try {
-                        d.getTimestamp("pubdate")
-                    } catch (e: Exception) {
-                        null // Handle the case where "pubdate" is not in timestamp format
-                    }
+                    val curPubdate =
+                        try {
+                            d.getTimestamp("pubdate")
+                        } catch (e: Exception) {
+                            null // Handle the case where "pubdate" is not in timestamp format
+                        }
                     News(
                         title = d.getString("title"),
                         media = d.getString("media"),
                         id = d.getString("id"),
                         pubDate = curPubdate ?: ZERO_TIME,
 //                        pubDate = d.getTimestamp("pubdate") ?: ZERO_TIME,
-                        image = d.getString("image") ?: NO_VALUE
+                        image = d.getString("image") ?: NO_VALUE,
                     ).takeIf { it.isValid }?.apply {
                         Timber.d(this.toString())
                         dataModalArrayList.add(this)

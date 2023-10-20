@@ -1,33 +1,33 @@
-//package com.recoveryrecord.surveyandroid.example.receiver;
+// package com.recoveryrecord.surveyandroid.example.receiver;
 //
-//import android.content.Context;
-//import android.content.SharedPreferences;
-//import android.hardware.Sensor;
-//import android.hardware.SensorEvent;
-//import android.hardware.SensorEventListener;
-//import android.hardware.SensorManager;
-//import android.hardware.lights.LightState
-//import android.media.AudioManager;
-//import android.provider.Settings;
-//import android.util.Log;
+// import android.content.Context;
+// import android.content.SharedPreferences;
+// import android.hardware.Sensor;
+// import android.hardware.SensorEvent;
+// import android.hardware.SensorEventListener;
+// import android.hardware.SensorManager;
+// import android.hardware.lights.LightState
+// import android.media.AudioManager;
+// import android.provider.Settings;
+// import android.util.Log;
 //
-//import androidx.preference.PreferenceManager;
+// import androidx.preference.PreferenceManager;
 //
-//import com.google.firebase.Timestamp;
-//import com.google.firebase.firestore.FirebaseFirestore;
-//import com.recoveryrecord.surveyandroid.example.DbHelper.LightSensorReceiverDbHelper;
-//import com.recoveryrecord.surveyandroid.example.config.Config.DetectTime
-//import com.recoveryrecord.surveyandroid.example.config.Config.SessionID
-//import com.recoveryrecord.surveyandroid.example.config.Config.UsingApp
-//import com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_USER_ID
-//import com.recoveryrecord.surveyandroid.example.sqlite.LightSensor;
+// import com.google.firebase.Timestamp;
+// import com.google.firebase.firestore.FirebaseFirestore;
+// import com.recoveryrecord.surveyandroid.example.DbHelper.LightSensorReceiverDbHelper;
+// import com.recoveryrecord.surveyandroid.example.config.Config.DetectTime
+// import com.recoveryrecord.surveyandroid.example.config.Config.SessionID
+// import com.recoveryrecord.surveyandroid.example.config.Config.UsingApp
+// import com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_USER_ID
+// import com.recoveryrecord.surveyandroid.example.sqlite.LightSensor;
 //
-//import java.text.SimpleDateFormat;
-//import java.util.Date;
-//import java.util.HashMap;
-//import java.util.Map;
+// import java.text.SimpleDateFormat;
+// import java.util.Date;
+// import java.util.HashMap;
+// import java.util.Map;
 //
-//class LightSensorReceiver implements StreamGenerator{
+// class LightSensorReceiver implements StreamGenerator{
 //    private static final boolean DEBUG = true;
 //    private static final String TAG = "LightSensor";
 //
@@ -109,13 +109,13 @@
 //                .collection("Light Sensor")
 //                .document(device_id + " " + time_now)
 //                .set(sensordb);
-////        db.collection("test_users")
-////                .document(device_id)
-////                .collection("Sensor collection")
-////                .document("Sensor")
-////                .collection("LightSensor")
-////                .document(time_now)
-////                .set(sensordb);
+// //        db.collection("test_users")
+// //                .document(device_id)
+// //                .collection("Sensor collection")
+// //                .document("Sensor")
+// //                .collection("LightSensor")
+// //                .document(time_now)
+// //                .set(sensordb);
 //        final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
 //        com.recoveryrecord.surveyandroid.example.sqlite.LightSensor mylight = new LightSensor();//sqlite//add new to db
 //        mylight.setKEY_TIMESTAMP(Timestamp.now().getSeconds());
@@ -133,7 +133,7 @@
 //        private float lux; //光線強度
 //        @Override
 //        public void onSensorChanged(SensorEvent event) {
-////            device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+// //            device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
 //            final Timestamp current_end = Timestamp.now();
 //            Date date = new Date(System.currentTimeMillis());
 //            SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
@@ -152,4 +152,4 @@
 //
 //        }
 //    }
-//}
+// }

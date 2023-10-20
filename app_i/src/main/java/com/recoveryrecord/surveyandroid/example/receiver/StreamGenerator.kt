@@ -1,6 +1,6 @@
-package com.recoveryrecord.surveyandroid.example.receiver;
+package com.recoveryrecord.surveyandroid.example.receiver
 
-import android.content.Context;
+import android.content.Context
 import com.recoveryrecord.surveyandroid.example.CSVDataRecord.DataRecord
 
 interface StreamGenerator<T : DataRecord?> {

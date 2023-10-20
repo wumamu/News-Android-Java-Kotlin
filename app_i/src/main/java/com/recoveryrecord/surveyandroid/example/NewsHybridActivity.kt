@@ -37,7 +37,7 @@ import com.google.firebase.firestore.Query
 import com.recoveryrecord.surveyandroid.example.activity.PushHistoryActivity
 import com.recoveryrecord.surveyandroid.example.activity.ReadHistoryActivity
 import com.recoveryrecord.surveyandroid.example.activity.SettingsActivity
-import com.recoveryrecord.surveyandroid.example.adapter.SectionsPagerAdapter
+import com.recoveryrecord.surveyandroid.example.adapter.MediaTypeAdapter
 import com.recoveryrecord.surveyandroid.example.config.Constants
 import com.recoveryrecord.surveyandroid.example.config.Constants.ACTIVITY_COLLECTION
 import com.recoveryrecord.surveyandroid.example.config.Constants.APP_VERSION_KEY
@@ -51,7 +51,7 @@ import com.recoveryrecord.surveyandroid.example.config.Constants.FCM_TOKEN
 import com.recoveryrecord.surveyandroid.example.config.Constants.LAST_UPDATE_TIME
 import com.recoveryrecord.surveyandroid.example.config.Constants.MEDIA_BAR_ORDER
 import com.recoveryrecord.surveyandroid.example.config.Constants.MEDIA_ORDER
-import com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_CATEGORY
+import com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_CATEGORY_COLLECTION
 import com.recoveryrecord.surveyandroid.example.config.Constants.OUR_EMAIL
 import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_MEDIA_SELECTION
 import com.recoveryrecord.surveyandroid.example.config.Constants.SHARE_PREFERENCE_CLEAR_CACHE
@@ -66,6 +66,7 @@ import com.recoveryrecord.surveyandroid.example.config.Constants.USER_FIRESTORE_
 import com.recoveryrecord.surveyandroid.example.config.Constants.USER_ID
 import com.recoveryrecord.surveyandroid.example.config.Constants.USER_PHONE_ID
 import com.recoveryrecord.surveyandroid.example.detectedactivity.DetectedActivityService
+import com.recoveryrecord.surveyandroid.example.detectedactivity.SUPPORTED_ACTIVITY_KEY
 import com.recoveryrecord.surveyandroid.example.detectedactivity.SupportedActivity
 import com.recoveryrecord.surveyandroid.example.model.MediaType
 import com.recoveryrecord.surveyandroid.example.model.PermissionType
@@ -97,12 +98,11 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
-class NewsHybridActivity
-    : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnRefreshListener {
-
+class NewsHybridActivity :
+    AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnRefreshListener {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var swipeRefreshLayout: CustomSwipeRefreshLayout
-    private lateinit var mSectionsPagerAdapter: SectionsPagerAdapter
+    private lateinit var mMediaTypeAdapter: MediaTypeAdapter
     private lateinit var mViewPager: ViewPager
     private lateinit var tabLayout: TabLayout
     private lateinit var toolbar: Toolbar
@@ -121,9 +121,10 @@ class NewsHybridActivity
     private var _LightSensorReceiver: LightSensorReceiver? = null
     private var isTrackingStarted = false
 
-    private val transitionBroadcastReceiver: TransitionsReceiver = TransitionsReceiver().apply {
-        action = { setDetectedActivity(it) }
-    }
+    private val transitionBroadcastReceiver: TransitionsReceiver =
+        TransitionsReceiver().apply {
+            action = { setDetectedActivity(it) }
+        }
 
     private var doubleBackToExitPressedOnce = false
     private var firstInit = false
@@ -142,7 +143,6 @@ class NewsHybridActivity
     private var remotePushNews: MutableList<String> = mutableListOf()
     private val localMediaPushNews: MutableList<String> = ArrayList()
 
-
     private lateinit var userDocRef: DocumentReference
 
     @SuppressLint("HardwareIds")
@@ -154,14 +154,15 @@ class NewsHybridActivity
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         getLocalUserData()
 
-        deviceId = Settings.Secure.getString(
-            applicationContext.contentResolver,
-            Settings.Secure.ANDROID_ID
-        ).also {
-            FirebaseService.deviceId = it
-            FirebaseCrashlytics.getInstance().setUserId(it)
-            userDocRef = db.collection(Constants.USER_COLLECTION).document(it)
-        }
+        deviceId =
+            Settings.Secure.getString(
+                applicationContext.contentResolver,
+                Settings.Secure.ANDROID_ID,
+            ).also {
+                FirebaseService.deviceId = it
+                FirebaseCrashlytics.getInstance().setUserId(it)
+                userDocRef = db.collection(Constants.USER_COLLECTION).document(it)
+            }
 
         initLayout()
 
@@ -175,19 +176,19 @@ class NewsHybridActivity
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun onResume() {
         super.onResume()
-        //Network
+        // Network
         _NetworkChangeReceiver = NetworkChangeReceiver()
         _NetworkChangeReceiver?.registerNetworkReceiver(this)
 
-        //Screen
+        // Screen
         _ScreenStateReceiver = ScreenStateReceiver()
         _ScreenStateReceiver?.registerScreenStateReceiver(this)
 
-        //RingMode
+        // RingMode
         _RingModeReceiver = RingModeReceiver()
         _RingModeReceiver?.registerRingModeReceiver(this)
 
-        //LightSensor
+        // LightSensor
         _LightSensorReceiver = LightSensorReceiver()
         _LightSensorReceiver?.registerLightSensorReceiver(this)
 
@@ -228,23 +229,25 @@ class NewsHybridActivity
             setDistanceToTriggerSync(200)
             setColorSchemeResources(R.color.blue, R.color.red, R.color.black)
         }
-        mSectionsPagerAdapter = SectionsPagerAdapter(
-            supportFragmentManager, parseTabArray(rankingString)
-        )
-        mViewPager.adapter = mSectionsPagerAdapter
+        mMediaTypeAdapter =
+            MediaTypeAdapter(
+                supportFragmentManager, parseTabArray(rankingString),
+            )
+        mViewPager.adapter = mMediaTypeAdapter
         tabLayout.setupWithViewPager(mViewPager)
         setSupportActionBar(toolbar)
         navigationView.setNavigationItemSelectedListener(this)
         userPhone.text = Build.MODEL
         userId.text = deviceId
         userNameTV.text = userName
-        actionBarDrawerToggle = ActionBarDrawerToggle(
-            this,
-            drawerLayout,
-            toolbar,
-            R.string.openNavDrawer,
-            R.string.closeNavDrawer
-        )
+        actionBarDrawerToggle =
+            ActionBarDrawerToggle(
+                this,
+                drawerLayout,
+                toolbar,
+                R.string.openNavDrawer,
+                R.string.closeNavDrawer,
+            )
         drawerLayout.addDrawerListener(actionBarDrawerToggle)
         actionBarDrawerToggle.syncState()
         title = "新聞列表"
@@ -252,20 +255,23 @@ class NewsHybridActivity
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.nav_setting -> Intent(
-                this@NewsHybridActivity,
-                SettingsActivity::class.java
-            ).apply { startActivity(this) }
+            R.id.nav_setting ->
+                Intent(
+                    this@NewsHybridActivity,
+                    SettingsActivity::class.java,
+                ).apply { startActivity(this) }
 
-            R.id.nav_history -> Intent(
-                this@NewsHybridActivity,
-                ReadHistoryActivity::class.java
-            ).apply { startActivity(this) }
+            R.id.nav_history ->
+                Intent(
+                    this@NewsHybridActivity,
+                    ReadHistoryActivity::class.java,
+                ).apply { startActivity(this) }
 
-            R.id.nav_reschedule -> Intent(
-                this@NewsHybridActivity,
-                PushHistoryActivity::class.java
-            ).apply { startActivity(this) }
+            R.id.nav_reschedule ->
+                Intent(
+                    this@NewsHybridActivity,
+                    PushHistoryActivity::class.java,
+                ).apply { startActivity(this) }
 
             R.id.nav_contact -> {
                 Intent(Intent.ACTION_SENDTO).apply {
@@ -275,7 +281,7 @@ class NewsHybridActivity
                     putExtra(Intent.EXTRA_SUBJECT, "NewsMoment App 問題回報")
                     putExtra(
                         Intent.EXTRA_TEXT,
-                        "Hi, 我的 user id 是$userName，\ndevice id 是$deviceId，\n我有問題要回報(以文字描述發生的問題)：\n以下是相關問題截圖(如有截圖或是錄影，可以幫助我們更快了解問題)："
+                        "Hi, 我的 user id 是$userName，\ndevice id 是$deviceId，\n我有問題要回報(以文字描述發生的問題)：\n以下是相關問題截圖(如有截圖或是錄影，可以幫助我們更快了解問題)：",
                     )
                 }.let {
                     try {
@@ -317,13 +323,14 @@ class NewsHybridActivity
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<out String>,
-        grantResults: IntArray
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray,
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (ActivityCompat.shouldShowRequestPermissionRationale(
                 this,
-                PermissionType.ACTIVITY_RECOGNITION.string
+                PermissionType.ACTIVITY_RECOGNITION.string,
             ).not() &&
             grantResults.size == 1 &&
             grantResults[0] == PackageManager.PERMISSION_DENIED
@@ -352,20 +359,23 @@ class NewsHybridActivity
                 ?: MediaType.DEFAULT_MEDIA_ORDER
         val defaultMediaPush = MediaType.getAllMedia().toMutableSet()
         localMediaPushNews.add(
-            (sharedPrefs.getStringSet(
-                SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION,
-                defaultMediaPush
-            ) ?: defaultMediaPush).joinToString(",")
+            (
+                    sharedPrefs.getStringSet(
+                        SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION,
+                        defaultMediaPush,
+                    ) ?: defaultMediaPush
+                    ).joinToString(","),
         )
         getLocalCategoryTabOrRefresh()
     }
 
     private fun updateViewPager() {
         // Update the ViewPager and Tabs after fetching data
-        mSectionsPagerAdapter = SectionsPagerAdapter(
-            supportFragmentManager, parseTabArray(rankingString)
-        )
-        mViewPager.adapter = mSectionsPagerAdapter
+        mMediaTypeAdapter =
+            MediaTypeAdapter(
+                supportFragmentManager, parseTabArray(rankingString),
+            )
+        mViewPager.adapter = mMediaTypeAdapter
         tabLayout.setupWithViewPager(mViewPager)
 
         // Hide the swipe refresh progress
@@ -400,7 +410,7 @@ class NewsHybridActivity
 
     private suspend fun getRemoteCategoryTab() {
         fetchRemoteOne(
-            db.collection(NEWS_CATEGORY).document(CONFIG),
+            db.collection(NEWS_CATEGORY_COLLECTION).document(CONFIG),
             onSuccess = { documentSnapshot ->
                 val editor = sharedPrefs.edit()
                 MediaType.getAllMedia().forEach { media ->
@@ -415,7 +425,7 @@ class NewsHybridActivity
                 updateViewPager()
             },
             onFailed = { Timber.d("getRemoteCategoryTab no found") },
-            onError = { e -> Timber.w("Error on getRemoteCategoryTab $e") }
+            onError = { e -> Timber.w("Error on getRemoteCategoryTab $e") },
         )
     }
 
@@ -426,7 +436,7 @@ class NewsHybridActivity
                 remotePushNews = documentSnapshot[PUSH_MEDIA_SELECTION] as MutableList<String>
             },
             onFailed = { Timber.d("getRemotePushNewsSelection no found") },
-            onError = { e -> Timber.w("Error on getRemotePushNewsSelection $e") }
+            onError = { e -> Timber.w("Error on getRemotePushNewsSelection $e") },
         )
     }
 
@@ -437,21 +447,22 @@ class NewsHybridActivity
         editor.apply()
         val mediaPushString = localMediaPushNews.joinToString(",")
 
-        val userInitData = hashMapOf(
-            USER_DEVICE_ID to deviceId,
-            USER_FIRESTORE_ID to (auth.currentUser?.uid ?: ""),
-            // TODO rename
-            USER_ID to userName,
-            USER_PHONE_ID to Build.MODEL,
-            USER_ANDROID_SDK to Build.VERSION.SDK_INT,
-            USER_ANDROID_RELEASE to Build.VERSION.RELEASE,
-            MEDIA_BAR_ORDER to ArrayList<String>().apply { add(rankingString) },
-            PUSH_MEDIA_SELECTION to ArrayList<String>().apply { add(mediaPushString) },//localMediaPushNews, mediaPushString
-            UPDATE_TIME to Timestamp.now(),
-            APP_VERSION_KEY to APP_VERSION_VALUE,
-            FCM_TOKEN to currentToken
-            // TODO FCM token?, check_last_news
-        )
+        val userInitData =
+            hashMapOf(
+                USER_DEVICE_ID to deviceId,
+                USER_FIRESTORE_ID to (auth.currentUser?.uid ?: ""),
+                // TODO rename
+                USER_ID to userName,
+                USER_PHONE_ID to Build.MODEL,
+                USER_ANDROID_SDK to Build.VERSION.SDK_INT,
+                USER_ANDROID_RELEASE to Build.VERSION.RELEASE,
+                MEDIA_BAR_ORDER to ArrayList<String>().apply { add(rankingString) },
+                PUSH_MEDIA_SELECTION to ArrayList<String>().apply { add(mediaPushString) }, // localMediaPushNews, mediaPushString
+                UPDATE_TIME to Timestamp.now(),
+                APP_VERSION_KEY to APP_VERSION_VALUE,
+                FCM_TOKEN to currentToken,
+                // TODO FCM token?, check_last_news
+            )
 
         lifecycleScope.launch {
             insertRemote(userDocRef, userInitData) {
@@ -468,22 +479,24 @@ class NewsHybridActivity
             remotePushNews.add(prevPushData)
         }
 
-        val dataMap = hashMapOf(
-            USER_DEVICE_ID to deviceId,
-            USER_FIRESTORE_ID to (auth.currentUser?.uid ?: ""),
-            USER_ID to userName,
-            PUSH_MEDIA_SELECTION to remotePushNews,
-            UPDATE_TIME to Timestamp.now(),
-            USER_PHONE_ID to Build.MODEL,
-            APP_VERSION_KEY to APP_VERSION_VALUE,
-            USER_ANDROID_SDK to Build.VERSION.SDK_INT,
-            USER_ANDROID_RELEASE to Build.VERSION.RELEASE,
-            FCM_TOKEN to currentToken
-        )
+        val dataMap =
+            hashMapOf(
+                USER_DEVICE_ID to deviceId,
+                USER_FIRESTORE_ID to (auth.currentUser?.uid ?: ""),
+                USER_ID to userName,
+                PUSH_MEDIA_SELECTION to remotePushNews,
+                UPDATE_TIME to Timestamp.now(),
+                USER_PHONE_ID to Build.MODEL,
+                APP_VERSION_KEY to APP_VERSION_VALUE,
+                USER_ANDROID_SDK to Build.VERSION.SDK_INT,
+                USER_ANDROID_RELEASE to Build.VERSION.RELEASE,
+                FCM_TOKEN to currentToken,
+            )
         lifecycleScope.launch {
             updateRemote(
-                userDocRef, dataMap,
-                onSuccess = { Timber.d("Update user data success $deviceId") }
+                userDocRef,
+                dataMap,
+                onSuccess = { Timber.d("Update user data success $deviceId") },
             ) {
                 if ((it is FirebaseFirestoreException) && (it.code == FirebaseFirestoreException.Code.NOT_FOUND)) {
                     CoroutineScope(Dispatchers.IO).launch {
@@ -497,11 +510,12 @@ class NewsHybridActivity
 
     private suspend fun getRemoteToken() {
         Timber.d("getRemoteToken")
-        val query = db
-            .collection(FCM_COLLECTION)
-            .whereEqualTo(USER_DEVICE_ID, deviceId)
-            .orderBy(UPDATE_TIME, Query.Direction.DESCENDING)
-            .limit(1L)
+        val query =
+            db
+                .collection(FCM_COLLECTION)
+                .whereEqualTo(USER_DEVICE_ID, deviceId)
+                .orderBy(UPDATE_TIME, Query.Direction.DESCENDING)
+                .limit(1L)
         fetchRemoteAll(
             query,
             onSuccess = { querySnapshot ->
@@ -511,7 +525,7 @@ class NewsHybridActivity
                 Timber.d("Local token get and saved local success")
             },
             onFailed = { showToast(this, "出事拉") },
-            onError = { e -> Timber.w("Local token get failed $e") }
+            onError = { e -> Timber.w("Local token get failed $e") },
         )
     }
 
@@ -522,12 +536,13 @@ class NewsHybridActivity
         }
         val updateMediaList = convertToIdArray(localMediaPushNews.last())
         Timber.d("updateMediaList $updateMediaList")
-        val newData = hashMapOf(
-            USER_ID to (auth.currentUser?.uid ?: ""),
-            USER_DEVICE_ID to deviceId,
-            PUSH_MEDIA_SELECTION to updateMediaList,
-            UPDATE_TIME to Timestamp.now(),
-        )
+        val newData =
+            hashMapOf(
+                USER_ID to (auth.currentUser?.uid ?: ""),
+                USER_DEVICE_ID to deviceId,
+                PUSH_MEDIA_SELECTION to updateMediaList,
+                UPDATE_TIME to Timestamp.now(),
+            )
         updateRemote(db.collection(FCM_COLLECTION).document(currentToken), newData) {
             Timber.w("FCM token update success")
         }
@@ -545,29 +560,30 @@ class NewsHybridActivity
         }
     }
 
-    //    override fun onNewIntent(intent: Intent) {
-//        super.onNewIntent(intent)
-//        if (intent.hasExtra(SUPPORTED_ACTIVITY_KEY)) {
-//            val supportedActivity = intent.getSerializableExtra(
-//                SUPPORTED_ACTIVITY_KEY
-//            ) as SupportedActivity
-//            setDetectedActivity(supportedActivity)
-//        }
-//    }
-//
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        if (intent.hasExtra(SUPPORTED_ACTIVITY_KEY)) {
+            val supportedActivity =
+                intent.getSerializableExtra(
+                    SUPPORTED_ACTIVITY_KEY,
+                ) as SupportedActivity
+            setDetectedActivity(supportedActivity)
+        }
+    }
+
     private fun setDetectedActivity(supportedActivity: SupportedActivity) {
         val detectedActivity = getString(supportedActivity.activityText)
         lifecycleScope.launch {
-            val updateData = hashMapOf<String, Any>(
-                USER_DEVICE_ID to deviceId,
-                USER_ID to userName,
-                CURRENT_TIME to Timestamp.now(),
-                DETECT_ACTIVITY to detectedActivity
-            )
+            val updateData =
+                hashMapOf<String, Any>(
+                    USER_DEVICE_ID to deviceId,
+                    USER_ID to userName,
+                    CURRENT_TIME to Timestamp.now(),
+                    DETECT_ACTIVITY to detectedActivity,
+                )
             addRemote(db.collection(ACTIVITY_COLLECTION), updateData) {
                 Timber.d("Activity Recognition Update Success")
             }
         }
     }
-
 }

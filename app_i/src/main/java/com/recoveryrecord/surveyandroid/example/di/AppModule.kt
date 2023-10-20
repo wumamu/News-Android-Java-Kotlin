@@ -13,7 +13,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-
     @Provides
     @Singleton
     fun provideFirestore(): FirebaseFirestore {
@@ -28,10 +27,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideNewsRepository(
-        db: FirebaseFirestore
-    ): NewsRepository {
+    fun provideNewsRepository(db: FirebaseFirestore): NewsRepository {
         return NewsRepositoryImpl(db)
     }
-
 }

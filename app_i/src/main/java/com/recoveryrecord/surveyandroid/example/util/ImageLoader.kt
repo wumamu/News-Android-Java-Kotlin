@@ -17,40 +17,40 @@ fun loadImageWithGlide(
     context: Context,
     imageUrl: String?,
     imageView: ImageView,
-    progressBar: ProgressBar
+    progressBar: ProgressBar?,
 ) {
-    progressBar.visibility = View.VISIBLE
-    imageView.adjustViewBounds = true
-    imageView.maxHeight = 200
+    progressBar?.visibility = View.VISIBLE
     Glide.with(context)
         .load(imageUrl)
 //        .placeholder(R.drawable.ic_baseline_downloading_24)
         .error(R.drawable.error)
         .diskCacheStrategy(DiskCacheStrategy.ALL)
-        .listener(object : RequestListener<Drawable> {
-            override fun onLoadFailed(
-                e: GlideException?,
-                model: Any?,
-                target: Target<Drawable>?,
-                isFirstResource: Boolean
-            ): Boolean {
-                // Hide the progress bar when the image loading fails
-                progressBar.visibility = View.GONE
-                return false
-            }
+        .listener(
+            object : RequestListener<Drawable> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    isFirstResource: Boolean,
+                ): Boolean {
+                    // Hide the progress bar when the image loading fails
+                    progressBar?.visibility = View.GONE
+                    return false
+                }
 
-            override fun onResourceReady(
-                resource: Drawable?,
-                model: Any?,
-                target: Target<Drawable>?,
-                dataSource: DataSource?,
-                isFirstResource: Boolean
-            ): Boolean {
-                // Hide the progress bar when the image is loaded successfully
-                progressBar.visibility = View.GONE
-                return false
-            }
-        })
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean,
+                ): Boolean {
+                    // Hide the progress bar when the image is loaded successfully
+                    progressBar?.visibility = View.GONE
+                    return false
+                }
+            },
+        )
         .override(500, 0)
         .into(imageView)
 }

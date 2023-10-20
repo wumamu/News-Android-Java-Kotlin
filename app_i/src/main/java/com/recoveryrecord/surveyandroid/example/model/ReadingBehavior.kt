@@ -30,8 +30,9 @@ data class ReadingBehavior(
     var dragNum: Int = 0,
     var dragRecord: String = "NA",
     var share: String = "NA",
-    var timeSeries: String = "NA"
+    var timeSeries: String = "NA",
 ) {
     fun isSelfTrigger() = triggerBy != Constants.READING_BEHAVIOR_TRIGGER_BY_NOTIFICATION
+
     fun hasImage() = (hasImg == 1)
 }

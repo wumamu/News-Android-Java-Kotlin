@@ -25,9 +25,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
         context?.getSystemService(Context.POWER_SERVICE) as PowerManager
     }
 
-
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+    override fun onCreatePreferences(
+        savedInstanceState: Bundle?,
+        rootKey: String?,
+    ) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
         setupNotificationPermissionPreference()
         setupNotificationPolicyAccessPreference()
@@ -38,47 +40,52 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun setupNotificationPolicyAccessPreference() {
         val clearPref2 = findPreference<Preference>(getString(R.string.notification_policy_access))
-        clearPref2?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            val intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
-            startActivity(intent)
+        clearPref2?.onPreferenceClickListener =
+            Preference.OnPreferenceClickListener {
+                val intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
+                startActivity(intent)
 //            if (notificationManager.isNotificationListenerAccessGranted().not()) {
-////                val intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
+// //                val intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
 //
-////                val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
+// //                val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
 //                startActivity(intent)
 //            } else {
 //                showToast(getString(R.string.access_granted))
 //            }
-            true
-        }
+                true
+            }
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun setupNotificationPermissionPreference() {
         val clearPref0 = findPreference<Preference>(getString(R.string.notification_permission))
-        clearPref0?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            if (activity?.isPermissionGranted(PermissionType.NOTIFICATION_PERMISSION)
-                    ?.not() == true
-            ) {
-                activity?.requestPermission(PermissionType.NOTIFICATION_PERMISSION)
-            } else {
-                showToast(getString(R.string.access_granted))
+        clearPref0?.onPreferenceClickListener =
+            Preference.OnPreferenceClickListener {
+                if (activity?.isPermissionGranted(PermissionType.NOTIFICATION_PERMISSION)
+                        ?.not() == true
+                ) {
+                    activity?.requestPermission(PermissionType.NOTIFICATION_PERMISSION)
+                } else {
+                    showToast(getString(R.string.access_granted))
+                }
+                true
             }
-            true
-        }
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun setupPhysicalActivityPermissionPreference() {
         val clearPref0 = findPreference<Preference>(getString(R.string.physical_activity))
-        clearPref0?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            if (activity?.isPermissionGranted(PermissionType.ACTIVITY_RECOGNITION)?.not() == true) {
-                activity?.requestPermission(PermissionType.ACTIVITY_RECOGNITION)
-            } else {
-                showToast(getString(R.string.access_granted))
+        clearPref0?.onPreferenceClickListener =
+            Preference.OnPreferenceClickListener {
+                if (activity?.isPermissionGranted(PermissionType.ACTIVITY_RECOGNITION)
+                        ?.not() == true
+                ) {
+                    activity?.requestPermission(PermissionType.ACTIVITY_RECOGNITION)
+                } else {
+                    showToast(getString(R.string.access_granted))
+                }
+                true
             }
-            true
-        }
     }
 
 //    private fun setupStoragePermissionPreference() {
@@ -111,19 +118,20 @@ class SettingsFragment : PreferenceFragmentCompat() {
     @SuppressLint("BatteryLife")
     private fun setupBatteryOptimizationPreference() {
         val clearPref3 = findPreference<Preference>(getString(R.string.battery_optimization))
-        clearPref3?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            val intent = Intent()
-            val packageName = context?.packageName
-            if (powerManager.isIgnoringBatteryOptimizations(packageName)) {
-                intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-                intent.data = Uri.parse("package:$packageName")
-                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(intent)
-            } else {
-                showToast(getString(R.string.access_granted))
+        clearPref3?.onPreferenceClickListener =
+            Preference.OnPreferenceClickListener {
+                val intent = Intent()
+                val packageName = context?.packageName
+                if (powerManager.isIgnoringBatteryOptimizations(packageName)) {
+                    intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+                    intent.data = Uri.parse("package:$packageName")
+                    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
+                } else {
+                    showToast(getString(R.string.access_granted))
+                }
+                true
             }
-            true
-        }
     }
 
     private fun showToast(message: String) {

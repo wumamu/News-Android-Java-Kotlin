@@ -40,21 +40,21 @@ import com.recoveryrecord.surveyandroid.example.R
 const val SUPPORTED_ACTIVITY_KEY = "activity_key"
 
 enum class SupportedActivity(
-    @StringRes val activityText: Int
+    @StringRes val activityText: Int,
 ) {
-
     NOT_STARTED(R.string.time_to_start),
     STILL(R.string.still_text),
     WALKING(R.string.walking_text),
-    RUNNING(R.string.running_text);
+    RUNNING(R.string.running_text),
+    ;
 
     companion object {
-
-        fun fromActivityType(type: Int): SupportedActivity = when (type) {
-            DetectedActivity.STILL -> STILL
-            DetectedActivity.WALKING -> WALKING
-            DetectedActivity.RUNNING -> RUNNING
-            else -> throw IllegalArgumentException("activity $type not supported")
-        }
+        fun fromActivityType(type: Int): SupportedActivity =
+            when (type) {
+                DetectedActivity.STILL -> STILL
+                DetectedActivity.WALKING -> WALKING
+                DetectedActivity.RUNNING -> RUNNING
+                else -> throw IllegalArgumentException("activity $type not supported")
+            }
     }
 }
