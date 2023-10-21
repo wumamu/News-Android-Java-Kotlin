@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.view.MenuItem
 import android.view.View
@@ -41,7 +42,6 @@ import com.recoveryrecord.surveyandroid.example.adapter.MediaTypeAdapter
 import com.recoveryrecord.surveyandroid.example.config.Constants
 import com.recoveryrecord.surveyandroid.example.config.Constants.ACTIVITY_COLLECTION
 import com.recoveryrecord.surveyandroid.example.config.Constants.APP_VERSION_KEY
-import com.recoveryrecord.surveyandroid.example.config.Constants.APP_VERSION_VALUE
 import com.recoveryrecord.surveyandroid.example.config.Constants.CATEGORY_POST_FIX
 import com.recoveryrecord.surveyandroid.example.config.Constants.CONFIG
 import com.recoveryrecord.surveyandroid.example.config.Constants.CURRENT_TIME
@@ -73,7 +73,6 @@ import com.recoveryrecord.surveyandroid.example.model.PermissionType
 import com.recoveryrecord.surveyandroid.example.receiver.LightSensorReceiver
 import com.recoveryrecord.surveyandroid.example.receiver.NetworkChangeReceiver
 import com.recoveryrecord.surveyandroid.example.receiver.RingModeReceiver
-import com.recoveryrecord.surveyandroid.example.receiver.ScreenStateReceiver
 import com.recoveryrecord.surveyandroid.example.service.FirebaseService
 import com.recoveryrecord.surveyandroid.example.transitions.TransitionsReceiver
 import com.recoveryrecord.surveyandroid.example.transitions.TransitionsReceiver.Companion.TRANSITIONS_RECEIVER_ACTION
@@ -116,7 +115,8 @@ class NewsHybridActivity :
     lateinit var sharedPrefs: SharedPreferences
 
     private var _NetworkChangeReceiver: NetworkChangeReceiver? = null
-    private var _ScreenStateReceiver: ScreenStateReceiver? = null
+
+    //    private var _ScreenStateReceiver: ScreenStateReceiver? = null
     private var _RingModeReceiver: RingModeReceiver? = null
     private var _LightSensorReceiver: LightSensorReceiver? = null
     private var isTrackingStarted = false
@@ -181,8 +181,8 @@ class NewsHybridActivity :
         _NetworkChangeReceiver?.registerNetworkReceiver(this)
 
         // Screen
-        _ScreenStateReceiver = ScreenStateReceiver()
-        _ScreenStateReceiver?.registerScreenStateReceiver(this)
+//        _ScreenStateReceiver = ScreenStateReceiver()
+//        _ScreenStateReceiver?.registerScreenStateReceiver(this)
 
         // RingMode
         _RingModeReceiver = RingModeReceiver()
@@ -198,7 +198,7 @@ class NewsHybridActivity :
     override fun onPause() {
         super.onPause()
         _NetworkChangeReceiver?.unregisterNetworkReceiver(this)
-        _ScreenStateReceiver?.unregisterScreenStateReceiver(this)
+//        _ScreenStateReceiver?.unregisterScreenStateReceiver(this)
         _RingModeReceiver?.unregisterRingModeReceiver(this)
         _LightSensorReceiver?.unregisterLightSensorReceiver()
         unregisterReceiver(transitionBroadcastReceiver)
@@ -312,7 +312,10 @@ class NewsHybridActivity :
             }
             doubleBackToExitPressedOnce = true
             showToast(this, "Please click BACK again to exit")
-            Handler().postDelayed({ doubleBackToExitPressedOnce = false }, 2000)
+            Handler(Looper.getMainLooper()).postDelayed(
+                { doubleBackToExitPressedOnce = false },
+                2000
+            )
         }
     }
 
@@ -414,7 +417,7 @@ class NewsHybridActivity :
             onSuccess = { documentSnapshot ->
                 val editor = sharedPrefs.edit()
                 MediaType.getAllMedia().forEach { media ->
-                    val newCategory = documentSnapshot[media] as List<String>?
+                    val newCategory = documentSnapshot[media] as? List<String>
                     newCategory?.let {
                         MediaType.updateCategoryMapBy(media, it)
                         editor.putString(media + CATEGORY_POST_FIX, newCategory.joinToString(","))
@@ -433,7 +436,9 @@ class NewsHybridActivity :
         fetchRemoteOne(
             userDocRef,
             onSuccess = { documentSnapshot ->
-                remotePushNews = documentSnapshot[PUSH_MEDIA_SELECTION] as MutableList<String>
+                (documentSnapshot[PUSH_MEDIA_SELECTION] as? MutableList<String>)?.let {
+                    remotePushNews = it
+                }
             },
             onFailed = { Timber.d("getRemotePushNewsSelection no found") },
             onError = { e -> Timber.w("Error on getRemotePushNewsSelection $e") },
@@ -459,7 +464,10 @@ class NewsHybridActivity :
                 MEDIA_BAR_ORDER to ArrayList<String>().apply { add(rankingString) },
                 PUSH_MEDIA_SELECTION to ArrayList<String>().apply { add(mediaPushString) }, // localMediaPushNews, mediaPushString
                 UPDATE_TIME to Timestamp.now(),
-                APP_VERSION_KEY to APP_VERSION_VALUE,
+                APP_VERSION_KEY to this.packageManager.getPackageInfo(
+                    this.packageName,
+                    0
+                ).versionName,
                 FCM_TOKEN to currentToken,
                 // TODO FCM token?, check_last_news
             )
@@ -487,7 +495,10 @@ class NewsHybridActivity :
                 PUSH_MEDIA_SELECTION to remotePushNews,
                 UPDATE_TIME to Timestamp.now(),
                 USER_PHONE_ID to Build.MODEL,
-                APP_VERSION_KEY to APP_VERSION_VALUE,
+                APP_VERSION_KEY to this.packageManager.getPackageInfo(
+                    this.packageName,
+                    0
+                ).versionName,
                 USER_ANDROID_SDK to Build.VERSION.SDK_INT,
                 USER_ANDROID_RELEASE to Build.VERSION.RELEASE,
                 FCM_TOKEN to currentToken,
@@ -548,7 +559,7 @@ class NewsHybridActivity :
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun startActivityRecognition() {
         if (isPermissionGranted(PermissionType.ACTIVITY_RECOGNITION)) {
             startService(Intent(this, DetectedActivityService::class.java))
@@ -564,9 +575,14 @@ class NewsHybridActivity :
         super.onNewIntent(intent)
         if (intent.hasExtra(SUPPORTED_ACTIVITY_KEY)) {
             val supportedActivity =
-                intent.getSerializableExtra(
-                    SUPPORTED_ACTIVITY_KEY,
-                ) as SupportedActivity
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    intent.getSerializableExtra(
+                        SUPPORTED_ACTIVITY_KEY,
+                        SupportedActivity::class.java
+                    ) as SupportedActivity
+                } else {
+                    intent.getSerializableExtra(SUPPORTED_ACTIVITY_KEY) as SupportedActivity
+                }
             setDetectedActivity(supportedActivity)
         }
     }

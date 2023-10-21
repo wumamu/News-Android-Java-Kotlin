@@ -1,162 +1,141 @@
-package com.recoveryrecord.surveyandroid.example.ui;
+package com.recoveryrecord.surveyandroid.example.ui
 
-import android.app.Activity;
-import android.util.Log;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
+import android.app.Activity
+import android.view.GestureDetector
+import android.view.MotionEvent
+import com.recoveryrecord.surveyandroid.example.sqlite.DragObj
+import com.recoveryrecord.surveyandroid.example.sqlite.FlingObj
+import com.recoveryrecord.surveyandroid.example.util.SimpleGestureListener
+import kotlin.math.abs
+import timber.log.Timber
 
-import com.recoveryrecord.surveyandroid.example.sqlite.DragObj;
-import com.recoveryrecord.surveyandroid.example.sqlite.FlingObj;
-import com.recoveryrecord.surveyandroid.example.util.SimpleGestureListener;
+class GestureListener(private val context: Activity, private val listener: SimpleGestureListener) :
+    GestureDetector.SimpleOnGestureListener() {
+    private var mode = MODE_TRANSPARENT
+    private var tapIndicator = false
+    private val detector: GestureDetector = GestureDetector(context, this)
 
-public class GestureListener extends GestureDetector.SimpleOnGestureListener{
-
-    public final static int SWIPE_UP    = 1;
-    public final static int SWIPE_DOWN  = 2;
-    public final static int SWIPE_LEFT  = 3;
-    public final static int SWIPE_RIGHT = 4;
-
-    public final static int MODE_TRANSPARENT = 0;
-    public final static int MODE_SOLID = 1;
-    public final static int MODE_DYNAMIC = 2;
-
-    private final static int ACTION_FAKE = -13; //just an unlikely number
-
-    private int mode = MODE_TRANSPARENT;
-    private boolean tapIndicator = false;
-
-    private final Activity context;
-    private final GestureDetector detector;
-    private final SimpleGestureListener listener;
-
-
-    public GestureListener(Activity context, SimpleGestureListener sgl) {
-
-        this.context = context;
-        this.detector = new GestureDetector(context, this);
-        this.listener = sgl;
-    }
-
-    public void onTouchEvent(MotionEvent event) {
+    fun onTouchEvent(event: MotionEvent) {
         //disable lomg press
-        detector.setIsLongpressEnabled(false);
-        boolean running = true;
-        if (!running)
-            return;
-
-        boolean result = this.detector.onTouchEvent(event);
-
-        if (this.mode == MODE_SOLID)
-            event.setAction(MotionEvent.ACTION_CANCEL);
-        else if (this.mode == MODE_DYNAMIC) {
-
-            if (event.getAction() == ACTION_FAKE)
-                event.setAction(MotionEvent.ACTION_UP);
-            else if (result)
-                event.setAction(MotionEvent.ACTION_CANCEL);
-            else if(this.tapIndicator){
-                event.setAction(MotionEvent.ACTION_DOWN);
-                this.tapIndicator = false;
+        detector.setIsLongpressEnabled(false)
+        val running = true
+        if (!running) return
+        val result = detector.onTouchEvent(event)
+        if (mode == MODE_SOLID) event.action =
+            MotionEvent.ACTION_CANCEL else if (mode == MODE_DYNAMIC) {
+            if (event.action == ACTION_FAKE) event.action =
+                MotionEvent.ACTION_UP else if (result) event.action =
+                MotionEvent.ACTION_CANCEL else if (tapIndicator) {
+                event.action = MotionEvent.ACTION_DOWN
+                tapIndicator = false
             }
-
         }
     }
 
-    public void setMode(int m){
-        this.mode = m;
-    }
-
-    public int getMode(){
-        return this.mode;
-    }
-
-    @Override
-    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        FlingObj tmpFlingObj = new FlingObj();
-
-        final float xDistance = Math.abs(e1.getX() - e2.getX());
-        final float yDistance = Math.abs(e1.getY() - e2.getY());
-
-        velocityX = Math.abs(velocityX);
-        velocityY = Math.abs(velocityY);
-        boolean result = false;
-        tmpFlingObj.setPOINT_ONE_X(e1.getX());
-        tmpFlingObj.setPOINT_ONE_Y(e1.getY());
-        tmpFlingObj.setPOINT_TWO_X(e2.getX());
-        tmpFlingObj.setPOINT_TWO_Y(e2.getY());
-        tmpFlingObj.setDISTANCE_X(xDistance);
-        tmpFlingObj.setDISTANCE_Y(yDistance);
-        tmpFlingObj.setVELOCITY_X(velocityX);
-        tmpFlingObj.setVELOCITY_Y(velocityY);
+    override fun onFling(
+        e1: MotionEvent,
+        e2: MotionEvent,
+        _velocityX: Float,
+        _velocityY: Float
+    ): Boolean {
+        var velocityX = _velocityX
+        var velocityY = _velocityY
+        val tmpFlingObj = FlingObj()
+        val xDistance = Math.abs(e1.x - e2.x)
+        val yDistance = Math.abs(e1.y - e2.y)
+        velocityX = abs(velocityX)
+        velocityY = abs(velocityY)
+        var result = false
+        tmpFlingObj.POINT_ONE_X = e1.x
+        tmpFlingObj.POINT_ONE_Y = e1.y
+        tmpFlingObj.POINT_TWO_X = e2.x
+        tmpFlingObj.POINT_TWO_Y = e2.y
+        tmpFlingObj.DISTANCE_X = xDistance
+        tmpFlingObj.DISTANCE_Y = yDistance
+        tmpFlingObj.VELOCITY_X = velocityX
+        tmpFlingObj.VELOCITY_Y = velocityY
 
         //100
-        int swipe_Min_Distance = 100;
+        val swipe_Min_Distance = 100
         //100
-        int swipe_Min_Velocity = 0;
+        val swipe_Min_Velocity = 0
         if (velocityX > swipe_Min_Velocity && xDistance > swipe_Min_Distance) {
-            if (e1.getX() > e2.getX()) // right to left
-                this.listener.onSwipe(SWIPE_LEFT, tmpFlingObj);
-            else
-                this.listener.onSwipe(SWIPE_RIGHT, tmpFlingObj);
-
-            result = true;
+            if (e1.x > e2.x) // right to left
+                listener.onSwipe(SWIPE_LEFT, tmpFlingObj) else listener.onSwipe(
+                SWIPE_RIGHT,
+                tmpFlingObj
+            )
+            result = true
         } else if (velocityY > swipe_Min_Velocity && yDistance > swipe_Min_Distance) {
-            if (e1.getY() > e2.getY()) // bottom to up
-                this.listener.onSwipe(SWIPE_UP, tmpFlingObj);
-            else
-                this.listener.onSwipe(SWIPE_DOWN, tmpFlingObj);
-
-            result = true;
+            if (e1.y > e2.y) // bottom to up
+                listener.onSwipe(SWIPE_UP, tmpFlingObj) else listener.onSwipe(
+                SWIPE_DOWN,
+                tmpFlingObj
+            )
+            result = true
         }
-        return result;
+        return result
     }
 
-    @Override
-    public boolean onSingleTapUp(MotionEvent e) {
-        this.tapIndicator = true;
-        return false;
+    override fun onSingleTapUp(e: MotionEvent): Boolean {
+        tapIndicator = true
+        return false
     }
 
-    @Override
-    public boolean onDoubleTap(MotionEvent arg0) {
-        return true;
+    override fun onDoubleTap(arg0: MotionEvent): Boolean {
+        return true
     }
 
-    @Override
-    public boolean onDoubleTapEvent(MotionEvent arg0) {
-        return true;
+    override fun onDoubleTapEvent(arg0: MotionEvent): Boolean {
+        return true
     }
 
-    @Override
-    public boolean onSingleTapConfirmed(MotionEvent arg0) {
-
-        if(this.mode == MODE_DYNAMIC){        // we owe an ACTION_UP, so we fake an
-            arg0.setAction(ACTION_FAKE);      //action which will be converted to an ACTION_UP later.
-            this.context.dispatchTouchEvent(arg0);
+    override fun onSingleTapConfirmed(arg0: MotionEvent): Boolean {
+        if (mode == MODE_DYNAMIC) {        // we owe an ACTION_UP, so we fake an
+            arg0.action = ACTION_FAKE //action which will be converted to an ACTION_UP later.
+            context.dispatchTouchEvent(arg0)
         }
-        return false;
+        return false
     }
 
-    @Override
-    public void onLongPress(MotionEvent e) {
-//        Log.e("", "Longpress detected");
-        Log.d("log: GestureListener", "Longpress detected");
+    override fun onLongPress(e: MotionEvent) {
+        Timber.d("Longpress detected")
     }
 
-    @Override
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY){
-        DragObj dragObj = new DragObj();
-        boolean result = super.onScroll(e1, e2, distanceX, distanceY);
-        if(!result){
-            Log.d("log: GestureListener", System.currentTimeMillis()+ " drag first: (" + e1.getX() + "," + e1.getY() + ")");
-            Log.d("log: GestureListener", System.currentTimeMillis()+ " drag second: (" + e2.getX() + "," + e2.getY() + ")");
-            dragObj.setTIME_ONE(System.currentTimeMillis());
-            dragObj.setPOINT_ONE_X(e1.getX());
-            dragObj.setPOINT_ONE_Y(e1.getY());
-            dragObj.setPOINT_TWO_X(e2.getX());
-            dragObj.setPOINT_TWO_Y(e2.getY());
-            this.listener.onOnePoint(dragObj);
+    override fun onScroll(
+        e1: MotionEvent,
+        e2: MotionEvent,
+        distanceX: Float,
+        distanceY: Float
+    ): Boolean {
+        val dragObj = DragObj()
+        val result = super.onScroll(e1, e2, distanceX, distanceY)
+        if (!result) {
+            Timber.d(
+                "%s)",
+                System.currentTimeMillis().toString() + " drag first: (" + e1.x + "," + e1.y
+            )
+            Timber.d(
+                System.currentTimeMillis().toString() + " drag second: (" + e2.x + "," + e2.y + ")"
+            )
+            dragObj.TIME_ONE = System.currentTimeMillis()
+            dragObj.POINT_ONE_X = e1.x
+            dragObj.POINT_ONE_Y = e1.y
+            dragObj.POINT_TWO_X = e2.x
+            dragObj.POINT_TWO_Y = e2.y
+            listener.onOnePoint(dragObj)
         }
-        return result;
+        return result
+    }
+
+    companion object {
+        const val SWIPE_UP = 1
+        const val SWIPE_DOWN = 2
+        const val SWIPE_LEFT = 3
+        const val SWIPE_RIGHT = 4
+        const val MODE_TRANSPARENT = 0
+        const val MODE_SOLID = 1
+        const val MODE_DYNAMIC = 2
+        private const val ACTION_FAKE = -13 //just an unlikely number
     }
 }

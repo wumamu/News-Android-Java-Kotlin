@@ -1,6 +1,5 @@
 package com.recoveryrecord.surveyandroid.example.receiver;
 
-import static com.recoveryrecord.surveyandroid.example.config.Config.UsingApp;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.CURRENT_TIME;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.DISCONNECT;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.MOBILE;
@@ -8,6 +7,7 @@ import static com.recoveryrecord.surveyandroid.example.config.Constants.NETWORK_
 import static com.recoveryrecord.surveyandroid.example.config.Constants.NETWORK_STATUE;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.USER_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.USER_ID;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.USING_APP;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.USING_APP_OR_NOT;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.WIFI;
 
@@ -49,7 +49,7 @@ public class NetworkChangeReceiver implements StreamGenerator{
         Map<String, Object> sensordb = new HashMap<>();
         sensordb.put(CURRENT_TIME, Timestamp.now());
         sensordb.put(NETWORK_COLLECTION, NetworkState);
-        sensordb.put(USING_APP_OR_NOT, UsingApp);
+        sensordb.put(USING_APP_OR_NOT, USING_APP);
         sensordb.put(USER_ID, "");
         sensordb.put(USER_DEVICE_ID, device_id);
         db.collection(NETWORK_COLLECTION).add(sensordb);
@@ -76,7 +76,7 @@ public class NetworkChangeReceiver implements StreamGenerator{
                 }
                 sensordb.put(CURRENT_TIME, Timestamp.now());
                 sensordb.put(NETWORK_STATUE, NetworkState);
-                sensordb.put(USING_APP_OR_NOT, UsingApp);
+                sensordb.put(USING_APP_OR_NOT, USING_APP);
                 sensordb.put(USER_DEVICE_ID, device_id);
                 sensordb.put(USER_ID, "");
                 db.collection(NETWORK_COLLECTION).add(sensordb);

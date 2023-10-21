@@ -1,6 +1,5 @@
 package com.recoveryrecord.surveyandroid.example.receiver;
 
-import static com.recoveryrecord.surveyandroid.example.config.Config.UsingApp;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.CURRENT_TIME;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.NORMAL;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.RING_COLLECTION;
@@ -8,6 +7,7 @@ import static com.recoveryrecord.surveyandroid.example.config.Constants.RING_MOD
 import static com.recoveryrecord.surveyandroid.example.config.Constants.SILENT;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.USER_DEVICE_ID;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.USER_ID;
+import static com.recoveryrecord.surveyandroid.example.config.Constants.USING_APP;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.USING_APP_OR_NOT;
 import static com.recoveryrecord.surveyandroid.example.config.Constants.VIBRATE;
 
@@ -49,7 +49,7 @@ public class RingModeReceiver implements StreamGenerator {
         Map<String, Object> sensordb = new HashMap<>();
         sensordb.put(CURRENT_TIME, Timestamp.now());
         sensordb.put(RING_MODE, RingerState);
-        sensordb.put(USING_APP_OR_NOT, UsingApp);
+        sensordb.put(USING_APP_OR_NOT, USING_APP);
         sensordb.put(USER_DEVICE_ID, device_id);
         sensordb.put(USER_ID, "");
         db.collection(RING_COLLECTION).add(sensordb);
@@ -73,7 +73,7 @@ public class RingModeReceiver implements StreamGenerator {
                 RingerState = VIBRATE;
             }
             sensordb.put(RING_MODE, RingerState);
-            sensordb.put(USING_APP_OR_NOT, UsingApp);
+            sensordb.put(USING_APP_OR_NOT, USING_APP);
             sensordb.put(USER_DEVICE_ID, device_id);
             sensordb.put(USER_ID, "");
             db.collection(RING_COLLECTION).add(sensordb);

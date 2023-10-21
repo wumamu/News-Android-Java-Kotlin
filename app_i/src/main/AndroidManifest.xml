@@ -4,6 +4,7 @@
     package="com.recoveryrecord.surveyandroid.example"
     android:installLocation="internalOnly"
     tools:ignore="ExtraText">
+    <uses-permission android:name="android.permission.GET_PACKAGE_SIZE" />
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
