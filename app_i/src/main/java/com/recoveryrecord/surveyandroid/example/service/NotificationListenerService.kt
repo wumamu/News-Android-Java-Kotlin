@@ -94,7 +94,7 @@ class NotificationListenerService : NotificationListenerService() {
                     "ca10cd7a2e8ae87a",
                     "1ff060f4014f6e3f",
                     "cd96440867380664",
-                    "d254e371a0970955"
+                    "d254e371a0970955",
                 )
             }
         var deviceId: String = ""

@@ -147,7 +147,7 @@ class NewsContentActivity : AppCompatActivity(), SimpleGestureListener {
 
     private var dragObjArrayListArray: MutableList<DragObj> = ArrayList() // drag gesture
     private var myReadingBehavior = ReadingBehavior()
-    private var selfTrigger = false
+    private var selfTrigger = true
 
     private val divList: MutableList<String> = ArrayList()
 
@@ -190,8 +190,7 @@ class NewsContentActivity : AppCompatActivity(), SimpleGestureListener {
                         PUSH_NEWS_OPEN_TIME to Timestamp.now(),
                     )
                 CoroutineScope(Dispatchers.IO).launch { updateRemote(pushNewsRef, updateData) }
-            } else {
-                selfTrigger = true
+                selfTrigger = false
             }
         } ?: run {
             errorLoading()
@@ -701,7 +700,7 @@ class NewsContentActivity : AppCompatActivity(), SimpleGestureListener {
         layout: LinearLayout,
         imgUrl: String?,
     ) {
-        if (!imgUrl.isNullOrBlank()) {
+        if (!imgUrl.isNullOrBlank() && imgUrl != NO_VALUE) {
             loadImageWithGlide(imageView.context, imgUrl, imageView, null)
             layout.addView(imageView)
         }
@@ -951,9 +950,10 @@ class NewsContentActivity : AppCompatActivity(), SimpleGestureListener {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-        supportFinishAfterTransition()
-        if (!selfTrigger) {
+        if (selfTrigger) {
+            super.onBackPressed()
+            supportFinishAfterTransition()
+        } else {
             val intent = Intent(this@NewsContentActivity, NewsHybridActivity::class.java)
             startActivity(intent)
         }

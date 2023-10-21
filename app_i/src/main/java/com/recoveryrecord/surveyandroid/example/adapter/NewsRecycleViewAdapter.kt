@@ -15,6 +15,7 @@ import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.example.activity.NewsContentActivity
 import com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_ID_KEY
 import com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_MEDIA_KEY
+import com.recoveryrecord.surveyandroid.example.config.Constants.NO_VALUE
 import com.recoveryrecord.surveyandroid.example.config.Constants.TRIGGER_BY_KEY
 import com.recoveryrecord.surveyandroid.example.config.Constants.TRIGGER_BY_SELF
 import com.recoveryrecord.surveyandroid.example.model.MediaType
@@ -53,10 +54,10 @@ class NewsRecycleViewAdapter(
             holder.newsPubTime.text = formattedDate
         }
 
-        model.image.takeIf { showImg }?.let {
+        model.image.takeIf { showImg && it != NO_VALUE }?.let {
             holder.newsImg.adjustViewBounds = true
             holder.newsImg.maxHeight = 200
-            loadImageWithGlide(context, model.image, holder.newsImg, holder.progressBar)
+            loadImageWithGlide(context, it, holder.newsImg, holder.progressBar)
         } ?: run {
             holder.newsImg.visibility = View.GONE
             holder.imgCard.visibility = View.GONE
