@@ -25,9 +25,10 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -38,7 +39,6 @@ import com.google.firebase.firestore.Query
 import com.recoveryrecord.surveyandroid.example.activity.PushHistoryActivity
 import com.recoveryrecord.surveyandroid.example.activity.ReadHistoryActivity
 import com.recoveryrecord.surveyandroid.example.activity.SettingsActivity
-import com.recoveryrecord.surveyandroid.example.adapter.MediaTypeAdapter
 import com.recoveryrecord.surveyandroid.example.config.Constants
 import com.recoveryrecord.surveyandroid.example.config.Constants.ACTIVITY_COLLECTION
 import com.recoveryrecord.surveyandroid.example.config.Constants.APP_VERSION_KEY
@@ -78,6 +78,7 @@ import com.recoveryrecord.surveyandroid.example.transitions.TransitionsReceiver
 import com.recoveryrecord.surveyandroid.example.transitions.TransitionsReceiver.Companion.TRANSITIONS_RECEIVER_ACTION
 import com.recoveryrecord.surveyandroid.example.transitions.removeActivityTransitionUpdates
 import com.recoveryrecord.surveyandroid.example.transitions.requestActivityTransitionUpdates
+import com.recoveryrecord.surveyandroid.example.ui.adapter.MediaTypeAdapter
 import com.recoveryrecord.surveyandroid.example.util.addRemote
 import com.recoveryrecord.surveyandroid.example.util.convertToIdArray
 import com.recoveryrecord.surveyandroid.example.util.fetchRemoteAll
@@ -90,11 +91,11 @@ import com.recoveryrecord.surveyandroid.example.util.showSettingsDialog
 import com.recoveryrecord.surveyandroid.example.util.showToast
 import com.recoveryrecord.surveyandroid.example.util.updateRemote
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class NewsHybridActivity :
@@ -102,7 +103,7 @@ class NewsHybridActivity :
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var swipeRefreshLayout: CustomSwipeRefreshLayout
     private lateinit var mMediaTypeAdapter: MediaTypeAdapter
-    private lateinit var mViewPager: ViewPager
+    private lateinit var mediaViewPager: ViewPager2
     private lateinit var tabLayout: TabLayout
     private lateinit var toolbar: Toolbar
     private lateinit var navigationView: NavigationView
@@ -213,7 +214,7 @@ class NewsHybridActivity :
     private fun findLayout() {
         swipeRefreshLayout = findViewById(R.id.mainSwipeContainer)
         drawerLayout = findViewById(R.id.drawer_layout_hy)
-        mViewPager = findViewById(R.id.container_hy)
+        mediaViewPager = findViewById(R.id.container_hy)
         tabLayout = findViewById(R.id.tabs_hy)
         toolbar = findViewById(R.id.main_toolbar_hy)
         navigationView = findViewById(R.id.nav_view_hy)
@@ -229,12 +230,15 @@ class NewsHybridActivity :
             setDistanceToTriggerSync(200)
             setColorSchemeResources(R.color.blue, R.color.red, R.color.black)
         }
+        val mediaTab = parseTabArray(rankingString)
         mMediaTypeAdapter =
             MediaTypeAdapter(
-                supportFragmentManager, parseTabArray(rankingString),
+                this, mediaTab,
             )
-        mViewPager.adapter = mMediaTypeAdapter
-        tabLayout.setupWithViewPager(mViewPager)
+        mediaViewPager.adapter = mMediaTypeAdapter
+        TabLayoutMediator(tabLayout, mediaViewPager) { tab, position ->
+            tab.text = mediaTab.getOrNull(position) ?: ""
+        }.attach()
         setSupportActionBar(toolbar)
         navigationView.setNavigationItemSelectedListener(this)
         userPhone.text = Build.MODEL
@@ -314,7 +318,7 @@ class NewsHybridActivity :
             showToast(this, "Please click BACK again to exit")
             Handler(Looper.getMainLooper()).postDelayed(
                 { doubleBackToExitPressedOnce = false },
-                2000
+                2000,
             )
         }
     }
@@ -363,23 +367,23 @@ class NewsHybridActivity :
         val defaultMediaPush = MediaType.getAllMedia().toMutableSet()
         localMediaPushNews.add(
             (
-                    sharedPrefs.getStringSet(
-                        SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION,
-                        defaultMediaPush,
-                    ) ?: defaultMediaPush
-                    ).joinToString(","),
+                sharedPrefs.getStringSet(
+                    SHARE_PREFERENCE_PUSH_NEWS_MEDIA_LIST_SELECTION,
+                    defaultMediaPush,
+                ) ?: defaultMediaPush
+            ).joinToString(","),
         )
         getLocalCategoryTabOrRefresh()
     }
 
     private fun updateViewPager() {
-        // Update the ViewPager and Tabs after fetching data
-        mMediaTypeAdapter =
-            MediaTypeAdapter(
-                supportFragmentManager, parseTabArray(rankingString),
-            )
-        mViewPager.adapter = mMediaTypeAdapter
-        tabLayout.setupWithViewPager(mViewPager)
+        val mediaTab = parseTabArray(rankingString)
+        mMediaTypeAdapter = MediaTypeAdapter(this, mediaTab)
+        mediaViewPager.adapter = mMediaTypeAdapter
+
+        TabLayoutMediator(tabLayout, mediaViewPager) { tab, position ->
+            tab.text = mediaTab.getOrNull(position) ?: ""
+        }.attach()
 
         // Hide the swipe refresh progress
         swipeRefreshLayout.isRefreshing = false
@@ -464,10 +468,11 @@ class NewsHybridActivity :
                 MEDIA_BAR_ORDER to ArrayList<String>().apply { add(rankingString) },
                 PUSH_MEDIA_SELECTION to ArrayList<String>().apply { add(mediaPushString) }, // localMediaPushNews, mediaPushString
                 UPDATE_TIME to Timestamp.now(),
-                APP_VERSION_KEY to this.packageManager.getPackageInfo(
-                    this.packageName,
-                    0
-                ).versionName,
+                APP_VERSION_KEY to
+                    this.packageManager.getPackageInfo(
+                        this.packageName,
+                        0,
+                    ).versionName,
                 FCM_TOKEN to currentToken,
                 // TODO FCM token?, check_last_news
             )
@@ -495,10 +500,11 @@ class NewsHybridActivity :
                 PUSH_MEDIA_SELECTION to remotePushNews,
                 UPDATE_TIME to Timestamp.now(),
                 USER_PHONE_ID to Build.MODEL,
-                APP_VERSION_KEY to this.packageManager.getPackageInfo(
-                    this.packageName,
-                    0
-                ).versionName,
+                APP_VERSION_KEY to
+                    this.packageManager.getPackageInfo(
+                        this.packageName,
+                        0,
+                    ).versionName,
                 USER_ANDROID_SDK to Build.VERSION.SDK_INT,
                 USER_ANDROID_RELEASE to Build.VERSION.RELEASE,
                 FCM_TOKEN to currentToken,
@@ -578,7 +584,7 @@ class NewsHybridActivity :
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     intent.getSerializableExtra(
                         SUPPORTED_ACTIVITY_KEY,
-                        SupportedActivity::class.java
+                        SupportedActivity::class.java,
                     ) as SupportedActivity
                 } else {
                     intent.getSerializableExtra(SUPPORTED_ACTIVITY_KEY) as SupportedActivity

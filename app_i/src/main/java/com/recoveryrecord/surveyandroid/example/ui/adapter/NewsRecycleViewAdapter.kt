@@ -1,4 +1,4 @@
-package com.recoveryrecord.surveyandroid.example.adapter
+package com.recoveryrecord.surveyandroid.example.ui.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.example.activity.NewsContentActivity
@@ -27,6 +28,7 @@ class NewsRecycleViewAdapter(
     private val dataModelArrayList: ArrayList<News>,
     private val context: Context,
     private val showImg: Boolean = true,
+    private val fragmentManager: FragmentManager,
 ) : RecyclerView.Adapter<NewsRecycleViewAdapter.ViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -74,7 +76,7 @@ class NewsRecycleViewAdapter(
         return position.toLong()
     }
 
-    inner class ViewHolder constructor(itemView: View) :
+    inner class ViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
         val newsTitle: TextView
         val newsPubTime: TextView
@@ -91,7 +93,7 @@ class NewsRecycleViewAdapter(
             newsImg = itemView.findViewById(R.id.imgView)
             progressBar = itemView.findViewById(R.id.loadingProgressBar)
             imgCard = itemView.findViewById(R.id.imgCard)
-            // 點擊項目時
+//            // 點擊項目時
             itemView.setOnClickListener {
                 val (_, media, id) = dataModelArrayList[adapterPosition]
                 val intent = Intent()
@@ -101,6 +103,30 @@ class NewsRecycleViewAdapter(
                 intent.putExtra(NEWS_MEDIA_KEY, media) // english
                 context.startActivity(intent)
             }
+            // Handle item click within the fragment.
+//            itemView.setOnClickListener {
+//                val position = absoluteAdapterPosition
+//                if (position != RecyclerView.NO_POSITION) {
+//                    val (_, media, id) = dataModelArrayList[position]
+//
+//                    // Create a bundle to pass data to the fragment.
+//                    val bundle = bundleOf(
+//                        TRIGGER_BY_KEY to TRIGGER_BY_SELF,
+//                        NEWS_ID_KEY to id,
+//                        NEWS_MEDIA_KEY to media
+//                    )
+//
+//                    // Create the fragment instance and set the arguments.
+//                    val fragment = NewsContentFragment()
+//                    fragment.arguments = bundle
+//
+//                    // Replace the current fragment with the NewsContentFragment.
+//                    fragmentManager.beginTransaction()
+//                        .replace(R.id.fragment_container, fragment)
+//                        .addToBackStack(null) // Optional, to add to the back stack
+//                        .commit()
+//                }
+//            }
         }
     }
 }

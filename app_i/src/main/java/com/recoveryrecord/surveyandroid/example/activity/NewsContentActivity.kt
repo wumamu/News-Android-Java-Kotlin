@@ -92,6 +92,10 @@ import com.recoveryrecord.surveyandroid.example.util.loadImageWithGlide
 import com.recoveryrecord.surveyandroid.example.util.showToast
 import com.recoveryrecord.surveyandroid.example.util.updateRemote
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Arrays
@@ -101,10 +105,6 @@ import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import javax.inject.Inject
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @AndroidEntryPoint
 class NewsContentActivity : AppCompatActivity(), SimpleGestureListener {
@@ -1322,14 +1322,14 @@ class NewsContentActivity : AppCompatActivity(), SimpleGestureListener {
         fun isChineseChar(c: Char): Boolean {
             val ub = Character.UnicodeBlock.of(c)
             return (
-                    ub === Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS
-                    ) || (
-                    ub === Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
-                    ) || (
-                    ub === Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A
-                    ) || (
-                    ub === Character.UnicodeBlock.GENERAL_PUNCTUATION
-                    ) || (ub === Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION)
+                ub === Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS
+            ) || (
+                ub === Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
+            ) || (
+                ub === Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A
+            ) || (
+                ub === Character.UnicodeBlock.GENERAL_PUNCTUATION
+            ) || (ub === Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION)
         }
 
         fun String.convertToRemoteDataType(): List<String> {

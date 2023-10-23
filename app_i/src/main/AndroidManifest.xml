@@ -122,9 +122,9 @@
             android:exported="true" />
         <!-- Mention the receiever name here -->
 
-        <receiver
-            android:name=".receiver.ScreenStateReceiver"
-            tools:ignore="Instantiatable" />
+<!--        <receiver-->
+<!--            android:name=".receiver.ScreenStateReceiver"-->
+<!--            tools:ignore="Instantiatable" />-->
 
         <receiver
             android:name=".receiver.NetworkChangeReceiver$NetworkChangeBroadcastReceiver"
