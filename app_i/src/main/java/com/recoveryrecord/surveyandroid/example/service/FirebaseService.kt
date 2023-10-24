@@ -1,14 +1,20 @@
 package com.recoveryrecord.surveyandroid.example.service
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.media.RingtoneManager
 import android.os.Bundle
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -178,22 +184,33 @@ class FirebaseService : FirebaseMessagingService() {
         }
     }
 
+    @SuppressLint("MissingPermission")
     private fun sendNotification(notification: NotificationData) {
         Timber.d("sendNotification: $notification")
-
+        // Create an Intent for the activity you want to start.
         val intent = Intent(this, NewsContentActivity::class.java)
+//        val intent = Intent(this, NewsContentActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         intent.putExtra(TRIGGER_BY_KEY, TRIGGER_BY_VALUE_NOTIFICATION)
         intent.putExtra(NEWS_ID_KEY, notification.newsId)
         intent.putExtra(NEWS_MEDIA_KEY, notification.media)
-        val notificationId = getUniqueNotificationId()
-        val pendingIntent =
-            PendingIntent.getActivity(
-                this,
-                System.currentTimeMillis().toInt(),
-                intent,
-                PendingIntent.FLAG_IMMUTABLE,
+        // Create the TaskStackBuilder.
+        val pendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
+            // Add the intent, which inflates the back stack.
+            addNextIntentWithParentStack(intent)
+            // Get the PendingIntent containing the entire back stack.
+            getPendingIntent(
+                0,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
+        }
+//        val pendingIntent =
+//            PendingIntent.getActivity(
+//                this,
+//                System.currentTimeMillis().toInt(),
+//                intent,
+//                PendingIntent.FLAG_IMMUTABLE,
+//            )
         val extras = Bundle()
         extras.putString(NEWS_ID_KEY, notification.newsId)
 
@@ -216,7 +233,10 @@ class FirebaseService : FirebaseMessagingService() {
         //    .setGroup(GROUP_NEWS)
 
         createNotificationChannel(notificationManager, NEWS_CHANNEL_ID)
-        notificationManager.notify(notificationId, notificationBuilder.build())
+        with(NotificationManagerCompat.from(this)) {
+            notify(getUniqueNotificationId(), notificationBuilder.build())
+        }
+//        notificationManager.notify(getUniqueNotificationId(), notificationBuilder.build())
     }
 
     private suspend fun insertRemotePushNews(

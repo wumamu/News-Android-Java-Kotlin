@@ -6,7 +6,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.recoveryrecord.surveyandroid.example.model.MediaType
 import com.recoveryrecord.surveyandroid.example.ui.MainFragment
 
-class MediaTypeAdapter(
+class MediaTabAdapter(
     fragmentActivity: FragmentActivity,
     private val tabs: Array<String>,
 ) : FragmentStateAdapter(fragmentActivity) {

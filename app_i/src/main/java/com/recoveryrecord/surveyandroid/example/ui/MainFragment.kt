@@ -10,7 +10,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.example.model.MediaType
-import com.recoveryrecord.surveyandroid.example.ui.adapter.NewsCategoryPagerAdapter
+import com.recoveryrecord.surveyandroid.example.ui.adapter.CategoryTabAdapter
 
 class MainFragment : Fragment() {
     private var source: String = ""
@@ -43,13 +43,13 @@ class MainFragment : Fragment() {
         val mViewPager = view.findViewById<View>(R.id.container_main) as ViewPager2
         val tabLayout = view.findViewById<TabLayout>(R.id.tabs2)
         val mediaMap = MediaType.getCategoryMapByEnglishId(source)
-        val mNewsCategoryPagerAdapter =
-            NewsCategoryPagerAdapter(
+        val mCategoryTabAdapter =
+            CategoryTabAdapter(
                 requireActivity(),
                 source,
                 mediaMap,
             )
-        mViewPager.adapter = mNewsCategoryPagerAdapter
+        mViewPager.adapter = mCategoryTabAdapter
         TabLayoutMediator(tabLayout, mViewPager) { tab, position ->
             tab.text = mediaMap.getOrDefault(position, "")
         }.attach()

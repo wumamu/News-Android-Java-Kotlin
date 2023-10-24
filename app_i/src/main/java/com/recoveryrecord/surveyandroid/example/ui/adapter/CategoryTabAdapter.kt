@@ -5,7 +5,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.recoveryrecord.surveyandroid.example.ui.NewsSubFragment
 
-class NewsCategoryPagerAdapter(
+class CategoryTabAdapter(
     fragmentActivity: FragmentActivity,
     private val source: String,
     private val mediaMap: Map<Int, String>,

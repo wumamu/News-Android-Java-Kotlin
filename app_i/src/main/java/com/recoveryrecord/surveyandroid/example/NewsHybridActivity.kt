@@ -78,7 +78,7 @@ import com.recoveryrecord.surveyandroid.example.transitions.TransitionsReceiver
 import com.recoveryrecord.surveyandroid.example.transitions.TransitionsReceiver.Companion.TRANSITIONS_RECEIVER_ACTION
 import com.recoveryrecord.surveyandroid.example.transitions.removeActivityTransitionUpdates
 import com.recoveryrecord.surveyandroid.example.transitions.requestActivityTransitionUpdates
-import com.recoveryrecord.surveyandroid.example.ui.adapter.MediaTypeAdapter
+import com.recoveryrecord.surveyandroid.example.ui.adapter.MediaTabAdapter
 import com.recoveryrecord.surveyandroid.example.util.addRemote
 import com.recoveryrecord.surveyandroid.example.util.convertToIdArray
 import com.recoveryrecord.surveyandroid.example.util.fetchRemoteAll
@@ -102,7 +102,7 @@ class NewsHybridActivity :
     AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnRefreshListener {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var swipeRefreshLayout: CustomSwipeRefreshLayout
-    private lateinit var mMediaTypeAdapter: MediaTypeAdapter
+    private lateinit var mMediaTabAdapter: MediaTabAdapter
     private lateinit var mediaViewPager: ViewPager2
     private lateinit var tabLayout: TabLayout
     private lateinit var toolbar: Toolbar
@@ -231,11 +231,11 @@ class NewsHybridActivity :
             setColorSchemeResources(R.color.blue, R.color.red, R.color.black)
         }
         val mediaTab = parseTabArray(rankingString)
-        mMediaTypeAdapter =
-            MediaTypeAdapter(
+        mMediaTabAdapter =
+            MediaTabAdapter(
                 this, mediaTab,
             )
-        mediaViewPager.adapter = mMediaTypeAdapter
+        mediaViewPager.adapter = mMediaTabAdapter
         TabLayoutMediator(tabLayout, mediaViewPager) { tab, position ->
             tab.text = mediaTab.getOrNull(position) ?: ""
         }.attach()
@@ -378,8 +378,8 @@ class NewsHybridActivity :
 
     private fun updateViewPager() {
         val mediaTab = parseTabArray(rankingString)
-        mMediaTypeAdapter = MediaTypeAdapter(this, mediaTab)
-        mediaViewPager.adapter = mMediaTypeAdapter
+        mMediaTabAdapter = MediaTabAdapter(this, mediaTab)
+        mediaViewPager.adapter = mMediaTabAdapter
 
         TabLayoutMediator(tabLayout, mediaViewPager) { tab, position ->
             tab.text = mediaTab.getOrNull(position) ?: ""

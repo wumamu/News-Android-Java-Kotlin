@@ -28,7 +28,6 @@ import androidx.preference.PreferenceManager
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
-import com.recoveryrecord.surveyandroid.example.NewsHybridActivity
 import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.example.config.Constants
 import com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_COLLECTION
@@ -108,7 +107,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class NewsContentActivity : AppCompatActivity(), SimpleGestureListener {
-    lateinit var sharedPrefs: SharedPreferences
+    private lateinit var sharedPrefs: SharedPreferences
 
     private var deviceId = ""
 
@@ -156,7 +155,7 @@ class NewsContentActivity : AppCompatActivity(), SimpleGestureListener {
     @SuppressLint("HardwareIds", "UnspecifiedRegisterReceiverFlag")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_news_module)
+        setContentView(R.layout.news_content)
         viewPortLayout = findViewById(R.id.layout_inside)
 
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
@@ -923,15 +922,15 @@ class NewsContentActivity : AppCompatActivity(), SimpleGestureListener {
         activityEnd = true
     }
 
-    override fun onBackPressed() {
-        if (selfTrigger) {
-            super.onBackPressed()
-            supportFinishAfterTransition()
-        } else {
-            val intent = Intent(this@NewsContentActivity, NewsHybridActivity::class.java)
-            startActivity(intent)
-        }
-    }
+//    override fun onBackPressed() {
+//        if (selfTrigger) {
+//            super.onBackPressed()
+//            supportFinishAfterTransition()
+//        } else {
+//            val intent = Intent(this@NewsContentActivity, NewsHybridActivity::class.java)
+//            startActivity(intent)
+//        }
+//    }
 
     fun pxToDp(
         px: Int,

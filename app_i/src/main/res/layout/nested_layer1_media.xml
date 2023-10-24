@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/second_fragment_container"
@@ -7,11 +7,6 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="false">
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/container_main"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabs2"
         android:background="#bcd4e3"
@@ -24,4 +19,11 @@
         app:tabPaddingEnd="3dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/container_main"
+        android:layout_below="@+id/tabs2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+</RelativeLayout>

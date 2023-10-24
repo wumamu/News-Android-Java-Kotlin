@@ -60,8 +60,7 @@
         android:requestLegacyExternalStorage="true"
         android:theme="@style/NoActionBarLight">
         <activity
-            android:name=".activity.SplashScreenActivity"
-            android:theme="@style/SplashScreenTheme"
+            android:name=".activity.LoginActivity"
             android:screenOrientation="fullSensor"
             android:exported="true">
             <intent-filter>
@@ -69,9 +68,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activity.LoginActivity"
-            android:screenOrientation="fullSensor" />
         <activity
             android:name=".NewsHybridActivity"
             android:screenOrientation="fullSensor" />

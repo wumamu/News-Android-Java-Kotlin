@@ -134,7 +134,7 @@ class NotificationListenerService : NotificationListenerService() {
     ) {
         val isOfficialNews = notificationTarget.value.contains(sbn.packageName)
         val fromFCM = sbn.notification.channelId == FCM_CHANNEL_ID
-        val isSelectedNews = true // checkNotificationPreference(sbn.)
+//        val isSelectedNews = true // checkNotificationPreference(sbn.)
         Timber.d(
             "Intercept ${sbn.packageName} " +
                 " channelId ${sbn.notification.channelId}" +
