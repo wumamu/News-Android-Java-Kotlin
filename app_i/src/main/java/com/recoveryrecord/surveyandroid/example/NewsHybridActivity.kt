@@ -29,6 +29,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.android.play.core.internal.ap
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -113,6 +114,8 @@ class NewsHybridActivity :
     private lateinit var userPhone: TextView
     private lateinit var userId: TextView
     private lateinit var userNameTV: TextView
+    private lateinit var appVersionTV: TextView
+    private lateinit var appVersion: String
 
     lateinit var sharedPrefs: SharedPreferences
 
@@ -157,6 +160,10 @@ class NewsHybridActivity :
                 FirebaseCrashlytics.getInstance().setUserId(it)
                 userDocRef = db.collection(Constants.USER_COLLECTION).document(it)
             }
+        appVersion = this.packageManager.getPackageInfo(
+            this.packageName,
+            0,
+        ).versionName
 
         initLayout()
 
@@ -218,8 +225,10 @@ class NewsHybridActivity :
         userPhone = header.findViewById(R.id.textView_user_phone)
         userId = header.findViewById(R.id.textView_user_id)
         userNameTV = header.findViewById(R.id.textView_user_name)
+        appVersionTV = header.findViewById(R.id.app_version)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun initLayout() {
         swipeRefreshLayout.apply {
             setOnRefreshListener(this@NewsHybridActivity)
@@ -240,6 +249,7 @@ class NewsHybridActivity :
         userPhone.text = Build.MODEL
         userId.text = deviceId
         userNameTV.text = userName
+        appVersionTV.text = "App Version: $appVersion"
         actionBarDrawerToggle =
             ActionBarDrawerToggle(
                 this,
@@ -438,11 +448,7 @@ class NewsHybridActivity :
                 MEDIA_BAR_ORDER to ArrayList<String>().apply { add(rankingString) },
                 PUSH_MEDIA_SELECTION to ArrayList<String>().apply { add(mediaPushString) }, // localMediaPushNews, mediaPushString
                 UPDATE_TIME to Timestamp.now(),
-                APP_VERSION_KEY to
-                    this.packageManager.getPackageInfo(
-                        this.packageName,
-                        0,
-                    ).versionName,
+                APP_VERSION_KEY to appVersion,
                 FCM_TOKEN to currentToken,
                 // TODO FCM token?, check_last_news
             )
@@ -470,11 +476,7 @@ class NewsHybridActivity :
                 PUSH_MEDIA_SELECTION to remotePushNews,
                 UPDATE_TIME to Timestamp.now(),
                 USER_PHONE_ID to Build.MODEL,
-                APP_VERSION_KEY to
-                    this.packageManager.getPackageInfo(
-                        this.packageName,
-                        0,
-                    ).versionName,
+                APP_VERSION_KEY to appVersion,
                 USER_ANDROID_SDK to Build.VERSION.SDK_INT,
                 USER_ANDROID_RELEASE to Build.VERSION.RELEASE,
                 FCM_TOKEN to currentToken,
