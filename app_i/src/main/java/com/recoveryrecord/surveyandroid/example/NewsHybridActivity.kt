@@ -117,16 +117,8 @@ class NewsHybridActivity :
     lateinit var sharedPrefs: SharedPreferences
 
     private var _NetworkChangeReceiver: NetworkChangeReceiver? = null
-
-    //    private var _ScreenStateReceiver: ScreenStateReceiver? = null
     private var _RingModeReceiver: RingModeReceiver? = null
     private var _LightSensorReceiver: LightSensorReceiver? = null
-    private var isTrackingStarted = false
-
-    private val transitionBroadcastReceiver: TransitionsReceiver =
-        TransitionsReceiver().apply {
-            action = { setDetectedActivity(it) }
-        }
 
     private var doubleBackToExitPressedOnce = false
     private var firstInit = false
@@ -151,8 +143,8 @@ class NewsHybridActivity :
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Timber.d("onCreate")
         setContentView(R.layout.activity_news_hybrid).apply { findLayout() }
-        startActivityRecognition()
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         getLocalUserData()
 
@@ -175,16 +167,23 @@ class NewsHybridActivity :
 //        if (listeners != null) Timber.d("Listeners are : $listeners")
     }
 
+    override fun onStart() {
+        super.onStart()
+        Timber.d("onStart")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Timber.d("onStop")
+    }
+
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun onResume() {
         super.onResume()
+        Timber.d("onResume")
         // Network
         _NetworkChangeReceiver = NetworkChangeReceiver()
         _NetworkChangeReceiver?.registerNetworkReceiver(this)
-
-        // Screen
-//        _ScreenStateReceiver = ScreenStateReceiver()
-//        _ScreenStateReceiver?.registerScreenStateReceiver(this)
 
         // RingMode
         _RingModeReceiver = RingModeReceiver()
@@ -193,22 +192,18 @@ class NewsHybridActivity :
         // LightSensor
         _LightSensorReceiver = LightSensorReceiver()
         _LightSensorReceiver?.registerLightSensorReceiver(this)
-
-        registerReceiver(transitionBroadcastReceiver, IntentFilter(TRANSITIONS_RECEIVER_ACTION))
     }
 
     override fun onPause() {
         super.onPause()
+        Timber.d("onPause")
         _NetworkChangeReceiver?.unregisterNetworkReceiver(this)
-//        _ScreenStateReceiver?.unregisterScreenStateReceiver(this)
         _RingModeReceiver?.unregisterRingModeReceiver(this)
         _LightSensorReceiver?.unregisterLightSensorReceiver()
-        unregisterReceiver(transitionBroadcastReceiver)
     }
 
     override fun onDestroy() {
-        removeActivityTransitionUpdates()
-        stopService(Intent(this, DetectedActivityService::class.java))
+        Timber.d("onDestroy")
         super.onDestroy()
     }
 
@@ -328,33 +323,6 @@ class NewsHybridActivity :
     override fun onRefresh() {
         getLocalCategoryTabOrRefresh()
         updateViewPager()
-    }
-
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray,
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (ActivityCompat.shouldShowRequestPermissionRationale(
-                this,
-                PermissionType.ACTIVITY_RECOGNITION.string,
-            ).not() &&
-            grantResults.size == 1 &&
-            grantResults[0] == PackageManager.PERMISSION_DENIED
-        ) {
-            showSettingsDialog(this@NewsHybridActivity, PermissionType.ACTIVITY_RECOGNITION)
-        } else if (requestCode == PermissionType.ACTIVITY_RECOGNITION.code &&
-            permissions.contains(PermissionType.ACTIVITY_RECOGNITION.string) &&
-            grantResults.size == 1 &&
-            grantResults[0] == PackageManager.PERMISSION_GRANTED
-        ) {
-            Timber.d("permission granted")
-            startService(Intent(this, DetectedActivityService::class.java))
-            requestActivityTransitionUpdates()
-            isTrackingStarted = true
-        }
     }
 
     private fun getLocalUserData() {
@@ -564,50 +532,6 @@ class NewsHybridActivity :
             )
         updateRemote(db.collection(FCM_COLLECTION).document(currentToken), newData) {
             Timber.w("FCM token update success")
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    private fun startActivityRecognition() {
-        if (isPermissionGranted(PermissionType.ACTIVITY_RECOGNITION)) {
-            startService(Intent(this, DetectedActivityService::class.java))
-            requestActivityTransitionUpdates()
-            isTrackingStarted = true
-//            showToast(this@NewsHybridActivity, "You've started activity tracking")
-        } else {
-            requestPermission(PermissionType.ACTIVITY_RECOGNITION)
-        }
-    }
-
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        if (intent.hasExtra(SUPPORTED_ACTIVITY_KEY)) {
-            val supportedActivity =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    intent.getSerializableExtra(
-                        SUPPORTED_ACTIVITY_KEY,
-                        SupportedActivity::class.java,
-                    ) as SupportedActivity
-                } else {
-                    intent.getSerializableExtra(SUPPORTED_ACTIVITY_KEY) as SupportedActivity
-                }
-            setDetectedActivity(supportedActivity)
-        }
-    }
-
-    private fun setDetectedActivity(supportedActivity: SupportedActivity) {
-        val detectedActivity = getString(supportedActivity.activityText)
-        lifecycleScope.launch {
-            val updateData =
-                hashMapOf<String, Any>(
-                    USER_DEVICE_ID to deviceId,
-                    USER_ID to userName,
-                    CURRENT_TIME to Timestamp.now(),
-                    DETECT_ACTIVITY to detectedActivity,
-                )
-            addRemote(db.collection(ACTIVITY_COLLECTION), updateData) {
-                Timber.d("Activity Recognition Update Success")
-            }
         }
     }
 }
