@@ -150,7 +150,7 @@ class NewsSubFragment : Fragment() {
     }
 
     private fun initRecyclerView() {
-        dataRVAdapter = NewsRecycleViewAdapter(dataModalArrayList, requireActivity(), true, childFragmentManager)
+        dataRVAdapter = NewsRecycleViewAdapter(dataModalArrayList, requireActivity(), true, parentFragmentManager)
         dataRVAdapter.setHasStableIds(true)
         courseRV.apply {
             setHasFixedSize(true)

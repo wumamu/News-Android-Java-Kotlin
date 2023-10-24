@@ -72,10 +72,10 @@ fun Activity.isPermissionGranted(request: PermissionType): Boolean {
         true
     } else {
         PackageManager.PERMISSION_GRANTED ==
-                ActivityCompat.checkSelfPermission(
-                    this,
-                    request.string,
-                )
+            ActivityCompat.checkSelfPermission(
+                this,
+                request.string,
+            )
     }
 }
 

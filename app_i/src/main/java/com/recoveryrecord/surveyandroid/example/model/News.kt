@@ -19,5 +19,5 @@ data class News(
     val isValid: Boolean
         get() =
             title != null && media != null && id != null && pubDate != null &&
-                    title != NO_VALUE && media != NO_VALUE && id != NO_VALUE
+                title != NO_VALUE && media != NO_VALUE && id != NO_VALUE
 }

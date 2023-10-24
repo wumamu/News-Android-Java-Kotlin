@@ -34,8 +34,8 @@ class ReadingHistoryDailyMainFragment : Fragment() {
     private inner class SectionsPagerAdapter(
         fm: FragmentManager?,
     ) : FragmentPagerAdapter(
-        fm!!,
-    ) {
+            fm!!,
+        ) {
         override fun getItem(position: Int): Fragment {
             return HistoryFragment.newInstance(READING_DAILY, position + 1)
         }

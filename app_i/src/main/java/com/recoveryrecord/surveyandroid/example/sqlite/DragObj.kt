@@ -5,5 +5,5 @@ data class DragObj(
     var POINT_ONE_X: Float = 0.0f,
     var POINT_ONE_Y: Float = 0.0f,
     var POINT_TWO_X: Float = 0.0f,
-    var POINT_TWO_Y: Float = 0.0f
+    var POINT_TWO_Y: Float = 0.0f,
 )

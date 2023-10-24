@@ -9,5 +9,5 @@ data class FlingObj(
     var VELOCITY_X: Float = 0.0f,
     var VELOCITY_Y: Float = 0.0f,
     var DISTANCE_X: Float = 0.0f,
-    var DISTANCE_Y: Float = 0.0f
+    var DISTANCE_Y: Float = 0.0f,
 )

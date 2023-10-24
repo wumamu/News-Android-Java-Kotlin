@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.recoveryrecord.surveyandroid.example.R
@@ -21,6 +22,7 @@ import com.recoveryrecord.surveyandroid.example.config.Constants.TRIGGER_BY_KEY
 import com.recoveryrecord.surveyandroid.example.config.Constants.TRIGGER_BY_SELF
 import com.recoveryrecord.surveyandroid.example.model.MediaType
 import com.recoveryrecord.surveyandroid.example.model.News
+import com.recoveryrecord.surveyandroid.example.ui.EmptyFragment
 import com.recoveryrecord.surveyandroid.example.util.loadImageWithGlide
 import java.text.SimpleDateFormat
 
@@ -93,9 +95,10 @@ class NewsRecycleViewAdapter(
             newsImg = itemView.findViewById(R.id.imgView)
             progressBar = itemView.findViewById(R.id.loadingProgressBar)
             imgCard = itemView.findViewById(R.id.imgCard)
-//            // 點擊項目時
+//            // 點擊項目時 activity
             itemView.setOnClickListener {
-                val (_, media, id) = dataModelArrayList[adapterPosition]
+                val position = absoluteAdapterPosition
+                val (_, media, id) = dataModelArrayList[position]
                 val intent = Intent()
                 intent.setClass(context, NewsContentActivity::class.java)
                 intent.putExtra(TRIGGER_BY_KEY, TRIGGER_BY_SELF)
@@ -117,13 +120,13 @@ class NewsRecycleViewAdapter(
 //                    )
 //
 //                    // Create the fragment instance and set the arguments.
-//                    val fragment = NewsContentFragment()
-//                    fragment.arguments = bundle
+//                    val fragment = EmptyFragment()
+////                    fragment.arguments = bundle
 //
 //                    // Replace the current fragment with the NewsContentFragment.
 //                    fragmentManager.beginTransaction()
-//                        .replace(R.id.fragment_container, fragment)
-//                        .addToBackStack(null) // Optional, to add to the back stack
+//                        .add(fragment, id)
+////                        .replace(R.id.second_fragment_container, fragment)
 //                        .commit()
 //                }
 //            }
