@@ -3,6 +3,7 @@ package com.recoveryrecord.surveyandroid.example.config
 object Constants {
     // email
     const val OUR_EMAIL = "crctaiwan@gmail.com"
+    const val MAMU_EMAIL = "wumamu.hk11@nycu.edu.tw"
 
     // other
     const val CHINA_TIMES_PACKAGE_NAME = "cc.nexdoor.ct.activity"

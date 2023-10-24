@@ -49,6 +49,7 @@ import com.recoveryrecord.surveyandroid.example.config.Constants.DETECT_ACTIVITY
 import com.recoveryrecord.surveyandroid.example.config.Constants.FCM_COLLECTION
 import com.recoveryrecord.surveyandroid.example.config.Constants.FCM_TOKEN
 import com.recoveryrecord.surveyandroid.example.config.Constants.LAST_UPDATE_TIME
+import com.recoveryrecord.surveyandroid.example.config.Constants.MAMU_EMAIL
 import com.recoveryrecord.surveyandroid.example.config.Constants.MEDIA_BAR_ORDER
 import com.recoveryrecord.surveyandroid.example.config.Constants.MEDIA_ORDER
 import com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_CATEGORY_COLLECTION
@@ -282,6 +283,7 @@ class NewsHybridActivity :
                     data = Uri.parse("mailto:")
                     // why array :)
                     putExtra(Intent.EXTRA_EMAIL, arrayOf(OUR_EMAIL))
+                    putExtra(Intent.EXTRA_CC, arrayOf(MAMU_EMAIL))
                     putExtra(Intent.EXTRA_SUBJECT, "NewsMoment App 問題回報")
                     putExtra(
                         Intent.EXTRA_TEXT,
