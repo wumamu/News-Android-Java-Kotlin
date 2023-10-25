@@ -81,6 +81,7 @@ class FirebaseService : FirebaseMessagingService() {
 
     companion object {
         private var notificationId = 0
+        private var requestCode = 0
         private val ZERO_TIME = Timestamp(0, 0)
 
         var deviceId: String = ""
@@ -200,7 +201,7 @@ class FirebaseService : FirebaseMessagingService() {
             addNextIntentWithParentStack(intent)
             // Get the PendingIntent containing the entire back stack.
             getPendingIntent(
-                0,
+                requestCode++,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
         }
@@ -232,9 +233,10 @@ class FirebaseService : FirebaseMessagingService() {
         // Do not set group manually, it automatically done for you
         //    .setGroup(GROUP_NEWS)
 
+
         createNotificationChannel(notificationManager, NEWS_CHANNEL_ID)
         with(NotificationManagerCompat.from(this)) {
-            notify(getUniqueNotificationId(), notificationBuilder.build())
+            notify(notificationId++, notificationBuilder.build())
         }
 //        notificationManager.notify(getUniqueNotificationId(), notificationBuilder.build())
     }
@@ -279,9 +281,5 @@ class FirebaseService : FirebaseMessagingService() {
         insertRemote(db.collection(FCM_COLLECTION).document(newToken), newData) {
             Timber.d("FCM token update success")
         }
-    }
-
-    private fun getUniqueNotificationId(): Int {
-        return notificationId++
     }
 }
