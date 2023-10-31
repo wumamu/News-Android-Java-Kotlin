@@ -61,8 +61,9 @@
         android:theme="@style/NoActionBarLight">
         <activity
             android:name=".activity.LoginActivity"
-            android:screenOrientation="fullSensor"
-            android:exported="true">
+            android:screenOrientation="portrait"
+            android:exported="true"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -70,24 +71,29 @@
         </activity>
         <activity
             android:name=".NewsHybridActivity"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activity.SettingsActivity"
             android:theme="@style/ActionBarLight"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activity.ReadHistoryActivity"
             android:theme="@style/ActionBarLight"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activity.PushHistoryActivity"
             android:theme="@style/ActionBarLight"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activity.MediaRankActivity"
             android:theme="@style/ActionBarLight"
-            android:screenOrientation="fullSensor"
-            android:exported="true">
+            android:screenOrientation="portrait"
+            android:exported="true"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="com.recoveryrecord.surveyandroid.example.MediaRankActivity" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -97,8 +103,9 @@
             android:name=".activity.NewsContentActivity"
             android:parentActivityName=".NewsHybridActivity"
             android:theme="@style/ActionBarLight"
-            android:screenOrientation="fullSensor"
-            android:exported="true">
+            android:screenOrientation="portrait"
+            android:exported="true"
+            tools:ignore="LockedOrientationActivity">
             <!--
                 Handle ACTION_SEND intents to receive data shared by other apps.
             -->
