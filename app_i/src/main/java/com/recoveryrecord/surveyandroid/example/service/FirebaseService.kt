@@ -1,14 +1,20 @@
 package com.recoveryrecord.surveyandroid.example.service
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.media.RingtoneManager
 import android.os.Bundle
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -51,11 +57,11 @@ import com.recoveryrecord.surveyandroid.example.util.createNotificationChannel
 import com.recoveryrecord.surveyandroid.example.util.insertRemote
 import com.recoveryrecord.surveyandroid.example.util.toTimeStamp
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class FirebaseService : FirebaseMessagingService() {
@@ -75,6 +81,7 @@ class FirebaseService : FirebaseMessagingService() {
 
     companion object {
         private var notificationId = 0
+        private var requestCode = 0
         private val ZERO_TIME = Timestamp(0, 0)
 
         var deviceId: String = ""
@@ -178,22 +185,33 @@ class FirebaseService : FirebaseMessagingService() {
         }
     }
 
+    @SuppressLint("MissingPermission")
     private fun sendNotification(notification: NotificationData) {
         Timber.d("sendNotification: $notification")
-
+        // Create an Intent for the activity you want to start.
         val intent = Intent(this, NewsContentActivity::class.java)
+//        val intent = Intent(this, NewsContentActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         intent.putExtra(TRIGGER_BY_KEY, TRIGGER_BY_VALUE_NOTIFICATION)
         intent.putExtra(NEWS_ID_KEY, notification.newsId)
         intent.putExtra(NEWS_MEDIA_KEY, notification.media)
-        val notificationId = getUniqueNotificationId()
-        val pendingIntent =
-            PendingIntent.getActivity(
-                this,
-                System.currentTimeMillis().toInt(),
-                intent,
-                PendingIntent.FLAG_IMMUTABLE,
+        // Create the TaskStackBuilder.
+        val pendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
+            // Add the intent, which inflates the back stack.
+            addNextIntentWithParentStack(intent)
+            // Get the PendingIntent containing the entire back stack.
+            getPendingIntent(
+                requestCode++,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
+        }
+//        val pendingIntent =
+//            PendingIntent.getActivity(
+//                this,
+//                System.currentTimeMillis().toInt(),
+//                intent,
+//                PendingIntent.FLAG_IMMUTABLE,
+//            )
         val extras = Bundle()
         extras.putString(NEWS_ID_KEY, notification.newsId)
 
@@ -215,8 +233,12 @@ class FirebaseService : FirebaseMessagingService() {
         // Do not set group manually, it automatically done for you
         //    .setGroup(GROUP_NEWS)
 
+
         createNotificationChannel(notificationManager, NEWS_CHANNEL_ID)
-        notificationManager.notify(notificationId, notificationBuilder.build())
+        with(NotificationManagerCompat.from(this)) {
+            notify(notificationId++, notificationBuilder.build())
+        }
+//        notificationManager.notify(getUniqueNotificationId(), notificationBuilder.build())
     }
 
     private suspend fun insertRemotePushNews(
@@ -259,9 +281,5 @@ class FirebaseService : FirebaseMessagingService() {
         insertRemote(db.collection(FCM_COLLECTION).document(newToken), newData) {
             Timber.d("FCM token update success")
         }
-    }
-
-    private fun getUniqueNotificationId(): Int {
-        return notificationId++
     }
 }

@@ -30,11 +30,11 @@ import com.recoveryrecord.surveyandroid.example.util.addRemote
 import com.recoveryrecord.surveyandroid.example.util.createNotificationChannel
 import com.recoveryrecord.surveyandroid.example.util.updateRemote
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class NotificationListenerService : NotificationListenerService() {
@@ -94,7 +94,7 @@ class NotificationListenerService : NotificationListenerService() {
                     "ca10cd7a2e8ae87a",
                     "1ff060f4014f6e3f",
                     "cd96440867380664",
-                    "d254e371a0970955"
+                    "d254e371a0970955",
                 )
             }
         var deviceId: String = ""
@@ -134,12 +134,12 @@ class NotificationListenerService : NotificationListenerService() {
     ) {
         val isOfficialNews = notificationTarget.value.contains(sbn.packageName)
         val fromFCM = sbn.notification.channelId == FCM_CHANNEL_ID
-        val isSelectedNews = true // checkNotificationPreference(sbn.)
+//        val isSelectedNews = true // checkNotificationPreference(sbn.)
         Timber.d(
             "Intercept ${sbn.packageName} " +
-                    " channelId ${sbn.notification.channelId}" +
-                    " ${sbn.notification.extras?.getString("android.title")}" +
-                    " ${sbn.notification.extras?.getCharSequence("android.text")}",
+                " channelId ${sbn.notification.channelId}" +
+                " ${sbn.notification.extras?.getString("android.title")}" +
+                " ${sbn.notification.extras?.getCharSequence("android.text")}",
         )
 //        sbn.notification.extras?.apply {
 //            for (key in keySet()) {
@@ -174,8 +174,8 @@ class NotificationListenerService : NotificationListenerService() {
         } else if (isOfficialNews) {
             Timber.d(
                 "onNotificationReceived is target ${sbn.packageName}" +
-                        " ${sbn.notification.extras?.getString("android.title")}" +
-                        " ${sbn.notification.extras?.getCharSequence("android.text")}",
+                    " ${sbn.notification.extras?.getString("android.title")}" +
+                    " ${sbn.notification.extras?.getCharSequence("android.text")}",
             )
             if (deviceId in selectedDevice.value) {
                 sbn.notification.extras?.apply {
@@ -186,13 +186,13 @@ class NotificationListenerService : NotificationListenerService() {
                             NOTIFICATION_BAR_NEWS_PACKAGE_ID to sbn.key,
                             NOTIFICATION_BAR_NEWS_DEVICE_ID to deviceId,
                             NOTIFICATION_BAR_NEWS_TITLE to (
-                                    this.getString("android.title")
-                                        ?: NO_VALUE
-                                    ),
+                                this.getString("android.title")
+                                    ?: NO_VALUE
+                            ),
                             NOTIFICATION_BAR_NEWS_TEXT to (
-                                    this.getCharSequence("android.text")
-                                        ?: NO_VALUE
-                                    ),
+                                this.getCharSequence("android.text")
+                                    ?: NO_VALUE
+                            ),
                         )
                     CoroutineScope(Dispatchers.IO).launch {
                         addRemote(

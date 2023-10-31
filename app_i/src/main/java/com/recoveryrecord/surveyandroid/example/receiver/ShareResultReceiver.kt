@@ -16,11 +16,11 @@ import com.recoveryrecord.surveyandroid.example.config.Constants.TMP_ACCESS_DOC_
 import com.recoveryrecord.surveyandroid.example.util.fetchRemoteOne
 import com.recoveryrecord.surveyandroid.example.util.updateRemote
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ShareResultReceiver : BroadcastReceiver() {

@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.recoveryrecord.surveyandroid.example.R
-import com.recoveryrecord.surveyandroid.example.adapter.NewsCategoryPagerAdapter
 import com.recoveryrecord.surveyandroid.example.model.MediaType
+import com.recoveryrecord.surveyandroid.example.ui.adapter.CategoryTabAdapter
 
 class MainFragment : Fragment() {
     private var source: String = ""
@@ -38,14 +40,19 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View? {
         val view = inflater.inflate(R.layout.nested_layer1_media, container, false)
-        val mViewPager = view.findViewById<View>(R.id.container_main) as ViewPager
-        val mNewsCategoryPagerAdapter =
-            NewsCategoryPagerAdapter(
-                childFragmentManager,
+        val mViewPager = view.findViewById<View>(R.id.container_main) as ViewPager2
+        val tabLayout = view.findViewById<TabLayout>(R.id.tabs2)
+        val mediaMap = MediaType.getCategoryMapByEnglishId(source)
+        val mCategoryTabAdapter =
+            CategoryTabAdapter(
+                requireActivity(),
                 source,
-                MediaType.getCategoryMapByEnglishId(source),
+                mediaMap,
             )
-        mViewPager.adapter = mNewsCategoryPagerAdapter
+        mViewPager.adapter = mCategoryTabAdapter
+        TabLayoutMediator(tabLayout, mViewPager) { tab, position ->
+            tab.text = mediaMap.getOrDefault(position, "")
+        }.attach()
         return view
     }
 }

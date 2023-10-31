@@ -14,7 +14,6 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.recoveryrecord.surveyandroid.example.R
-import com.recoveryrecord.surveyandroid.example.adapter.NewsRecycleViewAdapter
 import com.recoveryrecord.surveyandroid.example.config.Constants.NO_VALUE
 import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_HISTORY_LIMIT_PER_PAGE
 import com.recoveryrecord.surveyandroid.example.config.Constants.PUSH_NEWS
@@ -29,12 +28,13 @@ import com.recoveryrecord.surveyandroid.example.config.Constants.READING_BEHAVIO
 import com.recoveryrecord.surveyandroid.example.config.Constants.READING_DAILY
 import com.recoveryrecord.surveyandroid.example.config.Constants.READ_HISTORY_LIMIT_PER_PAGE
 import com.recoveryrecord.surveyandroid.example.model.News
+import com.recoveryrecord.surveyandroid.example.ui.adapter.NewsRecycleViewAdapter
 import com.recoveryrecord.surveyandroid.example.util.fetchRemoteAll
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.Calendar
-import javax.inject.Inject
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.Calendar
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class HistoryFragment : Fragment() {
@@ -97,6 +97,7 @@ class HistoryFragment : Fragment() {
                 dataModalArrayList,
                 requireActivity(),
                 type != PUSH_NEWS,
+                childFragmentManager,
             )
         dataRVAdapter.setHasStableIds(true)
         courseRV.apply {

@@ -28,7 +28,6 @@ import androidx.preference.PreferenceManager
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
-import com.recoveryrecord.surveyandroid.example.NewsHybridActivity
 import com.recoveryrecord.surveyandroid.example.R
 import com.recoveryrecord.surveyandroid.example.config.Constants
 import com.recoveryrecord.surveyandroid.example.config.Constants.NEWS_COLLECTION
@@ -92,6 +91,10 @@ import com.recoveryrecord.surveyandroid.example.util.loadImageWithGlide
 import com.recoveryrecord.surveyandroid.example.util.showToast
 import com.recoveryrecord.surveyandroid.example.util.updateRemote
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Arrays
@@ -101,14 +104,10 @@ import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import javax.inject.Inject
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @AndroidEntryPoint
 class NewsContentActivity : AppCompatActivity(), SimpleGestureListener {
-    lateinit var sharedPrefs: SharedPreferences
+    private lateinit var sharedPrefs: SharedPreferences
 
     private var deviceId = ""
 
@@ -147,7 +146,7 @@ class NewsContentActivity : AppCompatActivity(), SimpleGestureListener {
 
     private var dragObjArrayListArray: MutableList<DragObj> = ArrayList() // drag gesture
     private var myReadingBehavior = ReadingBehavior()
-    private var selfTrigger = false
+    private var selfTrigger = true
 
     private val divList: MutableList<String> = ArrayList()
 
@@ -156,7 +155,7 @@ class NewsContentActivity : AppCompatActivity(), SimpleGestureListener {
     @SuppressLint("HardwareIds", "UnspecifiedRegisterReceiverFlag")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_news_module)
+        setContentView(R.layout.news_content)
         viewPortLayout = findViewById(R.id.layout_inside)
 
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
@@ -190,8 +189,7 @@ class NewsContentActivity : AppCompatActivity(), SimpleGestureListener {
                         PUSH_NEWS_OPEN_TIME to Timestamp.now(),
                     )
                 CoroutineScope(Dispatchers.IO).launch { updateRemote(pushNewsRef, updateData) }
-            } else {
-                selfTrigger = true
+                selfTrigger = false
             }
         } ?: run {
             errorLoading()
@@ -701,7 +699,7 @@ class NewsContentActivity : AppCompatActivity(), SimpleGestureListener {
         layout: LinearLayout,
         imgUrl: String?,
     ) {
-        if (!imgUrl.isNullOrBlank()) {
+        if (!imgUrl.isNullOrBlank() && imgUrl != NO_VALUE) {
             loadImageWithGlide(imageView.context, imgUrl, imageView, null)
             layout.addView(imageView)
         }
@@ -791,18 +789,18 @@ class NewsContentActivity : AppCompatActivity(), SimpleGestureListener {
         var duration = 0.0
         for (iter in dragObjArrayListArray.indices) {
             if (drag_x_1 == 0f && drag_y_1 == 0f) {
-                time_one = dragObjArrayListArray[iter].timE_ONE
-                drag_x_1 = dragObjArrayListArray[iter].poinT_ONE_X
-                drag_y_1 = dragObjArrayListArray[iter].poinT_ONE_Y
-                drag_x_2 = dragObjArrayListArray[iter].poinT_TWO_X
-                drag_y_2 = dragObjArrayListArray[iter].poinT_TWO_Y
+                time_one = dragObjArrayListArray[iter].TIME_ONE
+                drag_x_1 = dragObjArrayListArray[iter].POINT_ONE_X
+                drag_y_1 = dragObjArrayListArray[iter].POINT_ONE_Y
+                drag_x_2 = dragObjArrayListArray[iter].POINT_TWO_X
+                drag_y_2 = dragObjArrayListArray[iter].POINT_TWO_Y
             } else if (drag_x_1 ==
                 dragObjArrayListArray[iter]
-                    .poinT_ONE_X && drag_y_1 == dragObjArrayListArray[iter].poinT_ONE_Y
+                    .POINT_ONE_X && drag_y_1 == dragObjArrayListArray[iter].POINT_ONE_Y
             ) {
-                time_two = dragObjArrayListArray[iter].timE_ONE
-                drag_x_2 = dragObjArrayListArray[iter].poinT_TWO_X
-                drag_y_2 = dragObjArrayListArray[iter].poinT_TWO_Y
+                time_two = dragObjArrayListArray[iter].TIME_ONE
+                drag_x_2 = dragObjArrayListArray[iter].POINT_TWO_X
+                drag_y_2 = dragObjArrayListArray[iter].POINT_TWO_Y
             } else {
                 // find end
                 drag_count += 1
@@ -820,22 +818,8 @@ class NewsContentActivity : AppCompatActivity(), SimpleGestureListener {
                 } catch (e: ParseException) {
                     e.printStackTrace()
                 }
-                val my_d1: List<String> =
-                    ArrayList(
-                        listOf(
-                            *dateFormat.format(d1).split(" ".toRegex())
-                                .dropLastWhile { it.isEmpty() }
-                                .toTypedArray(),
-                        ),
-                    )
-                val my_d2: List<String> =
-                    ArrayList(
-                        listOf(
-                            *dateFormat.format(d2).split(" ".toRegex())
-                                .dropLastWhile { it.isEmpty() }
-                                .toTypedArray(),
-                        ),
-                    )
+                val my_d1: List<String> = convertDragDataToList(d1)
+                val my_d2: List<String> = convertDragDataToList(d2)
                 drag_str += "$duration/"
                 drag_str += my_d1[2] + "/" + my_d2[2] + "/"
                 drag_str += "($drag_x_1,$drag_y_1)/"
@@ -887,20 +871,8 @@ class NewsContentActivity : AppCompatActivity(), SimpleGestureListener {
             } catch (e: ParseException) {
                 e.printStackTrace()
             }
-            val my_d1: List<String> =
-                ArrayList(
-                    Arrays.asList(
-                        *dateFormat.format(d1).split(" ".toRegex()).dropLastWhile { it.isEmpty() }
-                            .toTypedArray(),
-                    ),
-                )
-            val my_d2: List<String> =
-                ArrayList(
-                    Arrays.asList(
-                        *dateFormat.format(d2).split(" ".toRegex()).dropLastWhile { it.isEmpty() }
-                            .toTypedArray(),
-                    ),
-                )
+            val my_d1: List<String> = convertDragDataToList(d1)
+            val my_d2: List<String> = convertDragDataToList(d2)
             drag_str += "$duration/"
             drag_str += my_d1[2] + "/" + my_d2[2] + "/"
             drag_str += "($drag_x_1,$drag_y_1)/"
@@ -950,14 +922,15 @@ class NewsContentActivity : AppCompatActivity(), SimpleGestureListener {
         activityEnd = true
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        supportFinishAfterTransition()
-        if (!selfTrigger) {
-            val intent = Intent(this@NewsContentActivity, NewsHybridActivity::class.java)
-            startActivity(intent)
-        }
-    }
+//    override fun onBackPressed() {
+//        if (selfTrigger) {
+//            super.onBackPressed()
+//            supportFinishAfterTransition()
+//        } else {
+//            val intent = Intent(this@NewsContentActivity, NewsHybridActivity::class.java)
+//            startActivity(intent)
+//        }
+//    }
 
     fun pxToDp(
         px: Int,
@@ -1028,30 +1001,30 @@ class NewsContentActivity : AppCompatActivity(), SimpleGestureListener {
     ) {
         myReadingBehavior.flingNum = myReadingBehavior.flingNum + 1
         flingObj.apply {
-            flinG_ID = myReadingBehavior.flingNum
+            FLING_ID = myReadingBehavior.flingNum
             var strFling = myReadingBehavior.flingRecord
             if (strFling == NO_VALUE) {
                 strFling = ""
             }
-            strFling += "($poinT_ONE_X,$poinT_ONE_Y)/"
-            strFling += "($poinT_TWO_X,$poinT_TWO_Y)/"
-            strFling += "$distancE_X/"
-            strFling += "$distancE_Y/"
-            strFling += "$velocitY_X/"
-            strFling += "$velocitY_Y/"
+            strFling += "($POINT_ONE_X,$POINT_ONE_Y)/"
+            strFling += "($POINT_TWO_X,$POINT_TWO_Y)/"
+            strFling += "$DISTANCE_X/"
+            strFling += "$DISTANCE_Y/"
+            strFling += "$VELOCITY_X/"
+            strFling += "$VELOCITY_Y/"
             var directionF = ""
             directionF +=
-                if (poinT_ONE_Y < poinT_TWO_Y) {
+                if (POINT_ONE_Y < POINT_TWO_Y) {
                     "N"
-                } else if (poinT_ONE_Y > poinT_TWO_Y) {
+                } else if (POINT_ONE_Y > POINT_TWO_Y) {
                     "S"
                 } else {
                     ""
                 }
             directionF +=
-                if (poinT_ONE_X < poinT_TWO_X) {
+                if (POINT_ONE_X < POINT_TWO_X) {
                     "E"
-                } else if (poinT_ONE_X > poinT_TWO_X) {
+                } else if (POINT_ONE_X > POINT_TWO_X) {
                     "W"
                 } else {
                     ""
@@ -1348,21 +1321,21 @@ class NewsContentActivity : AppCompatActivity(), SimpleGestureListener {
         fun isChineseChar(c: Char): Boolean {
             val ub = Character.UnicodeBlock.of(c)
             return (
-                    ub === Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS
-                    ) || (
-                    ub === Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
-                    ) || (
-                    ub === Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A
-                    ) || (
-                    ub === Character.UnicodeBlock.GENERAL_PUNCTUATION
-                    ) || (ub === Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION)
+                ub === Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS
+            ) || (
+                ub === Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
+            ) || (
+                ub === Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A
+            ) || (
+                ub === Character.UnicodeBlock.GENERAL_PUNCTUATION
+            ) || (ub === Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION)
         }
 
         fun String.convertToRemoteDataType(): List<String> {
             return this.split("#").filter { it.isNotEmpty() }
         }
 
-        fun formateList(date: Date): List<String> {
+        fun convertDragDataToList(date: Date): List<String> {
             return dateFormat.format(date)
                 .split(" ".toRegex())
                 .filter { it.isNotEmpty() }

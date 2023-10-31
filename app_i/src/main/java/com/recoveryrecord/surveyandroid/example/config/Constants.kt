@@ -3,6 +3,7 @@ package com.recoveryrecord.surveyandroid.example.config
 object Constants {
     // email
     const val OUR_EMAIL = "crctaiwan@gmail.com"
+    const val MAMU_EMAIL = "wumamu.hk11@nycu.edu.tw"
 
     // other
     const val CHINA_TIMES_PACKAGE_NAME = "cc.nexdoor.ct.activity"
@@ -49,7 +50,6 @@ object Constants {
     const val APP_VERSION_KEY = "app_version"
 
     // TODO need to update every time
-    const val APP_VERSION_VALUE = "23.10.20-1"
     const val UPDATE_TIME = "update_timestamp"
     const val USER_DEVICE_ID = "device_id"
     const val USER_FIRESTORE_ID = "firestore_id"

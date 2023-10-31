@@ -50,11 +50,11 @@ import com.recoveryrecord.surveyandroid.example.config.Constants.USER_ID
 import com.recoveryrecord.surveyandroid.example.model.ActivityType
 import com.recoveryrecord.surveyandroid.example.util.addRemote
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class DetectedActivityReceiver : BroadcastReceiver() {
@@ -115,8 +115,8 @@ class DetectedActivityReceiver : BroadcastReceiver() {
         detectedActivities
             .filter {
                 it.type == DetectedActivity.STILL ||
-                        it.type == DetectedActivity.WALKING ||
-                        it.type == DetectedActivity.RUNNING
+                    it.type == DetectedActivity.WALKING ||
+                    it.type == DetectedActivity.RUNNING
             }
             .filter { it.confidence > RELIABLE_CONFIDENCE }
             .run {

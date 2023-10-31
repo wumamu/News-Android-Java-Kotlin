@@ -9,11 +9,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NewsViewModel
-@Inject
-constructor(
-    private val getNewsUseCase: GetNewsUseCase,
-) : ViewModel() {
-    val dataModalArrayList: MutableLiveData<List<News>> = MutableLiveData()
+    @Inject
+    constructor(
+        private val getNewsUseCase: GetNewsUseCase,
+    ) : ViewModel() {
+        val dataModalArrayList: MutableLiveData<List<News>> = MutableLiveData()
 
 //    private val _newsFlow = MutableStateFlow<List<News>>(emptyList())
 //    val newsFlow = _newsFlow.asStateFlow()
@@ -30,4 +30,4 @@ constructor(
 //            dataModalArrayList.postValue(news)
 //        }
 //    }
-}
+    }

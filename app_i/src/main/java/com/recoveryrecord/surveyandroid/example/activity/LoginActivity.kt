@@ -33,8 +33,8 @@ import com.recoveryrecord.surveyandroid.example.util.showDummyNotification
 import com.recoveryrecord.surveyandroid.example.util.showSettingsDialog
 import com.recoveryrecord.surveyandroid.example.util.showToast
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {

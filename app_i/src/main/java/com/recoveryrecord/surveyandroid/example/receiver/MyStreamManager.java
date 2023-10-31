@@ -1,26 +1,20 @@
 package com.recoveryrecord.surveyandroid.example.receiver;
 
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Handler;
 
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.recoveryrecord.surveyandroid.example.CSVDataRecord.DataRecord;
-import com.recoveryrecord.surveyandroid.example.CSVDataRecord.StreamNotFoundException;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Stream;
-
-import timber.log.Timber;
 
 
 public class MyStreamManager {
 
 
-    StreamGenerator streamGenerator1 = new ScreenStateReceiver();
-    //    StreamGenerator streamGenerator2 = new BlueToothReceiver();
+//    StreamGenerator streamGenerator1 = new ScreenStateReceiver();
+//    StreamGenerator streamGenerator2 = new BlueToothReceiver();
     StreamGenerator streamGenerator3 = new RingModeReceiver();
     StreamGenerator streamGenerator4 = new NetworkChangeReceiver();
     //    StreamGenerator streamGenerator5 = new ActivityRecognitionReceiver();
@@ -44,7 +38,7 @@ public class MyStreamManager {
         return MyStreamManager.instance;
     }
     public void updateStreamGenerators(Context context) {
-        streamGenerator1.updateStream(context);
+//        streamGenerator1.updateStream(context);
 //        streamGenerator2.updateStream();
         streamGenerator3.updateStream(context);
         streamGenerator4.updateStream(context);
@@ -94,26 +88,26 @@ public class MyStreamManager {
 //
 //        }
 //    }
-    public <T extends DataRecord> void register(com.recoveryrecord.surveyandroid.example.CSVDataRecord.Stream s,
-                                                Class<T> clazz,
-                                                StreamGenerator aStreamGenerator) {
+//    public <T extends DataRecord> void register(com.recoveryrecord.surveyandroid.example.CSVDataRecord.Stream s,
+//                                                Class<T> clazz,
+//                                                StreamGenerator aStreamGenerator) {
+//
+//        mRegisteredStreamGenerators.put(clazz, aStreamGenerator);
+//        Timber.d("Registered a new stream generator for " + clazz);
+//    }
 
-        mRegisteredStreamGenerators.put(clazz, aStreamGenerator);
-        Timber.d("Registered a new stream generator for " + clazz);
-    }
-
-    public void unregister(Stream s, StreamGenerator sg)
-            throws StreamNotFoundException {
-        mRegisteredStreamGenerators.remove(sg);
-    }
-    @SuppressLint("LongLogTag")
-    public <T extends DataRecord> StreamGenerator<T> getStreamGeneratorFor(Class<T> clazz)
-            throws StreamNotFoundException {
-        if(mRegisteredStreamGenerators.containsKey(clazz)) {
-            return mRegisteredStreamGenerators.get(clazz);
-        } else {
-            throw new StreamNotFoundException();
-        }
-    }
+//    public void unregister(Stream s, StreamGenerator sg)
+//            throws StreamNotFoundException {
+//        mRegisteredStreamGenerators.remove(sg);
+//    }
+//    @SuppressLint("LongLogTag")
+//    public <T extends DataRecord> StreamGenerator<T> getStreamGeneratorFor(Class<T> clazz)
+//            throws StreamNotFoundException {
+//        if(mRegisteredStreamGenerators.containsKey(clazz)) {
+//            return mRegisteredStreamGenerators.get(clazz);
+//        } else {
+//            throw new StreamNotFoundException();
+//        }
+//    }
 }
 
