@@ -6,8 +6,8 @@ import android.view.MotionEvent
 import com.recoveryrecord.surveyandroid.example.sqlite.DragObj
 import com.recoveryrecord.surveyandroid.example.sqlite.FlingObj
 import com.recoveryrecord.surveyandroid.example.util.SimpleGestureListener
-import timber.log.Timber
 import kotlin.math.abs
+import timber.log.Timber
 
 class GestureListener(private val context: Activity, private val listener: SimpleGestureListener) :
     GestureDetector.SimpleOnGestureListener() {
@@ -123,7 +123,14 @@ class GestureListener(private val context: Activity, private val listener: Simpl
         distanceY: Float,
     ): Boolean {
         val dragObj = DragObj()
-        val result = super.onScroll(e1, e2, distanceX, distanceY)
+
+        val result = try {
+            super.onScroll(e1, e2, distanceX, distanceY)
+        } catch (e: Exception) {
+            Timber.e(e, "Error in onScroll")
+            false
+        }
+
         if (!result) {
             Timber.d(
                 "%s)",

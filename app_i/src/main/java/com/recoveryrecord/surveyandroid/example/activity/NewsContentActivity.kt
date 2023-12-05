@@ -91,10 +91,6 @@ import com.recoveryrecord.surveyandroid.example.util.loadImageWithGlide
 import com.recoveryrecord.surveyandroid.example.util.showToast
 import com.recoveryrecord.surveyandroid.example.util.updateRemote
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Arrays
@@ -104,6 +100,11 @@ import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import timber.log.Timber
+
 
 @AndroidEntryPoint
 class NewsContentActivity : AppCompatActivity(), SimpleGestureListener {
@@ -917,20 +918,14 @@ class NewsContentActivity : AppCompatActivity(), SimpleGestureListener {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
-        Timber.d("onDestroy")
-        activityEnd = true
+        try {
+            super.onDestroy()
+            Timber.d("onDestroy")
+            activityEnd = true
+        } catch (npe: NullPointerException) {
+            Timber.e("NPE: Bug workaround")
+        }
     }
-
-//    override fun onBackPressed() {
-//        if (selfTrigger) {
-//            super.onBackPressed()
-//            supportFinishAfterTransition()
-//        } else {
-//            val intent = Intent(this@NewsContentActivity, NewsHybridActivity::class.java)
-//            startActivity(intent)
-//        }
-//    }
 
     fun pxToDp(
         px: Int,
