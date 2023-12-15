@@ -1,6 +1,5 @@
 package com.recoveryrecord.surveyandroid.example.service
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationManager
@@ -9,10 +8,8 @@ import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
 import android.media.RingtoneManager
 import android.os.Bundle
-import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.google.firebase.Timestamp
@@ -57,11 +54,11 @@ import com.recoveryrecord.surveyandroid.example.util.createNotificationChannel
 import com.recoveryrecord.surveyandroid.example.util.insertRemote
 import com.recoveryrecord.surveyandroid.example.util.toTimeStamp
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class FirebaseService : FirebaseMessagingService() {
@@ -151,27 +148,31 @@ class FirebaseService : FirebaseMessagingService() {
             Timber.d("From: " + remoteMessage.from)
             Timber.d("Data: " + remoteMessage.data)
 
-            if (remoteMessage.data.isNotEmpty()) {
-                handleRemoteMessage(remoteMessage.data)
+            if (remoteMessage.notification?.body.isNullOrEmpty()
+                    .not() && remoteMessage.data.isNotEmpty()
+            ) {
+                handleRemoteMessage(remoteMessage.data, remoteMessage.notification)
             }
         } catch (e: Exception) {
             Timber.e("Error handling intent: ${e.message}")
         }
     }
 
-    private fun handleRemoteMessage(dataMap: MutableMap<String, String>) {
+    private fun handleRemoteMessage(
+        dataMap: MutableMap<String, String>,
+        originNotification: RemoteMessage.Notification?
+    ) {
         try {
             val curNoti =
                 NotificationData(
-                    title = dataMap[Constants.NEWS_TITLE_KEY]!!,
+                    title = originNotification?.body!!,
+//                    title = dataMap[NEWS_TITLE_KEY]!!,
                     media = dataMap[NEWS_MEDIA_KEY]!!,
                     newsId = dataMap[NEWS_ID_KEY]!!,
                     pubDate = dataMap.getOrDefault(Constants.NEWS_PUBDATE, null),
                 )
             // filter selected media
-            val trigger =
-                true // (curNoti.media in mediaPushResult)//checkNotificationPreference(curNoti.media)
-//            Timber.d(mediaPushResult.toString())
+            val trigger = true
             CoroutineScope(Dispatchers.IO).launch {
                 insertRemotePushNews(curNoti, trigger)
             }
@@ -205,13 +206,6 @@ class FirebaseService : FirebaseMessagingService() {
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
         }
-//        val pendingIntent =
-//            PendingIntent.getActivity(
-//                this,
-//                System.currentTimeMillis().toInt(),
-//                intent,
-//                PendingIntent.FLAG_IMMUTABLE,
-//            )
         val extras = Bundle()
         extras.putString(NEWS_ID_KEY, notification.newsId)
 
@@ -267,6 +261,19 @@ class FirebaseService : FirebaseMessagingService() {
             Timber.d("insertRemotePushNews success")
         }
     }
+
+//    private suspend fun insertRemoteDebug(
+//        data: MutableMap<String, String>,
+//        originNotification: RemoteMessage.Notification?
+//    ) {
+//        val docRef =
+//            db.collection("DEBUG").document(Timestamp.now().toString())
+//        data["notificationTitle"] = originNotification?.title ?: ""
+//        data["notificationBody"] = originNotification?.body ?: ""
+//        insertRemote(docRef, HashMap(data)) {
+//            Timber.d("insertRemoteDebug success")
+//        }
+//    }
 
     private suspend fun addRemoteFcm(newToken: String) {
         // TODO sync with ios
